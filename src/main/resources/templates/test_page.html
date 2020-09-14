@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Page</title>
+</head>
+<script src="webjars/jquery/3.4.1/jquery.min.js"></script>
+<link rel="stylesheet" th:href="@{css/test_page.css}">      <!--in thymeleaf, @{} represent the static path-->
+<script th:src="@{js/test_page.js}"></script>
+<body>
+
+<p>Test object: </p>
+
+<p th:text="${obj_str}"></p>
+
+<button class="my_button" onclick="update_num()">Update Num</button>
+
+<br><a href="/">Back to index</a>
+
+</body>
+</html>

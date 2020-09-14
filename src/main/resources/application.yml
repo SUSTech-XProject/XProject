@@ -27,3 +27,5 @@ spring:
         endpoint: /graphql
         enabled: true
         pageTitle: GraphiQL
+  thymeleaf:
+    cache: false
