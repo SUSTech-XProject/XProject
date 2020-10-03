@@ -3,9 +3,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/test_db   # the port and the database name
+    url: jdbc:postgresql://localhost:5432/postgres   # the port and the database name
     driver-class-name: org.postgresql.Driver
-    username: test_db_user    # the username of database user
+    username: checker    # the username of database user
     password: 123456          # the pwd of database user
   jpa:
     database: postgresql

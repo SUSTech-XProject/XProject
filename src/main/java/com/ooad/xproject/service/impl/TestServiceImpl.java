@@ -19,7 +19,7 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public TestObject getTestObject() {
-        String selectSql = "select * from test_table limit 1";
+        String selectSql = "select * from test_table where id = 1 limit 1";
         // lambda expression for RowMapper
         return jdbcTemplate.queryForObject(selectSql, (rs, i) -> {
             TestObject obj = new TestObject();
