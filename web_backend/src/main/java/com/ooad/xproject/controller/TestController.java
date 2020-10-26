@@ -19,7 +19,7 @@ public class TestController {
     }
 
     @RequestMapping("/")
-    public String index(){
+    public String index() {
         return "index";
     }
 
