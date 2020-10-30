@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ooad.xproject.mapper.TestObjectMapper">
+    <resultMap id="BaseResultMap" type="com.ooad.xproject.entity.TestObject">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="str" jdbcType="VARCHAR" property="str"/>
+        <result column="num" jdbcType="INTEGER" property="num"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.ooad.xproject.entity.TestObject">
+        insert into test_table (id, str, num)
+        values (#{id,jdbcType=INTEGER}, #{str,jdbcType=VARCHAR}, #{num,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.ooad.xproject.entity.TestObject">
+        insert into test_table
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="str != null">
+                str,
+            </if>
+            <if test="num != null">
+                num,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="str != null">
+                #{str,jdbcType=VARCHAR},
+            </if>
+            <if test="num != null">
+                #{num,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectFirstOne" resultType="com.ooad.xproject.entity.TestObject">
+        select *
+        from test_table
+        limit 1
+    </select>
+    <update id="updateNum">
+        update test_table set num = num + 1 where id = 1
+    </update>
+</mapper>

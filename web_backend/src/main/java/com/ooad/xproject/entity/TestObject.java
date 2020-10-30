@@ -1,15 +1,17 @@
 package com.ooad.xproject.entity;
 
 public class TestObject {
-    private int id;
-    private String str;
-    private int num;
+    private Integer id;
 
-    public int getId() {
+    private String str;
+
+    private Integer num;
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -18,14 +20,14 @@ public class TestObject {
     }
 
     public void setStr(String str) {
-        this.str = str;
+        this.str = str == null ? null : str.trim();
     }
 
-    public int getNum() {
+    public Integer getNum() {
         return num;
     }
 
-    public void setNum(int num) {
+    public void setNum(Integer num) {
         this.num = num;
     }
 }

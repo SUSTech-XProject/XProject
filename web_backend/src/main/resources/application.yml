@@ -1,31 +1,11 @@
-server:
-  port: 8080
-
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/test_db   # the port and the database name
-    driver-class-name: org.postgresql.Driver
-    username: test_db_user    # the username of database user
-    password: 123456          # the pwd of database user
-  jpa:
-    database: postgresql
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
-    properties:
-      hibernate:
-        temp:
-          use_jdbc_metadata_defaults: false
-      graphql:
-        servlet:
-          mapping: /graphql
-          enabled: true
-          corsEnabled: true
-      graphiql:
-        mapping: /graphiql
-        endpoint: /graphql
-        enabled: true
-        pageTitle: GraphiQL
-  thymeleaf:
-    cache: false
+  profiles:
+#    active: @profileActive@
+    active: cloud
+#    active: prod
+
+mybatis:
+  type-aliases-package: com.ooad.xproject.dao
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
