@@ -55,16 +55,17 @@ export default {
       this.msg = 'Wait ...'
       console.log('send ...')
       this.$axios
-        .post('/test/login', {
+        .post('/login', {
           username: this.loginForm.username,
           password: this.loginForm.password
         })
-        .then(successResponse => {
-          console.log('get response : ' + successResponse)
-          if (successResponse.data.code === 200) {
+        .then(resp => {
+          console.log('get response : ' + resp)
+          if (resp.data.code === 200) {
             this.$router.replace({path: '/index'})
-          } else if (successResponse.data.code === 400) {
-            this.msg = 'Username or pwd not correct'
+          } else if (resp.data.code === 400) {
+            console.log(resp.data.message)
+            this.msg = resp.data.message
           }
         })
         .catch(failResponse => {
