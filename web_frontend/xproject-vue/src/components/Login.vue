@@ -53,7 +53,7 @@ export default {
   methods: {
     login () {
       this.msg = 'Wait ...'
-      console.log('send ...')
+      console.log('send login data')
       this.$axios
         .post('/login', {
           username: this.loginForm.username,
