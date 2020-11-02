@@ -49,12 +49,20 @@
         <!--            <generatedKey column="admin_id" sqlStatement="Postgres" identity="true"/>-->
         <!--        </table>-->
 
-        <table tableName="test_table" domainObjectName="TestObject" enableCountByExample="false"
-               enableUpdateByExample="false"
-               enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+<!--        <table tableName="test_table" domainObjectName="TestObject" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false"-->
+<!--               enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--&lt;!&ndash;            &lt;!&ndash; 数据库表主键 &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;            <generatedKey column="seat_id" sqlStatement="Postgres" identity="true"/>&ndash;&gt;-->
+<!--        </table>-->
+
+        <table tableName="roles" domainObjectName="Role" enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
             <property name="useActualColumnNames" value="false"/>
-<!--            &lt;!&ndash; 数据库表主键 &ndash;&gt;-->
-<!--            <generatedKey column="seat_id" sqlStatement="Postgres" identity="true"/>-->
+            <!-- 数据库表主键 -->
+            <generatedKey column="role_id" sqlStatement="Postgres" identity="true"/>
         </table>
 
     </context>

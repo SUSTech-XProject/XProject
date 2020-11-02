@@ -8,6 +8,13 @@ public class Result<T> {
     private String message;
     private T data;
 
+    public Result(RespStatus status, String message, T data) {
+        this.code = status.code;
+        this.phrase = status.phrase;
+        this.message = message;
+        this.data = data;
+    }
+
     public Result(RespStatus status) {
         this(status, null, null);
     }
@@ -22,13 +29,6 @@ public class Result<T> {
 
     public Result(String message, T data) {
         this(RespStatus.Status200, message, data);
-    }
-
-    public Result(RespStatus status, String message, T data) {
-        this.code = status.code;
-        this.phrase = status.phrase;
-        this.message = message;
-        this.data = data;
     }
 
     public int getCode() {
@@ -61,5 +61,15 @@ public class Result<T> {
 
     public void setData(T data) {
         this.data = data;
+    }
+
+    @Override
+    public String toString() {
+        return "Result{" +
+                "code=" + code +
+                ", phrase='" + phrase + '\'' +
+                ", message='" + message + '\'' +
+                ", data=" + data +
+                '}';
     }
 }
