@@ -33,3 +33,8 @@ spring:
 logging:
   level:
     root: info
+
+springfox:
+  documentation:
+    swagger-ui.enabled: false
+    swagger.v2.enabled: false
