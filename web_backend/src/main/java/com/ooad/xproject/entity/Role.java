@@ -11,6 +11,16 @@ public class Role {
 
     private String status;
 
+    private String salt;
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
     public Integer getRoleId() {
         return roleId;
     }
@@ -50,4 +60,5 @@ public class Role {
     public void setStatus(String status) {
         this.status = status == null ? null : status.trim();
     }
+
 }

@@ -4,5 +4,6 @@ import com.ooad.xproject.entity.TestObject;
 
 public interface TestService {
     TestObject getTestObject();
+
     void updateNum();
 }
