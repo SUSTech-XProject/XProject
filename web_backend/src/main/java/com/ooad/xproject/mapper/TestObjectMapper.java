@@ -12,5 +12,6 @@ public interface TestObjectMapper {
     int insertSelective(TestObject record);
 
     TestObject selectFirstOne();
+
     void updateNum();
 }
