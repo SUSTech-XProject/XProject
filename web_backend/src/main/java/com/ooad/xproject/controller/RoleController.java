@@ -1,15 +1,17 @@
 package com.ooad.xproject.controller;
 
-import com.ooad.xproject.bo.SvResult;
 import com.ooad.xproject.constant.RespStatus;
 import com.ooad.xproject.constant.RoleType;
-import com.ooad.xproject.entity.Role;
 import com.ooad.xproject.service.RoleService;
 import com.ooad.xproject.vo.Result;
 import com.ooad.xproject.vo.RoleVO;
 import org.apache.ibatis.jdbc.Null;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
 
@@ -30,15 +32,16 @@ public class RoleController {
         String username = requestRoleVO.getUsername();
         username = HtmlUtils.htmlEscape(username);
         String password = requestRoleVO.getPassword();
-        password = HtmlUtils.htmlEscape(password);
 
-        SvResult<Role> res = roleService.checkRolePwd(username, password);
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
 
-        logger.info(res.getMsg());
-        if (res.failed()) {
-            return new Result<Null>(RespStatus.Status400, res.getMsg());
-        } else {
-            return new Result<Null>(RespStatus.Status200, res.getMsg());
+        Subject subject = SecurityUtils.getSubject();
+        try {
+            subject.login(token);
+            return new Result<>(RespStatus.Status200);
+        } catch (AuthenticationException e) {
+            String msg = "Username or password error: " + e.getMessage();
+            return new Result<>(RespStatus.Status400, msg);
         }
     }
 

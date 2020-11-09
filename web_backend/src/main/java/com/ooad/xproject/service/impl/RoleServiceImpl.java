@@ -1,6 +1,5 @@
 package com.ooad.xproject.service.impl;
 
-import com.ooad.xproject.bo.SvResult;
 import com.ooad.xproject.constant.RoleType;
 import com.ooad.xproject.entity.Role;
 import com.ooad.xproject.entity.Student;
@@ -35,21 +34,21 @@ public class RoleServiceImpl implements RoleService {
         return roleMapper.selectByUsername(username) != null;
     }
 
-    /**
-     * Check the role with the username and the pwd.
-     * Return Role obj if success.
-     */
-    @Override
-    public SvResult<Role> checkRolePwd(String username, String password) {
-        Role role = roleMapper.selectByUsername(username);
-        if (role == null) {
-            return new SvResult<>(-1, "No such username");
-        }
-        if (!password.equals(role.getPassword())) {
-            return new SvResult<>(-1, "Wrong password");
-        }
-        return new SvResult<>(0, "Authentication passed", role);
-    }
+//    /**
+//     * Check the role with the username and the pwd.
+//     * Return Role obj if success.
+//     */
+//    @Override
+//    public SvResult<Role> checkRolePwd(String username, String password) {
+//        Role role = roleMapper.selectByUsername(username);
+//        if (role == null) {
+//            return new SvResult<>(-1, "No such username");
+//        }
+//        if (!password.equals(role.getPassword())) {
+//            return new SvResult<>(-1, "Wrong password");
+//        }
+//        return new SvResult<>(0, "Authentication passed", role);
+//    }
 
     @Override
     public void createUser(String type, String username, String password) {
