@@ -1,7 +1,9 @@
 package com.ooad.xproject.mapper;
 
 import com.ooad.xproject.entity.Student;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface StudentMapper {
     int deleteByPrimaryKey(Integer stdId);
 

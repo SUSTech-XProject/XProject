@@ -4,7 +4,7 @@ import com.ooad.xproject.constant.RespStatus;
 import com.ooad.xproject.entity.TestObject;
 import com.ooad.xproject.service.TestService;
 import com.ooad.xproject.vo.Result;
-import com.ooad.xproject.vo.UserVO;
+import com.ooad.xproject.vo.RoleVO;
 import org.apache.ibatis.jdbc.Null;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,13 +36,13 @@ public class TestController {
     @CrossOrigin
     @ResponseBody
     @RequestMapping(value = "api/test/login", method = RequestMethod.POST)
-    public Result<?> login(@RequestBody UserVO requestUserVO) {
+    public Result<?> login(@RequestBody RoleVO requestRoleVO) {
         // 对 html 标签进行转义，防止 XSS 攻击
-        String username = requestUserVO.getUsername();
+        String username = requestRoleVO.getUsername();
         username = HtmlUtils.htmlEscape(username);
 
         if (!Objects.equals("admin", username)
-                || !Objects.equals("123456", requestUserVO.getPassword())) {
+                || !Objects.equals("123456", requestRoleVO.getPassword())) {
             logger.info("Username / password not correct");
             return new Result<Null>(RespStatus.Status400);
         } else {

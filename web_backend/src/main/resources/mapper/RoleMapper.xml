@@ -7,9 +7,10 @@
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="status" jdbcType="CHAR" property="status" />
+    <result column="salt" jdbcType="VARCHAR" property="salt" />
   </resultMap>
   <sql id="Base_Column_List">
-    role_id, role_type, username, password, status
+    role_id, role_type, username, password, status, salt
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -26,9 +27,9 @@
       Postgres
     </selectKey>
     insert into roles (role_type, username, password, 
-      status)
+      status, salt)
     values (#{roleType,jdbcType=CHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{status,jdbcType=CHAR})
+      #{status,jdbcType=CHAR}, #{salt,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.ooad.xproject.entity.Role">
     <selectKey keyProperty="roleId" order="AFTER" resultType="java.lang.Integer">
@@ -48,6 +49,9 @@
       <if test="status != null">
         status,
       </if>
+      <if test="salt != null">
+        salt,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="roleType != null">
@@ -61,6 +65,9 @@
       </if>
       <if test="status != null">
         #{status,jdbcType=CHAR},
+      </if>
+      <if test="salt != null">
+        #{salt,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -79,6 +86,9 @@
       <if test="status != null">
         status = #{status,jdbcType=CHAR},
       </if>
+      <if test="salt != null">
+        salt = #{salt,jdbcType=VARCHAR},
+      </if>
     </set>
     where role_id = #{roleId,jdbcType=INTEGER}
   </update>
@@ -87,8 +97,15 @@
     set role_type = #{roleType,jdbcType=CHAR},
       username = #{username,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
-      status = #{status,jdbcType=CHAR}
+      status = #{status,jdbcType=CHAR},
+      salt = #{salt,jdbcType=VARCHAR}
     where role_id = #{roleId,jdbcType=INTEGER}
   </update>
 
+    <select id="selectByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from roles
+        where username = #{userName}
+    </select>
 </mapper>

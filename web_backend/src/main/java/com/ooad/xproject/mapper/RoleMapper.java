@@ -20,6 +20,4 @@ public interface RoleMapper {
     // extra
 
     Role selectByUsername(String userName);
-
-    Role selectByUsername1(String userName);
 }

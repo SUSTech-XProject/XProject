@@ -58,147 +58,141 @@
 <!--        </table>-->
 
 
-        <table tableName="admins" domainObjectName="Admin" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false">
-            <property name="useActualColumnNames" value="false"/>
-            <!-- 数据库表主键 -->
-            <generatedKey column="admin_id" sqlStatement="Postgres" identity="true"/>
-        </table>
-
-        <table tableName="announcements" domainObjectName="Announcement" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false">
-            <property name="useActualColumnNames" value="false"/>
-            <!-- 数据库表主键 -->
-            <generatedKey column="ann_id" sqlStatement="Postgres" identity="true"/>
-        </table>
-
-        <table tableName="event_arrange_tasks" domainObjectName="EventArrangeTask" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false">
-            <property name="useActualColumnNames" value="false"/>
-            <!-- 数据库表主键 -->
-            <generatedKey column="ea_task_id" sqlStatement="Postgres" identity="true"/>
-        </table>
-
-        <table tableName="project_insts" domainObjectName="ProjectInst" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false">
-            <property name="useActualColumnNames" value="false"/>
-            <!-- 数据库表主键 -->
-            <generatedKey column="proj_inst_id" sqlStatement="Postgres" identity="true"/>
-        </table>
-
-        <table tableName="projects" domainObjectName="Project" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false">
-            <property name="useActualColumnNames" value="false"/>
-            <!-- 数据库表主键 -->
-            <generatedKey column="proj_id" sqlStatement="Postgres" identity="true"/>
-        </table>
-
-        <table tableName="record_insts" domainObjectName="RecordInst" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false">
-            <property name="useActualColumnNames" value="false"/>
-            <!-- 数据库表主键 -->
-            <generatedKey column="rcd_inst_id" sqlStatement="Postgres" identity="true"/>
-        </table>
-
-        <table tableName="records" domainObjectName="Record" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false">
-            <property name="useActualColumnNames" value="false"/>
-            <!-- 数据库表主键 -->
-            <generatedKey column="rcd_id" sqlStatement="Postgres" identity="true"/>
-        </table>
-
-        <table tableName="roles" domainObjectName="Role" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false">
-            <property name="useActualColumnNames" value="false"/>
-            <!-- 数据库表主键 -->
-            <generatedKey column="role_id" sqlStatement="Postgres" identity="true"/>
-        </table>
-
-        <table tableName="schools" domainObjectName="Schools" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false">
-            <property name="useActualColumnNames" value="false"/>
-            <!-- 数据库表主键 -->
-            <generatedKey column="sch_id" sqlStatement="Postgres" identity="true"/>
-        </table>
-
-<!--        <table tableName="std_group_student_rt" domainObjectName="StdGroupStudentR" enableCountByExample="false"-->
+<!--        <table tableName="admins" domainObjectName="Admin" enableCountByExample="false"-->
 <!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
 <!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
 <!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            &lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+<!--            <generatedKey column="admin_id" sqlStatement="Postgres" identity="true"/>-->
 <!--        </table>-->
 
-        <table tableName="std_groups" domainObjectName="StdGroup" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false">
-            <property name="useActualColumnNames" value="false"/>
-            <!-- 数据库表主键 -->
-            <generatedKey column="sgp_id" sqlStatement="Postgres" identity="true"/>
-        </table>
+<!--        <table tableName="announcements" domainObjectName="Announcement" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            &lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+<!--            <generatedKey column="ann_id" sqlStatement="Postgres" identity="true"/>-->
+<!--        </table>-->
 
-        <table tableName="students" domainObjectName="Student" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false">
-            <property name="useActualColumnNames" value="false"/>
-            <!-- 数据库表主键 -->
-            <generatedKey column="std_id" sqlStatement="Postgres" identity="true"/>
-        </table>
+<!--        <table tableName="event_arrange_tasks" domainObjectName="EventArrangeTask" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            &lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+<!--            <generatedKey column="ea_task_id" sqlStatement="Postgres" identity="true"/>-->
+<!--        </table>-->
 
-        <table tableName="submission_insts" domainObjectName="SubmissionInst" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false">
-            <property name="useActualColumnNames" value="false"/>
-            <!-- 数据库表主键 -->
-            <generatedKey column="sbm_inst_id" sqlStatement="Postgres" identity="true"/>
-        </table>
+<!--        <table tableName="project_insts" domainObjectName="ProjectInst" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            &lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+<!--            <generatedKey column="proj_inst_id" sqlStatement="Postgres" identity="true"/>-->
+<!--        </table>-->
 
-        <table tableName="submissions" domainObjectName="Submission" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false">
-            <property name="useActualColumnNames" value="false"/>
-            <!-- 数据库表主键 -->
-            <generatedKey column="sbm_id" sqlStatement="Postgres" identity="true"/>
-        </table>
+<!--        <table tableName="projects" domainObjectName="Project" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            &lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+<!--            <generatedKey column="proj_id" sqlStatement="Postgres" identity="true"/>-->
+<!--        </table>-->
 
-        <table tableName="teachers" domainObjectName="Teacher" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false">
-            <property name="useActualColumnNames" value="false"/>
-            <!-- 数据库表主键 -->
-            <generatedKey column="tch_id" sqlStatement="Postgres" identity="true"/>
-        </table>
+<!--        <table tableName="record_insts" domainObjectName="RecordInst" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            &lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+<!--            <generatedKey column="rcd_inst_id" sqlStatement="Postgres" identity="true"/>-->
+<!--        </table>-->
 
-        <table tableName="team_form_tasks" domainObjectName="TeamFormTask" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false">
-            <property name="useActualColumnNames" value="false"/>
-            <!-- 数据库表主键 -->
-            <generatedKey column="tf_task_id" sqlStatement="Postgres" identity="true"/>
-        </table>
+<!--        <table tableName="records" domainObjectName="Record" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            &lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+<!--            <generatedKey column="rcd_id" sqlStatement="Postgres" identity="true"/>-->
+<!--        </table>-->
 
-        <table tableName="team_groups" domainObjectName="TeamGroup" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false">
-            <property name="useActualColumnNames" value="false"/>
-            <!-- 数据库表主键 -->
-            <generatedKey column="sgp_id" sqlStatement="Postgres" identity="true"/>
-        </table>
+<!--        <table tableName="roles" domainObjectName="Role" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            &lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+<!--            <generatedKey column="role_id" sqlStatement="Postgres" identity="true"/>-->
+<!--        </table>-->
 
-        <table tableName="teams" domainObjectName="Team" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false">
-            <property name="useActualColumnNames" value="false"/>
-            <!-- 数据库表主键 -->
-            <generatedKey column="team_id" sqlStatement="Postgres" identity="true"/>
-        </table>
+<!--        <table tableName="schools" domainObjectName="Schools" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            &lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+<!--            <generatedKey column="sch_id" sqlStatement="Postgres" identity="true"/>-->
+<!--        </table>-->
+
+<!--        <table tableName="std_groups" domainObjectName="StdGroup" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            &lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+<!--            <generatedKey column="sgp_id" sqlStatement="Postgres" identity="true"/>-->
+<!--        </table>-->
+
+<!--        <table tableName="students" domainObjectName="Student" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            &lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+<!--            <generatedKey column="std_id" sqlStatement="Postgres" identity="true"/>-->
+<!--        </table>-->
+
+<!--        <table tableName="submission_insts" domainObjectName="SubmissionInst" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            &lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+<!--            <generatedKey column="sbm_inst_id" sqlStatement="Postgres" identity="true"/>-->
+<!--        </table>-->
+
+<!--        <table tableName="submissions" domainObjectName="Submission" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            &lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+<!--            <generatedKey column="sbm_id" sqlStatement="Postgres" identity="true"/>-->
+<!--        </table>-->
+
+<!--        <table tableName="teachers" domainObjectName="Teacher" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            &lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+<!--            <generatedKey column="tch_id" sqlStatement="Postgres" identity="true"/>-->
+<!--        </table>-->
+
+<!--        <table tableName="team_form_tasks" domainObjectName="TeamFormTask" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            &lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+<!--            <generatedKey column="tf_task_id" sqlStatement="Postgres" identity="true"/>-->
+<!--        </table>-->
+
+<!--        <table tableName="team_groups" domainObjectName="TeamGroup" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            &lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+<!--            <generatedKey column="sgp_id" sqlStatement="Postgres" identity="true"/>-->
+<!--        </table>-->
+
+<!--        <table tableName="teams" domainObjectName="Team" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            &lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+<!--            <generatedKey column="team_id" sqlStatement="Postgres" identity="true"/>-->
+<!--        </table>-->
 
     </context>
 
