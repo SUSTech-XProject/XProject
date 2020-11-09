@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ooad.xproject.mapper.ProjectMapper" >
+  <resultMap id="BaseResultMap" type="com.ooad.xproject.entity.Project" >
+    <id column="proj_id" property="projId" jdbcType="INTEGER" />
+    <result column="sch_id" property="schId" jdbcType="INTEGER" />
+    <result column="creator_id" property="creatorId" jdbcType="INTEGER" />
+    <result column="proj_name" property="projName" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    proj_id, sch_id, creator_id, proj_name, description
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from projects
+    where proj_id = #{projId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from projects
+    where proj_id = #{projId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ooad.xproject.entity.Project" >
+    <selectKey resultType="java.lang.Integer" keyProperty="projId" order="AFTER" >
+      Postgres
+    </selectKey>
+    insert into projects (sch_id, creator_id, proj_name, 
+      description)
+    values (#{schId,jdbcType=INTEGER}, #{creatorId,jdbcType=INTEGER}, #{projName,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ooad.xproject.entity.Project" >
+    <selectKey resultType="java.lang.Integer" keyProperty="projId" order="AFTER" >
+      Postgres
+    </selectKey>
+    insert into projects
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="schId != null" >
+        sch_id,
+      </if>
+      <if test="creatorId != null" >
+        creator_id,
+      </if>
+      <if test="projName != null" >
+        proj_name,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="schId != null" >
+        #{schId,jdbcType=INTEGER},
+      </if>
+      <if test="creatorId != null" >
+        #{creatorId,jdbcType=INTEGER},
+      </if>
+      <if test="projName != null" >
+        #{projName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ooad.xproject.entity.Project" >
+    update projects
+    <set >
+      <if test="schId != null" >
+        sch_id = #{schId,jdbcType=INTEGER},
+      </if>
+      <if test="creatorId != null" >
+        creator_id = #{creatorId,jdbcType=INTEGER},
+      </if>
+      <if test="projName != null" >
+        proj_name = #{projName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where proj_id = #{projId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ooad.xproject.entity.Project" >
+    update projects
+    set sch_id = #{schId,jdbcType=INTEGER},
+      creator_id = #{creatorId,jdbcType=INTEGER},
+      proj_name = #{projName,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR}
+    where proj_id = #{projId,jdbcType=INTEGER}
+  </update>
+</mapper>

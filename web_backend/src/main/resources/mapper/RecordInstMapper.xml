@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ooad.xproject.mapper.RecordInstMapper" >
+  <resultMap id="BaseResultMap" type="com.ooad.xproject.entity.RecordInst" >
+    <id column="rcd_inst_id" property="rcdInstId" jdbcType="INTEGER" />
+    <result column="rcd_id" property="rcdId" jdbcType="INTEGER" />
+    <result column="std_id" property="stdId" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    rcd_inst_id, rcd_id, std_id, content
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from record_insts
+    where rcd_inst_id = #{rcdInstId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from record_insts
+    where rcd_inst_id = #{rcdInstId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ooad.xproject.entity.RecordInst" >
+    <selectKey resultType="java.lang.Integer" keyProperty="rcdInstId" order="AFTER" >
+      Postgres
+    </selectKey>
+    insert into record_insts (rcd_id, std_id, content
+      )
+    values (#{rcdId,jdbcType=INTEGER}, #{stdId,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ooad.xproject.entity.RecordInst" >
+    <selectKey resultType="java.lang.Integer" keyProperty="rcdInstId" order="AFTER" >
+      Postgres
+    </selectKey>
+    insert into record_insts
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="rcdId != null" >
+        rcd_id,
+      </if>
+      <if test="stdId != null" >
+        std_id,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="rcdId != null" >
+        #{rcdId,jdbcType=INTEGER},
+      </if>
+      <if test="stdId != null" >
+        #{stdId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ooad.xproject.entity.RecordInst" >
+    update record_insts
+    <set >
+      <if test="rcdId != null" >
+        rcd_id = #{rcdId,jdbcType=INTEGER},
+      </if>
+      <if test="stdId != null" >
+        std_id = #{stdId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where rcd_inst_id = #{rcdInstId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ooad.xproject.entity.RecordInst" >
+    update record_insts
+    set rcd_id = #{rcdId,jdbcType=INTEGER},
+      std_id = #{stdId,jdbcType=INTEGER},
+      content = #{content,jdbcType=VARCHAR}
+    where rcd_inst_id = #{rcdInstId,jdbcType=INTEGER}
+  </update>
+</mapper>

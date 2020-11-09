@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ooad.xproject.mapper.AnnouncementMapper" >
+  <resultMap id="BaseResultMap" type="com.ooad.xproject.entity.Announcement" >
+    <id column="ann_id" property="annId" jdbcType="INTEGER" />
+    <result column="proj_id" property="projId" jdbcType="INTEGER" />
+    <result column="creator_id" property="creatorId" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="message" property="message" jdbcType="VARCHAR" />
+    <result column="modified_date" property="modifiedDate" jdbcType="TIME" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ann_id, proj_id, creator_id, title, message, modified_date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from announcements
+    where ann_id = #{annId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from announcements
+    where ann_id = #{annId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ooad.xproject.entity.Announcement" >
+    <selectKey resultType="java.lang.Integer" keyProperty="annId" order="AFTER" >
+      Postgres
+    </selectKey>
+    insert into announcements (proj_id, creator_id, title, 
+      message, modified_date)
+    values (#{projId,jdbcType=INTEGER}, #{creatorId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
+      #{message,jdbcType=VARCHAR}, #{modifiedDate,jdbcType=TIME})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ooad.xproject.entity.Announcement" >
+    <selectKey resultType="java.lang.Integer" keyProperty="annId" order="AFTER" >
+      Postgres
+    </selectKey>
+    insert into announcements
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="projId != null" >
+        proj_id,
+      </if>
+      <if test="creatorId != null" >
+        creator_id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="message != null" >
+        message,
+      </if>
+      <if test="modifiedDate != null" >
+        modified_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="projId != null" >
+        #{projId,jdbcType=INTEGER},
+      </if>
+      <if test="creatorId != null" >
+        #{creatorId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="message != null" >
+        #{message,jdbcType=VARCHAR},
+      </if>
+      <if test="modifiedDate != null" >
+        #{modifiedDate,jdbcType=TIME},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ooad.xproject.entity.Announcement" >
+    update announcements
+    <set >
+      <if test="projId != null" >
+        proj_id = #{projId,jdbcType=INTEGER},
+      </if>
+      <if test="creatorId != null" >
+        creator_id = #{creatorId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="message != null" >
+        message = #{message,jdbcType=VARCHAR},
+      </if>
+      <if test="modifiedDate != null" >
+        modified_date = #{modifiedDate,jdbcType=TIME},
+      </if>
+    </set>
+    where ann_id = #{annId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ooad.xproject.entity.Announcement" >
+    update announcements
+    set proj_id = #{projId,jdbcType=INTEGER},
+      creator_id = #{creatorId,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      message = #{message,jdbcType=VARCHAR},
+      modified_date = #{modifiedDate,jdbcType=TIME}
+    where ann_id = #{annId,jdbcType=INTEGER}
+  </update>
+</mapper>
