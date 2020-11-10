@@ -1,12 +1,16 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-  </div>
+  <el-container>
+    <p>XProject</p>
+  </el-container>
 </template>
 
 <script>
+import Top from '@/views/welcome/Top'
 export default {
   name: 'WelcomePage',
+  components: {
+    Top
+  },
   data () {
     return {
       msg: 'XProject welcome page'

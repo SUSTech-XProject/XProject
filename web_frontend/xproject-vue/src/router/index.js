@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 // 导入刚才编写的组件
-import AppIndex from '@/views/test/AppIndex'
+import TestPage from '@/views/test/TestPage'
 import Login from '@/views/login/Login'
 import Register from '@/views/login/Register'
+import MainPage from '@/views/main/MainPage'
+import WelcomePage from '@/views/welcome/WelcomePage'
 
 Vue.use(Router)
 
@@ -20,15 +22,28 @@ const routes = [
   },
   {
     path: '/index',
-    name: 'AppIndex',
-    component: AppIndex,
+    name: 'MainPage',
+    component: MainPage,
     meta: {
       requireAuth: true
     }
   },
   {
+    path: '/test',
+    name: 'Test',
+    component: TestPage,
+    meta: {
+      requireAuth: true
+    }
+  },
+  {
+    path: '/welcome',
+    name: 'Welcome',
+    component: WelcomePage
+  },
+  {
     path: '/',
-    redirect: '/login'
+    redirect: '/welcome'
   }
 ]
 
