@@ -21,7 +21,10 @@ const routes = [
   {
     path: '/index',
     name: 'AppIndex',
-    component: AppIndex
+    component: AppIndex,
+    meta: {
+      requireAuth: true
+    }
   },
   {
     path: '/',
@@ -30,5 +33,6 @@ const routes = [
 ]
 
 export default new Router({
+  mode: 'history',
   routes
 })

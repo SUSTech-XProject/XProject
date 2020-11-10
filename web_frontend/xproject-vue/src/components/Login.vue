@@ -52,6 +52,7 @@ export default {
   },
   methods: {
     login () {
+      const _this = this
       this.msg = 'Wait ...'
       console.log('send login data')
       this.$axios
@@ -62,7 +63,9 @@ export default {
         .then(resp => {
           console.log('get response : ' + resp)
           if (resp.data.code === 200) {
-            this.$router.replace({path: '/index'})
+            _this.$store.commit('login', _this.loginForm)
+            const path = this.$route.query.redirect
+            this.$router.replace({path: path === '/' || path === undefined ? '/index' : path})
           } else if (resp.data.code === 400) {
             console.log(resp.data.message)
             this.msg = resp.data.message
