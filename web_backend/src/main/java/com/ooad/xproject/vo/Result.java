@@ -24,11 +24,11 @@ public class Result<T> {
     }
 
     public Result(T data) {
-        this(RespStatus.Status200, null, data);
+        this(RespStatus.SUCCESS, null, data);
     }
 
     public Result(String message, T data) {
-        this(RespStatus.Status200, message, data);
+        this(RespStatus.SUCCESS, message, data);
     }
 
     public int getCode() {

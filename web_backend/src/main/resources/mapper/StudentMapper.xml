@@ -31,10 +31,8 @@
     values (#{roleId,jdbcType=INTEGER}, #{stdName,jdbcType=VARCHAR}, #{stdNo,jdbcType=CHAR}, 
       #{stdClass,jdbcType=CHAR}, #{flags,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.ooad.xproject.entity.Student" >
-    <selectKey resultType="java.lang.Integer" keyProperty="stdId" order="AFTER" >
-      Postgres
-    </selectKey>
+  <insert id="insertSelective" parameterType="com.ooad.xproject.entity.Student"
+          useGeneratedKeys="true" keyProperty="stdId" keyColumn="std_id">
     insert into students
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="roleId != null" >

@@ -30,10 +30,8 @@
     values (#{roleId,jdbcType=INTEGER}, #{tchName,jdbcType=VARCHAR}, #{tchNo,jdbcType=CHAR}, 
       #{schId,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.ooad.xproject.entity.Teacher" >
-    <selectKey resultType="java.lang.Integer" keyProperty="tchId" order="AFTER" >
-      Postgres
-    </selectKey>
+  <insert id="insertSelective" parameterType="com.ooad.xproject.entity.Teacher"
+          useGeneratedKeys="true" keyProperty="tchId" keyColumn="tch_id">
     insert into teachers
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="roleId != null" >

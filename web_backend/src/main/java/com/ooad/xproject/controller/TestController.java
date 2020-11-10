@@ -44,10 +44,10 @@ public class TestController {
         if (!Objects.equals("admin", username)
                 || !Objects.equals("123456", requestRoleVO.getPassword())) {
             logger.info("Username / password not correct");
-            return new Result<Null>(RespStatus.Status400);
+            return new Result<Null>(RespStatus.FAIL);
         } else {
             logger.info("Login successfully");
-            return new Result<Null>(RespStatus.Status200);
+            return new Result<Null>(RespStatus.SUCCESS);
         }
     }
 }

@@ -38,10 +38,10 @@ public class RoleController {
         Subject subject = SecurityUtils.getSubject();
         try {
             subject.login(token);
-            return new Result<>(RespStatus.Status200);
+            return new Result<>(RespStatus.SUCCESS);
         } catch (AuthenticationException e) {
             String msg = "Username or password error: " + e.getMessage();
-            return new Result<>(RespStatus.Status400, msg);
+            return new Result<>(RespStatus.FAIL, msg);
         }
     }
 
@@ -58,7 +58,20 @@ public class RoleController {
         if (exist) {
             String msg = "Username already exists";
             logger.info(msg);
-            return new Result<Null>(RespStatus.Status400, msg);
+            return new Result<Null>(RespStatus.FAIL, msg);
+        }
+
+        if (!roleService.validUsername(username)) {
+            String msg = "The username must have at least 8 characters. " +
+                    "Don't start with a number.";
+            logger.info(msg);
+            return new Result<Null>(RespStatus.FAIL, msg);
+        }
+        if (!roleService.validPassword(password)) {
+            String msg = "The username must have at least 8 characters " +
+                    "and must contain letters and numbers.";
+            logger.info(msg);
+            return new Result<Null>(RespStatus.FAIL, msg);
         }
 
         RespStatus status;
@@ -67,11 +80,11 @@ public class RoleController {
         if (RoleType.Student.match(type) || RoleType.Teacher.match(type)) {
             roleService.createUser(type, username, password);
             msg = "User created";
-            status = RespStatus.Status200;
+            status = RespStatus.SUCCESS;
             logger.info(msg);
         } else {
             msg = "Role type error";
-            status = RespStatus.Status400;
+            status = RespStatus.FAIL;
             logger.warn(msg);
         }
 

@@ -16,6 +16,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class RoleServiceImpl implements RoleService {
 
+    // Contain number and letter, at least 8 chars.
+    // For username, not start with number
+    public static final String USERNAME_REGEX = "^(?![0-9])(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}$";
+    public static final String PASSWORD_REGEX = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}$";
+
     private final RoleMapper roleMapper;
     private final AdminMapper adminMapper;
     private final TeacherMapper teacherMapper;
@@ -60,7 +65,8 @@ public class RoleServiceImpl implements RoleService {
         newRole.setUsername(username);
         newRole.setPassword(encodedPassword);
         newRole.setRoleType(type);
-        int roleId = roleMapper.insert(newRole);
+        newRole.setSalt(salt);
+        int roleId = roleMapper.insertSelective(newRole);
 
         if (RoleType.Teacher.match(type)) {
             // create teacher
@@ -73,5 +79,15 @@ public class RoleServiceImpl implements RoleService {
             std.setRoleId(roleId);
             studentMapper.insertSelective(std);
         }
+    }
+
+    @Override
+    public boolean validUsername(String username) {
+        return username.matches(USERNAME_REGEX);
+    }
+
+    @Override
+    public boolean validPassword(String password) {
+        return password.matches(PASSWORD_REGEX);
     }
 }
