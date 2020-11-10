@@ -2,6 +2,7 @@ package com.ooad.xproject.controller;
 
 import com.ooad.xproject.constant.RespStatus;
 import com.ooad.xproject.constant.RoleType;
+import com.ooad.xproject.entity.Role;
 import com.ooad.xproject.service.RoleService;
 import com.ooad.xproject.vo.Result;
 import com.ooad.xproject.vo.RoleVO;
@@ -14,6 +15,8 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
+
+import javax.servlet.http.HttpSession;
 
 @RestController
 public class RoleController {
@@ -28,7 +31,7 @@ public class RoleController {
     @CrossOrigin
     @ResponseBody
     @RequestMapping(value = "api/login", method = RequestMethod.POST)
-    public Result<?> login(@RequestBody RoleVO requestRoleVO) {
+    public Result<?> login(@RequestBody RoleVO requestRoleVO, HttpSession session) {
         String username = requestRoleVO.getUsername();
         username = HtmlUtils.htmlEscape(username);
         String password = requestRoleVO.getPassword();
@@ -38,11 +41,24 @@ public class RoleController {
         Subject subject = SecurityUtils.getSubject();
         try {
             subject.login(token);
-            return new Result<>(RespStatus.SUCCESS);
         } catch (AuthenticationException e) {
             String msg = "Username or password error: " + e.getMessage();
             return new Result<>(RespStatus.FAIL, msg);
         }
+
+        Role role = roleService.getByUsername(username);
+
+        session.setAttribute("role", role);
+        return new Result<>(RespStatus.SUCCESS);
+    }
+
+    @ResponseBody
+    @GetMapping("api/logout")
+    public Result<Null> logout() {
+        Subject subject = SecurityUtils.getSubject();
+        subject.logout();
+        String msg = "Logout successfully";
+        return new Result<>(RespStatus.SUCCESS, msg);
     }
 
     @CrossOrigin
@@ -54,8 +70,8 @@ public class RoleController {
         username = HtmlUtils.htmlEscape(username);
         String password = requestRoleVO.getPassword();
 
-        boolean exist = roleService.exist(username);
-        if (exist) {
+        Role role = roleService.getByUsername(username);
+        if (role != null) {
             String msg = "Username already exists";
             logger.info(msg);
             return new Result<Null>(RespStatus.FAIL, msg);

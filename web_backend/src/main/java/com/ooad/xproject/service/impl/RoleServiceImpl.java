@@ -35,8 +35,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public boolean exist(String username) {
-        return roleMapper.selectByUsername(username) != null;
+    public Role getByUsername(String username) {
+        return roleMapper.selectByUsername(username);
     }
 
 //    /**

@@ -1,7 +1,9 @@
 package com.ooad.xproject.service;
 
+import com.ooad.xproject.entity.Role;
+
 public interface RoleService {
-    boolean exist(String username);
+    Role getByUsername(String username);
 
     void createUser(String type, String username, String password);
 
