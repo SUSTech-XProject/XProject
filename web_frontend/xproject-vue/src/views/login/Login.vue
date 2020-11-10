@@ -34,10 +34,11 @@
     text-align: center;
     color: #505458;
   }
-
 </style>
 
 <script>
+import {loginPost} from '@/api/login'
+
 export default {
   name: 'Login',
   data () {
@@ -55,26 +56,24 @@ export default {
       const _this = this
       this.msg = 'Wait ...'
       console.log('send login data')
-      this.$axios
-        .post('/login', {
-          username: this.loginForm.username,
-          password: this.loginForm.password
-        })
-        .then(resp => {
-          console.log('get response : ' + resp)
-          if (resp.data.code === 200) {
-            _this.$store.commit('login', _this.loginForm)
-            const path = this.$route.query.redirect
-            this.$router.replace({path: path === '/' || path === undefined ? '/index' : path})
-          } else if (resp.data.code === 400) {
-            console.log(resp.data.message)
-            this.msg = resp.data.message
-          }
-        })
-        .catch(failResponse => {
-          console.log(failResponse)
-          this.msg = 'Back-end no response'
-        })
+      loginPost(
+        this.loginForm.username,
+        this.loginForm.password,
+        true
+      ).then(resp => {
+        console.log('get response : ' + resp)
+        if (resp.data.code === 200) {
+          _this.$store.commit('login', _this.loginForm)
+          const path = this.$route.query.redirect
+          this.$router.replace({path: path === '/' || path === undefined ? '/index' : path})
+        } else if (resp.data.code === 400) {
+          console.log(resp.data.message)
+          this.msg = resp.data.message
+        }
+      }).catch(failResponse => {
+        console.log(failResponse)
+        this.msg = 'Back-end no response'
+      })
     }
   }
 }

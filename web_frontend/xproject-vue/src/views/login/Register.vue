@@ -26,6 +26,8 @@
   </el-form>
 </template>
 <script>
+import {registerPost} from '@/api/login'
+
 export default {
   name: 'Register',
   data () {
@@ -50,29 +52,26 @@ export default {
       }
 
       const _this = this
-      this.$axios
-        .post('/register', {
-          type: this.radio,
-          username: this.registerForm.username,
-          password: this.registerForm.password
-        })
-        .then(resp => {
-          if (resp.data.code === 200) {
-            this.$alert('Register successfully', 'Tip', {
-              confirmButtonText: 'OK'
-            })
-            _this.$router.replace('/login')
-          } else {
-            this.$alert(resp.data.message, 'Tip', {
-              confirmButtonText: 'OK'
-            })
-          }
-        })
-        .catch(failResponse => {
-          this.$alert('Back-end no response', 'Tips', {
+      registerPost(
+        this.radio,
+        this.registerForm.username,
+        this.registerForm.password
+      ).then(resp => {
+        if (resp.data.code === 200) {
+          this.$alert('Register successfully', 'Tip', {
             confirmButtonText: 'OK'
           })
+          _this.$router.replace('/login')
+        } else {
+          this.$alert(resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        }
+      }).catch(failResponse => {
+        this.$alert('Back-end no response', 'Tips', {
+          confirmButtonText: 'OK'
         })
+      })
     }
   }
 }
