@@ -30,11 +30,11 @@ const routes = [
   },
   {
     path: '/test',
-    name: 'Test',
+    name: 'TestPage',
     component: TestPage,
-    meta: {
-      requireAuth: true
-    }
+    // meta: {
+    //   requireAuth: true
+    // }
   },
   {
     path: '/welcome',
@@ -43,7 +43,7 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/welcome'
+    redirect: '/test'
   }
 ]
 

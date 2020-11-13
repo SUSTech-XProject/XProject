@@ -12,7 +12,7 @@
     </el-form-item>
     <p>{{ msg }}</p>
     <el-form-item style="width: 100%">
-      <el-button type="primary" style="width: 100%;background: #505458;border: none" v-on:click="login">Login</el-button>
+      <el-button type="primary"  v-on:click="login">Login</el-button>
     </el-form-item>
   </el-form>
 </template>

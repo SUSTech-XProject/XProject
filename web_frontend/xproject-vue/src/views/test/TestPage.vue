@@ -1,15 +1,17 @@
 <template>
-  <div>
-    Hello World!
-  </div>
+  <left-bar></left-bar>
 </template>
 
 <script>
-export default {
-  name: 'TestPage'
-}
+  import LeftBar from '@/components/sidebar/left/index'
+  export default{
+    name:"Testpage",
+    components:{
+      LeftBar
+    }
+  }
 </script>
 
-<style scoped>
+<style>
 
 </style>
