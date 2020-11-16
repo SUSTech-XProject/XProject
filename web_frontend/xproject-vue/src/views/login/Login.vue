@@ -10,6 +10,7 @@
       <el-input type="password" v-model="loginForm.password"
                 auto-complete="off" placeholder="Password"></el-input>
     </el-form-item>
+    <el-checkbox v-model="checked">Remember Me</el-checkbox>
     <p>{{ msg }}</p>
     <el-form-item style="width: 100%">
       <el-button type="primary"  v-on:click="login">Login</el-button>
@@ -43,6 +44,7 @@ export default {
   name: 'Login',
   data () {
     return {
+      checked: false,
       loginForm: {
         username: '',
         password: ''

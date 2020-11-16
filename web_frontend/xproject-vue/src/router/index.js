@@ -55,7 +55,7 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/test'
+    redirect: '/welcome'
   }
 ]
 
