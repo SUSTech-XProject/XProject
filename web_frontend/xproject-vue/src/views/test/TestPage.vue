@@ -29,4 +29,9 @@
   float:right;
   height: 60px;
 }
+#temp, .el-container{
+  padding: 0;
+  margin: 0;
+  height: 100%;
+}
 </style>

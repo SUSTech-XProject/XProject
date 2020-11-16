@@ -1,7 +1,7 @@
 <template>
   <el-form class="login-container" label-position="left"
            label-width="0px" v-loading="loading">
-    <h3 class="login_title">Register - Test</h3>
+    <h3 class="login-title">Register - Test</h3>
     <el-form-item>
       <el-input type="text" v-model="registerForm.username"
                 auto-complete="off" placeholder="Username"></el-input>
@@ -26,7 +26,7 @@
   </el-form>
 </template>
 <script>
-import {registerPost} from '@/api/login'
+import {registerPost} from '@/api/role'
 
 export default {
   name: 'Register',
@@ -76,11 +76,7 @@ export default {
   }
 }
 </script>
-<style>
-  body {
-    margin: -5px 0;
-  }
-
+<style scoped>
   .login-container {
     border-radius: 15px;
     background-clip: padding-box;
@@ -89,10 +85,10 @@ export default {
     padding: 35px 35px 15px 35px;
     background: #fff;
     border: 1px solid #eaeaea;
-    box-shadow: 0 0 25px #cac6c6;
+    /*box-shadow: 0 0 25px #cac6c6;*/
   }
 
-  .login_title {
+  .login-title {
     margin: 0px auto 40px auto;
     text-align: center;
     color: #505458;

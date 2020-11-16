@@ -15,3 +15,7 @@ export function registerPost (type, username, password) {
     password: password
   })
 }
+
+export function authGet () {
+  return Vue.prototype.$axios.get('/authentication')
+}

@@ -2,24 +2,15 @@ import Vue from 'vue'
 import Router from 'vue-router'
 // 导入刚才编写的组件
 import TestPage from '@/views/test/TestPage'
-import Login from '@/views/login/Login'
-import Register from '@/views/login/Register'
+import Login from '@/views/login/components/Login'
+import Register from '@/views/login/components/Register'
 import MainPage from '@/views/main/MainPage'
 import WelcomePage from '@/views/welcome/WelcomePage'
+import LRPage from "@/views/login/LRPage";
 
 Vue.use(Router)
 
 const routes = [
-  {
-    path: '/login',
-    name: 'Login',
-    component: Login
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    component: Register
-  },
   {
     path: '/index',
     name: 'MainPage',
@@ -42,8 +33,25 @@ const routes = [
     component: WelcomePage
   },
   {
+    path: '/account',
+    name: 'Account',
+    children: [
+      {
+        path: 'login',
+        name: 'Login',
+        component: Login
+      },
+      {
+        path: 'register',
+        name: 'Register',
+        component: Register
+      }
+    ],
+    component: LRPage
+  },
+  {
     path: '/',
-    redirect: '/test'
+    redirect: '/welcome'
   }
 ]
 
