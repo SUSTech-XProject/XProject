@@ -6,6 +6,8 @@ import Login from '@/views/login/Login'
 import Register from '@/views/login/Register'
 import MainPage from '@/views/main/MainPage'
 import WelcomePage from '@/views/welcome/WelcomePage'
+import Top from '@/views/welcome/Top'
+import Overview from '@/views/Overview'
 
 Vue.use(Router)
 
@@ -31,7 +33,7 @@ const routes = [
   {
     path: '/test',
     name: 'TestPage',
-    component: TestPage,
+    component: TestPage
     // meta: {
     //   requireAuth: true
     // }
@@ -40,6 +42,16 @@ const routes = [
     path: '/welcome',
     name: 'Welcome',
     component: WelcomePage
+  },
+  {
+    path: '/top',
+    name: 'Top',
+    component: Top
+  },
+  {
+    path: '/overview',
+    name: 'Overview',
+    component: Overview
   },
   {
     path: '/',
