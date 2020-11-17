@@ -125,12 +125,14 @@ export default {
   margin: 0;
   padding: 0;
   text-align: left;
-  height: 100%;
 }
 #Title{
   background-color: #9acafd;
   color: white;
   font-size: 20px;
   height: 60px;
+}
+#left-bar{
+  height: 100%;
 }
 </style>
