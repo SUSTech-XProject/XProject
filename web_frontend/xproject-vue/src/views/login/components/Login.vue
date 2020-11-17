@@ -1,50 +1,89 @@
 <template>
-  <el-form class="login-container" label-position="left"
-           label-width="0px">
+  <div>
     <h3 class="login-title">Login to XProject</h3>
-    <el-form-item label="Username">
-      <el-input type="text" v-model="loginForm.username"
-                prefix-icon="el-icon-user" auto-complete="off"
-                placeholder="Please input username"></el-input>
-    </el-form-item>
-    <el-form-item label="Password">
-      <el-input :type="pwdType" v-model="loginForm.password"
-                prefix-icon="el-icon-lock" auto-complete="off"
-                placeholder="Please input password"
-                @keyup.enter.native="login">
-        <i slot="suffix" :class="pwdIcon" @click="switchPwdType" style="margin-right: 5px"></i>
-      </el-input>
+    <el-form class="login-container" :model="loginForm">
+      <el-form-item label="Username">
+        <el-input type="text" v-model="loginForm.username"
+                  prefix-icon="el-icon-user" auto-complete="off"
+                  placeholder="Please input username"></el-input>
+      </el-form-item>
+      <el-form-item label="Password">
+        <el-input type="password" v-model="loginForm.password"
+                  prefix-icon="el-icon-lock" auto-complete="off"
+                  placeholder="Please input password" show-password
+                  @keyup.enter.native="login">
+        </el-input>
 
-    </el-form-item>
-    <el-form-item>
-      <el-checkbox label="Remember me" style=""
-                   v-model="loginForm.rememberMe" name="type"></el-checkbox>
-    </el-form-item>
-    <el-form-item class="btm-item">
-      <el-button class="sbm-btm" type="primary" v-on:click="login">Login</el-button>
-    </el-form-item>
-  </el-form>
+      </el-form-item>
+      <el-form-item>
+        <el-checkbox label="Remember me" style=""
+                     v-model="loginForm.rememberMe" name="type"></el-checkbox>
+      </el-form-item>
+      <el-form-item class="btm-item">
+        <el-button class="sbm-btm" type="primary" v-on:click="login('loginForm')">Login</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 
 <script>
 import {loginPost} from '@/api/role'
+import {validPassword, validUsername} from "@/utils/validate";
 
 export default {
   name: 'Login',
   data () {
+    const validateUsername = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('Please input username'));
+      }
+      setTimeout(() => {
+        if (!validUsername) {
+          callback(new Error('The username must have at least 8 characters and 32 at most. ' +
+            'It must contain letters and numbers.'));
+        } else {
+          callback();
+        }
+      }, 1000);
+    };
+    const validatePwd = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('Please input password'));
+      }
+      setTimeout(() => {
+        if (!validPassword(value)) {
+          callback(new Error('The username must have at least 8 characters and 32 at most. ' +
+            'It must contain letters and numbers.'));
+        } else {
+          callback();
+        }
+      }, 1000);
+    };
     return {
       loginForm: {
         username: '',
         password: '',
         rememberMe: false
       },
-      pwdType: 'password',
-      pwdIcon: 'el-icon-view',
-      responseResult: [],
+      rules: {
+        username: [
+          { validator: validateUsername, trigger: 'blur' }
+        ],
+        password: [
+          { validator: validatePwd, trigger: 'blur' }
+        ],
+      }
     }
   },
   methods: {
-    login () {
+    login (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (!valid) {
+          console.log('error submit!!');
+          return false;
+        }
+      });
+
       const _this = this
       console.log('send login data')
       loginPost(
@@ -70,15 +109,6 @@ export default {
         })
       })
     },
-    switchPwdType () {
-      if (this.pwdType === 'password') {
-        this.pwdType = ''
-        this.pwdIcon = 'iconfont el-icon-eye'
-      } else {
-        this.pwdType = 'password'
-        this.pwdIcon = 'iconfont el-icon-eye-close'
-      }
-    }
   }
 }
 </script>
@@ -87,7 +117,7 @@ export default {
   .login-container {
     border-radius: 15px;
     background-clip: padding-box;
-    margin: 90px auto;
+    margin: auto;
     width: 350px;
     padding: 35px 35px 15px 35px;
     background: #fff;
@@ -95,8 +125,9 @@ export default {
   }
 
   .login-title {
-    margin: 0 auto 40px auto;
+    margin: 50px auto 40px auto;
     text-align: center;
+    font-size: 30px;
     color: #505458;
   }
   .btm-item {

@@ -15,9 +15,6 @@ axios.defaults.timeout = 2000
 // 全局注册，之后可在其他组件中通过 this.$axios 发送数据
 Vue.prototype.$axios = axios
 
-// 引入icon
-import "./assets/icon/iconfont.css";
-
 Vue.config.productionTip = false
 axios.defaults.withCredentials = true
 
