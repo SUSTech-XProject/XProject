@@ -1,13 +1,13 @@
 <template>
   <div>
     <h3 class="login-title">Login to XProject</h3>
-    <el-form class="login-container" :model="loginForm">
-      <el-form-item label="Username">
+    <el-form class="login-container" :model="loginForm" status-icon :rules="rules">
+      <el-form-item label="Username" prop="username">
         <el-input type="text" v-model="loginForm.username"
                   prefix-icon="el-icon-user" auto-complete="off"
                   placeholder="Please input username"></el-input>
       </el-form-item>
-      <el-form-item label="Password">
+      <el-form-item label="Password" prop="password">
         <el-input type="password" v-model="loginForm.password"
                   prefix-icon="el-icon-lock" auto-complete="off"
                   placeholder="Please input password" show-password
@@ -28,7 +28,6 @@
 
 <script>
 import {loginPost} from '@/api/role'
-import {validPassword, validUsername} from "@/utils/validate";
 
 export default {
   name: 'Login',
@@ -38,11 +37,10 @@ export default {
         return callback(new Error('Please input username'));
       }
       setTimeout(() => {
-        if (!validUsername) {
-          callback(new Error('The username must have at least 8 characters and 32 at most. ' +
-            'It must contain letters and numbers.'));
+        if (value.length < 8 || value.length > 24) {
+          return callback(new Error('The username must have at least 8 characters and 24 at most.'));
         } else {
-          callback();
+          return callback();
         }
       }, 1000);
     };
@@ -51,14 +49,14 @@ export default {
         return callback(new Error('Please input password'));
       }
       setTimeout(() => {
-        if (!validPassword(value)) {
-          callback(new Error('The username must have at least 8 characters and 32 at most. ' +
-            'It must contain letters and numbers.'));
+        if (value.length < 8 || value.length > 32) {
+          return callback(new Error('The password must have at least 8 characters and 32 at most.'));
         } else {
-          callback();
+          return callback();
         }
       }, 1000);
     };
+
     return {
       loginForm: {
         username: '',
@@ -71,7 +69,7 @@ export default {
         ],
         password: [
           { validator: validatePwd, trigger: 'blur' }
-        ],
+        ]
       }
     }
   },

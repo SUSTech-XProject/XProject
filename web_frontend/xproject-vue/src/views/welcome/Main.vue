@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     gotoLogin() {
-      this.$router.push({name: 'Login', query: {curStatus: 'login'}})
+      this.$router.push({name: 'Login'})
     }
   }
 }

@@ -6,11 +6,11 @@
       </div>
       <div class="title" @click="gotoWel()">XProject</div>
     </el-col>
-    <el-col :span="6" :offset="6" class="btm-group" v-if="this.$route.query.curStatus === 'login'">
+    <el-col :span="6" :offset="6" class="btm-group" v-if="this.$route.name === 'Login'">
       <div class="top-text">New to XProject ?</div>
       <el-button type="primary" @click="gotoRegister">Sign Up</el-button>
     </el-col>
-    <el-col :span="6" :offset="6" class="btm-group" v-else-if="this.$route.query.curStatus === 'register'">
+    <el-col :span="6" :offset="6" class="btm-group" v-else-if="this.$route.name === 'Register'">
       <div class="top-text">Already have an account ?</div>
       <el-button plain @click="gotoLogin">Login</el-button>
     </el-col>
@@ -31,13 +31,13 @@ export default {
   },
   methods: {
     gotoWel() {
-      this.$router.push({name: 'Welcome', query: {curStatus: 'login'}})
+      this.$router.push({name: 'Welcome'})
     },
     gotoLogin() {
-      this.$router.push({name: 'Login', query: {curStatus: 'login'}})
+      this.$router.push({name: 'Login'})
     },
     gotoRegister() {
-      this.$router.push({name: 'Register', query: {curStatus: 'register'}})
+      this.$router.push({name: 'Register'})
     }
   }
 }

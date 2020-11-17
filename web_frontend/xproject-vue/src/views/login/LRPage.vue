@@ -5,8 +5,8 @@
         <LRTop/>
       </el-header>
       <el-main id="main">
-        <Login v-if="this.$route.query.curStatus==='login'"/>
-        <Register v-else-if="this.$route.query.curStatus==='register'"/>
+        <Login v-if="this.$route.name === 'Login'"/>
+        <Register v-else-if="this.$route.name === 'Register'"/>
       </el-main>
 <!--      <el-footer id="footer">-->
 <!--      </el-footer>-->
