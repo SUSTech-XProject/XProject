@@ -1,21 +1,55 @@
 <template>
   <div id = "left-bar">
-  <el-menu  class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse" style="height: 100%">
-    <el-menu-item index="1" id = "Title">
+  <el-menu :default-active="$route.path"
+           class="el-menu-vertical-demo"
+           @open="handleOpen" @close="handleClose"
+           :collapse="isCollapse" style="height: 100%" router>
+    <el-menu-item index="/test" id = "Title">
       <i class="el-icon-first-aid-kit" ></i>
       <span slot="title">XProject</span>
     </el-menu-item>
 
-    <el-menu-item index="2">
+    <el-menu-item index="/homepage">
       <i class="el-icon-s-home"></i>
       <span slot="default">Home Page</span>
     </el-menu-item>
 
-    <el-menu-item index="3">
+    <el-menu-item index="/projectlist/team/forming">
       <i class="el-icon-notebook-1"></i>
       <span slot="default">Project List</span>
     </el-menu-item>
-    <el-menu-item index="4" >
+        <div v-if="show">
+          <el-submenu index="3">
+            <template slot="title">
+              <i class="el-icon-connection"></i>
+              <span slot="title">Team</span>
+            </template>
+            <el-menu-item-group>
+
+              <el-menu-item index="3-1">My Team</el-menu-item>
+              <el-menu-item index="/projectlist/team/forming">Forming</el-menu-item>
+            </el-menu-item-group>
+
+          </el-submenu>
+
+          <el-menu-item index="4" >
+            <i class="el-icon-date"></i>
+            <span slot="title">Events</span>
+          </el-menu-item>
+          <el-menu-item index="5">
+            <i class="el-icon-folder-opened"></i>
+            <span slot="title">Resources</span>
+          </el-menu-item>
+          <el-menu-item index="6">
+            <i class="el-icon-document"></i>
+            <span slot="title">Submissions</span>
+          </el-menu-item>
+          <el-menu-item index="7">
+            <i class="el-icon-collection"></i>
+            <span slot="title">Gradebook</span>
+          </el-menu-item>
+    </div>
+    <el-menu-item index="/account" >
       <i class="el-icon-s-custom"></i>
       <span slot="title">Account</span>
     </el-menu-item>
@@ -48,12 +82,10 @@
 <!--      <i class="el-icon-collection"></i>-->
 <!--      <span slot="title">Gradebook</span>-->
 <!--    </el-menu-item>-->
-<!--    <el-menu-item index="8">-->
       <el-radio-group v-model="isCollapse">
         <i v-show="!isCollapse" class="el-icon-s-fold expandBtn" @click="isCollapse=true"></i>
         <i v-show="isCollapse" class="el-icon-s-fold shrinkBtn" @click="isCollapse=false"></i>
       </el-radio-group>
-<!--    </el-menu-item>-->
   </el-menu>
 <!--    <el-radio-button :label="false">Open</el-radio-button>-->
 <!--    <el-radio-button :label="true">Close</el-radio-button>-->
@@ -67,7 +99,8 @@
 export default {
   data () {
     return {
-      isCollapse: false
+      isCollapse: false,
+      show: this.$route.path.indexOf('projectlist') !== -1
     }
   },
   methods: {
