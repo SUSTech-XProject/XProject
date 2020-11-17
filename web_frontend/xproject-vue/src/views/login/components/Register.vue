@@ -2,7 +2,7 @@
   <div>
     <h3 class="reg-title">Sign up for an account</h3>
     <el-form class="reg-container" label-position="right" :model="registerForm"
-             label-width="100px" status-icon :rules="rules">
+             label-width="100px" status-icon :rules="rules" ref="registerForm">
       <el-form-item label="Username" prop="username" style="margin-bottom: 40px">
         <el-input type="text" v-model="registerForm.username"
                   prefix-icon="el-icon-user" auto-complete="off"
@@ -25,15 +25,14 @@
         </el-radio-group>
       </el-form-item>
       <div style="width: 100%; display: flex; align-content: center; justify-content: center;">
-        <el-button class='reg-btm' type="primary"
-                   v-on:click="register('registerForm')">Create</el-button>
+        <el-button class='reg-btm' type="primary" v-on:click="register" ref="reg-btm">Create</el-button>
       </div>
     </el-form>
 
   </div>
 </template>
 <script>
-import {registerPost} from '@/api/role'
+  import {registerPost} from '@/api/role'
 import {validPassword, validUsername} from "@/utils/validate";
 
 export default {
@@ -101,35 +100,45 @@ export default {
     }
   },
   methods: {
-    register (formName) {
-      this.$refs[formName].validate((valid) => {
-        if (!valid) {
-          console.log('error submit!!');
-          return false;
-        }
-      });
-
+    register () {
       const _this = this
-      registerPost(
-        this.registerForm.roleType,
-        this.registerForm.username,
-        this.registerForm.password
-      ).then(resp => {
-        if (resp.data.code === 200) {
-          this.$alert('Register successfully', 'Tip', {
+      this.$refs['reg-btm'].loading = true
+      this.$refs['registerForm'].validate((valid) => {
+        if (!valid) {
+          this.$alert('You have not filled in all required fields correctly.', 'Tips', {
             confirmButtonText: 'OK'
           })
-          _this.$router.replace('/login')
-        } else {
-          this.$alert(resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
+          _this.$refs['reg-btm'].loading = false
+          return false
         }
-      }).catch(failResponse => {
-        this.$alert('Back-end no response', 'Tips', {
-          confirmButtonText: 'OK'
+
+        console.log('send login data')
+        registerPost(
+          this.registerForm.roleType,
+          this.registerForm.username,
+          this.registerForm.password
+        ).then(resp => {
+          if (resp.data.code === 200) {
+            this.$alert('Register successfully', 'Tip', {
+              confirmButtonText: 'OK'
+            })
+            _this.$router.push({name:'Login'})
+          } else {
+            this.$alert(resp.data.message, 'Tip', {
+              confirmButtonText: 'OK'
+            })
+          }
+          _this.$refs['reg-btm'].loading = false
+          return true
+        }).catch(failResponse => {
+          this.$alert('Back-end no response', 'Tips', {
+            confirmButtonText: 'OK'
+          })
+
+          _this.$refs['reg-btm'].loading = false
+          return false
         })
-      })
+      });
     }
   }
 }

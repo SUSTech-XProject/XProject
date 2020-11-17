@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3 class="login-title">Login to XProject</h3>
-    <el-form class="login-container" :model="loginForm" status-icon :rules="rules">
+    <el-form class="login-container" :model="loginForm" :rules="rules" ref="loginForm">
       <el-form-item label="Username" prop="username">
         <el-input type="text" v-model="loginForm.username"
                   prefix-icon="el-icon-user" auto-complete="off"
@@ -20,7 +20,7 @@
                      v-model="loginForm.rememberMe" name="type"></el-checkbox>
       </el-form-item>
       <el-form-item class="btm-item">
-        <el-button class="sbm-btm" type="primary" v-on:click="login('loginForm')">Login</el-button>
+        <el-button class="sbm-btm" type="primary" v-on:click="login" ref="sbm-btm">Login</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -74,39 +74,47 @@ export default {
     }
   },
   methods: {
-    login (formName) {
-      this.$refs[formName].validate((valid) => {
-        if (!valid) {
-          console.log('error submit!!');
-          return false;
-        }
-      });
-
+    login () {
       const _this = this
-      console.log('send login data')
-      loginPost(
-        this.loginForm.username,
-        this.loginForm.password,
-        this.loginForm.rememberMe
-      ).then(resp => {
-        console.log('get response : ' + resp)
-        if (resp.data.code === 200) {
-          _this.$store.commit('login', _this.loginForm)
-          const path = this.$route.query.redirect
-          this.$router.replace({path: path === '/' || path === undefined ? '/index' : path})
-        } else if (resp.data.code === 400) {
-          console.log(resp.data.message)
-          this.$alert(resp.data.message, 'Tip', {
+      this.$refs['sbm-btm'].loading = true
+      this.$refs['loginForm'].validate((valid) => {
+        if (!valid) {
+          this.$alert('You have not filled in all required fields correctly.', 'Tips', {
             confirmButtonText: 'OK'
           })
+          _this.$refs['sbm-btm'].loading = false
+          return false
         }
-      }).catch(failResponse => {
-        console.log(failResponse)
-        this.$alert('Back-end no response', 'Tips', {
-          confirmButtonText: 'OK'
+
+        console.log('send login data')
+        loginPost(
+          this.loginForm.username,
+          this.loginForm.password,
+          this.loginForm.rememberMe
+        ).then(resp => {
+          console.log('get response : ' + resp)
+          if (resp.data.code === 200) {
+            _this.$store.commit('login', _this.loginForm)
+            _this.$router.push({name:'MainPage'})
+          } else if (resp.data.code === 400) {
+            console.log(resp.data.message)
+            this.$alert(resp.data.message, 'Tip', {
+              confirmButtonText: 'OK'
+            })
+          }
+          _this.$refs['sbm-btm'].loading = false
+          return true
+        }).catch(failResponse => {
+          console.log(failResponse)
+          this.$alert('Back-end no response', 'Tips', {
+            confirmButtonText: 'OK'
+          })
+
+          _this.$refs['sbm-btm'].loading = false
+          return false
         })
-      })
-    },
+      });
+    }
   }
 }
 </script>
@@ -116,7 +124,7 @@ export default {
     border-radius: 15px;
     background-clip: padding-box;
     margin: auto;
-    width: 350px;
+    width: 300px;
     padding: 35px 35px 15px 35px;
     background: #fff;
     border: 1px solid #eaeaea;
