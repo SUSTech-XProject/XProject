@@ -1,15 +1,15 @@
 <template>
-  <el-card class="box-card" shadow="hover">
+  <el-card class="proj-card" shadow="hover">
     <div class="clearfix" >
-      <span><slot>Name</slot></span>
-      <span><slot>Course</slot></span>
+      <span><slot>{{projName}}</slot></span>
+      <span><slot>{{projCour}}</slot></span>
       <el-button :icon = "iconData"
                  style="color: orange;float: right" type="text"
-                 @click="favour"  circle></el-button>
+                 @click="favour(proId)"  circle></el-button>
     </div>
-<!--    <div v-for="o in 2" :key="o" class="text item">-->
-<!--      {{'列表内容 ' + o }}-->
-<!--    </div>-->
+    <!--    <div v-for="o in 2" :key="o" class="text item">-->
+    <!--      {{'列表内容 ' + o }}-->
+    <!--    </div>-->
 
   </el-card>
 </template>
@@ -20,25 +20,37 @@ export default {
 
   data() {
     return {
-      Name: 'Project Name',
-      course: 'course1',
-      isFavour:false,
-      iconData:'el-icon-star-off'
-
+      proId:this.id,
+      projName:this.name,
+      projCour:this.course,
+      isStar:this.star,
+      iconData:this.star===true?'el-icon-star-on':'el-icon-star-off'
     }
   },
-  props:{
-    testName:String,
-    testNum:Number,
+  props: {
+    id:{
+      type:Number,
+      default:-1
+    },
+    name:{
+      type:String,
+      default:'Project1'
+    },
+    course:{
+      type:String,
+      default: 'Course1'
+    },
+    star:{
+      type:Boolean,
+      default:false
+    }
   },
+
   methods:{
-    favour:function (){
-      if(this.isFavour===false){
-        this.iconData = 'el-icon-star-on'
-      }else{
-        this.iconData = 'el-icon-star-off'
-      }
-      this.isFavour = !this.isFavour;
+    favour:function (val){
+      this.isStar= !this.isStar;
+      this.iconData = this.isStar===true?'el-icon-star-on':'el-icon-star-off';
+      this.$emit('getStarChange',val)
     }
   }
 }
@@ -59,7 +71,7 @@ export default {
   clear: both
 }
 
-.box-card {
+.proj-card {
   width: 60%;
   height: 80px;
 }

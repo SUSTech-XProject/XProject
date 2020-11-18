@@ -7,7 +7,7 @@ import Register from '@/views/login/Register'
 import WelcomePage from '@/views/welcome/WelcomePage'
 import Top from '@/views/welcome/Top'
 import Overview from '@/views/Overview'
-import Forming from '@/views/projectpage/team/Forming'
+import ProjectList from "@/views/homepage/projectList";
 
 Vue.use(Router)
 
@@ -27,11 +27,9 @@ const routes = [
     path: '/test',
     name: 'TestPage',
     component: TestPage
-  },
-  {
-    path: '/projectlist/team/forming',
-    name: 'Forming',
-    component: Forming,
+    // meta: {
+    //   requireAuth: true
+    // }
   },
   {
     path: '/welcome',
@@ -49,8 +47,13 @@ const routes = [
     component: Overview
   },
   {
+    path: '/home/projectlist',
+    name: 'projectlist',
+    component: ProjectList
+  },
+  {
     path: '/',
-    redirect: '/welcome'
+    redirect:'/home/projectlist',
   }
 ]
 

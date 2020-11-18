@@ -1,8 +1,8 @@
 <template>
-  <el-card class="box-card" shadow="hover">
+  <el-card class="proj-card" shadow="hover">
     <div class="clearfix" >
-      <span><slot>Name</slot></span>
-      <span><slot>Course</slot></span>
+      <span><slot>{{projName}}</slot></span>
+      <span><slot>{{projCour}}</slot></span>
       <el-button :icon = "iconData"
                  style="color: orange;float: right" type="text"
                  @click="favour"  circle></el-button>
@@ -17,27 +17,41 @@
 <script>
 
 export default {
+
   data() {
     return {
-      Name: 'Project Name',
-      course: 'course1',
-      isFavour:false,
+      projName:this.name,
+      projCour:this.course,
+      isStar:this.star,
       iconData:'el-icon-star-off'
-
     }
   },
-  props:{
-    testName:String,
-    testNum:Number,
+  props: {
+    name:{
+      type:String,
+      default:'Project1'
+    },
+    course:{
+      type:String,
+      default: 'Course1'
+    },
+    star:{
+      type:Boolean,
+      default:false
+    }
   },
+
   methods:{
+    passData(val){
+      this.$emit();
+    },
     favour:function (){
-      if(this.isFavour===false){
+      if(this.star===false){
         this.iconData = 'el-icon-star-on'
       }else{
         this.iconData = 'el-icon-star-off'
       }
-      this.isFavour = !this.isFavour;
+      this.star = !this.star;
     }
   }
 }
@@ -58,7 +72,7 @@ export default {
   clear: both
 }
 
-.box-card {
+.proj-card {
   width: 60%;
   height: 80px;
 }
