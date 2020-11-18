@@ -18,7 +18,7 @@ const versionRequirements = [
 
 if (shell.which('npm')) {
   versionRequirements.push({
-    title: 'npm',
+    name: 'npm',
     currentVersion: exec('npm --version'),
     versionRequirement: packageConfig.engines.npm
   })
