@@ -1,8 +1,6 @@
 <template>
   <div id="app">
-    <router-view></router-view>
-<!--    <router-link to = "/test">testing</router-link>-->
-
+    <router-view/>
   </div>
 </template>
 
@@ -13,12 +11,17 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  height: 100%;
-}
+  html,body,#app,.el-container{
+    padding: 0;
+    margin: 0;
+    height: 100%;
+  }
+  #app {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    height: 100%;
+  }
 </style>
