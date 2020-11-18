@@ -9,8 +9,8 @@ import WelcomePage from '@/views/welcome/WelcomePage'
 import LRPage from "@/views/login/LRPage";
 import Top from '@/views/welcome/Top'
 import Overview from '@/views/Overview'
-import ProjectList from "@/views/homepage/projectList";
-
+import ProjectList from "@/views/home/ProjectList";
+import Announcement from '../views/project/Announcement'
 Vue.use(Router)
 
 const routes = [
@@ -52,11 +52,13 @@ const routes = [
     ],
     component: LRPage
   },
-  {
-    path: '/',
-    redirect: '/welcome'
-  },
+
   // temp
+  {
+    path:'/project/announcement',
+    name:'Announcement',
+    component: Announcement
+  },
   {
     path: '/top',
     name: 'Top',
@@ -71,6 +73,10 @@ const routes = [
     path: '/home/projectlist',
     name: 'projectlist',
     component: ProjectList
+  },
+  {
+    path: '/',
+    redirect: '/project/announcement',
   }
 ]
 
