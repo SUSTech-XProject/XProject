@@ -21,14 +21,23 @@ axios.defaults.withCredentials = true
 Vue.use(ElementUI)
 
 router.beforeEach((to, from, next) => {
+    console.log('beforeEach')
     if (to.meta.requireAuth) {
-      if (store.state.user) {
+      let username = store.state.role.username
+      if (username) {
         authGet().then(resp => {
-          if (resp) next()
+          if (resp) {
+            let role = resp.data.data
+            store.commit('updateRoleType', role.roleType)
+            console.log('authGet resp: ' + role.roleType)
+            next()
+          }
+        }).catch(failResp => {
+          console.log('fail in beforeEach :' + failResp.message)
         })
       } else {
         next({
-          path: 'login',
+          name: 'Login',
           query: {redirect: to.fullPath}
         })
       }

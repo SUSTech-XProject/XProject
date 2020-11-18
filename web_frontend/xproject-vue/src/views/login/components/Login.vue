@@ -20,7 +20,7 @@
                      v-model="loginForm.rememberMe" name="type"></el-checkbox>
       </el-form-item>
       <el-form-item class="btm-item">
-        <el-button class="sbm-btm" type="primary" v-on:click="login" ref="sbm-btm">Login</el-button>
+        <el-button class="sbm-btm" type="primary" v-on:click="login" :loading="btmLoading">Login</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -70,19 +70,19 @@ export default {
         password: [
           { validator: validatePwd, trigger: 'blur' }
         ]
-      }
+      },
+      btmLoading: false
     }
   },
   methods: {
     login () {
-      const _this = this
-      this.$refs['sbm-btm'].loading = true
+      this.btmLoading = true
       this.$refs['loginForm'].validate((valid) => {
         if (!valid) {
           this.$alert('You have not filled in all required fields correctly.', 'Tips', {
             confirmButtonText: 'OK'
           })
-          _this.$refs['sbm-btm'].loading = false
+          this.btmLoading = false
           return false
         }
 
@@ -94,27 +94,26 @@ export default {
         ).then(resp => {
           console.log('get response : ' + resp)
           if (resp.data.code === 200) {
-            _this.$store.commit('login', _this.loginForm)
-            _this.$router.push({name:'MainPage'})
+            this.$store.commit('login', this.loginForm)
+            this.$router.push({name:'MainPage'})
           } else if (resp.data.code === 400) {
             console.log(resp.data.message)
             this.$alert(resp.data.message, 'Tip', {
               confirmButtonText: 'OK'
             })
           }
-          _this.$refs['sbm-btm'].loading = false
+          this.btmLoading = false
           return true
-        }).catch(failResponse => {
-          console.log(failResponse)
-          this.$alert('Back-end no response', 'Tips', {
+        }).catch(failResp => {
+          this.$alert('Error' + failResp.message, 'Tips', {
             confirmButtonText: 'OK'
           })
 
-          _this.$refs['sbm-btm'].loading = false
+          this.btmLoading = false
           return false
         })
       });
-    }
+    },
   }
 }
 </script>
