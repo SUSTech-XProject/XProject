@@ -5,8 +5,6 @@ import TestPage from '@/views/test/TestPage'
 import Login from '@/views/login/components/Login'
 import Register from '@/views/login/components/Register'
 import MainPage from '@/views/main/MainPage'
-import Login from '@/views/login/Login'
-import Register from '@/views/login/Register'
 import WelcomePage from '@/views/welcome/WelcomePage'
 import LRPage from "@/views/login/LRPage";
 import Top from '@/views/welcome/Top'
