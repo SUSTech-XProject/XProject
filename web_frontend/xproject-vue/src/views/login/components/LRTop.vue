@@ -2,13 +2,17 @@
   <el-row type="flex" id="top-row" justify="space-between" align="middle" onselectstart="return false">
     <el-col :span="6" class="container">
       <div>
-        <el-image class="img" :src="logo"></el-image>
+        <el-image class="img" :src="logo" @click="gotoWel"></el-image>
       </div>
-      <div class="title">XProject</div>
+      <div class="title" @click="gotoWel()">XProject</div>
     </el-col>
-    <el-col :span="6" :offset="6" class="btm-group">
-      <el-button plain @click="gotoLogin">Login</el-button>
+    <el-col :span="6" :offset="6" class="btm-group" v-if="this.$route.name === 'Login'">
+      <div class="top-text">New to XProject ?</div>
       <el-button type="primary" @click="gotoRegister">Sign Up</el-button>
+    </el-col>
+    <el-col :span="6" :offset="6" class="btm-group" v-else-if="this.$route.name === 'Register'">
+      <div class="top-text">Already have an account ?</div>
+      <el-button plain @click="gotoLogin">Login</el-button>
     </el-col>
   </el-row>
 </template>
@@ -16,14 +20,20 @@
 <script>
 import logo from '@/assets/logo.png'
 export default {
-  name: 'Top',
+  name: 'LRTop',
+  props: {
+    curStatus: String
+  },
   data () {
     return {
       logo
     }
   },
   methods: {
-    gotoLogin () {
+    gotoWel() {
+      this.$router.push({name: 'Welcome'})
+    },
+    gotoLogin() {
       this.$router.push({name: 'Login'})
     },
     gotoRegister() {
@@ -63,7 +73,6 @@ export default {
     display: inline-flex;
     text-align: center;
     flex-direction: row;
-    justify-content: flex-start;
     align-items: center;
     width: 340px;
     margin-left: 20px;
@@ -72,14 +81,14 @@ export default {
     font-size: 34px;
     font-weight: bold;
     padding: 0;
-    cursor: default;
+    cursor: pointer;
   }
   .img {
     display: inline-block;
     vertical-align: middle;
     width: 40px;
     margin-right: 12px;
-    cursor: default;
+    cursor: pointer;
   }
   .btm-group {
     display: inline-flex;
@@ -89,5 +98,10 @@ export default {
     align-items: center;
     margin-right: 20px;
     width: 340px;
+  }
+
+  .top-text {
+    font-size: 16px;
+    margin-right: 10px
   }
 </style>

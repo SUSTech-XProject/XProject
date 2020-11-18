@@ -1,40 +1,31 @@
 <template>
-    <el-container>
-      <el-header>
-        <Top></Top>
+  <div id="welcome-page" style="width:100%; height:100%">
+    <el-container style="height:100%">
+      <el-header id="header">
+        <Top/>
       </el-header>
-      <el-main>
-        Welcome to XProject !
+      <el-main id="main">
+        <Main/>
       </el-main>
-      <el-form>
-      <el-form-item style="width: 100%">
-        <el-button type="login" plain v-on:click="login">Login</el-button>
-      </el-form-item>
-      </el-form>
-<!--      <el-button type="login" plain style="display: block;margin-left:0 auto">Login</el-button>-->
+      <el-footer id="footer">
+        <el-row type="flex" align="middle">
+          <p>SUSTech OOAD Course Project</p>
+        </el-row>
+      </el-footer>
     </el-container>
+  </div>
 </template>
 
 <script>
 import Top from '@/views/welcome/Top'
-// import WelcomeImg from '@/assets/WelcomePageBackgroundTest.jpg'
-
+import Main from "@/views/welcome/Main";
 export default {
   name: 'WelcomePage',
   components: {
-    Top
+    Top, Main
   },
   data () {
     return {
-      msg: 'Welcome to XProject !'
-      // styles: {
-      //   backgroundImage: 'url(${WelcomeImg})'
-      // }
-    }
-  },
-  methods: {
-    login () {
-      this.$router.replace({path: '/login'})
     }
   }
 }
@@ -42,35 +33,27 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.el-main{
-  /*background-color: #edf4ff;*/
-  color: #42b983;
-  text-align: center;
-  line-height: 400px;
-  /*width: 200px;*/
-  font-size: 70px;
-}
-.el-button{
-  background: #B3C0D1;
-  color: black;
-  text-align: center;
-  /*position: page;*/
-  line-height: 20px;
-  font-size: large;
-  width: 200px;
-}
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+  html,body,#app,.el-container, .el-header{
+    padding: 0;
+    margin: 0;
+    height: 100%;
+  }
+  #header {
+    /*box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.8);*/
+    align-content: center;
+    height: 100%;
+  }
+  #main {
+    background: #f6f6f6;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+  }
+  #footer {
+    /*box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.15);*/
+    display: flex;
+    justify-content: center;
+    align-content: center;
+  }
 </style>
