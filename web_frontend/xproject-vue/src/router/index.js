@@ -5,8 +5,13 @@ import TestPage from '@/views/test/TestPage'
 import Login from '@/views/login/components/Login'
 import Register from '@/views/login/components/Register'
 import MainPage from '@/views/main/MainPage'
+import Login from '@/views/login/Login'
+import Register from '@/views/login/Register'
 import WelcomePage from '@/views/welcome/WelcomePage'
 import LRPage from "@/views/login/LRPage";
+import Top from '@/views/welcome/Top'
+import Overview from '@/views/Overview'
+import ProjectList from "@/views/homepage/projectList";
 
 Vue.use(Router)
 
@@ -22,7 +27,7 @@ const routes = [
   {
     path: '/test',
     name: 'TestPage',
-    component: TestPage,
+    component: TestPage
     // meta: {
     //   requireAuth: true
     // }
@@ -52,6 +57,22 @@ const routes = [
   {
     path: '/',
     redirect: '/welcome'
+  },
+  // temp
+  {
+    path: '/top',
+    name: 'Top',
+    component: Top
+  },
+  {
+    path: '/overview',
+    name: 'Overview',
+    component: Overview
+  },
+  {
+    path: '/home/projectlist',
+    name: 'projectlist',
+    component: ProjectList
   }
 ]
 
