@@ -95,7 +95,7 @@ export default {
           console.log('get response : ' + resp)
           if (resp.data.code === 200) {
             this.$store.commit('login', this.loginForm)
-            this.$router.push({title:'MainPage'})
+            this.$router.push({name:'MainPage'})
           } else if (resp.data.code === 400) {
             console.log(resp.data.message)
             this.$alert(resp.data.message, 'Tip', {

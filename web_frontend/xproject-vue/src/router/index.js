@@ -58,7 +58,7 @@ const routes = [
     path: '/',
     redirect: '/welcome'
   },
-  // temp
+  // YZX: 有用的放到这个上面
   {
     path:'/project/announcement',
     name:'Announcement',

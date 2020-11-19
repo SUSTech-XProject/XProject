@@ -122,7 +122,7 @@ export default {
             this.$alert('Register successfully', 'Tip', {
               confirmButtonText: 'OK'
             })
-            _this.$router.push({title:'Login'})
+            _this.$router.push({name:'Login'})
           } else {
             this.$alert(resp.data.message, 'Tip', {
               confirmButtonText: 'OK'
