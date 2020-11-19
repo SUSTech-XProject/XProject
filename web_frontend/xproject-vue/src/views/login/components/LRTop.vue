@@ -31,13 +31,13 @@ export default {
   },
   methods: {
     gotoWel() {
-      this.$router.push({title: 'Welcome'})
+      this.$router.push({name: 'Welcome'})
     },
     gotoLogin() {
-      this.$router.push({title: 'Login'})
+      this.$router.push({name: 'Login'})
     },
     gotoRegister() {
-      this.$router.push({title: 'Register'})
+      this.$router.push({name: 'Register'})
     }
   }
 }

@@ -24,10 +24,10 @@ export default {
   },
   methods: {
     gotoLogin () {
-      this.$router.push({title: 'Login'})
+      this.$router.push({name: 'Login'})
     },
     gotoRegister() {
-      this.$router.push({title: 'Register'})
+      this.$router.push({name: 'Register'})
     }
   }
 }

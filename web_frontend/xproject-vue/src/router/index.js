@@ -9,11 +9,10 @@ import WelcomePage from '@/views/welcome/WelcomePage'
 import LRPage from "@/views/login/LRPage";
 import Top from '@/views/welcome/Top'
 import Overview from '@/views/Overview'
-import ProjectList from "@/views/homepage/projectList";
-import PersonalInfo from "@/views/homepage/personalInfo"
+import ProjectList from "@/views/home/projectList";
+import PersonalInfo from "@/views/home/personalInfo"
+import Announcement from "@/views/project/Announcement";
 
-import ProjectList from "@/views/home/ProjectList";
-import Announcement from '../views/project/Announcement'
 Vue.use(Router)
 
 const routes = [
