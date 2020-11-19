@@ -10,6 +10,7 @@ import LRPage from "@/views/login/LRPage";
 import Top from '@/views/welcome/Top'
 import Overview from '@/views/Overview'
 import ProjectList from "@/views/homepage/projectList";
+import PersonalInfo from "@/views/homepage/personalInfo"
 
 Vue.use(Router)
 
@@ -54,7 +55,7 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/welcome'
+    redirect: '/homepage'
   },
   // temp
   {
@@ -71,6 +72,11 @@ const routes = [
     path: '/home/projectlist',
     name: 'projectlist',
     component: ProjectList
+  },
+  {
+    path: '/homepage',
+    name: 'personalInfo',
+    component: PersonalInfo
   }
 ]
 
