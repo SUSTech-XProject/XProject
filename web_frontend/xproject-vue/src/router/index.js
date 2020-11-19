@@ -12,6 +12,8 @@ import Overview from '@/views/Overview'
 import ProjectList from "@/views/homepage/projectList";
 import PersonalInfo from "@/views/homepage/personalInfo"
 
+import ProjectList from "@/views/home/ProjectList";
+import Announcement from '../views/project/Announcement'
 Vue.use(Router)
 
 const routes = [
@@ -55,9 +57,14 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/homepage'
+    redirect: '/welcome'
   },
   // temp
+  {
+    path:'/project/announcement',
+    name:'Announcement',
+    component: Announcement
+  },
   {
     path: '/top',
     name: 'Top',
