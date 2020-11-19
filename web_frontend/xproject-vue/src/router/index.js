@@ -12,6 +12,7 @@ import Overview from '@/views/Overview'
 import ProjectList from "@/views/home/projectList";
 import PersonalInfo from "@/views/home/personalInfo"
 import Announcement from "@/views/project/Announcement";
+import MyTeam from "@/views/project/team/myTeam"
 
 Vue.use(Router)
 
@@ -56,12 +57,12 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/welcome'
+    redirect: '/index'
   },
   // YZX: 有用的放到这个上面
   {
-    path:'/project/announcement',
-    name:'Announcement',
+    path: '/project/announcement',
+    name: 'Announcement',
     component: Announcement
   },
   {
@@ -83,6 +84,11 @@ const routes = [
     path: '/homepage',
     name: 'personalInfo',
     component: PersonalInfo
+  },
+  {
+    path: '/team/myTeam',
+    name: 'myTeam',
+    component: MyTeam
   }
 ]
 
