@@ -26,7 +26,7 @@
           type="textarea"
           :rows="5"
           placeholder=""
-          v-model="textarea">
+          v-model="text_area">
         </el-input>
       </el-col>
     </el-row>
@@ -38,6 +38,11 @@ export default {
   name: "HomePage",
   components: {
 
+  },
+  data () {
+    return {
+      text_area: 'XXXX'
+    }
   }
 }
 </script>

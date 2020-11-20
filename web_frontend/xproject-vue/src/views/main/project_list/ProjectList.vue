@@ -7,10 +7,11 @@
     </div>
 
     <div v-for="list in listArr">
-      <div v-if="list.star||!star" class="proj">
-        <card v-bind="list"
-              @getStarChange = "getStarChange"></card>
-      </div>
+        <div v-if="list.star||!star" class="proj">
+          <card v-bind="list"
+                @getStarChange = "getStarChange"></card>
+        </div>
+
     </div>
   </div>
 </template>

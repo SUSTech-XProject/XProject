@@ -10,6 +10,8 @@ import LRPage from "@/views/visitor/LRPage";
 import ProjectList from "@/views/main/project_list/ProjectList";
 import HomePage from "@/views/main/home_page/HomePage";
 import Account from "@/components/Account";
+import MyTeam from "@/views/main/project/team/MyTeam";
+import Forming from "@/views/main/project/team/Forming";
 
 Vue.use(Router)
 
@@ -42,6 +44,16 @@ const routes = [
         name: 'Account',
         component: Account
       },
+      {
+        path: 'my-team',
+        name: 'MyTeam',
+        component: MyTeam
+      },
+      {
+        path: 'forming',
+        name: 'Forming',
+        component: Forming
+      }
     ]
   },
   {
