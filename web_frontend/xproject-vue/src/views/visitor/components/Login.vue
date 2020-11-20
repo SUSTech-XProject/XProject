@@ -86,7 +86,7 @@ export default {
           return false
         }
 
-        console.log('send login data')
+        console.log('send account data')
         loginPost(
           this.loginForm.username,
           this.loginForm.password,

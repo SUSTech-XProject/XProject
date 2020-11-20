@@ -17,8 +17,8 @@
 </template>
 
 <script>
-import Top from '@/views/welcome/Top'
-import Main from "@/views/welcome/Main";
+import Top from '@/views/welcome/components/Top'
+import Main from "@/views/welcome/components/Main";
 export default {
   name: 'WelcomePage',
   components: {

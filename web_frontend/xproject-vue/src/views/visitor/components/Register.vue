@@ -19,7 +19,7 @@
                   placeholder="Please input password again" show-password></el-input>
       </el-form-item>
       <el-form-item label="Role">
-        <el-radio-group v-model="registerForm.roleType" style="padding-left: 60px">
+        <el-radio-group v-model="registerForm.roleType">
           <el-radio border label="S">student</el-radio>
           <el-radio border label="T">teacher</el-radio>
         </el-radio-group>
@@ -112,7 +112,7 @@ export default {
           return false
         }
 
-        console.log('send login data')
+        console.log('send account data')
         registerPost(
           this.registerForm.roleType,
           this.registerForm.username,
@@ -148,7 +148,7 @@ export default {
     border-radius: 15px;
     background-clip: padding-box;
     margin: auto;
-    width: 500px;
+    width: 400px;
     padding: 35px 35px 15px 35px;
     background: #fff;
     border: 1px solid #eaeaea;
@@ -163,7 +163,7 @@ export default {
   }
 
   .reg-btm {
-    width: 200px;
+    width: 120px;
     margin: 20px auto 20px auto;
   }
 </style>

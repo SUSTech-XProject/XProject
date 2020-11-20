@@ -1,55 +1,37 @@
 <template>
-  <div style="height: 100%">
-    <el-container id = "temp">
-      <el-aside style="width: fit-content">
-        <left-bar></left-bar>
-      </el-aside>
-      <el-container>
-        <el-header>
-          <Header></Header>
-        </el-header>
+  <div>
+    <div style="height: 100%">
+      <!--            <sele v-bind = "selArr"></sele>-->
+      <el-button type="primary" @click="selectStar"
+                 round>only star <i :class="icn" ></i></el-button>
+    </div>
 
-        <el-main>
-
-          <div style="height: 80px">
-            <!--            <sele v-bind = "selArr"></sele>-->
-            <el-button type="primary" @click="selectStar"
-                       round>only star <i :class="icn" ></i></el-button>
-          </div>
-
-
-
-          <div v-for="list in listArr">
-            <div v-if="list.star||!star" class="proj">
-              <card v-bind="list"
-                    @getStarChange = "getStarChange"></card>
-            </div>
-          </div>
-
-        </el-main>
-
-      </el-container>
-    </el-container>
-
+    <div v-for="list in listArr">
+      <div v-if="list.star||!star" class="proj">
+        <card v-bind="list"
+              @getStarChange = "getStarChange"></card>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import LeftBar from '@/components/sidebar/index'
 import Header from '@/components/header/index'
-import Card   from '@/components/card/announceList/index'
+import Card   from '@/components/card/projectList/index'
 import Selector from '@/components/selector/index'
 export default{
-  name:'Forming',
+  name:'ProjectList',
   components:{
-    LeftBar,Header,card:Card,sele:Selector
+    card:Card,
+    sele:Selector
   },
   data(){
     return{
       listArr:[
-        {id:1,title:"PROJECT",author:"COURSE",date:"2020-01-02",star:true},
-        {id:2,title:"PROJECT2",author:"COURSE2",date:"2020-01-02",star:false},
-        {id:3,title:"PROJECT3",author:"COURSE3",date:"2020-01-02",star:true}
+        {id:1,name:"PROJECT",course:"COURSE",star:true},
+        {id:2,name:"PROJECT2",course:"COURSE2",star:false},
+        {id:3,name:"PROJECT3",course:"COURSE3",star:true}
       ],
       selArr:[
         {value: '选项1', label: '黄金糕'},
@@ -88,7 +70,7 @@ export default{
 }
 </script>
 
-<style >
+<style scoped>
 html,body{
   /*设置内部填充为0，几个布局元素之间没有间距*/
   padding: 0;

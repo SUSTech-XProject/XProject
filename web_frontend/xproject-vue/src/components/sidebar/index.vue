@@ -3,56 +3,59 @@
   <el-menu :default-active="$route.path"
            class="el-menu-vertical-demo"
            @open="handleOpen" @close="handleClose"
+           @select="handleSelect"
            :collapse="isCollapse" style="height: 100%" router>
-    <el-menu-item index="/test" id = "Title">
+    <el-menu-item id = "Title">
       <i class="el-icon-first-aid-kit" ></i>
       <span slot="title">XProject</span>
     </el-menu-item>
 
-    <el-menu-item index="/homepage">
+    <el-menu-item index="/index/home-page">
       <i class="el-icon-s-home"></i>
       <span slot="default">Home Page</span>
     </el-menu-item>
 
-    <el-menu-item index="/projectlist/team/forming">
+    <el-menu-item index="/index/project-list">
       <i class="el-icon-notebook-1"></i>
       <span slot="default">Project List</span>
     </el-menu-item>
-        <div v-if="show">
-          <el-submenu index="3">
-            <template slot="title">
-              <i class="el-icon-connection"></i>
-              <span slot="title">Team</span>
-            </template>
-            <el-menu-item-group>
 
-              <el-menu-item index="3-1">My Team</el-menu-item>
-              <el-menu-item index="/projectlist/team/forming">Forming</el-menu-item>
-            </el-menu-item-group>
-
-          </el-submenu>
-
-          <el-menu-item index="4" >
-            <i class="el-icon-date"></i>
-            <span slot="title">Events</span>
-          </el-menu-item>
-          <el-menu-item index="5">
-            <i class="el-icon-folder-opened"></i>
-            <span slot="title">Resources</span>
-          </el-menu-item>
-          <el-menu-item index="6">
-            <i class="el-icon-document"></i>
-            <span slot="title">Submissions</span>
-          </el-menu-item>
-          <el-menu-item index="7">
-            <i class="el-icon-collection"></i>
-            <span slot="title">Gradebook</span>
-          </el-menu-item>
-    </div>
-    <el-menu-item index="/account" >
+    <el-menu-item index="/index/account" >
       <i class="el-icon-s-custom"></i>
       <span slot="title">Account</span>
     </el-menu-item>
+
+    <div v-if="show">
+      <el-submenu index="3">
+        <template slot="title">
+          <i class="el-icon-connection"></i>
+          <span slot="title">Team</span>
+        </template>
+        <el-menu-item-group>
+
+          <el-menu-item index="3-1">My Team</el-menu-item>
+          <el-menu-item index="/index/project/forming">Forming</el-menu-item>
+        </el-menu-item-group>
+
+      </el-submenu>
+
+      <el-menu-item index="4" >
+        <i class="el-icon-date"></i>
+        <span slot="title">Events</span>
+      </el-menu-item>
+      <el-menu-item index="5">
+        <i class="el-icon-folder-opened"></i>
+        <span slot="title">Resources</span>
+      </el-menu-item>
+      <el-menu-item index="6">
+        <i class="el-icon-document"></i>
+        <span slot="title">Submissions</span>
+      </el-menu-item>
+      <el-menu-item index="7">
+        <i class="el-icon-collection"></i>
+        <span slot="title">Gradebook</span>
+      </el-menu-item>
+    </div>
 <!--    <el-submenu index="3">-->
 <!--      <template slot="title">-->
 <!--        <i class="el-icon-connection"></i>-->
@@ -109,6 +112,9 @@ export default {
     },
     handleClose (key, keyPath) {
       console.log(key, keyPath)
+    },
+    handleSelect (key, keyPath) {
+
     }
   }
 }
@@ -116,8 +122,8 @@ export default {
 
 <style>
 #left-bar{
-  /*padding: 0px;*/
-  /*margin: 0px;*/
+  padding: 0;
+  margin: 0;
   height: 100%;
   /*background: blueviolet;*/
 }
