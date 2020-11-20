@@ -26,7 +26,6 @@
             </div>
           </div>
           <drawer @closeDrawer = "closeDrawer"
-            v-if="showDrawer"
             v-bind="detailAnn"></drawer>
 
         </el-main>
@@ -82,8 +81,11 @@ export default{
     openDrawer(val){
       //打开相应drawer
       console.log("testing"+val.id)
+
+      val.drawer = true;
+
       this.detailAnn = val;
-      this.showDrawer = true
+      console.log(this.detailAnn.id)
 
     },
     closeDrawer(){

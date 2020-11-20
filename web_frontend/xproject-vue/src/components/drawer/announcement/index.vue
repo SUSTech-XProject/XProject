@@ -23,12 +23,11 @@ export default {
   name: "index",
   data() {
     return {
-      drawer: true,
-      annoTitle:this.title,
-      annoAuthor:this.author,
-      annoTime:this.time,
-      annoMessage:this.message,
-
+      drawer: this.drawer,
+      annoTitle:'',
+      annoAuthor:'',
+      annoTime:'',
+      annoMessage:'',
     };
   },
   methods: {
@@ -45,7 +44,20 @@ export default {
       this.$emit('closeDrawer',"msg")
     }
   },
+  created () {
+    this.annoTitle = this.title
+    this.annoAuthor = this.author
+    this.annoMessage = this.message
+    this.annoTime = this.time
+  },
+  watch:{
+    title(val){this.annoTitle = val},
+    author(val){this.annoAuthor = val},
+    time(val){this.annoTime = val},
+    message(val){this.annoMessage = val}
+  },
   props:{
+    drawer:{type:Boolean,default:false},
     title:{type:String, default:"title"},
     author:{type:String,default: "admin"},
     time:{type:String,default:"2020-01-01 9:34"},
