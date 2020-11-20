@@ -8,7 +8,7 @@
     title="我是标题"
     direction="rtl"
     :with-header = "false"
-    :visible.sync="annoDrawer"
+    :visible.sync="drawer"
     :before-close="handleClose">
     <h2>{{annoTitle}}</h2>
     <hr/>
@@ -23,7 +23,7 @@ export default {
   name: "index",
   data() {
     return {
-      annoDrawer: this.drawer,
+      drawer: true,
       annoTitle:this.title,
       annoAuthor:this.author,
       annoTime:this.time,
@@ -46,7 +46,6 @@ export default {
     }
   },
   props:{
-    drawer:{type:Boolean,default:false},
     title:{type:String, default:"title"},
     author:{type:String,default: "admin"},
     time:{type:String,default:"2020-01-01 9:34"},

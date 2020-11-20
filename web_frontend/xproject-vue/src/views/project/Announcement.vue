@@ -81,11 +81,10 @@ export default{
     },
     openDrawer(val){
       //打开相应drawer
-      this.showDrawer = true
       console.log("testing"+val.id)
       this.detailAnn = val;
-      val.drawer = true
-      console.log(this.detailAnn.drawer)
+      this.showDrawer = true
+
     },
     closeDrawer(){
       this.showDrawer = false
