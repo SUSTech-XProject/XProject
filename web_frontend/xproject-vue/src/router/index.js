@@ -12,8 +12,16 @@ import HomePage from "@/views/main/home_page/HomePage";
 import Account from "@/components/Account";
 import MyTeam from "@/views/main/project/team/MyTeam";
 import Forming from "@/views/main/project/team/Forming";
+import ProjOverview from "@/views/main/project/overview/ProjOverview";
+import ProjPage from "@/views/main/project/ProjPage";
 
 Vue.use(Router)
+
+// 修改路由重复点击报错
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
 
 const routes = [
   {
@@ -46,7 +54,13 @@ const routes = [
       },
       {
         path: 'project/:proj_id',
+        component: ProjPage,
         children: [
+          {
+            path: 'overview',
+            name: 'ProjOverview',
+            component: ProjOverview
+          },
           {
             path: 'my-team',
             name: 'MyTeam',

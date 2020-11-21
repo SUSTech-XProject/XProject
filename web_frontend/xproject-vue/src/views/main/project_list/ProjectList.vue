@@ -9,31 +9,30 @@
     <div v-for="list in listArr">
         <div v-if="list.star||!star" class="proj">
           <card v-bind="list"
-                @getStarChange = "getStarChange"></card>
+                @getStarChange = "getStarChange"
+                @gotoProjOverview = "gotoProjOverview"></card>
         </div>
-
     </div>
   </div>
 </template>
 
 <script>
-import LeftBar from '@/components/sidebar/index'
-import Header from '@/components/header/index'
 import Card   from '@/components/card/projectList/index'
 import Selector from '@/components/selector/index'
 import {getProjList} from "@/api/home_page";
+
 export default{
   name:'ProjectList',
   components:{
     card:Card,
     sele:Selector
   },
-  data(){
+  data () {
     return{
       listArr:[
-        {id:1,name:"PROJECT",course:"COURSE",star:true},
-        {id:2,name:"PROJECT2",course:"COURSE2",star:false},
-        {id:3,name:"PROJECT3",course:"COURSE3",star:true}
+        // {id:1,name:"PROJECT",course:"COURSE",star:true},
+        // {id:2,name:"PROJECT2",course:"COURSE2",star:false},
+        // {id:3,name:"PROJECT3",course:"COURSE3",star:true}
       ],
       selArr:[
         {value: '选项1', label: '黄金糕'},
@@ -65,6 +64,13 @@ export default{
       }
       console.log('testing')
     },
+
+    gotoProjOverview (projId) {
+      console.log('goto proj overview. projId='+ projId)
+      this.$store.commit('setProj', {projId: projId, projName: 'Not finished'})
+      this.$router.push({name:'ProjOverview', params: {proj_id: projId}})
+    },
+
     selectStar (){
       let temp = this.star
       this.star = !temp;
@@ -80,7 +86,7 @@ export default{
           return false
         }
         let projList = resp.data.data
-        this.listArr = []
+        this.listArr.splice(0, this.listArr.length)   // remove all
         for (let i = 0; i < projList.length; i++) {
           let proj = projList[i]
           this.listArr.push({

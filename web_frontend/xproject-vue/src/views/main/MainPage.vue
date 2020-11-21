@@ -9,9 +9,9 @@
 <!--    Your roleType is {{this.$store.state.role.roleType}}-->
 <!--  </div>-->
   <el-container>
-    <el-aside style="width: 201px">
-      <left-bar/>
-    </el-aside>
+    <left-bar/>
+<!--    <el-aside style="width: 0">-->
+<!--    </el-aside>-->
     <el-container>
       <el-header>
         <Header/>
