@@ -32,7 +32,7 @@
   </div>
 </template>
 <script>
-  import {registerPost} from '@/api/role'
+  import {postRegister} from '@/api/role'
 import {validPassword, validUsername} from "@/utils/validate";
 
 export default {
@@ -113,7 +113,7 @@ export default {
         }
 
         console.log('send account data')
-        registerPost(
+        postRegister(
           this.registerForm.roleType,
           this.registerForm.username,
           this.registerForm.password

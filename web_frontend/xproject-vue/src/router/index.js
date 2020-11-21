@@ -25,9 +25,9 @@ const routes = [
     path: '/index',
     name: 'MainPage',
     component: MainPage,
-    // meta: {
-    //   requireAuth: true
-    // },
+    meta: {
+      requireAuth: true
+    },
     children: [
       {
         path: 'home-page',
@@ -45,14 +45,19 @@ const routes = [
         component: Account
       },
       {
-        path: 'my-team',
-        name: 'MyTeam',
-        component: MyTeam
-      },
-      {
-        path: 'forming',
-        name: 'Forming',
-        component: Forming
+        path: 'project/:proj_id',
+        children: [
+          {
+            path: 'my-team',
+            name: 'MyTeam',
+            component: MyTeam
+          },
+          {
+            path: 'forming',
+            name: 'Forming',
+            component: Forming
+          }
+        ]
       }
     ]
   },

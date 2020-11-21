@@ -28,8 +28,8 @@
           </template>
 
           <el-menu-item-group>
-            <el-menu-item index="/index/my-team">My Team</el-menu-item>
-            <el-menu-item index="/index/forming">Forming</el-menu-item>
+            <el-menu-item :index="myTeamUrl">My Team</el-menu-item>
+            <el-menu-item :index="formingUrl">Forming</el-menu-item>
           </el-menu-item-group>
 
         </el-submenu>
@@ -105,7 +105,9 @@ export default {
   data () {
     return {
       isCollapse: false,
-      show: /*this.$route.path.indexOf('project-list') !== -1*/ true
+      show: /*this.$route.path.indexOf('project-list') !== -1*/ true,
+      myTeamUrl: 'index/project/' + 0 + '/my-team',
+      formingUrl: 'index/project/' + 0 + '/forming'
     }
   },
   methods: {

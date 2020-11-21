@@ -9,7 +9,7 @@
       </el-col>
 
       <el-col :span="16" :offset="1">
-        <div style="font-size: 80px; padding: 0; text-align:left; margin-top: 20px">name</div>
+        <div style="font-size: 80px; padding: 0; text-align:left; margin-top: 20px">{{this.$store.state.role.username}}</div>
         <div style="padding: 0; text-align:left; margin-top: 20px">
           <el-tag>标签一</el-tag>
           <el-tag type="success">标签二</el-tag>
@@ -26,7 +26,7 @@
           type="textarea"
           :rows="5"
           placeholder=""
-          v-model="text_area">
+          v-model="description">
         </el-input>
       </el-col>
     </el-row>
@@ -34,6 +34,8 @@
 </template>
 
 <script>
+import {getUserHomeInfo} from "@/api/home_page";
+
 export default {
   name: "HomePage",
   components: {
@@ -41,7 +43,20 @@ export default {
   },
   data () {
     return {
-      text_area: 'XXXX'
+      description: 'XXXX'
+    }
+  },
+  mounted () {
+    this.init()
+  },
+  methods: {
+    init () {
+      console.log('init home page')
+      getUserHomeInfo().then(resp => {
+        this.description = resp.data.data;
+      }).catch(failResp => {
+        console.log("fail to get response in getUserHomeInfo")
+      })
     }
   }
 }

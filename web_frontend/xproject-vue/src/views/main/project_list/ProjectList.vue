@@ -21,6 +21,7 @@ import LeftBar from '@/components/sidebar/index'
 import Header from '@/components/header/index'
 import Card   from '@/components/card/projectList/index'
 import Selector from '@/components/selector/index'
+import {getProjList} from "@/api/home_page";
 export default{
   name:'ProjectList',
   components:{
@@ -45,8 +46,11 @@ export default{
       icn:"el-icon-star-off",
     }
   },
+  mounted () {
+    this.initProjList()
+  },
   methods:{
-    getStarChange(val){
+    getStarChange (val) {
       console.log(val)
       //更改相应project star值
       for (let i = 0; i <this.listArr.length ; i++) {
@@ -61,11 +65,35 @@ export default{
       }
       console.log('testing')
     },
-    selectStar(){
+    selectStar (){
       let temp = this.star
       this.star = !temp;
       this.icn = !temp?'el-icon-star-on':'el-icon-star-off'
       console.log(this.star)
+    },
+    initProjList () {
+      getProjList().then(resp => {
+        if (resp.data.code !== 200) {
+          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+          return false
+        }
+        let projList = resp.data.data
+        this.listArr = []
+        for (let i = 0; i < projList.length; i++) {
+          let proj = projList[i]
+          this.listArr.push({
+            id: i,
+            name: proj.projName,
+            course: 'UNKNOWN',
+            star: false
+          })
+        }
+        console.log(this.listArr)
+      }).catch(failResp => {
+        console.log('fail in getProjList. message=' + failResp.message)
+      })
     }
   }
 }

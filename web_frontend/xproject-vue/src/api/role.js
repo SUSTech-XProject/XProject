@@ -1,14 +1,14 @@
 import Vue from 'vue'
 
-export function loginPost (username, password, rememberMe) {
-  return Vue.prototype.$axios.post('/account', {
+export function postLogin (username, password, rememberMe) {
+  return Vue.prototype.$axios.post('/login', {
     username: username,
     password: password,
     rememberMe: rememberMe
   })
 }
 
-export function registerPost (type, username, password) {
+export function postRegister (type, username, password) {
   return Vue.prototype.$axios.post('/register', {
     type: type,
     username: username,
@@ -16,6 +16,6 @@ export function registerPost (type, username, password) {
   })
 }
 
-export function authGet () {
+export function getAuth () {
   return Vue.prototype.$axios.get('/authentication')
 }
