@@ -33,24 +33,30 @@ const routes = [
     path: '/index',
     name: 'MainPage',
     component: MainPage,
-    meta: {
-      requireAuth: true
-    },
     children: [
       {
         path: 'home-page',
         name: 'HomePage',
-        component: HomePage
+        component: HomePage,
+        meta: {
+          requireAuth: true
+        },
       },
       {
         path: 'project-list',
         name: 'ProjectList',
-        component: ProjectList
+        component: ProjectList,
+        meta: {
+          requireAuth: true
+        },
       },
       {
         path: 'account',
         name: 'Account',
-        component: Account
+        component: Account,
+        meta: {
+          requireAuth: true
+        },
       },
       {
         path: 'project/:proj_id',
@@ -59,17 +65,26 @@ const routes = [
           {
             path: 'overview',
             name: 'ProjOverview',
-            component: ProjOverview
+            component: ProjOverview,
+            meta: {
+              requireAuth: true
+            },
           },
           {
             path: 'my-team',
             name: 'MyTeam',
-            component: MyTeam
+            component: MyTeam,
+            meta: {
+              requireAuth: true
+            },
           },
           {
             path: 'forming',
             name: 'Forming',
-            component: Forming
+            component: Forming,
+            meta: {
+              requireAuth: true
+            },
           }
         ]
       }
