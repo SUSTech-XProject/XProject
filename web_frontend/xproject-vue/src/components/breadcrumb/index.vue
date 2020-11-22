@@ -1,3 +1,33 @@
+<template>
+  <el-breadcrumb separator-class="el-icon-arrow-right">
+    <el-breadcrumb-item :to="{ path: '/test' }">XProject</el-breadcrumb-item>
+    <el-breadcrumb-item><a href="/projectlist/team/forming">Project List</a></el-breadcrumb-item>
+    <el-breadcrumb-item v-if="this.$route.path.indexOf('team')!==-1">Team</el-breadcrumb-item>
+    <el-breadcrumb-item v-if="this.$route.path.indexOf('myteam')!==-1"><a href="/projectlist/team/myteam">My Team</a></el-breadcrumb-item>
+    <el-breadcrumb-item v-if="this.$route.path.indexOf('forming')!==-1"><a href="/projectlist/team/forming">Forming</a></el-breadcrumb-item>
+    <el-breadcrumb-item v-if="this.$route.path.indexOf('events')!==-1"><a href="/projectlist/events">Events</a></el-breadcrumb-item>
+    <el-breadcrumb-item v-if="this.$route.path.indexOf('resources')!==-1"><a href="/projectlist/resources">Resources</a></el-breadcrumb-item>
+    <el-breadcrumb-item v-if="this.$route.path.indexOf('submissions')!==-1"><a href="/projectlist/submissions">Submissions</a></el-breadcrumb-item>
+    <el-breadcrumb-item v-if="this.$route.path.indexOf('gradebook')!==-1"><a href="/projectlist/gradebook">Gradebook</a></el-breadcrumb-item>
+  </el-breadcrumb>
+</template>
+
+<script>
+export default {
+  name: 'index'
+}
+</script>
+
+<style scoped>
+.el-breadcrumb{
+  /*width: 20px;*/
+  position: relative;
+  height: 10%;
+  bottom: 10%;
+}
+</style>
+
+
 <!--<template>-->
 <!--  <el-breadcrumb class="app-breadcrumb" separator="/">-->
 <!--    <transition-group name="breadcrumb">-->
