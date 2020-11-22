@@ -5,8 +5,7 @@
         <LRTop/>
       </el-header>
       <el-main id="main">
-        <Login v-if="this.$route.name === 'Login'"/>
-        <Register v-else-if="this.$route.name === 'Register'"/>
+        <router-view/>
       </el-main>
 <!--      <el-footer id="footer">-->
 <!--      </el-footer>-->
@@ -15,9 +14,9 @@
 </template>
 
 <script>
-import LRTop from "@/views/login/components/LRTop";
-import Login from "@/views/login/components/Login";
-import Register from "@/views/login/components/Register";
+import LRTop from "@/views/visitor/components/LRTop";
+import Login from "@/views/visitor/components/Login";
+import Register from "@/views/visitor/components/Register";
 
 export default {
   name: "LRPage",

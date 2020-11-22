@@ -19,7 +19,7 @@
                   placeholder="Please input password again" show-password></el-input>
       </el-form-item>
       <el-form-item label="Role">
-        <el-radio-group v-model="registerForm.roleType" style="padding-left: 60px">
+        <el-radio-group v-model="registerForm.roleType">
           <el-radio border label="S">student</el-radio>
           <el-radio border label="T">teacher</el-radio>
         </el-radio-group>
@@ -32,7 +32,7 @@
   </div>
 </template>
 <script>
-  import {registerPost} from '@/api/role'
+  import {postRegister} from '@/api/role'
 import {validPassword, validUsername} from "@/utils/validate";
 
 export default {
@@ -112,8 +112,8 @@ export default {
           return false
         }
 
-        console.log('send login data')
-        registerPost(
+        console.log('send account data')
+        postRegister(
           this.registerForm.roleType,
           this.registerForm.username,
           this.registerForm.password
@@ -148,7 +148,7 @@ export default {
     border-radius: 15px;
     background-clip: padding-box;
     margin: auto;
-    width: 500px;
+    width: 400px;
     padding: 35px 35px 15px 35px;
     background: #fff;
     border: 1px solid #eaeaea;
@@ -163,7 +163,7 @@ export default {
   }
 
   .reg-btm {
-    width: 200px;
+    width: 120px;
     margin: 20px auto 20px auto;
   }
 </style>

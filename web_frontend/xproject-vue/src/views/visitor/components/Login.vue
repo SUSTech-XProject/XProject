@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import {loginPost} from '@/api/role'
+import {postLogin} from '@/api/role'
 
 export default {
   name: 'Login',
@@ -86,8 +86,8 @@ export default {
           return false
         }
 
-        console.log('send login data')
-        loginPost(
+        console.log('send account data')
+        postLogin(
           this.loginForm.username,
           this.loginForm.password,
           this.loginForm.rememberMe
@@ -95,7 +95,7 @@ export default {
           console.log('get response : ' + resp)
           if (resp.data.code === 200) {
             this.$store.commit('login', this.loginForm)
-            this.$router.push({name:'MainPage'})
+            this.$router.push({name:'HomePage'})
           } else if (resp.data.code === 400) {
             console.log(resp.data.message)
             this.$alert(resp.data.message, 'Tip', {

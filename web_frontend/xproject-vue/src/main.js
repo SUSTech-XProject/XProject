@@ -6,7 +6,7 @@ import router from './router'
 import store from './store'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import {authGet} from "@/api/role";
+import {getAuth} from "@/api/role";
 
 const axios = require('axios')
 // 设置反向代理，前端请求默认发送到 http://localhost:8443/api
@@ -25,7 +25,7 @@ router.beforeEach((to, from, next) => {
     if (to.meta.requireAuth) {
       let username = store.state.role.username
       if (username) {
-        authGet().then(resp => {
+        getAuth().then(resp => {
           if (resp) {
             let role = resp.data.data
             store.commit('updateRoleType', role.roleType)
