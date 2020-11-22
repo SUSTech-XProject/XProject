@@ -9,7 +9,10 @@ import WelcomePage from '@/views/welcome/WelcomePage'
 import LRPage from "@/views/login/LRPage";
 import Top from '@/views/welcome/Top'
 import Overview from '@/views/Overview'
-import ProjectList from "@/views/homepage/projectList";
+import ProjectList from "@/views/home/projectList";
+import PersonalInfo from "@/views/home/personalInfo"
+import Announcement from "@/views/project/Announcement";
+import MyTeam from "@/views/project/team/myTeam"
 
 Vue.use(Router)
 
@@ -54,9 +57,14 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/welcome'
+    redirect: '/index'
   },
-  // temp
+  // YZX: 有用的放到这个上面
+  {
+    path: '/project/announcement',
+    name: 'Announcement',
+    component: Announcement
+  },
   {
     path: '/top',
     name: 'Top',
@@ -71,6 +79,16 @@ const routes = [
     path: '/home/projectlist',
     name: 'projectlist',
     component: ProjectList
+  },
+  {
+    path: '/homepage',
+    name: 'personalInfo',
+    component: PersonalInfo
+  },
+  {
+    path: '/team/myTeam',
+    name: 'myTeam',
+    component: MyTeam
   }
 ]
 
