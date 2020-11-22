@@ -1,38 +1,23 @@
 <template>
   <div style="height: 100%">
-    <el-container id = "temp">
-      <el-aside style="width: fit-content">
-        <left-bar></left-bar>
-      </el-aside>
-      <el-container>
-        <el-header>
-          <Header></Header>
-        </el-header>
+    <div style="height: 80px">
+      <!--            <sele v-bind = "selArr"></sele>-->
+      <el-button type="primary" @click="selectStar"
+                 round>only star <i :class="icn" ></i></el-button>
+    </div>
 
-        <el-main>
 
-          <div style="height: 80px">
-            <!--            <sele v-bind = "selArr"></sele>-->
-            <el-button type="primary" @click="selectStar"
-                       round>only star <i :class="icn" ></i></el-button>
-          </div>
 
-          <div v-for="list in listArr">
-            <div v-if="list.star||!star" class="proj">
-              <card @getStarChange = "getStarChange"
-                    @click.native="openDrawer(list)"
-                    v-bind="list"
-              ></card>
-            </div>
-          </div>
-          <drawer @closeDrawer = "closeDrawer"
-            v-bind="detailAnn"></drawer>
-
-        </el-main>
-
-      </el-container>
-    </el-container>
-
+    <div v-for="list in listArr" v-if="list.star||!star">
+      <div class="proj">
+        <card @getStarChange = "getStarChange"
+              @click.native="openDrawer(list)"
+              v-bind="list"
+        ></card>
+      </div>
+    </div>
+    <drawer @closeDrawer = "closeDrawer"
+      v-bind="detailAnn"></drawer>
   </div>
 </template>
 
@@ -43,7 +28,7 @@ import Card   from '@/components/card/announceList/index'
 import Selector from '@/components/selector/index'
 import Drawer from '@/components/drawer/announcement/index'
 export default{
-  name:'Forming',
+  name:'Announcement',
   components:{
     LeftBar,Header,card:Card,sele:Selector,drawer:Drawer
   },
@@ -80,22 +65,21 @@ export default{
     },
     openDrawer(val){
       //打开相应drawer
-      console.log("testing"+val.id)
-
+      console.log(this.detailAnn.drawer)
       val.drawer = true;
-
       this.detailAnn = val;
-      console.log(this.detailAnn.id)
+      console.log(this.detailAnn.drawer)
 
     },
     closeDrawer(){
-      this.showDrawer = false
+      console.log("closeDrawer")
+      this.detailAnn.drawer = false
     }
   }
 }
 </script>
 
-<style >
+<style scoped>
 html,body{
   /*设置内部填充为0，几个布局元素之间没有间距*/
   padding: 0;
@@ -105,13 +89,12 @@ html,body{
   height: 100%;
 }
 
-#temp{
-  height: 100%;
-}
 .proj{
-  height: 100px;
+  height: 150px;
   text-align: center;
-  padding-left: 10%;
+  margin: 0;
+
+
 }
 
 

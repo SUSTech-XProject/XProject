@@ -14,6 +14,7 @@ import MyTeam from "@/views/main/project/team/MyTeam";
 import Forming from "@/views/main/project/team/Forming";
 import ProjOverview from "@/views/main/project/overview/ProjOverview";
 import ProjPage from "@/views/main/project/ProjPage";
+import Announcement from '@/views/main/project/announcement/Announcement'
 
 Vue.use(Router)
 
@@ -85,6 +86,14 @@ const routes = [
             meta: {
               requireAuth: true
             },
+          },
+          {
+            path: 'announcement',
+            name: 'Announcement',
+            component: Announcement,
+            meta: {
+              requireAuth: true
+            },
           }
         ]
       }
@@ -109,13 +118,13 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/welcome'
+    redirect: '/test'
   },
   // YZX: 有用的放到这个上面，临时的放到下面
   {
     path: '/test',
     name: 'TestPage',
-    component: TestPage
+    component: Announcement
     // meta: {
     //   requireAuth: true
     // }

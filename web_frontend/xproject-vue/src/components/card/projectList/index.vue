@@ -5,10 +5,7 @@
       <span><slot>{{projCour}}</slot></span>
       <el-button :icon = "iconData"
                  style="color: orange;float: right" type="text"
-                 @click="favour(projId)" circle></el-button>
-      <el-button type="primary"
-                 class='el-icon-d-arrow-right'
-                 @click="gotoProjOverview"></el-button>
+                 @click="favour(proId)"  circle></el-button>
     </div>
     <!--    <div v-for="o in 2" :key="o" class="text item">-->
     <!--      {{'列表内容 ' + o }}-->
@@ -23,7 +20,7 @@ export default {
 
   data() {
     return {
-      projId:this.id,
+      proId:this.id,
       projName:this.name,
       projCour:this.course,
       isStar:this.star,
@@ -50,19 +47,16 @@ export default {
   },
 
   methods:{
-    favour: function (val) {
+    favour:function (val){
       this.isStar= !this.isStar;
       this.iconData = this.isStar===true?'el-icon-star-on':'el-icon-star-off';
-      this.$emit('getStarChange', val)
-    },
-    gotoProjOverview: function () {
-      this.$emit('gotoProjOverview', this.projId)
+      this.$emit('getStarChange',val)
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
 
 .clearfix:before,
 .clearfix:after {

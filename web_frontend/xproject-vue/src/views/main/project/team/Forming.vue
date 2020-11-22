@@ -1,32 +1,93 @@
 <template>
-  <el-row style="margin-top: 20px">
-    <el-col :span="6" :offset="1">
-      <div>
-        <!--                <el-avatar :size="200"><div style="font-size: 80px; text-align:center; margin-top: -5px">n</div></el-avatar>-->
-        <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" :size="200"></el-avatar>
-      </div>
-    </el-col>
+  <div style="height: 100%">
+    <el-container style="height: 100%">
+      <el-aside style="width: fit-content">
+        <left-bar></left-bar>
+      </el-aside>
+      <el-container>
+        <el-header>
+          <Header></Header>
+        </el-header>
+        <el-main>
+          <div>
+            <span>Topic:
+               <el-select v-model="value" placeholder="请选择">
+                  <el-option
+                    v-for="item in op_topic"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+               </el-select>
+            </span>
+            <span>Number:
+               <el-select v-model="value" placeholder="请选择">
+                  <el-option
+                    v-for="item in op_num"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+               </el-select>
+            </span>
+            <span>Tags:
+                <el-select v-model="value1" multiple placeholder="请选择">
+                  <el-option
+                    v-for="item in op_tag"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+            </span>
+            <el-button type="primary" icon="el-icon-finished">Filter</el-button>
+          </div>
 
-    <el-col :span="16" :offset="1">
-      <div style="font-size: 80px; padding: 0; text-align:left; margin-top: 20px">???</div>
-      <div style="padding: 0; text-align:left; margin-top: 20px">
-        <el-tag>标签一</el-tag>
-        <el-tag type="success">标签二</el-tag>
-        <el-tag type="info">标签三</el-tag>
-        <el-tag type="warning">标签四</el-tag>
-        <el-tag type="danger">标签五</el-tag>
-      </div>
-    </el-col>
-  </el-row>
+
+
+
+
+        </el-main>
+
+      </el-container>
+    </el-container>
+
+  </div>
 </template>
 
 <script>
 import LeftBar from '@/components/sidebar/index'
 import Header from '@/components/header/index'
+import Card   from '@/components/card/announceList/index'
 
 export default {
   name: "Forming",
-  components: {
+  components:{
+    LeftBar,Header,card:Card
+  },
+  data(){
+    return{
+      op_topic:
+        [{value: '1', label: 'Topic1'},
+        {value: '2', label: 'Topic2'},
+        {value: '3', label: 'Topic3'},
+        {value: '4', label: 'Topic4'},
+        {value: '5', label: 'Topic5'}],
+      op_num:[
+        {value: '1', label: '1'},
+        {value: '2', label: '2'},
+        {value: '3', label: '3'},
+        {value: '4', label: '4'},
+        {value: '5', label: '5'}],
+      op_tag:[
+        {value: '1', label: 'tag1'},
+        {value: '2', label: 'tag2'},
+        {value: '3', label: 'tag3'},
+        {value: '4', label: 'tag4'},
+        {value: '5', label: 'tag5'}],
+      value: '',
+      value1:[]
+    }
   }
 }
 </script>
