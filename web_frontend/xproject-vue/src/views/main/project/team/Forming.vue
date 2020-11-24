@@ -54,10 +54,10 @@ export default {
       value: '',
       value1:[],
       teams:[
-        {id:1,topic:'Topic 1', status:'1/5', tag:['tag11','tag12','tag13'],intro:'introduction1'},
-        {id:2,topic:'Topic 2', status:'2/5', tag:['tag21','tag22','tag23'],intro:'introduction2'},
-        {id:3,topic:'Topic 3', status:'3/5', tag:['tag31','tag32','tag33'],intro:'introduction3'},
-        {id:4,topic:'Topic 4', status:'4/5', tag:['tag41','tag42','tag43'],intro:'introduction4'},
+        {id:1,name:'Team 1',topic:'Topic 1', status:'1/5', tags:['tag11','tag12','tag13'],intro:'introduction1'},
+        {id:2,name:'Team 2',topic:'Topic 2', status:'2/5', tags:['tag21','tag22','tag23'],intro:'introduction2'},
+        {id:3,name:'Team 3',topic:'Topic 3', status:'3/5', tags:['tag31','tag32','tag33'],intro:'introduction3'},
+        {id:4,name:'Team 4',topic:'Topic 4', status:'4/5', tags:['tag41','tag42','tag43'],intro:'introduction4'},
       ],
       detailTeam:{},
     }
@@ -66,11 +66,8 @@ export default {
     openDrawer(val){
       val.drawer = true;
       this.detailTeam = val;
-      console.log("transmit")
-      console.log(val)
     },
-    closeDrawer(val){
-      console.log(val)
+    closeDrawer(){
       this.detailTeam= {}
     }
   }

@@ -8,7 +8,7 @@
     :size = "size"
     :with-header = "false"
     :visible.sync="annodrawer"
-    :before-close="handleClose">
+    :before-close="refresh">
     <h2>{{annoTitle}}</h2>
     <hr/>
     <h4>Author: {{annoAuthor}}</h4>

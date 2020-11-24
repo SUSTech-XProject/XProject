@@ -1,20 +1,21 @@
 <template>
   <el-card  class="proj-card" shadow="hover">
     <div class="clearfix" >
-      {{teamTopic}}
-
+      {{ teamName}}
+    </div>
+    <div style="text-align: center">
+      <span v-for="i in Math.min(teamTag.length,5)" style="margin-left: 0.5rem">
+          <el-tag :type="tagType[i-1]">{{teamTag[i-1]}}</el-tag>
+        </span>
     </div>
 
     <div class="text item" slot="default">
       <div>ID: {{teamID}}</div>
+      <div>Topic:  {{teamTopic}}</div>
       <div>Status: {{teamSta}}</div>
-      <div>Tags:
-        <span v-for="i in Math.min(teamTag.length,5)" style="margin-left: 0.5rem">
-          <el-tag :type="tagType[i-1]">{{teamTag[i-1]}}</el-tag>
-        </span>
-      </div>
     </div>
 
+    <div style="text-align: center">{{teamIntro}}</div>
 
   </el-card>
 </template>
@@ -27,7 +28,9 @@ export default {
       teamID:this.id,
       teamTopic:this.topic,
       teamSta:this.status,
-      teamTag:this.tag,
+      teamTag:this.tags,
+      teamName:this.name,
+      teamIntro:this.intro,
       tagType:['',"success","warning","danger","info"]
     }
   },
@@ -35,7 +38,9 @@ export default {
     id:{type:Number, default:-1},
     topic:{type:String, default:'Topic 1'},
     status:{type:String, default: '1/5'},
-    tag:{type:Array, default:()=>['tag1','tag2','tag3']},
+    tags:{type:Array, default:()=>['tag1','tag2','tag3']},
+    name:{type:String,default:'default name'},
+    intro:{type:String,default:'details'}
   },
 
 }
@@ -48,23 +53,24 @@ export default {
 }
 
 .item {
-  margin-bottom: 18px;
   padding-top: 20px;
+  padding-left: 15px;
+  padding-bottom: 5px;
 }
 .clearfix{
   vertical-align: center;
   margin: 0;
-  padding: 0;
   font-size: 22px;
   align-content: center;
   text-align: center;
-  height: 30px;
+  padding-bottom: 10px;
+
 
 }
 
 .proj-card {
   width: 300px;
-  height: 200px;
+  height: 240px;
   text-align: left;
 }
 </style>
