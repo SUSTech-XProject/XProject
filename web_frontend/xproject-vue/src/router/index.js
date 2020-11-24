@@ -124,7 +124,7 @@ const routes = [
   {
     path: '/test',
     name: 'TestPage',
-    component: Announcement
+    component: Forming
     // meta: {
     //   requireAuth: true
     // }

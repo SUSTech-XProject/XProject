@@ -42,7 +42,6 @@ export default{
       star:false,
       icn:"el-icon-star-off",
       detailAnn:{},
-      showDrawer:false
     }
   },
   methods:{
@@ -73,7 +72,7 @@ export default{
     },
     closeDrawer(){
       console.log("closeDrawer")
-      this.detailAnn.drawer = false
+      this.detailAnn= {}
     }
   }
 }

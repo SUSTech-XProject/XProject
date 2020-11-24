@@ -1,74 +1,40 @@
 <template>
-  <div style="height: 100%">
-    <el-container style="height: 100%">
-      <el-aside style="width: fit-content">
-        <left-bar></left-bar>
-      </el-aside>
-      <el-container>
-        <el-header>
-          <Header></Header>
-        </el-header>
-        <el-main>
-          <div>
-            <span>Topic:
-               <el-select v-model="value" placeholder="请选择">
-                  <el-option
-                    v-for="item in op_topic"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-               </el-select>
-            </span>
-            <span>Number:
-               <el-select v-model="value" placeholder="请选择">
-                  <el-option
-                    v-for="item in op_num"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-               </el-select>
-            </span>
-            <span>Tags:
-                <el-select v-model="value1" multiple placeholder="请选择">
-                  <el-option
-                    v-for="item in op_tag"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-            </span>
-            <el-button type="primary" icon="el-icon-finished">Filter</el-button>
-          </div>
+  <div >
+    <div>
+      <h2>testing</h2>
+<!--      <selector v-bind="op_topic"></selector>-->
+    </div>
 
+    <div style="display: inline-block">
+      <div v-for="team in teams" class="cardList">
+        <teamcard v-bind="team"
+                  @click.native="openDrawer(team)"></teamcard>
 
+      </div>
+    </div>
+    <drawer v-bind="detailTeam"
+            @closeDrawer = "closeDrawer"></drawer>
 
-
-
-        </el-main>
-
-      </el-container>
-    </el-container>
 
   </div>
 </template>
 
 <script>
-import LeftBar from '@/components/sidebar/index'
-import Header from '@/components/header/index'
-import Card   from '@/components/card/announceList/index'
+//import selector from '@/components/selector/index'
+import searching from '@/components/searching/index'
+import teamcard from '@/components/card/teamList/index'
+import teamdrawer from '@/views/main/project/team/teamdrawer'
+
 
 export default {
   name: "Forming",
   components:{
-    LeftBar,Header,card:Card
+    searching,teamcard,drawer:teamdrawer
   },
   data(){
     return{
-      op_topic:
-        [{value: '1', label: 'Topic1'},
+      op_topic: [
+        {value: '1', label: 'Topic1'},
         {value: '2', label: 'Topic2'},
         {value: '3', label: 'Topic3'},
         {value: '4', label: 'Topic4'},
@@ -86,12 +52,35 @@ export default {
         {value: '4', label: 'tag4'},
         {value: '5', label: 'tag5'}],
       value: '',
-      value1:[]
+      value1:[],
+      teams:[
+        {id:1,topic:'Topic 1', status:'1/5', tag:['tag11','tag12','tag13'],intro:'introduction1'},
+        {id:2,topic:'Topic 2', status:'2/5', tag:['tag21','tag22','tag23'],intro:'introduction2'},
+        {id:3,topic:'Topic 3', status:'3/5', tag:['tag31','tag32','tag33'],intro:'introduction3'},
+        {id:4,topic:'Topic 4', status:'4/5', tag:['tag41','tag42','tag43'],intro:'introduction4'},
+      ],
+      detailTeam:{},
+    }
+  },
+  methods:{
+    openDrawer(val){
+      val.drawer = true;
+      this.detailTeam = val;
+      console.log("transmit")
+      console.log(val)
+    },
+    closeDrawer(val){
+      console.log(val)
+      this.detailTeam= {}
     }
   }
 }
 </script>
 
 <style scoped>
-
+.cardList{
+  display: inline-block;
+  margin-left: 2rem;
+  margin-bottom: 2rem;
+}
 </style>
