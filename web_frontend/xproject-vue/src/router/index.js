@@ -9,7 +9,7 @@ import WelcomePage from '@/views/welcome/WelcomePage'
 import LRPage from "@/views/visitor/LRPage";
 import ProjectList from "@/views/main/project_list/ProjectList";
 import HomePage from "@/views/main/home_page/HomePage";
-import Account from "@/components/Account";
+import Account from "@/views/main/account/Account";
 import MyTeam from "@/views/main/project/team/MyTeam";
 import Forming from "@/views/main/project/team/Forming";
 import ProjOverview from "@/views/main/project/overview/ProjOverview";
@@ -118,13 +118,13 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/test'
+    redirect: '/welcome'
   },
   // YZX: 有用的放到这个上面，临时的放到下面
   {
     path: '/test',
     name: 'TestPage',
-    component: Announcement
+    component: Account
     // meta: {
     //   requireAuth: true
     // }
