@@ -118,13 +118,13 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/welcome'
+    redirect: '/test'
   },
   // YZX: 有用的放到这个上面，临时的放到下面
   {
     path: '/test',
     name: 'TestPage',
-    component: Account
+    component: Announcement
     // meta: {
     //   requireAuth: true
     // }

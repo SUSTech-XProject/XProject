@@ -14,11 +14,15 @@ export default {
 name: "index",
   data(){
     return{
-      options:this.inList
+      options:[],
+      tagstyle:''
     }
   },
+  created () {
+    this.options = this.inList
+  },
   props:{
-    inList:Array
+    inList:{type:Array}
   }
 }
 </script>

@@ -1,8 +1,6 @@
 <template>
   <div>
-<!--  <el-button @click="drawer = true" type="primary" style="margin-left: 16px;">-->
-<!--    点我打开-->
-<!--  </el-button>-->
+
 
   <el-drawer
     title="我是标题"
@@ -10,7 +8,7 @@
     :size = "size"
     :with-header = "false"
     :visible.sync="annodrawer"
-    :before-close="handleClose">
+    :before-close="refresh">
     <h2>{{annoTitle}}</h2>
     <hr/>
     <h4>Author: {{annoAuthor}}</h4>
