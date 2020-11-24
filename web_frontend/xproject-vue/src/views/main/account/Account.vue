@@ -43,7 +43,7 @@
             <el-divider></el-divider>
           </div>
 
-          <div style="font-size: 24px; font-weight:bold; margin-left: 20px;">
+          <div class="personalInfoTitle" style="margin-left: 20px;">
             My Tags
           </div>
           <div class="personalInfoTypesetting">
@@ -204,7 +204,7 @@ export default {
 }
 
 .personalInfoTitle {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: bold;
 }
 
