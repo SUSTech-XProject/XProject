@@ -1,8 +1,11 @@
 <template>
   <div >
-    <div>
-      <h2>testing</h2>
-<!--      <selector v-bind="op_topic"></selector>-->
+    <div class="selecting">
+      <div>Topics:  <selector :in-list="op_topic"
+                              ></selector></div>
+      <div>Status:  <selector :in-list="op_sta"></selector></div>
+      <div>Tags:    <multi-sel :in-list="op_tag"></multi-sel></div>
+      <div><el-button @click="selection">selecting</el-button> </div>
     </div>
 
     <div style="display: inline-block">
@@ -20,39 +23,39 @@
 </template>
 
 <script>
-//import selector from '@/components/selector/index'
+import single from '@/components/selector/single'
 import searching from '@/components/searching/index'
 import teamcard from '@/components/card/teamList/index'
 import teamdrawer from '@/views/main/project/team/teamdrawer'
+import double from '@/components/selector/double'
 
 
 export default {
   name: "Forming",
   components:{
-    searching,teamcard,drawer:teamdrawer
+    searching,teamcard,drawer:teamdrawer,selector: single,multiSel:double
   },
   data(){
     return{
       op_topic: [
-        {value: '1', label: 'Topic1'},
-        {value: '2', label: 'Topic2'},
-        {value: '3', label: 'Topic3'},
-        {value: '4', label: 'Topic4'},
-        {value: '5', label: 'Topic5'}],
-      op_num:[
-        {value: '1', label: '1'},
-        {value: '2', label: '2'},
-        {value: '3', label: '3'},
-        {value: '4', label: '4'},
-        {value: '5', label: '5'}],
+        {value: '0', label: 'Topic1'},
+        {value: '1', label: 'Topic2'},
+        {value: '2', label: 'Topic3'},
+        {value: '3', label: 'Topic4'},
+        {value: '4', label: 'Topic5'}],
+      op_sta:[
+        {value: '0', label: '1/5'},
+        {value: '1', label: '2/5'},
+        {value: '2', label: '3/5'},
+        {value: '3', label: '4/5'}],
       op_tag:[
         {value: '1', label: 'tag1'},
         {value: '2', label: 'tag2'},
         {value: '3', label: 'tag3'},
         {value: '4', label: 'tag4'},
         {value: '5', label: 'tag5'}],
-      value: '',
-      value1:[],
+      selTopic_ind: '',
+      selStatus:'',
       teams:[
         {id:1,name:'Team 1',topic:'Topic 1', status:'1/5', tags:['tag11','tag12','tag13'],intro:'introduction1'},
         {id:2,name:'Team 2',topic:'Topic 2', status:'2/5', tags:['tag21','tag22','tag23'],intro:'introduction2'},
@@ -69,6 +72,9 @@ export default {
     },
     closeDrawer(){
       this.detailTeam= {}
+    },
+    selection(){
+      console.log(this.selTopic_ind)
     }
   }
 }
@@ -79,5 +85,11 @@ export default {
   display: inline-block;
   margin-left: 2rem;
   margin-bottom: 2rem;
+}
+.selecting{
+  height: 100px;
+  text-align: center;
+  display: flex;
+  width: 100%
 }
 </style>

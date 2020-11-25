@@ -18,7 +18,7 @@
 
 <script>
 import Card   from '@/components/card/projectList/index'
-import Selector from '@/components/selector/index'
+import Selector from '@/components/selector/single'
 import {getProjList} from "@/api/home_page";
 
 export default{

@@ -1,8 +1,13 @@
 <template>
-  <el-select v-model="value" placeholder="请选择">
+  <el-select v-model="value"
+             multiple
+             style="margin-left: 20px;width: 250px"
+             :multiple-limit="3"
+             placeholder="请选择">
     <el-option
       v-for="item in options"
       :key="item.value"
+
       :label="item.label"
       :value="item.value">
     </el-option>
@@ -11,18 +16,18 @@
 
 <script>
 export default {
-name: "index",
   data(){
     return{
       options:[],
-      tagstyle:''
+      value: [],
     }
   },
-  created () {
+  mounted () {
     this.options = this.inList
+
   },
   props:{
-    inList:{type:Array}
+    inList:{type:Array,default:()=>[{value: '1', label: 'default1'}]}
   }
 }
 </script>
