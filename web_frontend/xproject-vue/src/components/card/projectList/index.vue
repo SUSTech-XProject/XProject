@@ -5,7 +5,7 @@
       <span><slot>{{projCour}}</slot></span>
       <el-button :icon = "iconData"
                  style="color: orange;float: right" type="text"
-                 @click="favour(proId)"  circle></el-button>
+                 @click.stop="favour(proId)"  circle></el-button>
     </div>
     <!--    <div v-for="o in 2" :key="o" class="text item">-->
     <!--      {{'列表内容 ' + o }}-->

@@ -60,7 +60,7 @@ export default {
 .clearfix{
   vertical-align: center;
   margin: 0;
-  font-size: 22px;
+  font-size: 25px;
   align-content: center;
   text-align: center;
   padding-bottom: 10px;
