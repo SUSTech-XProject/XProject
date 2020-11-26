@@ -16,6 +16,10 @@ export function postRegister (type, username, password) {
   })
 }
 
+export function getLogout () {
+  return Vue.prototype.$axios.get('/logout')
+}
+
 export function getAuth () {
   return Vue.prototype.$axios.get('/authentication')
 }

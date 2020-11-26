@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import logo from '@/assets/logo.png'
+import logo from '@/assets/xproject-icon.png'
 export default {
   name: 'Top',
   data () {

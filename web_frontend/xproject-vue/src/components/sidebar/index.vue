@@ -6,7 +6,8 @@
            @select="handleSelect"
            :collapse="isCollapse" style="height: 100%">
     <el-menu-item id = "Title">
-      <i class="el-icon-first-aid-kit" ></i>
+
+      <el-image class="img" :src="logo"></el-image>
       <span slot="title">XProject</span>
     </el-menu-item>
 
@@ -20,7 +21,7 @@
       <span slot="default">Project List</span>
     </el-menu-item>
 
-    <el-menu-item index="Account" >
+    <el-menu-item index="Account">
       <i class="el-icon-s-custom"></i>
       <span slot="title">Account</span>
     </el-menu-item>
@@ -80,35 +81,37 @@
 </template>
 
 <script>
-export default {
-  data () {
-    return {
-      isCollapse: false,
-      show: false,
-    }
-  },
-  methods: {
-    handleOpen (key, keyPath) {
-      console.log(key, keyPath)
+  import logo from '@/assets/xproject-icon.png'
+  export default {
+    data () {
+      return {
+        isCollapse: false,
+        show: false,
+        logo
+      }
     },
-    handleClose (key, keyPath) {
-      console.log(key, keyPath)
-    },
-    handleSelect (key, keyPath) {
-      console.log(key, keyPath)
-      if (key.indexOf("@") !== -1) {
-        console.log('Not finished')
-      } else {
-        let projId = this.$store.state.proj.projId;
-        if (projId === null) {
-          this.$router.push({name: key})
+    methods: {
+      handleOpen (key, keyPath) {
+        console.log(key, keyPath)
+      },
+      handleClose (key, keyPath) {
+        console.log(key, keyPath)
+      },
+      handleSelect (key, keyPath) {
+        console.log(key, keyPath)
+        if (key.indexOf("@") !== -1) {
+          console.log('Not finished')
         } else {
-          this.$router.push({name: key, params: {proj_id: projId}})
+          let projId = this.$store.state.proj.projId;
+          if (projId === null) {
+            this.$router.push({name: key})
+          } else {
+            this.$router.push({name: key, params: {proj_id: projId}})
+          }
         }
       }
     }
   }
-}
 </script>
 
 <style scoped>
@@ -168,5 +171,12 @@ export default {
     font-size: 17px;
     padding: 10px 0 10px 0;
     background-color: #f8f8f8;
+  }
+  .img {
+    display: inline-block;
+    vertical-align: middle;
+    width: 30px;
+    margin-right: 12px;
+    cursor: default;
   }
 </style>

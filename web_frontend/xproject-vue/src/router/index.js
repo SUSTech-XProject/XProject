@@ -118,7 +118,7 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/test'
+    redirect: '/welcome'
   },
   // YZX: 有用的放到这个上面，临时的放到下面
   {
