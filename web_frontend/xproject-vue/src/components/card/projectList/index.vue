@@ -5,10 +5,7 @@
       <span><slot>{{projCour}}</slot></span>
       <el-button :icon = "iconData"
                  style="color: orange;float: right" type="text"
-                 @click="favour(proId)"  circle></el-button>
-      <el-button type="primary"
-                 class='el-icon-d-arrow-right'
-                 @click="gotoProjOverview()"></el-button>
+                 @click.stop="favour(proId)"  circle></el-button>
     </div>
     <!--    <div v-for="o in 2" :key="o" class="text item">-->
     <!--      {{'列表内容 ' + o }}-->
@@ -54,9 +51,6 @@ export default {
       this.isStar= !this.isStar;
       this.iconData = this.isStar===true?'el-icon-star-on':'el-icon-star-off';
       this.$emit('getStarChange',val)
-    },
-    gotoProjOverview () {
-      this.$emit('gotoProjOverview', this.proId)
     }
   }
 }

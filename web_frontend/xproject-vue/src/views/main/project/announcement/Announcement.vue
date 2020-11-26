@@ -25,7 +25,7 @@
 import LeftBar from '@/components/sidebar/index'
 import Header from '@/components/header/index'
 import Card   from '@/components/card/announceList/index'
-import Selector from '@/components/selector/index'
+import Selector from '@/components/selector/single'
 import Drawer from '@/components/drawer/announcement/index'
 export default{
   name:'Announcement',
