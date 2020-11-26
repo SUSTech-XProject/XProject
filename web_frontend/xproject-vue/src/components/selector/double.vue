@@ -1,15 +1,15 @@
 <template>
   <el-select v-model="value"
              multiple
-             style="margin-left: 20px;width: 250px"
+             style="margin-left: 20px;width: 240px"
              :multiple-limit="3"
-             placeholder="请选择">
+             :clearable = "true"
+             placeholder="Selecting...">
     <el-option
-      v-for="item in options"
-      :key="item.value"
-
-      :label="item.label"
-      :value="item.value">
+      v-for="i in options.length"
+      :key="i-1"
+      :label="options[i-1]"
+      :value="i-1">
     </el-option>
   </el-select>
 </template>
@@ -24,10 +24,16 @@ export default {
   },
   mounted () {
     this.options = this.inList
-
+  },
+  watch:{
+    value:function (val){
+      console.log(val)
+      this.$emit('update:index',val)
+    }
   },
   props:{
-    inList:{type:Array,default:()=>[{value: '1', label: 'default1'}]}
+    inList:{type:Array,default:()=>['default0']},
+    index:{type:Array,default:()=>[]}
   }
 }
 </script>

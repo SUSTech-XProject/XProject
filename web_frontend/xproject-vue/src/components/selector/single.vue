@@ -1,14 +1,14 @@
 <template>
   <el-select v-model="value"
-             placeholder="请选择"
+             placeholder="Selecting..."
              size="medium"
              :clearable = "true"
-             style="width: 100px">
+             style="width: 120px">
     <el-option
-      v-for="item in options"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
+      v-for="i in options.length"
+      :key="i-1"
+      :label="options[i-1]"
+      :value="i-1">
     </el-option>
   </el-select>
 </template>
@@ -23,24 +23,21 @@ name: "index",
     }
   },
   mounted () {
-    console.log("--mounted--")
-    console.log(this.inList)
     this.options = this.inList
   },
   watch:{
     value:function(val){
       console.log(val)
-      console.log(this.value)
+      this.$emit('update:index',val.toString())
     }
   },
   props:{
-    inList:{type:Array,default:()=>[{value: '1', label: 'default1'}]}
+    inList:{type:Array,default:()=>['default0']},
+    index:{type:String}
   }
 }
 </script>
 
 <style scoped>
-.el-select{
-  width: fit-content;
-}
+
 </style>
