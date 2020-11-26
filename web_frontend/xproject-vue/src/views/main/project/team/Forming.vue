@@ -12,16 +12,13 @@
         <el-col :span="7">Tags:
           <multi-sel :in-list="op_tag" :index.sync="Tag_ind"></multi-sel>
         </el-col>
-        <el-col :span="9">
-          <el-button type="primary" @click="selection" >selecting</el-button>
-        </el-col>
       </el-row>
     </div>
 
     <div class="board">
       <div v-for="team in teams" class="cardList">
         <teamcard v-bind="team"
-                  v-if="!selStatus||isVisible(team)"
+                  v-if="isVisible(team)"
                   @click.native="openDrawer(team)"></teamcard>
 
       </div>
@@ -54,7 +51,6 @@ export default {
       Topic_ind: '',
       Status_ind:'',
       Tag_ind:[],
-      selStatus:false,
       teams:[
         {id:1,name:'Team 1',topic:'Topic 1', status:'1/5', tags:['tag11','tag12','tag13'],intro:'introduction1'},
         {id:2,name:'Team 2',topic:'Topic 2', status:'2/5', tags:['tag21','tag22','tag23'],intro:'introduction2'},
@@ -71,13 +67,6 @@ export default {
     },
     closeDrawer(){
       this.detailTeam= {}
-    },
-    selection(){
-      if(this.Topic_ind!=''){this.selStatus = true;}
-      else if(this.Status_ind!=''){this.selStatus = true;}
-      else if(this.Tag_ind.length!==0){this.selStatus = true;}
-      else{this.selStatus = false;}
-      console.log(this.selStatus)
     },
     isVisible(val){
       if(this.Topic_ind!=''){
