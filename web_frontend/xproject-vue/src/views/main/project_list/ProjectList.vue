@@ -10,7 +10,7 @@
         <div v-if="list.star||!star" class="proj">
           <card v-bind="list"
                 @getStarChange = "getStarChange"
-                @gotoProjOverview = "gotoProjOverview"></card>
+                @click.native= "gotoProjOverview"></card>
         </div>
     </div>
   </div>
@@ -18,7 +18,7 @@
 
 <script>
 import Card   from '@/components/card/projectList/index'
-import Selector from '@/components/selector/index'
+import Selector from '@/components/selector/single'
 import {getProjList} from "@/api/home_page";
 
 export default{
@@ -30,9 +30,9 @@ export default{
   data () {
     return{
       listArr:[
-        // {id:1,name:"PROJECT",course:"COURSE",star:true},
-        // {id:2,name:"PROJECT2",course:"COURSE2",star:false},
-        // {id:3,name:"PROJECT3",course:"COURSE3",star:true}
+        {id:1,name:"PROJECT",course:"COURSE",star:true},
+        {id:2,name:"PROJECT2",course:"COURSE2",star:false},
+        {id:3,name:"PROJECT3",course:"COURSE3",star:true}
       ],
       selArr:[
         {value: '选项1', label: '黄金糕'},

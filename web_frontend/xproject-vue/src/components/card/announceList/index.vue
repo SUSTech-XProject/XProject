@@ -1,14 +1,17 @@
 <template>
   <el-card  class="proj-card" shadow="hover">
-    <div class="clearfix"  >
-      <span><slot>{{annoTitle}}</slot></span>
+    <div class="clearfix">
+      <span>{{annoTitle}}</span>
       <el-button :icon = "iconData"
-                 style="color: orange;float: right" type="text"
-                 @click.stop="favour(annoID)"  circle></el-button>
+                style="color: orange;float: right" type="text"
+                @click.stop="favour(annoID)"  circle></el-button>
+
     </div>
-    <!--    <div v-for="o in 2" :key="o" class="text item">-->
-    <!--      {{'列表内容 ' + o }}-->
-    <!--    </div>-->
+
+    <div class="text item" slot="default">
+      {{'Saved by: '+annoAuthor}}
+      <span style="padding-left: 25px">{{'Modified Date: '+annoDate}}</span>
+    </div>
 
   </el-card>
 </template>
@@ -45,23 +48,37 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.text {
+  font-size: 14px;
+}
 
-.clearfix:before,
-.clearfix:after {
-  display: table;
-  content: "";
-  text-align: center;
-  vertical-align: middle;
-  height: 100%;
+.item {
+  margin-bottom: 18px;
+  padding-top: 20px;
+}
+.clearfix{
+  vertical-align: center;
+  margin: 0;
+  padding: 0;
+  font-size: 22px;
+  align-content: center;
 
 }
-.clearfix:after {
-  clear: both
-}
+/*.clearfix:before,*/
+/*.clearfix:after {*/
+/*  display: table;*/
+/*  content: "";*/
+/*  height: 60px;*/
+
+/*}*/
+/*.clearfix:after {*/
+/*  clear: both*/
+/*}*/
 
 .proj-card {
-  width: 60%;
-  height: 80px;
+  width: 600px;
+  height: 100px;
+  text-align: left;
 }
 </style>

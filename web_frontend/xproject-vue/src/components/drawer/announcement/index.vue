@@ -1,15 +1,14 @@
 <template>
   <div>
-<!--  <el-button @click="drawer = true" type="primary" style="margin-left: 16px;">-->
-<!--    点我打开-->
-<!--  </el-button>-->
+
 
   <el-drawer
     title="我是标题"
     direction="rtl"
+    :size = "size"
     :with-header = "false"
-    :visible.sync="drawer"
-    :before-close="handleClose">
+    :visible.sync="annodrawer"
+    :before-close="refresh">
     <h2>{{annoTitle}}</h2>
     <hr/>
     <h4>Author: {{annoAuthor}}</h4>
@@ -23,7 +22,8 @@ export default {
   name: "index",
   data() {
     return {
-      drawer: this.drawer,
+      size:'60%',
+      annodrawer:'',
       annoTitle:'',
       annoAuthor:'',
       annoTime:'',
@@ -35,6 +35,7 @@ export default {
       this.$confirm('确认关闭？')
         .then(_ => {
           this.refresh()
+          this.drawer = false
           done();
         })
         .catch(_ => {});
@@ -45,6 +46,7 @@ export default {
     }
   },
   created () {
+    this.annodrawer = this.drawer
     this.annoTitle = this.title
     this.annoAuthor = this.author
     this.annoMessage = this.message
@@ -54,7 +56,9 @@ export default {
     title(val){this.annoTitle = val},
     author(val){this.annoAuthor = val},
     time(val){this.annoTime = val},
-    message(val){this.annoMessage = val}
+    message(val){this.annoMessage = val},
+    drawer(val){this.annodrawer = val}
+
   },
   props:{
     drawer:{type:Boolean,default:false},
@@ -66,6 +70,6 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 
 </style>
