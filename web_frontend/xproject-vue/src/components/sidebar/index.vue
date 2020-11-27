@@ -27,7 +27,8 @@
 
     <el-menu-item-group v-if="this.$store.state.proj.projId !== null" id="proj-items">
       <div id="proj-title">
-        <span style="margin-left: 22px">Project</span>
+        <span v-if="!isCollapse" style="margin-left: 22px">Project List</span>
+        <span v-if="isCollapse" style="margin-left: 22px"></span>
 <!--        <i class="el-icon-close" style="float: right; margin-top: 2px; font-size: 13px"/>-->
       </div>
 
@@ -39,7 +40,8 @@
       <el-submenu index="@3">
         <template slot="title">
           <i class="el-icon-connection"></i>
-          <span slot="title">Team</span>
+          <span v-if="!isCollapse" slot="title">Team</span>
+          <span v-if="isCollapse" slot="title"></span>
         </template>
 
         <el-menu-item-group>
@@ -85,6 +87,8 @@ export default {
     return {
       isCollapse: false,
       show: false,
+      // projectcol: isCollapse? 'Project':'',
+      // teamcol: isCollapse? 'Team':':'
     }
   },
   methods: {
