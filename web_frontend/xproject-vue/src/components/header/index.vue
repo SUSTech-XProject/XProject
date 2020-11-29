@@ -1,27 +1,44 @@
 <template>
   <div id = "header">
-
+    <el-header>
 <!--      <i v-bind:class="[{'el-icon-d-arrow-right':isFolded},'el-icon-d-arrow-left']"></i>-->
-<!--      <div v-if="this.$route.path.indexOf('projectlist')!== -1">-->
+<!--      <div v-if="this.$store.state.proj.projId !== null">-->
 <!--        <Breadcrumb></Breadcrumb>-->
 <!--      </div>-->
-<!--      <div v-else id="partname">{{part}}</div>-->
-    <el-button style="margin: auto 20px auto 50px" class="header-btm"
-               icon="el-icon-message-solid">
-    </el-button>
+<!--      <div v-else id="partname"></div>-->
+      <el-row class="header">
+<!--        <span>{{part}}</span>-->
+        <el-col v-if="this.$store.state.proj.projId !== null">
+          <Breadcrumb></Breadcrumb>
+        </el-col>
+        <el-col :span="20">test</el-col>
+        <el-col :span="2">
+          <el-dropdown>
+        <span class="el-dropdown-link">
+          <i style="margin-left: 80%" class="el-icon-help"></i>
+        </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item icon="el-icon-question">Help</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </el-col>
 
+        <el-col :span="2">
+          <el-dropdown @command="handleCommand" trigger="click">
+        <span class="el-dropdown-link">
+          <i style="margin-left: 0px" class ="el-icon-user"></i>
+        </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item icon="el-icon-s-custom">Account</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-menu">Overview</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-error">Log out</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-check">Others</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </el-col>
+      </el-row>
 
-
-    <el-dropdown @command="handleCommand">
-      <el-button style="margin: auto 50px auto 20px" class="header-btm"
-                 icon="el-icon-user-solid">
-      </el-button>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item>Home Page</el-dropdown-item>
-        <el-dropdown-item command="logout">Log out</el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
-
+    </el-header>
   </div>
 </template>
 
@@ -35,7 +52,7 @@ export default {
   data () {
     return {
       isFolded: false,
-      part: this.$route.path.split('/')[1]
+      part: this.$route.path.split('/')[2]
     }
   },
   methods: {
