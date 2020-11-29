@@ -1,83 +1,110 @@
 <template>
-  <div >
-    <div>
-      <h2>testing</h2>
-<!--      <selector v-bind="op_topic"></selector>-->
-    </div>
-
-    <div style="display: inline-block">
-      <div v-for="team in teams" class="cardList">
-        <teamcard v-bind="team"
-                  @click.native="openDrawer(team)"></teamcard>
-
-      </div>
-    </div>
-    <drawer v-bind="detailTeam"
-            @closeDrawer = "closeDrawer"></drawer>
-
-
+  <div>
+    <el-table
+      :data="tableData"
+      style="width: 100%">
+      <el-table-column type="expand">
+        <template slot-scope="props">
+          <el-form label-position="left" inline class="demo-table-expand">
+            <el-form-item label="商品名称">
+              <span>{{ props.row.name }}</span>
+            </el-form-item>
+            <el-form-item label="所属店铺">
+              <span>{{ props.row.shop }}</span>
+            </el-form-item>
+            <el-form-item label="商品 ID">
+              <span>{{ props.row.id }}</span>
+            </el-form-item>
+            <el-form-item label="店铺 ID">
+              <span>{{ props.row.shopId }}</span>
+            </el-form-item>
+            <el-form-item label="商品分类">
+              <span>{{ props.row.category }}</span>
+            </el-form-item>
+            <el-form-item label="店铺地址">
+              <span>{{ props.row.address }}</span>
+            </el-form-item>
+            <el-form-item label="商品描述">
+              <span>{{ props.row.desc }}</span>
+            </el-form-item>
+          </el-form>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="商品 ID"
+        prop="id">
+      </el-table-column>
+      <el-table-column
+        label="商品名称"
+        prop="name">
+      </el-table-column>
+      <el-table-column
+        label="描述"
+        prop="desc">
+      </el-table-column>
+    </el-table>
   </div>
 </template>
 
 <script>
-//import selector from '@/components/selector/index'
-import searching from '@/components/searching/index'
-import teamcard from '@/components/card/teamList/index'
-import teamdrawer from '@/views/main/project/team/teamdrawer'
-
-
 export default {
-  name: "Forming",
+  name: "Gradebook",
   components:{
-    searching,teamcard,drawer:teamdrawer
   },
-  data(){
-    return{
-      op_topic: [
-        {value: '1', label: 'Topic1'},
-        {value: '2', label: 'Topic2'},
-        {value: '3', label: 'Topic3'},
-        {value: '4', label: 'Topic4'},
-        {value: '5', label: 'Topic5'}],
-      op_num:[
-        {value: '1', label: '1'},
-        {value: '2', label: '2'},
-        {value: '3', label: '3'},
-        {value: '4', label: '4'},
-        {value: '5', label: '5'}],
-      op_tag:[
-        {value: '1', label: 'tag1'},
-        {value: '2', label: 'tag2'},
-        {value: '3', label: 'tag3'},
-        {value: '4', label: 'tag4'},
-        {value: '5', label: 'tag5'}],
-      value: '',
-      value1:[],
-      teams:[
-        {id:1,name:'Team 1',topic:'Topic 1', status:'1/5', tags:['tag11','tag12','tag13'],intro:'introduction1'},
-        {id:2,name:'Team 2',topic:'Topic 2', status:'2/5', tags:['tag21','tag22','tag23'],intro:'introduction2'},
-        {id:3,name:'Team 3',topic:'Topic 3', status:'3/5', tags:['tag31','tag32','tag33'],intro:'introduction3'},
-        {id:4,name:'Team 4',topic:'Topic 4', status:'4/5', tags:['tag41','tag42','tag43'],intro:'introduction4'},
-      ],
-      detailTeam:{},
+  data() {
+    return {
+      tableData: [{
+        id: '12987122',
+        name: '好滋好味鸡蛋仔',
+        category: '江浙小吃、小吃零食',
+        desc: '荷兰优质淡奶，奶香浓而不腻',
+        address: '上海市普陀区真北路',
+        shop: '王小虎夫妻店',
+        shopId: '10333'
+      }, {
+        id: '12987123',
+        name: '好滋好味鸡蛋仔',
+        category: '江浙小吃、小吃零食',
+        desc: '荷兰优质淡奶，奶香浓而不腻',
+        address: '上海市普陀区真北路',
+        shop: '王小虎夫妻店',
+        shopId: '10333'
+      }, {
+        id: '12987125',
+        name: '好滋好味鸡蛋仔',
+        category: '江浙小吃、小吃零食',
+        desc: '荷兰优质淡奶，奶香浓而不腻',
+        address: '上海市普陀区真北路',
+        shop: '王小虎夫妻店',
+        shopId: '10333'
+      }, {
+        id: '12987126',
+        name: '好滋好味鸡蛋仔',
+        category: '江浙小吃、小吃零食',
+        desc: '荷兰优质淡奶，奶香浓而不腻',
+        address: '上海市普陀区真北路',
+        shop: '王小虎夫妻店',
+        shopId: '10333'
+      }]
     }
   },
   methods:{
-    openDrawer(val){
-      val.drawer = true;
-      this.detailTeam = val;
-    },
-    closeDrawer(){
-      this.detailTeam= {}
-    }
+
   }
 }
 </script>
 
 <style scoped>
-.cardList{
-  display: inline-block;
-  margin-left: 2rem;
-  margin-bottom: 2rem;
-}
+  .demo-table-expand {
+    font-size: 0;
+  }
+  .demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+  }
+  .demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 50%;
+  }
 </style>

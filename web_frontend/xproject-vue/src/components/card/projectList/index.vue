@@ -1,12 +1,20 @@
 <template>
-  <el-card class="proj-card" shadow="hover">
-    <div class="clearfix" >
-      <span><slot>{{projName}}</slot></span>
-      <span><slot>{{projCour}}</slot></span>
+  <el-card class="proj-card" shadow="hover" :body-style="{ paddingTop: '10px'}">
+    <el-row style="display: flex; justify-content: flex-start; align-items: center">
+      <span style="font-size: 20px"><slot>{{proj.name}}</slot></span>
+      <span style="font-size: 15px; margin-left: 20px; color: #aaaaaa"><slot>{{proj.course}}</slot></span>
+
       <el-button :icon = "iconData"
-                 style="color: orange;float: right" type="text"
-                 @click.stop="favour(proId)"  circle></el-button>
-    </div>
+                 style="color: orange; font-size: 20px; margin-left: auto" type="text"
+                 @click.stop="favour(proj.id)"  circle></el-button>
+    </el-row>
+
+    <el-row style="display: flex; justify-content: flex-start; align-items: center">
+      <span style="font-size: 15px; color: #aaaaaa"><slot>Description: {{proj.description}}</slot></span>
+    </el-row>
+
+
+
     <!--    <div v-for="o in 2" :key="o" class="text item">-->
     <!--      {{'列表内容 ' + o }}-->
     <!--    </div>-->
@@ -20,36 +28,23 @@ export default {
 
   data() {
     return {
-      proId:this.id,
-      projName:this.name,
-      projCour:this.course,
-      isStar:this.star,
-      iconData:this.star===true?'el-icon-star-on':'el-icon-star-off'
+      iconData: this.proj.star===true?'el-icon-star-on':'el-icon-star-off'
     }
   },
+  // use list for props
+  // props: [
+  //   'proj',
+  //   'index',
+  // ],
+  // or an object
   props: {
-    id:{
-      type:Number,
-      default:-1
-    },
-    name:{
-      type:String,
-      default:'Project1'
-    },
-    course:{
-      type:String,
-      default: 'Course1'
-    },
-    star:{
-      type:Boolean,
-      default:false
-    }
+    proj: Object,
+    index: Number
   },
-
   methods:{
-    favour:function (val){
-      this.isStar= !this.isStar;
-      this.iconData = this.isStar===true?'el-icon-star-on':'el-icon-star-off';
+    favour:function (val) {
+      this.proj.isStar= !this.proj.isStar;
+      this.iconData = this.proj.isStar===true?'el-icon-star-on':'el-icon-star-off';
       this.$emit('getStarChange',val)
     }
   }
@@ -72,7 +67,7 @@ export default {
 }
 
 .proj-card {
-  width: 60%;
-  height: 80px;
+  width: 80%;
+  height: 100px;
 }
 </style>

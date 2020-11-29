@@ -5,9 +5,8 @@
            @open="handleOpen" @close="handleClose"
            @select="handleSelect"
            :collapse="isCollapse" style="height: 100%">
-    <el-menu-item id = "Title">
-
-      <el-image class="img" :src="logo"></el-image>
+    <el-menu-item id="Title" index="Welcome">
+      <i class="el-icon-first-aid-kit" ></i>
       <span slot="title">XProject</span>
     </el-menu-item>
 

@@ -75,7 +75,7 @@
 
 
       <footer>
-        <div style="text-align: center">
+        <div style="margin-left: 80px">
         <el-button type = "primary" @click="confirmed">Apply</el-button>
       </div>
       </footer>
@@ -170,11 +170,10 @@ export default {
   margin-top: 15px;
   margin-left: 20px;
 }
-footer{
+footer {
   bottom: 30px;
   position: fixed;
   width: 62%;
-  text-align: center;
 }
 .team-name{
   font-size: 40px;

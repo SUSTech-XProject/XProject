@@ -2,8 +2,10 @@
 <!--Overview page for proj-->
 
 <template>
-  <div style="width:100%; height:100%">
-    Hello, here is proj {{this.$route.params.proj_id}}
+  <div style="margin: 20px 20px 20px 20px">
+    <el-row style="display: flex; margin: 0 10px 10px 0">
+      <div style="font-size: 30px; font-weight: bold; text-align:left">{{this.$store.state.proj.projName}}</div>
+    </el-row>
   </div>
 </template>
 

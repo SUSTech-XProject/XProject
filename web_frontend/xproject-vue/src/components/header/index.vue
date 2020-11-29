@@ -6,14 +6,28 @@
 <!--        <Breadcrumb></Breadcrumb>-->
 <!--      </div>-->
 <!--      <div v-else id="partname">{{part}}</div>-->
-    <i style="margin: auto 20px auto 50px" class="el-icon-help"></i>
-    <i style="margin: auto 50px auto 20px" class ="el-icon-user"></i>
+    <el-button style="margin: auto 20px auto 50px" class="header-btm"
+               icon="el-icon-message-solid">
+    </el-button>
+
+
+
+    <el-dropdown @command="handleCommand">
+      <el-button style="margin: auto 50px auto 20px" class="header-btm"
+                 icon="el-icon-user-solid">
+      </el-button>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item>Home Page</el-dropdown-item>
+        <el-dropdown-item command="logout">Log out</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
 
   </div>
 </template>
 
 <script>
 import Breadcrumb from '@/components/breadcrumb/index'
+import {getLogout} from "@/api/role";
 
 export default {
   name: 'index',
@@ -24,13 +38,40 @@ export default {
       part: this.$route.path.split('/')[1]
     }
   },
+  methods: {
+    handleCommand (command) {
+      if (command === 'logout') {
+        this.logout()
+      }
+    },
+    logout () {
+      console.log('logout')
+      getLogout().then(resp => {
+        if (resp.data.code === 200) {
+          this.$store.commit('logout')
+          this.$router.push({name:'Login'})
+        } else if (resp.data.code === 400) {
+          console.log(resp.data.message)
+          this.$alert(resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        }
+        return true
+      }).catch(failResp => {
+        this.$alert('Error' + failResp.message, 'Tips', {
+          confirmButtonText: 'OK'
+        })
+        return false
+      })
+    }
+  },
   components: {
     Breadcrumb
   }
 }
 </script>
 
-<style>
+<style scoped>
 #header {
   background-color: #edf4ff;
   color: #333;
@@ -56,5 +97,8 @@ export default {
   height: 10%;
   bottom: 10%;
 }
+  .header-btm {
+
+  }
 
 </style>

@@ -1,16 +1,19 @@
 <template>
-  <div>
-    <div style="height: 100%">
-      <!--            <sele v-bind = "selArr"></sele>-->
-      <el-button type="primary" @click="selectStar"
-                 round>only star <i :class="icn" ></i></el-button>
-    </div>
+  <div style="margin: 20px 20px 20px 20px">
+    <el-row style="display: flex; margin: 0 10px 10px 50px; justify-content: flex-start">
+      <div style="font-size: 30px; font-weight: bold; text-align:left; margin: 0 50px 0 0">Project List</div>
+    </el-row>
+    <el-row style="display: flex; margin: 0 0 20px 0; justify-content: flex-end">
+      <el-button type="primary" plain style="margin-right: 20%"
+                 @click="selectStar">only star <i :class="icn" ></i></el-button>
+    </el-row>
 
-    <div v-for="list in listArr">
+    <div v-for="(list, index) in listArr">
         <div v-if="list.star||!star" class="proj">
-          <card v-bind="list"
+          <card v-bind:proj="list"
+                v-bind:index="index"
                 @getStarChange = "getStarChange"
-                @click.native= "gotoProjOverview"></card>
+                @click.native= "gotoProjOverview(list.id, list.name)"></card>
         </div>
     </div>
   </div>
@@ -30,9 +33,9 @@ export default{
   data () {
     return{
       listArr:[
-        {id:1,name:"PROJECT",course:"COURSE",star:true},
-        {id:2,name:"PROJECT2",course:"COURSE2",star:false},
-        {id:3,name:"PROJECT3",course:"COURSE3",star:true}
+        // {id:1,name:"PROJECT",course:"COURSE",star:true},
+        // {id:2,name:"PROJECT2",course:"COURSE2",star:false},
+        // {id:3,name:"PROJECT3",course:"COURSE3",star:true}
       ],
       selArr:[
         {value: '选项1', label: '黄金糕'},
@@ -65,9 +68,11 @@ export default{
       console.log('testing')
     },
 
-    gotoProjOverview (projId) {
-      console.log('goto proj overview. projId='+ projId)
-      this.$store.commit('setProj', {projId: projId, projName: 'Not finished'})
+    gotoProjOverview (projId, projName) {
+      let projRecord = {projId: projId, projName: projName}
+      console.log('goto proj overview.')
+      console.log(projRecord)
+      this.$store.commit('setProj', projRecord)
       this.$router.push({name:'ProjOverview', params: {proj_id: projId}})
     },
 
@@ -92,7 +97,8 @@ export default{
           this.listArr.push({
             id: i,
             name: proj.projName,
-            course: 'UNKNOWN',
+            course: proj.courseName,
+            description: proj.description,
             star: false
           })
         }
@@ -119,11 +125,16 @@ html,body{
   height: 100%;
 }
 .proj{
-  height: 100px;
+  height: 120px;
   text-align: center;
   padding-left: 10%;
 }
 
+.el-col, .el-row {
+  margin: 0;
+  padding: 0;
+  font-size: 0;
+}
 
 
 

@@ -69,11 +69,11 @@ export default {
       this.detailTeam= {}
     },
     isVisible(val){
-      if(this.Topic_ind!=''){
+      if(this.Topic_ind!==''){
         const topic = this.op_topic[this.Topic_ind]
         if(topic!==val.topic){return false}
       }
-      if(this.Status_ind!=''){
+      if(this.Status_ind!==''){
         const status = this.op_sta[this.Status_ind]
         if(status!==val.status){return false}
       }
