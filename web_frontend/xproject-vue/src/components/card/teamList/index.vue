@@ -1,23 +1,26 @@
 <template>
-  <el-card  class="proj-card" shadow="hover">
-    <div class="clearfix" >
-      {{ teamName}}
-    </div>
-    <div style="text-align: center">
+  <div class="blank">
+    <el-card  class="proj-card" shadow="hover">
+      <div class="clearfix" >
+        {{ teamName}}
+      </div>
+      <div style="text-align: center">
       <span v-for="i in Math.min(teamTag.length,5)" style="margin-left: 0.5rem">
           <el-tag :type="tagType[i-1]">{{teamTag[i-1]}}</el-tag>
         </span>
-    </div>
+      </div>
 
-    <div class="text item" slot="default">
-      <div>ID: {{teamID}}</div>
-      <div>Topic:  {{teamTopic}}</div>
-      <div>Status: {{teamSta}}</div>
-    </div>
+      <div class="text item" slot="default">
+        <div>ID: {{teamID}}</div>
+        <div>Topic:  {{teamTopic}}</div>
+        <div>Status: {{teamSta}}</div>
+      </div>
 
-    <div style="text-align: center">{{teamIntro}}</div>
+      <div style="text-align: center">{{teamIntro}}</div>
 
-  </el-card>
+    </el-card>
+  </div>
+
 </template>
 
 <script>
@@ -47,11 +50,15 @@ export default {
 </script>
 
 <style scoped>
+.blank{
+  display: block;
+  width: 320px;
+  height: 260px;
+}
 .text {
   font-size: 14px;
   line-height: 1.5em;
 }
-
 .item {
   padding-top: 20px;
   padding-left: 15px;
@@ -67,7 +74,6 @@ export default {
 
 
 }
-
 .proj-card {
   width: 300px;
   height: 240px;
