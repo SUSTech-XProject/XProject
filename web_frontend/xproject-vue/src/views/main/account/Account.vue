@@ -184,6 +184,7 @@ export default {
     getBio() {
       getUserHomeInfo().then(resp => {
         this.description = resp.data.data;
+        console.log(resp.data.data)
       }).catch(failResp => {
         console.log("fail to get response in getUserHomeInfo")
       })

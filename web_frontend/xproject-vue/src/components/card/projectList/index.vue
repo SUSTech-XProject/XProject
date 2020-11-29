@@ -6,7 +6,7 @@
 
       <el-button :icon = "iconData"
                  style="color: orange; font-size: 20px; margin-left: auto" type="text"
-                 @click.stop="favour(proj.id)"  circle></el-button>
+                 @click.stop="favour(proj.projId)"  circle></el-button>
     </el-row>
 
     <el-row style="display: flex; justify-content: flex-start; align-items: center">

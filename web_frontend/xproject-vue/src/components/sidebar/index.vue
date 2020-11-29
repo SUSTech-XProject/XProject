@@ -25,7 +25,7 @@
       <span slot="title">Account</span>
     </el-menu-item>
 
-    <el-menu-item-group v-if="this.$store.state.proj.projId !== null" id="proj-items">
+    <el-menu-item-group v-if="this.$route.path.indexOf('project') !== -1" id="proj-items">
       <div id="proj-title">
         <span v-if="!isCollapse" style="margin-left: 22px">Project List</span>
         <span v-if="isCollapse" style="margin-left: 22px"></span>
