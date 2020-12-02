@@ -5,7 +5,7 @@
            @open="handleOpen" @close="handleClose"
            @select="handleSelect"
            :collapse="isCollapse" style="height: 100%">
-    <el-menu-item id="Title" index="Welcome">
+    <el-menu-item id="title" index="Welcome">
       <i class="el-icon-first-aid-kit" ></i>
       <span slot="title">XProject</span>
     </el-menu-item>
@@ -158,20 +158,24 @@
   padding: 0;
   text-align: left;
 }
-#Title{
-  background-color: #9acafd;
+#title{
+  background-color: #303f55;
   color: white;
   font-size: 20px;
   height: 60px;
 }
 #left-bar{
   height: 100%;
+  background: #303f55;
 }
 
   #proj-title {
     font-size: 17px;
     padding: 10px 0 10px 0;
     background-color: #f8f8f8;
+  }
+  #left-bar span, i {
+    color: #becad8;
   }
   .img {
     display: inline-block;

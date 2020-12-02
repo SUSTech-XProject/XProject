@@ -39,9 +39,9 @@ const routes = [
         path: 'home-page',
         name: 'HomePage',
         component: HomePage,
-        meta: {
-          requireAuth: true
-        },
+        // meta: {
+        //   requireAuth: true
+        // },
       },
       {
         path: 'project-list',
@@ -129,6 +129,10 @@ const routes = [
     //   requireAuth: true
     // }
   },
+  {
+    path: '/test-1',
+    redirect: HomePage
+  }
 ]
 
 export default new Router({
