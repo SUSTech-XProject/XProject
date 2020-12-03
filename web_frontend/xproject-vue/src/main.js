@@ -37,15 +37,13 @@ router.beforeEach((to, from, next) => {
           // console.log(resp)
           // console.log('>>> resp.data.data: ')
           // console.log(role) // i.e. resp.data.data
-
+          console.log(to)
           if (to.fullPath.indexOf('/project/') !== -1) {
-            let projId = store.state.proj.projId
-            if (projId === null) {
+            if (to.params.projId === null) {
               next({name: 'HomePage'})
               return
             }
-            console.log('use proj_id=' + projId)
-            to.params['proj_id'] = projId
+            console.log('use proj_id=' + to.params.projId)
           }
           next()
 

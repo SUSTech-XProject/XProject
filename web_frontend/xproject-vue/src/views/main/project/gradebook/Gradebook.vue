@@ -111,7 +111,7 @@ export default {
     }
   },
   mounted () {
-    this.initGradebook()
+    // this.initGradebook()
   },
   methods:{
     gradeSorter (row, col) {

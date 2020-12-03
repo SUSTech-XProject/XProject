@@ -106,7 +106,8 @@
         if (key.indexOf("@") !== -1) {
           console.log('Not finished')
         } else {
-          this.$router.push({name: key})
+          let projId = this.$store.state.proj.projId;
+          this.$router.push({name: key, params: {proj_id: projId}})
         }
       }
     }
