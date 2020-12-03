@@ -23,7 +23,8 @@
 
       </div>
     </div>
-    <drawer v-bind="detailTeam"
+    <drawer :drawer.sync="drawerCtrl"
+            :id="drawerId"
             @closeDrawer = "closeDrawer"></drawer>
 
 
@@ -36,7 +37,7 @@ import searching from '@/components/searching/index'
 import teamcard from '@/components/card/teamList/index'
 import teamdrawer from '@/views/main/project/team/teamdrawer'
 import double from '@/components/selector/double'
-
+import {getTeamInfoList} from '@/api/team'
 
 export default {
   name: "Forming",
@@ -45,28 +46,75 @@ export default {
   },
   data(){
     return{
-      op_topic: ['Topic 0','Topic 1','Topic 2','Topic 3','Topic 4'],
-      op_sta:['1/5','2/5','3/5','4/5'],
-      op_tag:['tag0','tag1','tag2','tag3','tag4','tag5'],
+      op_topic: [],
+      op_sta:[],
+      op_tag:[],
       Topic_ind: '',
       Status_ind:'',
       Tag_ind:[],
-      teams:[
-        {id:1,name:'Team 1',topic:'Topic 1', status:'1/5', tags:['tag11','tag12','tag13'],intro:'introduction1'},
-        {id:2,name:'Team 2',topic:'Topic 2', status:'2/5', tags:['tag21','tag22','tag23'],intro:'introduction2'},
-        {id:3,name:'Team 3',topic:'Topic 3', status:'3/5', tags:['tag31','tag32','tag33'],intro:'introduction3'},
-        {id:4,name:'Team 4',topic:'Topic 4', status:'4/5', tags:['tag41','tag42','tag43'],intro:'introduction4'},
-      ],
+      teams:[],
       detailTeam:{},
+      drawerCtrl:false,
+      drawerId:1,
     }
   },
+  mounted () {
+    this.initTeams()
+
+  },
   methods:{
+    initTeams(){
+      let id = this.$store.state.proj.projId
+      console.log(id)
+      getTeamInfoList(parseInt(id)).then(resp => {
+        if (resp.data.code !== 200) {
+          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+          return false
+        }
+
+        let teamList = resp.data.data
+        console.log(teamList)
+        this.teams.splice(0,this.teams.length)
+        this.op_topic.splice(0,this.op_topic.length)
+        this.op_sta.splice(0,this.op_sta.length)
+        this.op_tag.splice(0,this.op_tag.length)
+        for (let i = 0; i < teamList.length; i++) {
+          let team = teamList[i]
+          this.teams.push({
+            id:team.projInstId,
+            name: team.teamName,
+            topic: team.topic,
+            status:team.targetMemNum,
+            tags:team.tags,
+            intro:team.descriptions
+          })
+          if(!this.op_topic.includes(team.topic)){
+            this.op_topic.push(team.topic)
+          }
+          if(!this.op_sta.includes(team.status)){
+            this.op_sta.push(team.status)
+          }
+          for (let j = 0; j <team.tags.length ; j++) {
+            let tag = team.tags[j]
+            if(!this.op_tag.includes(tag)){
+              this.op_tag.push(tag)
+            }
+
+          }
+        }
+      }).catch(failResp=>{
+        console.log('fail in getProjList. message=' + failResp.message)
+      })
+    },
     openDrawer(val){
-      val.drawer = true;
-      this.detailTeam = val;
+      this.drawerId = val.id
+      this.drawerCtrl = true
     },
     closeDrawer(){
-      this.detailTeam= {}
+      this.drawerCtrl = false
+      console.log(this.drawerCtrl)
     },
     isVisible(val){
       if(this.Topic_ind!==''){
@@ -77,8 +125,12 @@ export default {
         const status = this.op_sta[this.Status_ind]
         if(status!==val.status){return false}
       }
+
       if(this.Tag_ind.length!==0){
+        console.log(this.Tag_ind)
+        console.log(this.op_tag)
         for (const i in this.Tag_ind) {
+          console.log(this.op_tag[i])
           if(val.tags.indexOf(this.op_tag[i])!==-1){
             return true
           }
@@ -99,8 +151,6 @@ export default {
 }
 .cardList{
   display: inline-block;
-  margin-left: 2rem;
-  margin-bottom: 2rem;
 }
 .selecting{
   height: 60px;
