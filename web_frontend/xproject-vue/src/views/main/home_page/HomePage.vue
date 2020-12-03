@@ -7,9 +7,12 @@
       <div>{{ this.$store.state.role.username }}</div>
 
       <div style="margin-top: 15px">
-        <el-tag>hardworking</el-tag>
-        <el-tag type="success">efficient</el-tag>
-        <el-tag type="danger">earnest</el-tag>
+        <!--        <el-tag>hardworking</el-tag>-->
+        <!--        <el-tag type="success">efficient</el-tag>-->
+        <!--        <el-tag type="danger">earnest</el-tag>-->
+        <el-tag v-for="tag in tagList" :key="tag.name" :type="tag.type">
+          {{ tag.name }}
+        </el-tag>
       </div>
 
       <div style="width: 280px; margin-top: 20px" align="left">
@@ -21,12 +24,12 @@
       <div style="margin-top: 15px"><i class="el-icon-message"> 11111111@mail.sustech.edu.cn</i></div>
     </el-col>
 
-    <el-col span="15" :offset="1">
+    <el-col :span="15" :offset="1">
       <el-tabs :tab-position="tabPosition" type="card" style="height: 100%; margin-top: 20px" v-model="activeName">
         <el-tab-pane label="Overview" name="overview">
           <div style="margin-top: 10px">Recent project</div>
           <el-row>
-            <el-col span="12">
+            <el-col :span="12">
               <el-card class="box-card" style="width: 90%; margin-top: 20px" shadow="never">
                 <div>Project 0</div>
                 <div>Introduction</div>
@@ -34,7 +37,7 @@
               </el-card>
             </el-col>
 
-            <el-col span="12">
+            <el-col :span="12">
               <el-card class="box-card" style="width: 90%; margin-top: 20px" shadow="never">
                 <div>Project 1</div>
                 <div>Introduction</div>
@@ -42,7 +45,7 @@
               </el-card>
             </el-col>
 
-            <el-col span="12">
+            <el-col :span="12">
               <el-card class="box-card" style="width: 90%; margin-top: 20px" shadow="never">
                 <div>Project 2</div>
                 <div>Introduction</div>
@@ -66,19 +69,19 @@
 
         <el-tab-pane label="History" name="history">
           <el-row>
-            <el-col span="14">
+            <el-col :span="14">
               <el-input v-model="nameFilter" placeholder="Find a project..."
                         style="width: 100%"></el-input>
             </el-col>
 
-            <el-col span="3" style="margin-left: 20px">
+            <el-col :span="3" style="margin-left: 20px">
               <el-select v-model="valueYear" placeholder="Year: All">
                 <el-option v-for="year in years" :key="year.value"
                            :label="year.label" :value="year.value"></el-option>
               </el-select>
             </el-col>
 
-            <el-col span="3" style="margin-left: 20px">
+            <el-col :span="3" style="margin-left: 20px">
               <el-select v-model="valueCourse" placeholder="Course: All" style="width: 110%">
                 <el-option v-for="course in courses" :key="course.value"
                            :label="course.label" :value="course.value"></el-option>
@@ -120,14 +123,17 @@
 </template>
 
 <script>
-import {getUserHomeInfo} from "@/api/home_page";
+import {getUserHomeInfo} from '@/api/home_page'
 
 export default {
-  name: "HomePage",
+  name: 'HomePage',
   components: {},
-  data() {
+  data () {
     return {
       description: '',
+
+      //tag
+      tagList: [],
 
       //tab
       tabPosition: 'top',
@@ -140,7 +146,8 @@ export default {
         {value: '0', label: '2018'},
         {value: '1', label: '2019'},
         {value: '2', label: '2020'},
-        {value: '3', label: '2021'}],
+        {value: '3', label: '2021'}
+      ],
       valueYear: '',
 
       //course filter
@@ -154,18 +161,52 @@ export default {
       valueCourse: '',
     }
   },
-  mounted() {
+  mounted () {
     this.init()
   },
   methods: {
-    init() {
+    init () {
       console.log('init home page')
       getUserHomeInfo().then(resp => {
-        this.description = resp.data.data;
-      }).catch(failResp => {
-        console.log("fail to get response in getUserHomeInfo")
+          if (resp.data.code === 200) {
+            let infoDict = resp.data.data
+
+            // this.description = infoDict.description
+
+            // let tagList = infoDict.tagList
+            // for (let i = 0; i < tagList.length; ++i) {
+            //   this.tagList.push({name: tagList[i].name,type: ''})
+            // }
+          } else if (resp.data.code === 400) {
+            console.log(resp.data.message)
+            this.$alert(resp.data.message, 'Tip', {
+              confirmButtonText: 'OK'
+            })
+          }
+        }
+      ).catch(failResp => {
+        this.$alert('Error: ' + failResp.message, 'Tips', {
+          confirmButtonText: 'OK'
+        })
       })
     }
+    // getTags () {
+    //   console.log('get personal tags')
+    //   getUserTag().then(resp => {
+    //     if(resp.data.code === 200){
+    //       var arr = eval('${list}');
+    //     }else if(resp.data.code === 400){
+    //       console.log(resp.data.message)
+    //       this.$alert(resp.data.message, 'Tip', {
+    //         confirmButtonText: 'OK'
+    //       })
+    //     }
+    //   }).catch(failResp=>{
+    //     this.$alert('Error' + failResp.message, 'Tips', {
+    //       confirmButtonText: 'OK'
+    //     })
+    //   })
+    // }
   }
 }
 </script>
