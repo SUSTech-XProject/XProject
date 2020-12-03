@@ -15,6 +15,7 @@ import Forming from "@/views/main/project/team/Forming";
 import ProjOverview from "@/views/main/project/overview/ProjOverview";
 import ProjPage from "@/views/main/project/ProjPage";
 import Announcement from '@/views/main/project/announcement/Announcement'
+import Gradebook from "@/views/main/project/gradebook/Gradebook";
 
 Vue.use(Router)
 
@@ -94,6 +95,14 @@ const routes = [
             meta: {
               requireAuth: true
             },
+          },
+          {
+            path: 'gradebook',
+            name: 'Gradebook',
+            component: Gradebook,
+            meta: {
+              requireAuth: true
+            },
           }
         ]
       }
@@ -128,10 +137,6 @@ const routes = [
     // meta: {
     //   requireAuth: true
     // }
-  },
-  {
-    path: '/test-1',
-    redirect: HomePage
   }
 ]
 

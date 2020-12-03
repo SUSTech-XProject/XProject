@@ -62,7 +62,7 @@
         <i class="el-icon-document"></i>
         <span slot="title">Submissions</span>
       </el-menu-item>
-      <el-menu-item index="@7">
+      <el-menu-item index="Gradebook">
         <i class="el-icon-collection"></i>
         <span slot="title">Gradebook</span>
       </el-menu-item>
@@ -103,12 +103,7 @@
         if (key.indexOf("@") !== -1) {
           console.log('Not finished')
         } else {
-          let projId = this.$store.state.proj.projId;
-          if (projId === null) {
-            this.$router.push({name: key})
-          } else {
-            this.$router.push({name: key, params: {proj_id: projId}})
-          }
+          this.$router.push({name: key})
         }
       }
     }

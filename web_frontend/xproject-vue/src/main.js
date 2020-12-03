@@ -26,18 +26,25 @@ router.beforeEach((to, from, next) => {
       let username = store.state.role.username
       if (username) {
         getAuth().then(resp => {
-          if (resp.data.code === 200) {
-            let role = resp.data.data
-            store.commit('updateRoleType', role.roleType)
-            console.log('>>> resp: ')
-            console.log(resp)
-            console.log('>>> resp.data.data: ')
-            console.log(role) // i.e. resp.data.data
-            next()
-          } else {
+          if (resp.data.code !== 200) {
             console.log('fail in beforeEach, resp:')
             console.log(resp)
+            return
           }
+          let role = resp.data.data
+          store.commit('updateRoleType', role.roleType)
+          // console.log('>>> resp: ')
+          // console.log(resp)
+          // console.log('>>> resp.data.data: ')
+          // console.log(role) // i.e. resp.data.data
+
+          if (to.fullPath.indexOf('/project/') !== -1) {
+            let projId = store.state.proj.projId
+            console.log('use proj_id=' + projId)
+            to.params['proj_id'] = projId
+          }
+          next()
+
         }).catch(failResp => {
           console.log('fail in beforeEach :' + failResp.message)
         })

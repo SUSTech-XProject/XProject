@@ -1,95 +1,138 @@
 <template>
-  <div>
+  <el-card id="base-card">
+    <div slot="header" class="">
+      <span id="title-text">Gradebook</span>
+    </div>
+
     <el-table
-      :data="tableData"
+      :data="gradeList"
+      :default-sort = "{prop: 'index', order: 'increasing'}"
       style="width: 100%">
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="demo-table-expand">
-            <el-form-item label="商品名称">
-              <span>{{ props.row.name }}</span>
+            <el-form-item label="Creator">
+              <span>{{ props.row.creatorStr }}</span>
             </el-form-item>
-            <el-form-item label="所属店铺">
-              <span>{{ props.row.shop }}</span>
+            <el-form-item label="Type">
+              <span>{{ props.row.type }}</span>
             </el-form-item>
-            <el-form-item label="商品 ID">
-              <span>{{ props.row.id }}</span>
+            <el-form-item v-if="props.row.derived"
+                          label="Derived from">
+              <span>{{ props.row.derived }}</span>
             </el-form-item>
-            <el-form-item label="店铺 ID">
-              <span>{{ props.row.shopId }}</span>
-            </el-form-item>
-            <el-form-item label="商品分类">
-              <span>{{ props.row.category }}</span>
-            </el-form-item>
-            <el-form-item label="店铺地址">
-              <span>{{ props.row.address }}</span>
-            </el-form-item>
-            <el-form-item label="商品描述">
-              <span>{{ props.row.desc }}</span>
+            <br>
+            <el-form-item label="Comment">
+              <span>{{ props.row.comment }}</span>
             </el-form-item>
           </el-form>
         </template>
       </el-table-column>
-      <el-table-column
-        label="商品 ID"
-        prop="id">
-      </el-table-column>
-      <el-table-column
-        label="商品名称"
-        prop="name">
-      </el-table-column>
-      <el-table-column
-        label="描述"
-        prop="desc">
+      <el-table-column label="Index" prop="index" width="100" sortable/>
+      <el-table-column label="Name" prop="name" sortable/>
+      <el-table-column label="Created time" prop="createdTime" sortable/>
+      <el-table-column label="Grade" sortable :sort-method="gradeSorter">
+        <template slot-scope="scope">
+          <span style="margin-left: 10px">{{ scope.row.content }}</span>
+          <span v-if="scope.row.baseContent"
+                style="margin-left: 2px">/ {{ scope.row.baseContent }}</span>
+        </template>
       </el-table-column>
     </el-table>
-  </div>
+  </el-card>
 </template>
 
 <script>
+import {getGradeList} from "@/api/grade";
+
 export default {
   name: "Gradebook",
   components:{
   },
   data() {
     return {
-      tableData: [{
-        id: '12987122',
-        name: '好滋好味鸡蛋仔',
-        category: '江浙小吃、小吃零食',
-        desc: '荷兰优质淡奶，奶香浓而不腻',
-        address: '上海市普陀区真北路',
-        shop: '王小虎夫妻店',
-        shopId: '10333'
-      }, {
-        id: '12987123',
-        name: '好滋好味鸡蛋仔',
-        category: '江浙小吃、小吃零食',
-        desc: '荷兰优质淡奶，奶香浓而不腻',
-        address: '上海市普陀区真北路',
-        shop: '王小虎夫妻店',
-        shopId: '10333'
-      }, {
-        id: '12987125',
-        name: '好滋好味鸡蛋仔',
-        category: '江浙小吃、小吃零食',
-        desc: '荷兰优质淡奶，奶香浓而不腻',
-        address: '上海市普陀区真北路',
-        shop: '王小虎夫妻店',
-        shopId: '10333'
-      }, {
-        id: '12987126',
-        name: '好滋好味鸡蛋仔',
-        category: '江浙小吃、小吃零食',
-        desc: '荷兰优质淡奶，奶香浓而不腻',
-        address: '上海市普陀区真北路',
-        shop: '王小虎夫妻店',
-        shopId: '10333'
-      }]
+      gradeList: [
+        {
+          index: 1,
+          name: 'assignment1',
+          createdTime: '12/01/2020 14:00',
+          creatorStr: 'Dehua Liu',
+          type: 'Point',
+          content: 96,
+          baseContent: 100,
+          derived: '',
+          comment: '1.2 no pic -2; 1.4 no text -2'
+        },
+        {
+          index: 2,
+          name: 'assignment2',
+          createdTime: '12/02/2020 14:00',
+          creatorStr: 'Dehua Liu',
+          type: 'Point',
+          content: 90,
+          baseContent: 100,
+          derived: '',
+          comment: 'None'
+        },
+        {
+          index: 3,
+          name: 'assignment3',
+          createdTime: '12/03/2020 14:00',
+          creatorStr: 'Dehua Liu',
+          type: 'Point',
+          content: 87,
+          baseContent: 100,
+          derived: '',
+          comment: 'None'
+        },
+        {
+          index: 4,
+          name: 'report',
+          createdTime: '12/06/2020 14:00',
+          creatorStr: 'Dehua Liu',
+          type: 'Grade',
+          content: 'A',
+          baseContent: null,
+          derived: '',
+          comment: 'report grade'
+        },
+        {
+          index: 5,
+          name: 'assignment total',
+          createdTime: '12/08/2020 14:00',
+          creatorStr: 'Dehua Liu',
+          type: 'Point',
+          content: 91.0,
+          baseContent: 100,
+          derived: 'assignment1 assignment2 assignment3',
+          comment: 'assignment avg score'
+        },
+      ]
     }
   },
+  mounted () {
+    this.initGradebook()
+  },
   methods:{
-
+    gradeSorter (row, col) {
+      return row.content
+    },
+    initGradebook () {
+      let projId = this.$store.state.proj.projId
+      getGradeList(projId).then(resp => {
+        if (resp.data.code !== 200) {
+          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+          return false
+        }
+        this.gradeList.splice(0, this.gradeList.length)   // remove all
+        this.gradeList.appendData(resp.data.data)
+        console.log(this.gradeList)
+      }).catch(failResp => {
+        console.log('fail in getGradeList. message=' + failResp.message)
+      })
+    }
   }
 }
 </script>
@@ -106,5 +149,16 @@ export default {
     margin-right: 0;
     margin-bottom: 0;
     width: 50%;
+  }
+  .clearfix:before,
+  .clearfix:after {
+    display: table;
+    content: "";
+  }
+  #base-card {
+    margin: 10px;
+  }
+  #title-text {
+    font-size: 20px;
   }
 </style>
