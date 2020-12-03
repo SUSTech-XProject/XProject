@@ -42,5 +42,6 @@ export default {
 }
   .el-main {
     background: #ffffff;
+    box-shadow: inset 0 5px 10px -10px #454545;
   }
 </style>

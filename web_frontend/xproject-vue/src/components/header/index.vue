@@ -1,44 +1,23 @@
 <template>
-  <div id = "header">
-    <el-header>
-<!--      <i v-bind:class="[{'el-icon-d-arrow-right':isFolded},'el-icon-d-arrow-left']"></i>-->
-<!--      <div v-if="this.$store.state.proj.projId !== null">-->
-<!--        <Breadcrumb></Breadcrumb>-->
-<!--      </div>-->
-<!--      <div v-else id="partname"></div>-->
-      <el-row class="header">
+  <div id="header">
 <!--        <span>{{part}}</span>-->
-        <el-col v-if="this.$store.state.proj.projId !== null">
-          <Breadcrumb></Breadcrumb>
-        </el-col>
-        <el-col :span="20">test</el-col>
-        <el-col :span="2">
-          <el-dropdown>
-        <span class="el-dropdown-link">
-          <i style="margin-left: 80%" class="el-icon-help"></i>
-        </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item icon="el-icon-question">Help</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </el-col>
+    <div v-if="this.$store.state.proj.projId !== null" id="bread-crumb-div">
+      <Breadcrumb></Breadcrumb>
+    </div>
 
-        <el-col :span="2">
-          <el-dropdown @command="handleCommand" trigger="click">
-        <span class="el-dropdown-link">
-          <i style="margin-left: 0px" class ="el-icon-user"></i>
-        </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item icon="el-icon-s-custom">Account</el-dropdown-item>
-              <el-dropdown-item icon="el-icon-menu">Overview</el-dropdown-item>
-              <el-dropdown-item icon="el-icon-error">Log out</el-dropdown-item>
-              <el-dropdown-item icon="el-icon-check">Others</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </el-col>
-      </el-row>
+<!--        <el-button style="margin: auto 20px auto 50px" class="header-btm"-->
+<!--                   icon="el-icon-message-solid">-->
+<!--        </el-button>-->
 
-    </el-header>
+    <el-dropdown @command="handleCommand" trigger="click">
+      <el-button style="margin: auto 50px auto 20px" class="header-btm"
+                 type="text" icon="el-icon-user-solid">
+      </el-button>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item>Home Page</el-dropdown-item>
+        <el-dropdown-item command="logout">Log out</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
   </div>
 </template>
 
@@ -90,7 +69,7 @@ export default {
 
 <style scoped>
 #header {
-  background-color: #edf4ff;
+  background-color: #ffffff;
   color: #333;
   line-height: 60px;
   width:100%;
@@ -98,8 +77,14 @@ export default {
   font-size: 20px;
   text-align: left;
   display: flex;
-  align-content: center;
+  align-items: center;
   justify-content: flex-end;
+
+  box-shadow: -10px 10px 10px #000000;
+}
+#bread-crumb-div {
+  margin-left: 20px;
+  margin-right: auto;
 }
 .i {
   text-align: center;

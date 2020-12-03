@@ -156,7 +156,7 @@ export default {
     content: "";
   }
   #base-card {
-    margin: 10px;
+    margin: 15px 10px
   }
   #title-text {
     font-size: 20px;
