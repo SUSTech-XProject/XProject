@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import logo from '@/assets/xproject-icon.png'
+import logo from '@/assets/xproject-icon-v3.png'
 export default {
   name: 'LRTop',
   props: {

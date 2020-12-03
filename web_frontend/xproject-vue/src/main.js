@@ -40,6 +40,10 @@ router.beforeEach((to, from, next) => {
 
           if (to.fullPath.indexOf('/project/') !== -1) {
             let projId = store.state.proj.projId
+            if (projId === null) {
+              next({name: 'HomePage'})
+              return
+            }
             console.log('use proj_id=' + projId)
             to.params['proj_id'] = projId
           }

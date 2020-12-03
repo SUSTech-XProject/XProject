@@ -10,8 +10,7 @@
 <!--        </el-button>-->
 
     <el-dropdown @command="handleCommand" trigger="click">
-      <el-button style="margin: auto 50px auto 20px" class="header-btm"
-                 type="text" icon="el-icon-user-solid">
+      <el-button class="header-btm" type="text" icon="el-icon-user">
       </el-button>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item>Home Page</el-dropdown-item>
@@ -100,7 +99,8 @@ export default {
   bottom: 10%;
 }
   .header-btm {
-
+    margin: auto 50px auto 20px;
+    font-size: 20px;
   }
 
 </style>
