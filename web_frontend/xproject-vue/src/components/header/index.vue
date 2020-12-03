@@ -10,7 +10,7 @@
 <!--        </el-button>-->
 
     <el-dropdown @command="handleCommand" trigger="click">
-      <el-button class="header-btm" type="text" icon="el-icon-user">
+      <el-button class="header-btm" type="text" icon="el-icon-user-solid">
       </el-button>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item>Home Page</el-dropdown-item>
