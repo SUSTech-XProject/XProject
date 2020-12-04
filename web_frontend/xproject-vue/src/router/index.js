@@ -40,9 +40,9 @@ const routes = [
         path: 'home-page',
         name: 'HomePage',
         component: HomePage,
-        // meta: {
-        //   requireAuth: true
-        // },
+        meta: {
+          requireAuth: true
+        },
       },
       {
         path: 'project-list',

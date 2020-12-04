@@ -1,6 +1,6 @@
 <template>
   <div style="height: 100%">
-    <el-scrollbar>
+    <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu :default-active="activeIdx"
                class="el-menu-vertical-demo"
                id="left-bar"
@@ -71,7 +71,7 @@
             <i class="el-icon-collection"></i>
             <span slot="title">Gradebook</span>
           </el-menu-item>
-          <div style="height: 60px"></div>
+          <div style="height: 100px; width: 2%"></div>
         </div>
 
 
@@ -124,6 +124,9 @@
 </script>
 
 <style scoped>
+  #left-bar-div {
+    height: 100%;
+  }
 #left-bar{
   text-align: left;
   /*background: blueviolet;*/
@@ -168,12 +171,15 @@
     margin-right: 12px;
     cursor: default;
   }
+
   .el-scrollbar {
     height: 100%;
     background: #303f55;
+    overflow-x: hidden;
   }
 
-  .el-scrollbar__wrap {
+  .el-scrollbar >>> .el-scrollbar__wrap {
     overflow-x: hidden;
+    height: 100%;
   }
 </style>

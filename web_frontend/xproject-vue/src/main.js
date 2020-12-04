@@ -41,16 +41,20 @@ router.beforeEach((to, from, next) => {
           if (to.fullPath.indexOf('/project/') !== -1) {
             if (to.params.projId === null) {
               next({name: 'HomePage'})
-              return
             }
             console.log('use proj_id=' + to.params.projId)
           }
           next()
 
         }).catch(failResp => {
-          console.log('fail in beforeEach :' + failResp.message)
+          console.log(failResp)
+          next({
+            name: 'Login',
+            query: {redirect: to.fullPath}
+          })
         })
       } else {
+          console.log('fail in beforeEach :')
         next({
           name: 'Login',
           query: {redirect: to.fullPath}

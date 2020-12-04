@@ -95,7 +95,7 @@ export default{
         for (let i = 0; i < projList.length; i++) {
           let proj = projList[i]
           this.listArr.push({
-            id: i,
+            id: proj.projId,
             name: proj.projName,
             course: proj.courseName,
             description: proj.description,
