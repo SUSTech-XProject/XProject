@@ -111,6 +111,8 @@ export default {
       //tag
       impressionList: [],
       skillList: [],
+
+      //projList
       fullProjList: [],
       firstThreeProjList: [],
 
