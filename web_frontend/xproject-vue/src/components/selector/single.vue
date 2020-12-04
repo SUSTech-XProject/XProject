@@ -39,5 +39,7 @@ name: "index",
 </script>
 
 <style scoped>
-
+.el-form-item__content .el-select__tags{
+  flex-wrap: nowrap
+}
 </style>

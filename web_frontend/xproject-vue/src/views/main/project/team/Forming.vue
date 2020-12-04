@@ -1,12 +1,14 @@
 <template>
-  <div>
-    <div style="background-color: #f7fcff;margin-top: 0">
-      <h2 style="padding-left: 40px;">Team Wanted !</h2>
+  <el-card id="base-card">
+    <div slot="header">
+     Team Wanted !
+    </div>
+    <div style="margin-top: 0">
       <el-row class="selecting" :gutter="20">
         <el-col :span="5" style="padding-left: 50px" >Topics:
           <selector :in-list="op_topic" :index.sync="Topic_ind"></selector>
         </el-col>
-        <el-col :span="4">Status:
+        <el-col :span="6">Target Members:
           <selector :in-list="op_sta" :index.sync="Status_ind"></selector>
         </el-col>
         <el-col :span="7">Tags:
@@ -28,7 +30,7 @@
             @closeDrawer = "closeDrawer"></drawer>
 
 
-  </div>
+  </el-card>
 </template>
 
 <script>
@@ -93,8 +95,8 @@ export default {
           if(!this.op_topic.includes(team.topic)){
             this.op_topic.push(team.topic)
           }
-          if(!this.op_sta.includes(team.status)){
-            this.op_sta.push(team.status)
+          if(!this.op_sta.includes(team.targetMemNum)){
+            this.op_sta.push(team.targetMemNum)
           }
           for (let j = 0; j <team.tags.length ; j++) {
             let tag = team.tags[j]
@@ -144,6 +146,9 @@ export default {
 </script>
 
 <style scoped>
+#base-card{
+  margin: 15px 10px
+}
 .board{
   display: inline-block;
   padding-left: 30px;
@@ -153,7 +158,6 @@ export default {
   display: inline-block;
 }
 .selecting{
-  height: 60px;
   text-align: left;
   display: flex;
   width: 100%;

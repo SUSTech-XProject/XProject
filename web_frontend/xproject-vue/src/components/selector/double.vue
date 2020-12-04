@@ -1,8 +1,8 @@
 <template>
   <el-select v-model="value"
              multiple
-             style="margin-left: 20px;width: 240px"
-             :multiple-limit="3"
+             style="margin-left: 20px;width: 240px;"
+             collapse-tags
              :clearable = "true"
              placeholder="Selecting...">
     <el-option
@@ -39,5 +39,7 @@ export default {
 </script>
 
 <style scoped>
-
+.el-form-item__content .el-select__tags{
+  flex-wrap: nowrap
+}
 </style>
