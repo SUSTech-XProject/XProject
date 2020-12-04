@@ -20,6 +20,7 @@
 
           <el-col :span="16">
             <div class="team-name">{{teamName}}</div>
+            <div style="margin-left: 15px">{{teamTopic}}</div>
             <div style="padding: 0; text-align:left; margin-top: 20px">
               <span v-for="i in Math.min(teamTags.length,5)" style="margin-left: 0.5rem">
                 <el-tag :type="tagType[teamTags[i-1].length%4]">{{teamTags[i-1]}}</el-tag>
@@ -152,6 +153,7 @@ export default {
         this.teamName = team.teamName
         this.teamMembers = team.teamMemberList
         this.teamSta = this.teamMembers.length+"/"+team.targetMemNum
+        this.teamTopic = team.topic
         console.log(this.teamMembers.length)
 
       })
@@ -209,6 +211,8 @@ footer {
   font-size: 40px;
   padding:0;
   text-align:left;
-  margin-top: 20px
+  margin-top: 20px;
+  margin-bottom: 10px;
+  margin-left:10px;
 }
 </style>
