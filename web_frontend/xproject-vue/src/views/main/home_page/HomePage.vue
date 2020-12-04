@@ -6,10 +6,10 @@
 
       <div>{{ this.$store.state.role.username }}</div>
 
-      <div style="margin-top: 15px">
-        <!--        <el-tag>hardworking</el-tag>-->
-        <!--        <el-tag type="success">efficient</el-tag>-->
-        <!--        <el-tag type="danger">earnest</el-tag>-->
+      <div style="margin-top: 15px" v-if="this.roleType==='S'">
+        <!--                <el-tag>hardworking</el-tag>-->
+        <!--                <el-tag type="success">efficient</el-tag>-->
+        <!--                <el-tag type="danger">earnest</el-tag>-->
         <el-tag v-for="tag in impressionList" :key="tag.name" :type="tag.type" class="el-tag">
           {{ tag.name }}
         </el-tag>
@@ -38,16 +38,18 @@
             </el-col>
           </el-row>
 
-          <div style="margin-top: 40px">Skill List</div>
-          <div style="margin-top: 15px">
-            <!--            <el-tag>Java</el-tag>-->
-            <!--            <el-tag type="success">cpp</el-tag>-->
-            <!--            <el-tag type="danger">Spring Boot</el-tag>-->
-            <!--            <el-tag>vue</el-tag>-->
-            <!--            <el-tag type="success">UI Design</el-tag>-->
-            <el-tag v-for="skill in skillList" :key="skill.name" :type="skill.type" effect="plain" class="el-tag">
-              {{ skill.name }}
-            </el-tag>
+          <div v-if="this.roleType==='S'">
+            <div style="margin-top: 40px">Skill List</div>
+            <div style="margin-top: 15px">
+              <!--            <el-tag>Java</el-tag>-->
+              <!--            <el-tag type="success">cpp</el-tag>-->
+              <!--            <el-tag type="danger">Spring Boot</el-tag>-->
+              <!--            <el-tag>vue</el-tag>-->
+              <!--            <el-tag type="success">UI Design</el-tag>-->
+              <el-tag v-for="skill in skillList" :key="skill.name" :type="skill.type" effect="plain" class="el-tag">
+                {{ skill.name }}
+              </el-tag>
+            </div>
           </div>
 
           <div style="margin-top: 40px">Statistic</div>
@@ -79,7 +81,7 @@
 
           <el-card class="box-card" style="width: 93%; margin-top: 20px" shadow="never"
                    v-for="proj in fullProjList" :key="proj.projName"
-                   v-if="selectivelyDisplay(proj)">
+                   v-if="selectivelyDisplay(proj)" @click.native="gotoProjOverview(proj.projId, proj.name)">
             <div class="title">{{ proj.projName }}</div>
             <div class="text">{{ proj.description }}</div>
             <p></p>
@@ -99,6 +101,8 @@ export default {
   components: {},
   data () {
     return {
+      roleType: 'S',
+
       description: '',
       company: '',
       location: '',
@@ -131,6 +135,9 @@ export default {
   methods: {
     init () {
       console.log('init home page')
+
+      this.roleType = this.$store.state.role.roleType
+
       getUserHomeInfo().then(resp => {
         if (resp.data.code === 200) {
           let infoDict = resp.data.data
@@ -171,7 +178,6 @@ export default {
             if (!this.inYearList(year)) {
               let len = this.yearList.length
               this.yearList.push({value: len, label: year})
-              console.log(this.yearList)
             }
             infoDict[i].createTime = year
 
@@ -236,7 +242,14 @@ export default {
       }
 
       return display
-    }
+    },
+    gotoProjOverview (projId, projName) {
+      let projRecord = {projId: projId, projName: projName}
+      console.log('goto proj overview.')
+      console.log(projRecord)
+      this.$store.commit('setProj', projRecord)
+      this.$router.push({name: 'ProjOverview', params: {proj_id: projId}})
+    },
   }
 }
 </script>
@@ -265,7 +278,7 @@ export default {
   margin-left: 10px;
 }
 
-.el-select-dropdown .el-scrollbar >>> .el-scrollbar__wrap{
+.el-select-dropdown .el-scrollbar >>> .el-scrollbar__wrap {
   overflow: scroll;
 }
 </style>
