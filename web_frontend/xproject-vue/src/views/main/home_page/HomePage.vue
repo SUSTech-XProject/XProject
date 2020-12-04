@@ -1,8 +1,8 @@
 <template>
-  <el-card style="width:98%; height:98%; margin-top: 1%; margin-left: 1%">
-    <el-col style="width: 280px" :offset="1">
+  <el-card style="width:98%; height:98%; margin-top: 1%; margin-left: 1%" >
+    <el-col :span="4" :offset="2">
       <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"
-                 :size="280"></el-avatar>
+                 :size="240" :fit="'fill'"></el-avatar>
 
       <div>{{ this.$store.state.role.username }}</div>
 
@@ -144,6 +144,7 @@ export default {
         if (resp.data.code === 200) {
           let infoDict = resp.data.data
 
+          this.description = infoDict
           // this.description = infoDict.description
           // this.company=infoDict.company
           // this.location=infoDict.location
