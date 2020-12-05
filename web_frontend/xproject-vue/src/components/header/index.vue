@@ -78,8 +78,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-
-  box-shadow: -10px 10px 10px #000000;
 }
 #bread-crumb-div {
   margin-left: 20px;

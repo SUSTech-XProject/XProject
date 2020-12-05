@@ -39,14 +39,20 @@ router.beforeEach((to, from, next) => {
           // console.log(role) // i.e. resp.data.data
           console.log(to)
           if (to.fullPath.indexOf('/project/') !== -1) {
-            if (to.params.projId === null) {
+            if (to.params.proj_id == null) {
               next({name: 'HomePage'})
             }
-            console.log('use proj_id=' + to.params.projId)
+            console.log('use proj_id=' + to.params.proj_id)
           }
           next()
 
         }).catch(failResp => {
+          if (failResp.message.indexOf('Network error') !== -1) {
+            this.$alert('Error ' + failResp.message, 'Tips', {
+              confirmButtonText: 'OK'
+            })
+            return false
+          }
           console.log(failResp)
           next({
             name: 'Login',

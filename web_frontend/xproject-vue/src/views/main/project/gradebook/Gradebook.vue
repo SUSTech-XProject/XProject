@@ -6,13 +6,15 @@
 
     <el-table
       :data="gradeList"
+      empty-text="No Data Found"
       :default-sort = "{prop: 'index', order: 'increasing'}"
       style="width: 100%">
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="demo-table-expand">
             <el-form-item label="Creator">
-              <span>{{ props.row.creatorStr }}</span>
+              <span>{{ props.row.tchName }}</span>
+              <span style="margin-left: 10px">{{ props.row.email }}</span>
             </el-form-item>
             <el-form-item label="Type">
               <span>{{ props.row.type }}</span>
@@ -23,14 +25,14 @@
             </el-form-item>
             <br>
             <el-form-item label="Comment">
-              <span>{{ props.row.comment }}</span>
+              <span>{{ props.row.comments }}</span>
             </el-form-item>
           </el-form>
         </template>
       </el-table-column>
-      <el-table-column label="Index" prop="index" width="100" sortable/>
-      <el-table-column label="Name" prop="name" sortable/>
-      <el-table-column label="Created time" prop="createdTime" sortable/>
+      <el-table-column label="Index" prop="list_idx" width="100" sortable/>
+      <el-table-column label="Name" prop="rcdName" sortable/>
+      <el-table-column label="Modified time" prop="modifiedTime" sortable/>
       <el-table-column label="Grade" sortable :sort-method="gradeSorter">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.content }}</span>
@@ -111,14 +113,16 @@ export default {
     }
   },
   mounted () {
-    // this.initGradebook()
+    this.initGradebook()
   },
   methods:{
     gradeSorter (row, col) {
       return row.content
     },
     initGradebook () {
+      this.gradeList.splice(0, this.gradeList.length)   // remove all
       let projId = this.$store.state.proj.projId
+
       getGradeList(projId).then(resp => {
         if (resp.data.code !== 200) {
           this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
@@ -127,7 +131,12 @@ export default {
           return false
         }
         this.gradeList.splice(0, this.gradeList.length)   // remove all
-        this.gradeList.appendData(resp.data.data)
+        for (let i = 0; i < resp.data.data.length; i ++) {
+          let record = resp.data.data[i]
+          record['list_idx'] = i
+          console.log(record)
+          this.gradeList.push(record)
+        }
         console.log(this.gradeList)
       }).catch(failResp => {
         console.log('fail in getGradeList. message=' + failResp.message)

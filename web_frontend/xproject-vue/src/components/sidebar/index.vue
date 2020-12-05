@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%">
+  <div style="height: 100%; width: 100%">
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu :default-active="activeIdx"
                class="el-menu-vertical-demo"
@@ -71,7 +71,7 @@
             <i class="el-icon-collection"></i>
             <span slot="title">Gradebook</span>
           </el-menu-item>
-          <div style="height: 100px; width: 2%"></div>
+          <div style="height: 70px"></div>
         </div>
 
 

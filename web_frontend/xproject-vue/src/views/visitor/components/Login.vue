@@ -105,7 +105,7 @@ export default {
           this.btmLoading = false
           return true
         }).catch(failResp => {
-          this.$alert('Error' + failResp.message, 'Tips', {
+          this.$alert('Error ' + failResp.message, 'Tips', {
             confirmButtonText: 'OK'
           })
 

@@ -1,5 +1,5 @@
 <template>
-  <div style="margin: 20px 20px 20px 20px">
+  <el-card style="margin: 12px 10px">
     <el-row style="display: flex; margin: 0 10px 10px 50px; justify-content: flex-start">
       <div style="font-size: 30px; font-weight: bold; text-align:left; margin: 0 50px 0 0">Project List</div>
     </el-row>
@@ -16,7 +16,7 @@
                 @click.native= "gotoProjOverview(list.id, list.name)"></card>
         </div>
     </div>
-  </div>
+  </el-card>
 </template>
 
 <script>
