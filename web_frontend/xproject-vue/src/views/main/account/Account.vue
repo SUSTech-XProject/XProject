@@ -1,6 +1,6 @@
 <template>
-  <div style="margin-top: 20px; width:100%">
-    <el-col :span="14" style="margin-left: 20px">
+  <el-card class="base-card" style="min-height: 95.7%;">
+    <el-col :span="14" :offset="2">
       <el-tabs :tab-position="tabPosition" type="card" style="height: 100%;" v-model="activeName">
         <el-tab-pane label="Account Information" name="accountInfo">
           <div style="font-size: 30px; font-weight:bold; margin-left: 20px">
@@ -8,30 +8,10 @@
             <el-divider></el-divider>
           </div>
           <el-container style="margin-left: 20px;">
-            <el-form ref="form" :model="form" label-width="110px">
-              <el-form-item label="Student ID" class="form-item-height">
-                11111111
-              </el-form-item>
-              <el-form-item label="First name" class="form-item-height">
-
-              </el-form-item>
-              <el-form-item label="Last name" class="form-item-height">
-                {{ this.$store.state.role.username }}
-              </el-form-item>
-              <el-form-item label="Email" class="form-item-height">
-                11111111@mail.sustech.edu.cn
-              </el-form-item>
-              <el-form-item label="Type" class="form-item-height">
-                registered
-              </el-form-item>
-              <el-form-item label="disabled" class="form-item-height">
-                False
-              </el-form-item>
-              <el-form-item label="Creator" class="form-item-height">
-                Admin SUPPER
-              </el-form-item>
-              <el-form-item label="Creation time" class="form-item-height">
-                2020/11/10
+            <el-form ref="form" :model="formInfoList" label-width="110px">
+              <el-form-item class="form-item-height"
+                            v-for="info in formInfoList" :key="info.label" v-bind:label="info.label">
+                {{ info.value }}
               </el-form-item>
             </el-form>
           </el-container>
@@ -43,45 +23,45 @@
             <el-divider></el-divider>
           </div>
 
-          <div class="personalInfoTitle" style="margin-left: 20px;">
-            My Tags
-          </div>
-          <div class="personalInfoTypesetting">
-            <el-tag :key="tag" v-for="tag in dynamicTags" closable :disable-transitions="false"
-                    @close="handleClose(tag)">
-              {{ tag }}
-            </el-tag>
-            <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small"
-                      @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm">
-            </el-input>
-            <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
-          </div>
+          <div v-if="this.roleType==='S'">
+            <div class="personalInfoTitle" style="margin-left: 20px;">
+              Impression Tags
+            </div>
+            <div class="personalInfoTypesetting">
+              <el-tag :key="tag" v-for="tag in impressionTagList" closable
+                      :disable-transitions="false" effect="plain"
+                      @close="handleImpTagClose(tag)">
+                {{ tag }}
+              </el-tag>
+              <el-input class="input-new-tag" v-if="impTagInputVisible" v-model="impTagInputValue" ref="saveTagInput"
+                        size="small"
+                        @keyup.enter.native="handleImpTagInputConfirm" @blur="handleImpTagInputConfirm">
+              </el-input>
+              <el-button v-else class="button-new-tag" size="small" @click="showImpTagInput">+ New Tag</el-button>
+            </div>
 
-          <div class="personalInfoTypesetting personalInfoTitle">
-            Email
-          </div>
-          <div class="personalInfoTypesetting" style="width:90%">
-            <el-input v-model="email" placeholder=""></el-input>
-          </div>
-
-          <div class="personalInfoTypesetting personalInfoTitle">
-            College
-          </div>
-          <div class="personalInfoTypesetting" style="width:90%">
-            <el-input v-model="college" placeholder=""></el-input>
-          </div>
-
-          <div class="personalInfoTypesetting personalInfoTitle">
-            Location
-          </div>
-          <div class="personalInfoTypesetting" style="width:90%">
-            <el-input v-model="location" placeholder=""></el-input>
+            <div class="personalInfoTitle personalInfoTypesetting" style="margin-left: 20px;">
+              Skill Tags
+            </div>
+            <div class="personalInfoTypesetting">
+              <el-tag :key="tag" v-for="tag in skillTagList" closable
+                      :disable-transitions="false" effect="plain"
+                      @close="handleSkillTagClose(tag)">
+                {{ tag }}
+              </el-tag>
+              <el-input class="input-new-tag" v-if="skillTagInputVisible" v-model="skillTagInputValue"
+                        ref="saveTagInput"
+                        size="small"
+                        @keyup.enter.native="handleSkillTagInputConfirm" @blur="handleSkillTagInputConfirm">
+              </el-input>
+              <el-button v-else class="button-new-tag" size="small" @click="showSkillTagInput">+ New Tag</el-button>
+            </div>
           </div>
 
           <div class="personalInfoTypesetting personalInfoTitle">
             Bio
           </div>
-          <el-input type="textarea" :rows="4" placeholder="" v-model="description"
+          <el-input type="textarea" :rows="4" placeholder="" v-model="bio"
                     style="margin-left: 20px; margin-top: 20px; width: 90%">
           </el-input>
 
@@ -106,93 +86,165 @@
         </el-upload>
       </div>
     </el-col>
-  </div>
+  </el-card>
 </template>
 
 <script>
-import {getUserHomeInfo} from "@/api/home_page";
+import {getUserHomeInfo} from '@/api/home_page'
+import {postSelfIntroduction} from '@/api/account'
 
 export default {
   name: 'Account',
-  mounted() {
-    this.getBio()
+  mounted () {
+    this.init()
   },
-  data() {
+  data () {
     return {
-      //el-form
-      form: {
-        studentID: ''
-      },
-
       //tab
       tabPosition: 'left',
       activeName: 'accountInfo',
 
+      roleType: '',
+
+      //el-form
+      formInfoList: [
+        {label: 'ID', value: ''},
+        {label: 'First name', value: ''},
+        {label: 'Last name', value: ''},
+        {label: 'Email', value: ''},
+        {label: 'Type', value: ''},
+        {label: 'Disabled', value: ''},
+        {label: 'Register Time', value: ''}
+      ],
+
       //avatar uploader
       imageUrl: 'https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg',
 
-      //dynamic tag
-      dynamicTags: ['hardworking', 'efficient', 'earnest'],
-      inputVisible: false,
-      inputValue: '',
+      //impression tag list
+      impressionTagList: [],
+      impTagInputVisible: false,
+      impTagInputValue: '',
+
+      //skill tag list
+      skillTagList: [],
+      skillTagInputVisible: false,
+      skillTagInputValue: '',
 
       //textarea
-      description: '',
-
-      email: '',
-      college: '',
-      location: ''
+      bio: '',
     }
   },
   methods: {
     //avatar uploader
-    handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
+    handleAvatarSuccess (res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw)
     },
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg';
-      const isLt2M = file.size / 1024 / 1024 < 2;
+    beforeAvatarUpload (file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
       if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!');
+        this.$message.error('Can only upload .jpg')
       }
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!');
+        this.$message.error('Size of picture can not exceed 2MB')
       }
-      return isJPG && isLt2M;
+      return isJPG && isLt2M
     },
 
-    //dynamic tag
-    handleClose(tag) {
-      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+    //impression tag list
+    handleImpTagClose (tag) {
+      this.impressionTagList.splice(this.impressionTagList.indexOf(tag), 1)
     },
-    showInput() {
-      this.inputVisible = true;
+    showImpTagInput () {
+      this.impTagInputVisible = true
       this.$nextTick(_ => {
-        this.$refs.saveTagInput.$refs.input.focus();
-      });
+        this.$refs.saveTagInput.$refs.input.focus()
+      })
     },
-    handleInputConfirm() {
-      let inputValue = this.inputValue;
+    handleImpTagInputConfirm () {
+      let inputValue = this.impTagInputValue
       if (inputValue) {
-        this.dynamicTags.push(inputValue);
+        this.impressionTagList.push(inputValue)
       }
-      this.inputVisible = false;
-      this.inputValue = '';
+      this.impTagInputVisible = false
+      this.impTagInputValue = ''
+    },
+
+    //skill tag list
+    handleSkillTagClose (tag) {
+      this.skillTagList.splice(this.skillTagList.indexOf(tag), 1)
+    },
+    showSkillTagInput () {
+      this.skillTagInputVisible = true
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus()
+      })
+    },
+    handleSkillTagInputConfirm () {
+      let inputValue = this.skillTagInputValue
+      if (inputValue) {
+        this.skillTagList.push(inputValue)
+      }
+      this.skillTagInputVisible = false
+      this.skillTagInputValue = ''
     },
 
     //bio text area
-    getBio() {
-      getUserHomeInfo().then(resp => {
-        this.description = resp.data.data;
-        console.log(resp.data.data)
+    init () {
+      this.roleType = this.$store.state.role.roleType
+
+      getAccountInfo().then(resp => {
+        if (resp.data.code === 200) {
+          this.bio = resp.data.data
+
+          // let infoDict = resp.data.data
+          // this.bio = infoDict.bio
+          // this.formInfoList[0].value = infoDict.studentID
+          // this.formInfoList[1].value = infoDict.firstName
+          // this.formInfoList[2].value = infoDict.lastName
+          // this.formInfoList[3].value = infoDict.email
+          // this.formInfoList[4].value = infoDict.type
+          // this.formInfoList[5].value = infoDict.disabled
+          // this.formInfoList[6].value = infoDict.registerTime
+
+          // this.impressionTagList = infoDict.impressionTagList
+          // this.skillTagList = infoDict.skillTagList
+        } else if (resp.data.code === 400) {
+          console.log(resp.data.message)
+          this.$alert(resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        }
       }).catch(failResp => {
-        console.log("fail to get response in getUserHomeInfo")
+        this.$alert('Error: ' + failResp.message, 'Tips', {
+          confirmButtonText: 'OK'
+        })
       })
     },
 
     //update personal information
-    handleUpdate() {
-
+    handleUpdate () {
+      // postSelfIntroduction(
+      //   this.impressionTagList,
+      //   this.skillTagList,
+      //   this.bio
+      // ).then(resp => {
+      //   console.log('get response : ' + resp)
+      //   if (resp.data.code === 200) {
+      //     this.$alert('Changed successfully', 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   } else if (resp.data.code === 400) {
+      //     console.log(resp.data.message)
+      //     this.$alert(resp.data.message, 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   }
+      // }).catch(failResp => {
+      //   this.$alert('Error ' + failResp.message, 'Tip', {
+      //     confirmButtonText: 'OK'
+      //   })
+      // })
     }
   }
 }
@@ -223,7 +275,7 @@ export default {
 /*avatar uploader*/
 .avatar-uploader >>> .el-upload {
   border: 1px dashed #d9d9d9;
-  border-radius: 100px;
+  border-radius: 240px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -236,15 +288,15 @@ export default {
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
-  width: 200px;
-  height: 200px;
+  width: 240px;
+  height: 240px;
   line-height: 178px;
   text-align: center;
 }
 
 .avatar {
-  width: 200px;
-  height: 200px;
+  width: 240px;
+  height: 240px;
   display: block;
 }
 
@@ -266,4 +318,74 @@ export default {
   margin-left: 10px;
   vertical-align: bottom;
 }
+
+.base-card {
+  margin: 15px 10px
+}
 </style>
+
+<!--              <el-form-item label="Student ID" class="form-item-height">-->
+<!--                11111111-->
+<!--              </el-form-item>-->
+<!--              <el-form-item label="First name" class="form-item-height">-->
+
+<!--              </el-form-item>-->
+<!--              <el-form-item label="Last name" class="form-item-height">-->
+<!--                {{ this.$store.state.role.username }}-->
+<!--              </el-form-item>-->
+<!--              <el-form-item label="Email" class="form-item-height">-->
+<!--                11111111@mail.sustech.edu.cn-->
+<!--              </el-form-item>-->
+<!--              <el-form-item label="Type" class="form-item-height">-->
+<!--                registered-->
+<!--              </el-form-item>-->
+<!--              <el-form-item label="disabled" class="form-item-height">-->
+<!--                False-->
+<!--              </el-form-item>-->
+<!--              <el-form-item label="Creator" class="form-item-height">-->
+<!--                Admin SUPPER-->
+<!--              </el-form-item>-->
+<!--              <el-form-item label="Creation time" class="form-item-height">-->
+<!--                2020/11/10-->
+<!--              </el-form-item>-->
+
+
+<!--          <div class="personalInfoTypesetting personalInfoTitle">-->
+<!--            Email-->
+<!--          </div>-->
+<!--          <div class="personalInfoTypesetting" style="width:90%">-->
+<!--            <el-input v-model="email" placeholder=""></el-input>-->
+<!--          </div>-->
+
+<!--          <div class="personalInfoTypesetting personalInfoTitle">-->
+<!--            College-->
+<!--          </div>-->
+<!--          <div class="personalInfoTypesetting" style="width:90%">-->
+<!--            <el-input v-model="college" placeholder=""></el-input>-->
+<!--          </div>-->
+
+<!--          <div class="personalInfoTypesetting personalInfoTitle">-->
+<!--            Location-->
+<!--          </div>-->
+<!--          <div class="personalInfoTypesetting" style="width:90%">-->
+<!--            <el-input v-model="location" placeholder=""></el-input>-->
+<!--          </div>-->
+
+<!--email: '',-->
+<!--college: '',-->
+<!--location: ''-->
+
+<!--// getUserHomeInfo().then(resp => {-->
+<!--//   if (resp.data.code === 200) {-->
+<!--//     this.bio = resp.data.data-->
+<!--//   } else if (resp.data.code === 400) {-->
+<!--//     console.log(resp.data.message)-->
+<!--//     this.$alert(resp.data.message, 'Tip', {-->
+<!--//       confirmButtonText: 'OK'-->
+<!--//     })-->
+<!--//   }-->
+<!--// }).catch(failResp => {-->
+<!--//   this.$alert('Error: ' + failResp.message, 'Tips', {-->
+<!--//     confirmButtonText: 'OK'-->
+<!--//   })-->
+<!--// })-->
