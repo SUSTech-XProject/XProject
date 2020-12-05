@@ -3,7 +3,7 @@
              placeholder="Selecting..."
              size="medium"
              :clearable = "true"
-             style="width: 120px">
+            >
     <el-option
       v-for="i in options.length"
       :key="i-1"
