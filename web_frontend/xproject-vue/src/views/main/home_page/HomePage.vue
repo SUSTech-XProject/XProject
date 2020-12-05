@@ -17,7 +17,7 @@
       </div>
 
       <div style="width: 100%; margin-top: 20px" align="left">
-        {{ description }}
+        {{ bio }}
       </div>
 
       <div style="margin-top: 15px"><i class="el-icon-office-building"> {{ this.company }}</i></div>
@@ -105,7 +105,7 @@ export default {
     return {
       roleType: 'S',
 
-      description: '',
+      bio: '',
       company: '',
       location: '',
       email: '',
@@ -146,8 +146,8 @@ export default {
         if (resp.data.code === 200) {
           let infoDict = resp.data.data
 
-          this.description = infoDict
-          // this.description = infoDict.description
+          this.bio = infoDict
+          // this.bio = infoDict.bio
           // this.company=infoDict.company
           // this.location=infoDict.location
           // this.email = infoDict.email
