@@ -8,9 +8,9 @@
             <el-divider></el-divider>
           </div>
           <el-container style="margin-left: 20px;">
-            <el-form ref="form" :model="formInfoList" label-width="110px">
-              <el-form-item class="form-item-height"
-                            v-for="info in formInfoList" :key="info.label" v-bind:label="info.label">
+            <el-form ref="form" label-width="110px">
+              <el-form-item v-for="info in formInfoList" :key="info.label"
+                            v-bind:label="info.label" class="form-item-height">
                 {{ info.value }}
               </el-form-item>
             </el-form>
@@ -23,7 +23,9 @@
             <el-divider></el-divider>
           </div>
 
-          <div v-if="this.roleType==='S'">
+          <div v-if="this.roleType==='Student'">
+<!--            TODO: Indentation issues of add tag-->
+<!--            TODO: Multi-line tag line spacing problem-->
             <div class="personalInfoTitle" style="margin-left: 20px;">
               Impression Tags
             </div>
@@ -91,7 +93,7 @@
 
 <script>
 import {getUserHomeInfo} from '@/api/home_page'
-import {postSelfIntroduction} from '@/api/account'
+import {getAccountInfo, postSelfIntroduction} from '@/api/account'
 
 export default {
   name: 'Account',
@@ -191,24 +193,31 @@ export default {
 
     //bio text area
     init () {
+      console.log('init account page')
+
       this.roleType = this.$store.state.role.roleType
 
       getAccountInfo().then(resp => {
         if (resp.data.code === 200) {
-          this.bio = resp.data.data
+          if (this.roleType === 'Student') {
+            let roleDict = resp.data.data.role
+            let infoDict = resp.data.data.student
 
-          // let infoDict = resp.data.data
-          // this.bio = infoDict.bio
-          // this.formInfoList[0].value = infoDict.studentID
-          // this.formInfoList[1].value = infoDict.firstName
-          // this.formInfoList[2].value = infoDict.lastName
-          // this.formInfoList[3].value = infoDict.email
-          // this.formInfoList[4].value = infoDict.type
-          // this.formInfoList[5].value = infoDict.disabled
-          // this.formInfoList[6].value = infoDict.registerTime
+            this.bio = infoDict.bio
 
-          // this.impressionTagList = infoDict.impressionTagList
-          // this.skillTagList = infoDict.skillTagList
+            this.formInfoList[0].value = infoDict.stdNo
+            let name = infoDict.stdName.split(' ')
+            this.formInfoList[1].value = name[0]
+            this.formInfoList[2].value = name[0]
+            this.formInfoList[3].value = infoDict.email
+            this.formInfoList[4].value = roleDict.roleType
+            this.formInfoList[5].value = roleDict.status
+            this.formInfoList[6].value = roleDict.registerTime.substring(0, roleDict.registerTime.indexOf('T'))
+
+            this.impressionTagList = JSON.parse(infoDict.flags)
+            this.skillTagList = JSON.parse(infoDict.skills)
+          }
+
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
           this.$alert(resp.data.message, 'Tip', {
@@ -275,7 +284,7 @@ export default {
 /*avatar uploader*/
 .avatar-uploader >>> .el-upload {
   border: 1px dashed #d9d9d9;
-  border-radius: 240px;
+  border-radius: 290px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -288,15 +297,15 @@ export default {
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
-  width: 240px;
-  height: 240px;
+  width: 290px;
+  height: 290px;
   line-height: 178px;
   text-align: center;
 }
 
 .avatar {
-  width: 240px;
-  height: 240px;
+  width: 290px;
+  height: 290px;
   display: block;
 }
 
@@ -324,31 +333,6 @@ export default {
 }
 </style>
 
-<!--              <el-form-item label="Student ID" class="form-item-height">-->
-<!--                11111111-->
-<!--              </el-form-item>-->
-<!--              <el-form-item label="First name" class="form-item-height">-->
-
-<!--              </el-form-item>-->
-<!--              <el-form-item label="Last name" class="form-item-height">-->
-<!--                {{ this.$store.state.role.username }}-->
-<!--              </el-form-item>-->
-<!--              <el-form-item label="Email" class="form-item-height">-->
-<!--                11111111@mail.sustech.edu.cn-->
-<!--              </el-form-item>-->
-<!--              <el-form-item label="Type" class="form-item-height">-->
-<!--                registered-->
-<!--              </el-form-item>-->
-<!--              <el-form-item label="disabled" class="form-item-height">-->
-<!--                False-->
-<!--              </el-form-item>-->
-<!--              <el-form-item label="Creator" class="form-item-height">-->
-<!--                Admin SUPPER-->
-<!--              </el-form-item>-->
-<!--              <el-form-item label="Creation time" class="form-item-height">-->
-<!--                2020/11/10-->
-<!--              </el-form-item>-->
-
 
 <!--          <div class="personalInfoTypesetting personalInfoTitle">-->
 <!--            Email-->
@@ -370,10 +354,6 @@ export default {
 <!--          <div class="personalInfoTypesetting" style="width:90%">-->
 <!--            <el-input v-model="location" placeholder=""></el-input>-->
 <!--          </div>-->
-
-<!--email: '',-->
-<!--college: '',-->
-<!--location: ''-->
 
 <!--// getUserHomeInfo().then(resp => {-->
 <!--//   if (resp.data.code === 200) {-->

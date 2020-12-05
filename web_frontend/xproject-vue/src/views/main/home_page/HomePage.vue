@@ -6,7 +6,7 @@
 
       <div>{{ this.$store.state.role.username }}</div>
 
-      <div style="margin-top: 15px" v-if="this.roleType==='S'">
+      <div style="margin-top: 15px" v-if="this.roleType==='Student'">
         <!--                <el-tag>hardworking</el-tag>-->
         <!--                <el-tag type="success">efficient</el-tag>-->
         <!--                <el-tag type="danger">earnest</el-tag>-->
@@ -39,7 +39,7 @@
             </el-col>
           </el-row>
 
-          <div v-if="this.roleType==='S'">
+          <div v-if="this.roleType==='Student'">
             <div style="margin-top: 40px">Skill List</div>
             <div style="margin-top: 15px">
               <!--            <el-tag>Java</el-tag>-->
@@ -103,7 +103,7 @@ export default {
   components: {},
   data () {
     return {
-      roleType: 'S',
+      roleType: '',
 
       bio: '',
       company: '',
@@ -141,10 +141,12 @@ export default {
       console.log('init home page')
 
       this.roleType = this.$store.state.role.roleType
+      console.log(this.roleType)
 
       getUserHomeInfo().then(resp => {
         if (resp.data.code === 200) {
           let infoDict = resp.data.data
+          // console.log(infoDict)
 
           this.bio = infoDict
           // this.bio = infoDict.bio
