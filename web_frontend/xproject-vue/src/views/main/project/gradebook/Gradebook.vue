@@ -12,28 +12,28 @@
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="demo-table-expand">
-            <el-form-item label="Creator">
+            <el-form-item label="Creator: ">
               <span>{{ props.row.tchName }}</span>
               <span style="margin-left: 10px">{{ props.row.email }}</span>
             </el-form-item>
-            <el-form-item label="Type">
+            <el-form-item label="Type: ">
               <span>{{ props.row.type }}</span>
             </el-form-item>
-            <el-form-item v-if="props.row.derived"
-                          label="Derived from">
-              <span>{{ props.row.derived }}</span>
+            <el-form-item v-if="props.row.derivedStr"
+                          label="Derived from: ">
+              <span>{{ props.row.derivedStr }}</span>
             </el-form-item>
             <br>
-            <el-form-item label="Comment">
+            <el-form-item label="Comment: " v-if="props.row.comments">
               <span>{{ props.row.comments }}</span>
             </el-form-item>
           </el-form>
         </template>
       </el-table-column>
-      <el-table-column label="Index" prop="list_idx" width="100" sortable/>
-      <el-table-column label="Name" prop="rcdName" sortable/>
-      <el-table-column label="Modified time" prop="modifiedTime" sortable/>
-      <el-table-column label="Grade" sortable :sort-method="gradeSorter">
+      <el-table-column label="Index: " prop="listIdx" width="100" sortable/>
+      <el-table-column label="Name:" prop="rcdName" sortable/>
+      <el-table-column label="Modified time: " prop="modifiedTime" :formatter="dateTimeFormatter" sortable :sort-method="gradeSorter"/>
+      <el-table-column label="Grade: " sortable :sort-method="gradeSorter">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.content }}</span>
           <span v-if="scope.row.baseContent"
@@ -46,6 +46,7 @@
 
 <script>
 import {getGradeList} from "@/api/grade";
+import {getDatetimeStr} from "@/utils/parse-day-time";
 
 export default {
   name: "Gradebook",
@@ -116,8 +117,14 @@ export default {
     this.initGradebook()
   },
   methods:{
+    dateTimeFormatter (row, col) {
+      return getDatetimeStr(row.modifiedTime)
+    },
     gradeSorter (row, col) {
       return row.content
+    },
+    getTime(str) {
+      return 'abc'
     },
     initGradebook () {
       this.gradeList.splice(0, this.gradeList.length)   // remove all
@@ -133,7 +140,7 @@ export default {
         this.gradeList.splice(0, this.gradeList.length)   // remove all
         for (let i = 0; i < resp.data.data.length; i ++) {
           let record = resp.data.data[i]
-          record['list_idx'] = i
+          record['listIdx'] = i
           console.log(record)
           this.gradeList.push(record)
         }
