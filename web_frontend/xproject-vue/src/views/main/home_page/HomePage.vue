@@ -1,5 +1,5 @@
 <template>
-  <el-card style="width:98%; height:98%; margin-top: 1%; margin-left: 1%" >
+  <el-card class="base-card" style="min-height: 95.7%;">
     <el-col :span="4" :offset="2">
       <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"
                  :size="240" :fit="'fill'"></el-avatar>
@@ -10,12 +10,13 @@
         <!--                <el-tag>hardworking</el-tag>-->
         <!--                <el-tag type="success">efficient</el-tag>-->
         <!--                <el-tag type="danger">earnest</el-tag>-->
-        <el-tag v-for="tag in impressionList" :key="tag.name" :type="tag.type" class="el-tag">
+        <el-tag v-for="tag in impressionList" :key="tag.name"
+                :type="skill.type" class="el-tag" effect="plain">
           {{ tag.name }}
         </el-tag>
       </div>
 
-      <div style="width: 280px; margin-top: 20px" align="left">
+      <div style="width: 100%; margin-top: 20px" align="left">
         {{ description }}
       </div>
 
@@ -46,7 +47,8 @@
               <!--            <el-tag type="danger">Spring Boot</el-tag>-->
               <!--            <el-tag>vue</el-tag>-->
               <!--            <el-tag type="success">UI Design</el-tag>-->
-              <el-tag v-for="skill in skillList" :key="skill.name" :type="skill.type" effect="plain" class="el-tag">
+              <el-tag v-for="skill in skillList" :key="skill.name"
+                      :type="skill.type" effect="plain" class="el-tag">
                 {{ skill.name }}
               </el-tag>
             </div>
@@ -283,5 +285,9 @@ export default {
 
 .el-select-dropdown .el-scrollbar >>> .el-scrollbar__wrap {
   overflow: scroll;
+}
+
+.base-card {
+  margin: 15px 10px
 }
 </style>
