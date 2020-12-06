@@ -34,10 +34,50 @@
 
 <!--        <el-menu-item-group v-if="this.$store.state.proj.projId != null" id="proj-items">-->
 <!--        </el-menu-item-group>-->
-        <div  v-if="this.$store.state.proj.projId != null" style="padding-top: 10px">
+        <div  v-if="showStdProjMenu()" style="padding-top: 10px">
           <el-menu-item index="ProjOverview">
             <i class="el-icon-s-promotion"></i>
             <span slot="title">Overview</span>
+          </el-menu-item>
+
+          <el-submenu index="@3">
+            <template slot="title">
+              <i class="el-icon-connection"></i>
+              <span v-if="!isCollapse" slot="title">Team</span>
+              <span v-if="isCollapse" slot="title"></span>
+            </template>
+
+            <el-menu-item index="MyTeam">My Team</el-menu-item>
+            <el-menu-item index="Forming">Forming</el-menu-item>
+          </el-submenu>
+
+          <el-menu-item index="@3.5" >
+            <i class="el-icon-bell"></i>
+            <span slot="title">Announcements</span>
+          </el-menu-item>
+          <el-menu-item index="@4" >
+            <i class="el-icon-date"></i>
+            <span slot="title">Events</span>
+          </el-menu-item>
+          <el-menu-item index="@5">
+            <i class="el-icon-folder-opened"></i>
+            <span slot="title">Resources</span>
+          </el-menu-item>
+          <el-menu-item index="@6">
+            <i class="el-icon-document"></i>
+            <span slot="title">Submissions</span>
+          </el-menu-item>
+          <el-menu-item index="Gradebook">
+            <i class="el-icon-collection"></i>
+            <span slot="title">Gradebook</span>
+          </el-menu-item>
+          <div style="height: 70px"></div>
+        </div>
+
+        <div v-if="showTchProjMenu()" style="padding-top: 10px">
+          <el-menu-item index="ProjOverview">
+            <i class="el-icon-s-promotion"></i>
+            <span slot="title">Project Info</span>
           </el-menu-item>
 
           <el-submenu index="@3">
@@ -93,6 +133,8 @@
 
 <script>
   import logo from '@/assets/xproject-icon-v3-1.png'
+  import {hasProjState} from "@/utils/project";
+  import {isStudent, isTeacher} from "@/utils/role";
   export default {
     data () {
       return {
@@ -103,6 +145,12 @@
       }
     },
     methods: {
+      showStdProjMenu () {
+        return hasProjState() && isStudent()
+      },
+      showTchProjMenu () {
+        return hasProjState() && isTeacher()
+      },
       handleOpen (key, keyPath) {
         console.log(key, keyPath)
       },

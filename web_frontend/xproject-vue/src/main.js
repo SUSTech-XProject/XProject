@@ -15,6 +15,8 @@ axios.defaults.timeout = 2000
 // 全局注册，之后可在其他组件中通过 this.$axios 发送数据
 Vue.prototype.$axios = axios
 
+Vue.prototype.$store = store
+
 Vue.config.productionTip = false
 axios.defaults.withCredentials = true
 
