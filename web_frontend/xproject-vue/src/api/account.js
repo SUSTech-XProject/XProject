@@ -8,6 +8,6 @@ export function postSelfIntroduction (impTagList, skillTagList, bio) {
   return Vue.prototype.$axios.post('/self-intro', {
     flags: impTagList,
     skills: skillTagList,
-    bio:bio
+    bio: bio
   })
 }

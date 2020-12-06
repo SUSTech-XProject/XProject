@@ -34,6 +34,7 @@ export default {
   data () {
     return {
       bcDict: {
+        'StdManage': 'Students',
         'MyTeam': 'My Team',
         'Forming': 'Forming',
         'Announcements': 'Announcements',

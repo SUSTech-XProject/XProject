@@ -30,10 +30,10 @@
           </el-form>
         </template>
       </el-table-column>
-      <el-table-column label="Index: " prop="listIdx" width="100" sortable/>
-      <el-table-column label="Name:" prop="rcdName" sortable/>
-      <el-table-column label="Modified time: " prop="modifiedTime" :formatter="dateTimeFormatter" sortable :sort-method="gradeSorter"/>
-      <el-table-column label="Grade: " sortable :sort-method="gradeSorter">
+      <el-table-column label="" type="index" width="50px" sortable/>
+      <el-table-column label="Name" prop="rcdName" sortable/>
+      <el-table-column label="Modified time" prop="modifiedTime" :formatter="dateTimeFormatter" sortable :sort-method="gradeSorter"/>
+      <el-table-column label="Grade" sortable :sort-method="gradeSorter">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.content }}</span>
           <span v-if="scope.row.baseContent"

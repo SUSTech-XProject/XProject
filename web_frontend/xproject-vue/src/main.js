@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 import store from './store'
 import ElementUI from 'element-ui'
+import locale from 'element-ui/lib/locale/lang/en'
 import 'element-ui/lib/theme-chalk/index.css'
 import {getAuth} from "@/api/role";
 
@@ -20,7 +21,7 @@ Vue.prototype.$store = store
 Vue.config.productionTip = false
 axios.defaults.withCredentials = true
 
-Vue.use(ElementUI)
+Vue.use(ElementUI, {locale})
 
 router.beforeEach((to, from, next) => {
     console.log('beforeEach')
@@ -46,6 +47,13 @@ router.beforeEach((to, from, next) => {
             }
             console.log('use proj_id=' + to.params.proj_id)
           }
+
+          if (to.meta.roleType) {
+            if (to.meta.roleType !== role.roleType) {
+              // not correct role type
+              return false
+            }
+          }
           next()
 
         }).catch(failResp => {
@@ -56,10 +64,10 @@ router.beforeEach((to, from, next) => {
             return false
           }
           console.log(failResp)
-          next({
-            name: 'Login',
-            query: {redirect: to.fullPath}
-          })
+          // next({
+          //   name: 'Login',
+          //   query: {redirect: to.fullPath}
+          // })
         })
       } else {
           console.log('fail in beforeEach :')
