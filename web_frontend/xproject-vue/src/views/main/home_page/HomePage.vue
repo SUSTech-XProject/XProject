@@ -1,15 +1,12 @@
 <template>
-  <el-card class="base-card" style="min-height: 95.7%;">
-    <el-col :span="4" :offset="2">
+  <el-card class="base-card">
+    <el-col :span="5" :offset="2">
       <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"
-                 :size="240" :fit="'fill'"></el-avatar>
+                 :size="290" :fit="'fill'"></el-avatar>
 
       <div>{{ this.$store.state.role.username }}</div>
 
-      <div style="margin-top: 15px" v-if="this.roleType==='Student'">
-        <!--                <el-tag>hardworking</el-tag>-->
-        <!--                <el-tag type="success">efficient</el-tag>-->
-        <!--                <el-tag type="danger">earnest</el-tag>-->
+      <div style="margin-top: 15px" v-if="isStudent()">
         <el-tag v-for="tag in impressionList" :key="tag.name"
                 :type="skill.type" class="el-tag" effect="plain">
           {{ tag.name }}
@@ -20,12 +17,12 @@
         {{ bio }}
       </div>
 
-      <div style="margin-top: 15px"><i class="el-icon-office-building"> {{ this.company }}</i></div>
+      <div style="margin-top: 15px"><i class="el-icon-office-building"> {{ this.school }}</i></div>
       <div style="margin-top: 15px"><i class="el-icon-location-outline"> {{ this.location }}</i></div>
       <div style="margin-top: 15px"><i class="el-icon-message"> {{ this.email }}</i></div>
     </el-col>
 
-    <el-col :span="15" :offset="1">
+    <el-col :span="14" :offset="1">
       <el-tabs :tab-position="tabPosition" type="card" style="height: 100%; margin-top: 20px" v-model="activeName">
         <el-tab-pane label="Overview" name="overview">
           <div style="margin-top: 10px">Recent project</div>
@@ -39,14 +36,9 @@
             </el-col>
           </el-row>
 
-          <div v-if="this.roleType==='Student'">
+          <div v-if="isStudent">
             <div style="margin-top: 40px">Skill List</div>
             <div style="margin-top: 15px">
-              <!--            <el-tag>Java</el-tag>-->
-              <!--            <el-tag type="success">cpp</el-tag>-->
-              <!--            <el-tag type="danger">Spring Boot</el-tag>-->
-              <!--            <el-tag>vue</el-tag>-->
-              <!--            <el-tag type="success">UI Design</el-tag>-->
               <el-tag v-for="skill in skillList" :key="skill.name"
                       :type="skill.type" effect="plain" class="el-tag">
                 {{ skill.name }}
@@ -96,7 +88,9 @@
 </template>
 
 <script>
-import {getProjList, getUserHomeInfo} from '@/api/home_page'
+import {getProjList} from '@/api/home_page'
+import {isStudent} from '@/utils/role'
+import {getAccountInfo} from '@/api/account'
 
 export default {
   name: 'HomePage',
@@ -106,7 +100,7 @@ export default {
       roleType: '',
 
       bio: '',
-      company: '',
+      school: '',
       location: '',
       email: '',
 
@@ -143,26 +137,24 @@ export default {
       this.roleType = this.$store.state.role.roleType
       console.log(this.roleType)
 
-      getUserHomeInfo().then(resp => {
+      getAccountInfo().then(resp => {
         if (resp.data.code === 200) {
-          let infoDict = resp.data.data
-          // console.log(infoDict)
+          if (isStudent()) {
+            let infoDict = resp.data.data.student
 
-          this.bio = infoDict
-          // this.bio = infoDict.bio
-          // this.company=infoDict.company
-          // this.location=infoDict.location
-          // this.email = infoDict.email
-          //
-          // let impressionList = infoDict.impressionList
-          // for (let i = 0; i < impressionList.length; ++i) {
-          //   this.impressionList.push({name: impressionList[i].name, type: ''})
-          // }
-          //
-          // let skillList = infoDict.skillList
-          // for (let i = 0; i < skillList.length; ++i) {
-          //   this.impressionList.push({name: skillList[i].name, type: ''})
-          // }
+            this.bio = infoDict.bio
+
+            this.school = resp.data.data.school.schName
+            // this.location=infoDict.location
+            this.email = infoDict.email
+
+            if (!infoDict.flags) {
+              this.impressionTagList = JSON.parse(infoDict.flags)
+            }
+            if (!infoDict.skills) {
+              this.skillTagList = JSON.parse(infoDict.skills)
+            }
+          }
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
           this.$alert(resp.data.message, 'Tip', {
@@ -257,6 +249,9 @@ export default {
       this.$store.commit('setProj', projRecord)
       this.$router.push({name: 'ProjOverview', params: {proj_id: projId}})
     },
+    isStudent () {
+      return isStudent()
+    }
   }
 }
 </script>
@@ -290,6 +285,7 @@ export default {
 }
 
 .base-card {
-  margin: 15px 10px
+  margin: 15px 10px;
+  min-height: 95.7%;
 }
 </style>

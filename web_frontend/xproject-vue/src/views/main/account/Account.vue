@@ -1,5 +1,5 @@
 <template>
-  <el-card class="base-card" style="min-height: 95.7%;">
+  <el-card class="base-card">
     <el-col :span="14" :offset="2">
       <el-tabs :tab-position="tabPosition" type="card" style="height: 100%;" v-model="activeName">
         <el-tab-pane label="Account Information" name="accountInfo">
@@ -24,8 +24,8 @@
           </div>
 
           <div v-if="this.roleType==='Student'">
-<!--            TODO: Indentation issues of add tag-->
-<!--            TODO: Multi-line tag line spacing problem-->
+            <!--            TODO: Indentation issues of add tag-->
+            <!--            TODO: Multi-line tag line spacing problem-->
             <div class="personalInfoTitle" style="margin-left: 20px;">
               Impression Tags
             </div>
@@ -94,6 +94,7 @@
 <script>
 import {getUserHomeInfo} from '@/api/home_page'
 import {getAccountInfo, postSelfIntroduction} from '@/api/account'
+import {isStudent, isTeacher} from '@/utils/role'
 
 export default {
   name: 'Account',
@@ -115,7 +116,7 @@ export default {
         {label: 'Last name', value: ''},
         {label: 'Email', value: ''},
         {label: 'Type', value: ''},
-        {label: 'Disabled', value: ''},
+        {label: 'Status', value: ''},
         {label: 'Register Time', value: ''}
       ],
 
@@ -137,6 +138,51 @@ export default {
     }
   },
   methods: {
+    init () {
+      console.log('init account page')
+
+      this.roleType = this.$store.state.role.roleType
+
+      getAccountInfo().then(resp => {
+        if (resp.data.code === 200) {
+          let roleDict = resp.data.data.role
+
+          this.formInfoList[4].value = roleDict.roleType
+          this.formInfoList[5].value = roleDict.status
+          this.formInfoList[6].value = roleDict.registerTime.substring(0, roleDict.registerTime.indexOf('T'))
+
+          if (isStudent()) {
+            let infoDict = resp.data.data.student
+
+            this.bio = infoDict.bio
+
+            this.formInfoList[0].value = infoDict.stdNo
+            let name = infoDict.stdName.split(' ')
+            this.formInfoList[1].value = name[0]
+            this.formInfoList[2].value = name[1]
+            this.formInfoList[3].value = infoDict.email
+
+            if(!infoDict.flags){
+              this.impressionTagList = JSON.parse(infoDict.flags)
+            }
+            if(!infoDict.skills){
+              this.skillTagList = JSON.parse(infoDict.skills)
+            }
+          }
+
+        } else if (resp.data.code === 400) {
+          console.log(resp.data.message)
+          this.$alert(resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        }
+      }).catch(failResp => {
+        this.$alert('Error: ' + failResp.message, 'Tips', {
+          confirmButtonText: 'OK'
+        })
+      })
+    },
+
     //avatar uploader
     handleAvatarSuccess (res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
@@ -191,33 +237,29 @@ export default {
       this.skillTagInputValue = ''
     },
 
-    //bio text area
-    init () {
-      console.log('init account page')
+    //update personal information
+    handleUpdate () {
+      let impTagList = null, skillTagList = null, bio = null
+      if (isTeacher()) {
+        bio = this.bio
+      } else if (isStudent()) {
+        impTagList = this.impressionTagList
+        skillTagList = this.skillTagList
+        bio = this.bio
+      }
 
-      this.roleType = this.$store.state.role.roleType
+      console.log(impTagList)
+      console.log(skillTagList)
+      console.log(bio)
 
-      getAccountInfo().then(resp => {
+      postSelfIntroduction(
+        impTagList, skillTagList, bio
+      ).then(resp => {
+        console.log('get response : ' + resp)
         if (resp.data.code === 200) {
-          if (this.roleType === 'Student') {
-            let roleDict = resp.data.data.role
-            let infoDict = resp.data.data.student
-
-            this.bio = infoDict.bio
-
-            this.formInfoList[0].value = infoDict.stdNo
-            let name = infoDict.stdName.split(' ')
-            this.formInfoList[1].value = name[0]
-            this.formInfoList[2].value = name[0]
-            this.formInfoList[3].value = infoDict.email
-            this.formInfoList[4].value = roleDict.roleType
-            this.formInfoList[5].value = roleDict.status
-            this.formInfoList[6].value = roleDict.registerTime.substring(0, roleDict.registerTime.indexOf('T'))
-
-            this.impressionTagList = JSON.parse(infoDict.flags)
-            this.skillTagList = JSON.parse(infoDict.skills)
-          }
-
+          this.$alert('Changed successfully', 'Tip', {
+            confirmButtonText: 'OK'
+          })
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
           this.$alert(resp.data.message, 'Tip', {
@@ -225,35 +267,10 @@ export default {
           })
         }
       }).catch(failResp => {
-        this.$alert('Error: ' + failResp.message, 'Tips', {
+        this.$alert('Error ' + failResp.message, 'Tip', {
           confirmButtonText: 'OK'
         })
       })
-    },
-
-    //update personal information
-    handleUpdate () {
-      // postSelfIntroduction(
-      //   this.impressionTagList,
-      //   this.skillTagList,
-      //   this.bio
-      // ).then(resp => {
-      //   console.log('get response : ' + resp)
-      //   if (resp.data.code === 200) {
-      //     this.$alert('Changed successfully', 'Tip', {
-      //       confirmButtonText: 'OK'
-      //     })
-      //   } else if (resp.data.code === 400) {
-      //     console.log(resp.data.message)
-      //     this.$alert(resp.data.message, 'Tip', {
-      //       confirmButtonText: 'OK'
-      //     })
-      //   }
-      // }).catch(failResp => {
-      //   this.$alert('Error ' + failResp.message, 'Tip', {
-      //     confirmButtonText: 'OK'
-      //   })
-      // })
     }
   }
 }
@@ -329,7 +346,8 @@ export default {
 }
 
 .base-card {
-  margin: 15px 10px
+  margin: 15px 10px;
+  min-height: 95.7%;
 }
 </style>
 
@@ -354,18 +372,3 @@ export default {
 <!--          <div class="personalInfoTypesetting" style="width:90%">-->
 <!--            <el-input v-model="location" placeholder=""></el-input>-->
 <!--          </div>-->
-
-<!--// getUserHomeInfo().then(resp => {-->
-<!--//   if (resp.data.code === 200) {-->
-<!--//     this.bio = resp.data.data-->
-<!--//   } else if (resp.data.code === 400) {-->
-<!--//     console.log(resp.data.message)-->
-<!--//     this.$alert(resp.data.message, 'Tip', {-->
-<!--//       confirmButtonText: 'OK'-->
-<!--//     })-->
-<!--//   }-->
-<!--// }).catch(failResp => {-->
-<!--//   this.$alert('Error: ' + failResp.message, 'Tips', {-->
-<!--//     confirmButtonText: 'OK'-->
-<!--//   })-->
-<!--// })-->
