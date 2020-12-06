@@ -13,13 +13,19 @@
         </el-tag>
       </div>
 
-      <div style="width: 100%; margin-top: 20px" align="left">
+      <div style="width: 100%; margin-top: 20px" align="left" class="handle-overflow">
         {{ bio }}
       </div>
 
-      <div style="margin-top: 15px"><i class="el-icon-office-building"> {{ this.school }}</i></div>
-      <div style="margin-top: 15px"><i class="el-icon-location-outline"> {{ this.location }}</i></div>
-      <div style="margin-top: 15px"><i class="el-icon-message"> {{ this.email }}</i></div>
+      <div style="margin-top: 15px" class="handle-overflow">
+        <i class="el-icon-office-building"> {{ this.school }}</i>
+      </div>
+      <div style="margin-top: 15px" class="handle-overflow">
+        <i class="el-icon-location-outline"> {{ this.location }}</i>
+      </div>
+      <div style="margin-top: 15px" class="handle-overflow">
+        <i class="el-icon-message"> {{ this.email }}</i>
+      </div>
     </el-col>
 
     <el-col :span="14" :offset="1">
@@ -145,7 +151,7 @@ export default {
             this.bio = infoDict.bio
 
             this.school = resp.data.data.school.schName
-            // this.location=infoDict.location
+            this.location = infoDict.location
             this.email = infoDict.email
 
             if (infoDict.flags != null) {
@@ -287,5 +293,12 @@ export default {
 .base-card {
   margin: 15px 10px;
   min-height: 95.7%;
+}
+
+.handle-overflow {
+  overflow: hidden;
+  white-space: nowrap;
+  /*text-overflow: ellipsis;*/
+  width: 100%;
 }
 </style>

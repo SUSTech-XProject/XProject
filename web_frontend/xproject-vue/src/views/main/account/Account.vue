@@ -248,6 +248,7 @@ export default {
         bio = this.bio
       }
 
+      //TODO: Update avatar
       postSelfIntroduction(
         impTagList, skillTagList, bio
       ).then(resp => {
