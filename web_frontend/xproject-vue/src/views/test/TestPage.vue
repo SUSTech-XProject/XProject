@@ -63,10 +63,10 @@ import Header from '@/components/header/index'
 import Table from '@/components/table/index'
 import DownDrop from '@/components/downdrop/index'
 import Breadcrumb from '@/components/breadcrumb/index'
-import {download} from "@/api/submit"
+// import {download} from "@/api/submit"
 
 export default{
-  name: 'Testpage',
+  name: 'TestPage',
   data () {
     return {
       fileList: [],
