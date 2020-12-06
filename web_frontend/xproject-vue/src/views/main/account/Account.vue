@@ -124,7 +124,7 @@ export default {
       imageUrl: 'https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg',
 
       //impression tag list
-      impressionTagList: [],
+      impressionTagList: ['a','b'],
       impTagInputVisible: false,
       impTagInputValue: '',
 
@@ -162,10 +162,10 @@ export default {
             this.formInfoList[2].value = name[1]
             this.formInfoList[3].value = infoDict.email
 
-            if(!infoDict.flags){
+            if(infoDict.flags != null){
               this.impressionTagList = JSON.parse(infoDict.flags)
             }
-            if(!infoDict.skills){
+            if(infoDict.skills != null){
               this.skillTagList = JSON.parse(infoDict.skills)
             }
           }
@@ -248,10 +248,7 @@ export default {
         bio = this.bio
       }
 
-      console.log(impTagList)
-      console.log(skillTagList)
-      console.log(bio)
-
+      //TODO: Update avatar
       postSelfIntroduction(
         impTagList, skillTagList, bio
       ).then(resp => {

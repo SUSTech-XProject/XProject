@@ -7,19 +7,25 @@
       <div>{{ this.$store.state.role.username }}</div>
 
       <div style="margin-top: 15px" v-if="isStudent()">
-        <el-tag v-for="tag in impressionList" :key="tag.name"
-                :type="skill.type" class="el-tag" effect="plain">
-          {{ tag.name }}
+        <el-tag v-for="imp in impressionList" :key="imp"
+                class="el-tag" effect="plain">
+          {{ imp }}
         </el-tag>
       </div>
 
-      <div style="width: 100%; margin-top: 20px" align="left">
+      <div style="width: 100%; margin-top: 20px" align="left" class="handle-overflow">
         {{ bio }}
       </div>
 
-      <div style="margin-top: 15px"><i class="el-icon-office-building"> {{ this.school }}</i></div>
-      <div style="margin-top: 15px"><i class="el-icon-location-outline"> {{ this.location }}</i></div>
-      <div style="margin-top: 15px"><i class="el-icon-message"> {{ this.email }}</i></div>
+      <div style="margin-top: 15px" class="handle-overflow">
+        <i class="el-icon-office-building"> {{ this.school }}</i>
+      </div>
+      <div style="margin-top: 15px" class="handle-overflow">
+        <i class="el-icon-location-outline"> {{ this.location }}</i>
+      </div>
+      <div style="margin-top: 15px" class="handle-overflow">
+        <i class="el-icon-message"> {{ this.email }}</i>
+      </div>
     </el-col>
 
     <el-col :span="14" :offset="1">
@@ -39,9 +45,9 @@
           <div v-if="isStudent">
             <div style="margin-top: 40px">Skill List</div>
             <div style="margin-top: 15px">
-              <el-tag v-for="skill in skillList" :key="skill.name"
-                      :type="skill.type" effect="plain" class="el-tag">
-                {{ skill.name }}
+              <el-tag v-for="skill in skillList" :key="skill"
+                      effect="plain" class="el-tag">
+                {{ skill }}
               </el-tag>
             </div>
           </div>
@@ -145,14 +151,14 @@ export default {
             this.bio = infoDict.bio
 
             this.school = resp.data.data.school.schName
-            // this.location=infoDict.location
+            this.location = infoDict.location
             this.email = infoDict.email
 
-            if (!infoDict.flags) {
-              this.impressionTagList = JSON.parse(infoDict.flags)
+            if (infoDict.flags != null) {
+              this.impressionList = JSON.parse(infoDict.flags)
             }
-            if (!infoDict.skills) {
-              this.skillTagList = JSON.parse(infoDict.skills)
+            if (infoDict.skills != null) {
+              this.skillList = JSON.parse(infoDict.skills)
             }
           }
         } else if (resp.data.code === 400) {
@@ -287,5 +293,12 @@ export default {
 .base-card {
   margin: 15px 10px;
   min-height: 95.7%;
+}
+
+.handle-overflow {
+  overflow: hidden;
+  white-space: nowrap;
+  /*text-overflow: ellipsis;*/
+  width: 100%;
 }
 </style>
