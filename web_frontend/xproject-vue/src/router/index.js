@@ -17,6 +17,7 @@ import ProjPage from "@/views/main/project/ProjPage";
 import Announcement from '@/views/main/project/announcement/Announcement'
 import Gradebook from "@/views/main/project/gradebook/Gradebook";
 import TeamManaging from '@/views/main/project/team/TeamManaging'
+import StdManage from "@/views/main/project/std-manage/StdManage";
 
 Vue.use(Router)
 
@@ -87,6 +88,15 @@ const routes = [
             component: Forming,
             meta: {
               requireAuth: true
+            },
+          },
+          {
+            path: 'std-manage',
+            name: 'StdManage',
+            component: StdManage,
+            meta: {
+              requireAuth: true,
+              roleType: "Teacher"
             },
           },
           {

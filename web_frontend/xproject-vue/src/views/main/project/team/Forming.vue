@@ -77,6 +77,7 @@ export default {
         }
 
         let teamList = resp.data.data
+        console.log('===============')
         console.log(teamList)
         this.teams.splice(0,this.teams.length)
         this.op_topic.splice(0,this.op_topic.length)
@@ -89,7 +90,7 @@ export default {
             name: team.teamName,
             topic: team.topic,
             status:team.targetMemNum,
-            tags:team.tags,
+            tags: JSON.parse(team.tags),
             intro:team.descriptions
           })
           if(!this.op_topic.includes(team.topic)){

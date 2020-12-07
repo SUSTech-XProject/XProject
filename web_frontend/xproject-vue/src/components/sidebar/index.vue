@@ -91,6 +91,10 @@
             <el-menu-item index="Forming">Forming</el-menu-item>
           </el-submenu>
 
+          <el-menu-item index="StdManage" >
+            <i class="el-icon-s-order"></i>
+            <span slot="title">Students</span>
+          </el-menu-item>
           <el-menu-item index="@3.5" >
             <i class="el-icon-bell"></i>
             <span slot="title">Announcements</span>
