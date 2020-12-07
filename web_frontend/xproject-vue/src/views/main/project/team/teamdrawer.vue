@@ -26,10 +26,6 @@
                 <el-tag :type="tagType[teamTags[i-1].length%4]">{{teamTags[i-1]}}</el-tag>
               </span>
             </div>
-
-
-
-
           </el-col>
         </el-row>
 

@@ -20,10 +20,14 @@ export function postTeamCreation(projId,teams){
   })
 }
 export function postTeamDeletion(teams){
-  return Vue.prototype.$axios.post('/team-deletion',{})
+  return Vue.prototype.$axios.post('/team-deletion',{
+    teamIdList:teams
+  })
 }
-export function postTeamConfirmation(){
-  return Vue.prototype.$axios.post('/team-confirm',{})
+export function postTeamConfirmation(teams){
+  return Vue.prototype.$axios.post('/team-confirm',{
+    teamIdList:teams
+  })
 }
 export function getProjectTopics(projId){
   return Vue.prototype.$axios.get('/proj-topic',{

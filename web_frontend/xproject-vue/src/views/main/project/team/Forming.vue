@@ -77,6 +77,7 @@ export default {
         }
 
         let teamList = resp.data.data
+        console.log('===============')
         console.log(teamList)
         this.teams.splice(0,this.teams.length)
         this.op_topic.splice(0,this.op_topic.length)

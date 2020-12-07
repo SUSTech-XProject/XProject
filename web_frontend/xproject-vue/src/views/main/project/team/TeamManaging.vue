@@ -89,6 +89,9 @@
 import teamdrawer from '@/views/main/project/team/teamdrawer'
 import {getTeamInfoList} from '@/api/team'
 import CreateTeam from '@/views/main/project/team/CreateTeam'
+import {postTeamDeletion} from '@/api/team'
+import {postTeamConfirmation} from '@/api/team'
+
 export default {
   name: "TeamManaging",
   components:{
@@ -190,41 +193,69 @@ export default {
     },
     deleteTeam(){
       console.log(this.multipleSelection)
-      this.$confirm('Delete selected teams?', 'Warning', {
-        confirmButtonText: 'Confirm',
-        cancelButtonText: 'Cancel',
-        type: 'warning'
-      }).then(() => {
-        //后端调用
-        this.$message({
-          type: 'success',
-          message: 'Success'
+      if(this.multipleSelection.length===0){
+        this.$message.error('No team selected yet')
+      }else {
+        this.$confirm('Delete selected teams?', 'Warning', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+          postTeamDeletion(
+            this.multipleSelection
+          ).then(resp => {
+            if (resp.data.code === 200) {
+              let num = resp.data.data
+              this.$message({
+                type: 'success',
+                message: 'Delete ' + num + ' teams successfully'
+              });
+            } else {
+              this.$message.error(resp.data.message)
+            }
+          }).catch(failResp => {
+            this.$message.error('Back-end no response')
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Canceled'
+          });
         });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: 'Canceled'
-        });
-      });
+      }
     },
     confirmTeam(){
       console.log(this.multipleSelection)
-      this.$confirm('Confirm selected teams?', 'Alert', {
-        confirmButtonText: 'Confirm',
-        cancelButtonText: 'Cancel',
-        type: 'info'
-      }).then(() => {
-        //后端调用
-        this.$message({
-          type: 'success',
-          message: 'Success'
+      if(this.multipleSelection.length===0){
+        this.$message.error('No team selected yet')
+      }else {
+        this.$confirm('Confirm selected teams?', 'Alert', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel',
+          type: 'info'
+        }).then(() => {
+          postTeamConfirmation(
+            this.multipleSelection
+          ).then(resp => {
+            if (resp.data.code === 200) {
+              let num = resp.data.data
+              this.$message({
+                type: 'success',
+                message: 'Confirm ' + num + ' teams successfully'
+              });
+            } else {
+              this.$message.error(resp.data.message)
+            }
+          }).catch(failResp => {
+            this.$message.error('Back-end no response')
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Canceled'
+          });
         });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: 'Canceled'
-        });
-      });
+      }
     },
     manageTeam(){
       console.log(this.multipleSelection)
