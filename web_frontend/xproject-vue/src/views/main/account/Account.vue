@@ -26,29 +26,29 @@
           <div v-if="this.roleType==='Student'">
             <!--            TODO: Indentation issues of add tag-->
             <!--            TODO: Multi-line tag line spacing problem-->
-            <div class="personalInfoTitle" style="margin-left: 20px;">
+            <div class="personalInfoTitle" style="margin-left: 20px; margin-bottom: 20px">
               Impression Tags
             </div>
             <div class="personalInfoTypesetting">
               <el-tag :key="tag" v-for="tag in impressionTagList" closable
                       :disable-transitions="false" effect="plain"
-                      @close="handleImpTagClose(tag)">
+                      @close="handleImpTagClose(tag)" class="el-tag">
                 {{ tag }}
               </el-tag>
               <el-input class="input-new-tag" v-if="impTagInputVisible" v-model="impTagInputValue" ref="saveTagInput"
                         size="small"
                         @keyup.enter.native="handleImpTagInputConfirm" @blur="handleImpTagInputConfirm">
               </el-input>
-              <el-button v-else class="button-new-tag" size="small" @click="showImpTagInput">+ New Tag</el-button>
+              <el-button v-else class="input-new-tag" size="small" @click="showImpTagInput">+ New Tag</el-button>
             </div>
 
-            <div class="personalInfoTitle personalInfoTypesetting" style="margin-left: 20px;">
+            <div class="personalInfoTitle personalInfoTypesetting" style="margin-left: 20px; margin-bottom: 20px;">
               Skill Tags
             </div>
             <div class="personalInfoTypesetting">
               <el-tag :key="tag" v-for="tag in skillTagList" closable
                       :disable-transitions="false" effect="plain"
-                      @close="handleSkillTagClose(tag)">
+                      @close="handleSkillTagClose(tag)" class="el-tag">
                 {{ tag }}
               </el-tag>
               <el-input class="input-new-tag" v-if="skillTagInputVisible" v-model="skillTagInputValue"
@@ -56,7 +56,7 @@
                         size="small"
                         @keyup.enter.native="handleSkillTagInputConfirm" @blur="handleSkillTagInputConfirm">
               </el-input>
-              <el-button v-else class="button-new-tag" size="small" @click="showSkillTagInput">+ New Tag</el-button>
+              <el-button v-else class="input-new-tag" size="small" @click="showSkillTagInput">+ New Tag</el-button>
             </div>
           </div>
 
@@ -276,7 +276,6 @@ export default {
 <style scoped>
 .personalInfoTypesetting {
   margin-left: 20px;
-  margin-top: 20px;
 }
 
 .personalInfoTitle {
@@ -324,22 +323,20 @@ export default {
 }
 
 /*dynamic tags*/
-.el-tag + .el-tag {
-  margin-left: 10px;
-}
-
-.button-new-tag {
-  margin-left: 10px;
-  height: 32px;
-  line-height: 30px;
-  padding-top: 0;
-  padding-bottom: 0;
+.el-tag {
+  margin-right: 10px;
+  /*margin-top: 20px;*/
+  margin-bottom: 20px;
 }
 
 .input-new-tag {
   width: 90px;
-  margin-left: 10px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
   vertical-align: bottom;
+  margin-bottom: 20px;
 }
 
 .base-card {

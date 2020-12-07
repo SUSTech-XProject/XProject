@@ -6,14 +6,14 @@
 
       <div>{{ this.$store.state.role.username }}</div>
 
-      <div style="margin-top: 15px" v-if="isStudent()">
+      <div v-if="isStudent()">
         <el-tag v-for="imp in impressionList" :key="imp"
                 class="el-tag" effect="plain">
           {{ imp }}
         </el-tag>
       </div>
 
-      <div style="width: 100%; margin-top: 20px" align="left" class="handle-overflow">
+      <div style="width: 100%; margin-top: 20px" align="left">
         {{ bio }}
       </div>
 
@@ -44,12 +44,10 @@
 
           <div v-if="isStudent">
             <div style="margin-top: 40px">Skill List</div>
-            <div style="margin-top: 15px">
-              <el-tag v-for="skill in skillList" :key="skill"
-                      effect="plain" class="el-tag">
-                {{ skill }}
-              </el-tag>
-            </div>
+            <el-tag v-for="skill in skillList" :key="skill"
+                    effect="plain" class="el-tag">
+              {{ skill }}
+            </el-tag>
           </div>
 
           <div style="margin-top: 40px">Statistic</div>
@@ -151,7 +149,7 @@ export default {
             this.bio = infoDict.bio
 
             this.school = resp.data.data.school.schName
-            this.location = infoDict.location
+            this.location = resp.data.data.school.location
             this.email = infoDict.email
 
             if (infoDict.flags != null) {
@@ -282,8 +280,9 @@ export default {
   width: 480px;
 }
 
-.el-tag + .el-tag {
-  margin-left: 10px;
+.el-tag {
+  margin-right: 10px;
+  margin-top: 15px;
 }
 
 .el-select-dropdown .el-scrollbar >>> .el-scrollbar__wrap {
