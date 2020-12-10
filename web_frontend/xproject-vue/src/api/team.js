@@ -14,19 +14,25 @@ export function postApply(teamId){
     teamId:teamId,
   })
 }
-export function postTeamCreation(projId,teams){
+export function postTeamCreation(form){
   return Vue.prototype.$axios.post('/team-creation',{
-    params:{projId:projId}
+    description:form.desc,
+    generateNum:form.cnt,
+    idealSize:form.member,
+    projId:form.projId,
+    teamName:form.name,
+    topic:form.topic,
+    useIncrNum:form.withRank,
   })
 }
 export function postTeamDeletion(teams){
-  return Vue.prototype.$axios.post('/team-deletion',{
-    teamIdList:teams
+  return Vue.prototype.$axios.post('/team-deletion',null,{
+    params:{teamIdList:teams}
   })
 }
 export function postTeamConfirmation(teams){
-  return Vue.prototype.$axios.post('/team-confirm',{
-    teamIdList:teams
+  return Vue.prototype.$axios.post('/team-confirm',null,{
+    params:{teamIdList:teams}
   })
 }
 export function getProjectTopics(projId){

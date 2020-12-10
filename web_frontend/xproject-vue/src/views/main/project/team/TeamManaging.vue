@@ -3,79 +3,86 @@
     <div slot="header">
       <span id="title-text">Team Management</span>
     </div>
-    <div style="text-align: right;padding-right: 30px">
-      <el-button type="primary" plain
-                 icon="el-icon-circle-plus-outline" @click="addTeam">Create</el-button>
-      <el-button type="danger" plain
-                 icon="el-icon-delete" @click="deleteTeam">Delete</el-button>
-      <el-button type="success" plain
-                 icon="el-icon-circle-check" @click="confirmTeam">Confirm</el-button>
-      <el-button type="warning" plain
-                 icon="el-icon-edit" @click="manageTeam">Manage</el-button>
-    </div>
-    <el-card style="margin: 15px 0">
-      <el-table
-        height="250"
-        ref="multipleTable"
-        v-loading = "tableLoading"
-        :data="tableData"
-        empty-text="No Data Found"
-        tooltip-effect="dark"
-        style="width: 100%"
-        @selection-change="handleSelectionChange">
-        <el-table-column
-          type="selection"
-          width="55">
-        </el-table-column>
-        <el-table-column
-          prop = "index"
-          label="Index"
-          width="120"
-          sortable>
-        </el-table-column>
-        <el-table-column
-          prop="name"
-          label="Team Name"
-          sortable
-          show-overflow-tooltip>
-        </el-table-column>
-        <el-table-column
-          prop="topic"
-          label="Topic"
-          sortable
-          show-overflow-tooltip
-          :filters="topicFilter"
-          :filter-method="filterHandler">
-        </el-table-column>
-        <el-table-column
-          prop ="targetMem"
-          label="Size"
-          width="150px"
-          sortable>
-        </el-table-column>
-        <el-table-column
-          prop = "status"
-          label="Status"
-          width="150px"
-          sortable>
-        </el-table-column>
-        <el-table-column>
-          <template slot-scope="scope">
-            <el-button
-              size="mini"
-              type="primary" plain
-              icon="el-icon-search"
-              @click="openDrawer(scope.row.index)">Detail</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="block" style="text-align: center">
-        <el-pagination
-          layout="prev, pager, next"
-          :total="tableData.length">
-        </el-pagination>
+    <div id="card-body">
+
+      <div style="text-align: right;padding-right: 30px">
+        <el-button type="primary" plain
+                   icon="el-icon-circle-plus-outline" @click="addTeam">Create</el-button>
+        <el-button type="danger" plain
+                   icon="el-icon-delete" @click="deleteTeam">Delete</el-button>
+        <el-button type="success" plain
+                   icon="el-icon-circle-check" @click="confirmTeam">Confirm</el-button>
+        <el-button type="warning" plain
+                   icon="el-icon-edit" @click="manageTeam">Manage</el-button>
       </div>
-    </el-card>
+      <el-card style="margin: 15px 0;height: 100%">
+        <el-table
+          height="380"
+          ref="multipleTable"
+          v-loading = "tableLoading"
+          :data="tableData"
+          empty-text="No Data Found"
+          tooltip-effect="dark"
+          style="width: 100%"
+          @selection-change="handleSelectionChange">
+          <el-table-column
+            type="selection"
+            width="55">
+          </el-table-column>
+          <el-table-column
+            prop = "index"
+            label="Index"
+            width="120"
+            sortable>
+          </el-table-column>
+          <el-table-column
+            prop="name"
+            label="Team Name"
+            sortable
+            show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column
+            prop="topic"
+            label="Topic"
+            sortable
+            show-overflow-tooltip
+            :filters="topicFilter"
+            :filter-method="filterHandler">
+          </el-table-column>
+          <el-table-column
+            prop ="targetMem"
+            label="Size"
+            width="150px"
+            sortable>
+          </el-table-column>
+          <el-table-column
+            prop = "status"
+            label="Status"
+            width="150px"
+            sortable>
+          </el-table-column>
+          <el-table-column>
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                type="primary" plain
+                icon="el-icon-search"
+                @click="openDrawer(scope.row.index)">Detail</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <footer>
+          <div class="block" style="text-align: center">
+            <el-pagination
+              layout="prev, pager, next"
+              :total="tableData.length">
+            </el-pagination>
+          </div>
+        </footer>
+
+      </el-card>
+    </div>
+
 
     <drawer :drawer.sync="drawerCtrl"
             :id="drawerId"
@@ -184,15 +191,25 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
+
+    reLoad(){
+      this.tableLoading = true
+      this.initTeams()
+      this.tableLoading = false
+    },
     addTeam(){
       console.log(this.formVisible)
       this.formVisible = true
     },
-    closeForm(){
+    closeForm(val){
       this.formVisible = false
+      if(val===true){
+        //创建队伍重新挂载
+        this.reLoad()
+      }
     },
     deleteTeam(){
-      console.log(this.multipleSelection)
+
       if(this.multipleSelection.length===0){
         this.$message.error('No team selected yet')
       }else {
@@ -201,8 +218,12 @@ export default {
           cancelButtonText: 'Cancel',
           type: 'warning'
         }).then(() => {
-          postTeamDeletion(
-            this.multipleSelection
+          var list = []
+          for (let i = 0; i <this.multipleSelection.length ; i++) {
+            list.push(parseInt(this.multipleSelection[i].index))
+          }
+          console.log(list)
+          postTeamDeletion(list
           ).then(resp => {
             if (resp.data.code === 200) {
               let num = resp.data.data
@@ -210,6 +231,7 @@ export default {
                 type: 'success',
                 message: 'Delete ' + num + ' teams successfully'
               });
+              this.reLoad()
             } else {
               this.$message.error(resp.data.message)
             }
@@ -234,8 +256,13 @@ export default {
           cancelButtonText: 'Cancel',
           type: 'info'
         }).then(() => {
+          var list = []
+          for (let i = 0; i <this.multipleSelection.length ; i++) {
+            list.push(parseInt(this.multipleSelection[i].index))
+          }
+          console.log(list)
           postTeamConfirmation(
-            this.multipleSelection
+            list
           ).then(resp => {
             if (resp.data.code === 200) {
               let num = resp.data.data
@@ -268,9 +295,12 @@ export default {
 
 <style scoped>
 #base-card{
-  margin: 15px 10px
+  margin: 15px 10px;
 }
 #title-text {
   font-size: 20px;
+}
+#card-body{
+
 }
 </style>
