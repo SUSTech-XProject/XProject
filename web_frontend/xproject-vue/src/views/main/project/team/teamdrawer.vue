@@ -43,7 +43,6 @@
                 <div style="font-size: 20px;">
                   Status:  {{teamSta}}
                 </div>
-
                 <div v-for="stu in teamMembers">
                   <el-row>
                     <el-col :span="2" class="left">
@@ -56,12 +55,9 @@
                   </el-row>
                 </div>
               </div>
-
             </el-tab-pane>
           </el-tabs>
         </div>
-
-
       </div>
 
 
@@ -99,7 +95,6 @@ export default {
   },
   methods: {
     refresh(){
-      //console.log("close")
       this.$emit('closeDrawer',this.isConfirmed)
       //清除数据？
 
@@ -143,14 +138,15 @@ export default {
           return false
         }
         let team = resp.data.data;
+        console.log(team)
         //挂载
         this.teamIntro = team.descriptions
-        this.teamTags = team.tags
+        this.teamTags = JSON.parse(team.tags)
         this.teamName = team.teamName
         this.teamMembers = team.teamMemberList
         this.teamSta = this.teamMembers.length+"/"+team.targetMemNum
         this.teamTopic = team.topic
-        console.log(this.teamMembers.length)
+        console.log(this.teamTags)
 
       })
     },
