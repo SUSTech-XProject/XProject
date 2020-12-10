@@ -1,17 +1,18 @@
 import Vue from 'vue'
 
-export function getProjOverviewStudent () {
-  return Vue.prototype.$axios.get('student/proj-overview')
-}
-export function getProjOverviewTeacher () {
-  return Vue.prototype.$axios.get('student/proj-overview')
+export function getProjOverview (projId) {
+  return Vue.prototype.$axios.get('/project/overview', {
+    params: {projId: projId}
+  })
 }
 
 export function postProjectOverview (
-  useRecruitSystem,
-  minSize,
-  maxSize,
-  dueTime,
-  allowCrossShiftTeaming) {
-  return Vue.prototype.$axios.post('teacher/update-overview', {})
+  siteInfo,
+  topicBO,
+  projSettingsBO) {
+  return Vue.prototype.$axios.post('teacher/update-overview', {
+    siteInfo: siteInfo,
+    TopicBO: topicBO,
+    ProjSettingsBO: projSettingsBO
+  })
 }
