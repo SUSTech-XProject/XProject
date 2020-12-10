@@ -14,8 +14,10 @@ export default new Vuex.Store({
       roleType: '',
     },
     proj: {
-      projId: null,
-      projName: null
+      projId: window.localStorage.getItem('proj') == null ?
+        null : JSON.parse(window.localStorage.getItem('proj' || '[]')).projId,
+      projName: window.localStorage.getItem('proj') == null ?
+        null : JSON.parse(window.localStorage.getItem('proj' || '[]')).projName,
     }
   },
   mutations: {
@@ -23,6 +25,7 @@ export default new Vuex.Store({
       state.role.username = loginForm.username
       window.localStorage.setItem('role', JSON.stringify(state.role))
 
+      window.localStorage.removeItem('proj')
       state.proj.projId = null
       state.proj.projName = null
     },
@@ -31,6 +34,7 @@ export default new Vuex.Store({
       state.role.roleType = ''
       window.localStorage.removeItem('role')
 
+      window.localStorage.removeItem('proj')
       state.proj.projId = null
       state.proj.projName = null
     },
@@ -41,10 +45,12 @@ export default new Vuex.Store({
 
     setProj(state, proj) {
       state.proj = proj
+      window.localStorage.setItem('proj', JSON.stringify(proj))
     },
     removeProj(state) {
       state.proj.projId = null
       state.proj.projName = null
+      window.localStorage.removeItem('proj')
     }
   }
 })
