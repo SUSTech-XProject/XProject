@@ -8,7 +8,7 @@
             <el-divider></el-divider>
           </div>
           <el-container style="margin-left: 20px;">
-            <el-form ref="form" label-width="110px">
+            <el-form ref="form" label-width="140px">
               <el-form-item v-for="info in formInfoList" :key="info.label"
                             v-bind:label="info.label" class="form-item-height">
                 {{ info.value }}
@@ -67,7 +67,7 @@
                     style="margin-left: 20px; margin-top: 20px; width: 90%">
           </el-input>
 
-          <div class="personalInfoTypesetting" style="margin-bottom: 40px">
+          <div class="personalInfoTypesetting" style="margin-bottom: 40px; margin-top: 30px">
             <el-button type="primary" @click="handleUpdate">update</el-button>
           </div>
         </el-tab-pane>
