@@ -57,7 +57,7 @@
                       style="margin-left: 20px; margin-top: 20px; width: 90%">
             </el-input>
             <div style="margin-top: 20px; margin-left: 20px">
-              <el-button type="primary" @click="handleSiteInfotUpdate">Update</el-button>
+              <el-button type="primary" @click="handleSiteInfoUpdate">Update</el-button>
               <el-button @click="handleSiteInfoReset">Reset</el-button>
             </div>
 
@@ -216,7 +216,8 @@ export default {
     //el-form
     handleRecruitUpdate () {
       postProjectOverview(
-        this.initSiteInfo, this.initTopicBo, this.form
+        this.$store.state.proj.projId, this.initSiteInfo,
+        JSON.stringify(this.initTopicBo), JSON.stringify(this.form)
       ).then(resp => {
         console.log('get response : ' + resp)
         if (resp.data.code === 200) {
@@ -244,9 +245,10 @@ export default {
       this.form.allow_cross_mark = this.initForm.allow_cross_mark
     },
 
-    handleSiteInfotUpdate () {
+    handleSiteInfoUpdate () {
       postProjectOverview(
-        this.siteInfo, this.initTopicBo, this.initForm
+        this.$store.state.proj.projId, this.siteInfo,
+        JSON.stringify(this.initTopicBo), JSON.stringify(this.initForm)
       ).then(resp => {
         console.log('get response : ' + resp)
         if (resp.data.code === 200) {
@@ -275,7 +277,8 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           postProjectOverview(
-            this.initSiteInfo, this.topicBO, this.initForm
+            this.$store.state.proj.projId, this.initSiteInfo,
+            JSON.stringify(this.topicBO), JSON.stringify(this.initForm)
           ).then(resp => {
             console.log('get response : ' + resp)
             if (resp.data.code === 200) {
