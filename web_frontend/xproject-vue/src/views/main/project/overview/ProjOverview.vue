@@ -56,7 +56,7 @@
             <el-input type="textarea" :rows="4" v-model="siteInfo"
                       style="margin-left: 20px; margin-top: 20px; width: 90%">
             </el-input>
-            <div style="margin-top: 20px; margin-left: 20px">
+            <div style="margin-top: 25px; margin-left: 20px">
               <el-button type="primary" @click="handleSiteInfoUpdate">Update</el-button>
               <el-button @click="handleSiteInfoReset">Reset</el-button>
             </div>
