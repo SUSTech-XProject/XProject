@@ -27,16 +27,21 @@ export function postTeamCreation(form){
 }
 export function postTeamDeletion(teams){
   return Vue.prototype.$axios.post('/team-deletion',{
-    projInstIdList: teams
+    projInstIdList:teams
   })
 }
 export function postTeamConfirmation(teams){
-  return Vue.prototype.$axios.post('/team-confirm',null,{
-    params:{teamIdList:teams}
+  return Vue.prototype.$axios.post('/team-confirm',{
+    projInstIdList:teams
   })
 }
 export function getProjectTopics(projId){
   return Vue.prototype.$axios.get('/proj-topic',{
     params:{projId:projId}
+  })
+}
+export function getStuInfo(roleId){
+  return Vue.prototype.$axios.get('/team/stu-info',{
+    params:{roleId:roleId}
   })
 }

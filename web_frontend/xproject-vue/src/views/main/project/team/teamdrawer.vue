@@ -45,12 +45,15 @@
                 </div>
                 <div v-for="stu in teamMembers">
                   <el-row>
-                    <el-col :span="2" class="left">
+                    <el-col :span="3" class="left">
                       <el-avatar src="https://ww1.sinaimg.cn/thumb150/006z25tvly1genhm1qn9vj30tc0t9wi8.jpg"
                                  :size="50"></el-avatar>
                     </el-col>
                     <el-col :span="12">
-                      <div style="font-size: 20px; padding:0; text-align:left; margin-top: 22px">{{ stu.username }}</div>
+                      <div
+                        @click.native:="openDrawer(stu)"
+                        style="font-size: 20px; padding:0; text-align:left; margin-top: 22px">
+                        {{ stu.username }}</div>
                     </el-col>
                   </el-row>
                 </div>
@@ -61,12 +64,18 @@
       </div>
 
 
+      <drawer
+        :drawer.sync="memDrawer"
+        :id="memID"
+        @closeDrawerStu = "closeDrawerStu"
+      ></drawer>
 
       <footer>
         <div style="margin-left: 80px">
           <el-button type = "primary" @click="confirmed">Apply</el-button>
         </div>
       </footer>
+
 
     </el-drawer>
   </div>
@@ -75,9 +84,13 @@
 <script>
 import {getTeamDetail} from '@/api/team'
 import {postApply} from '@/api/team'
+import stuInfoDrawer from '@/views/main/project/team/stuInfoDrawer'
 
 export default {
   name: "teamdrawer",
+  components:{
+    drawer:stuInfoDrawer
+  },
   data() {
     return {
       size:'62%',
@@ -90,7 +103,10 @@ export default {
       teamIntro:'',
       teamMembers:[],
       isConfirmed:false,
-      tagType:['',"success","warning","danger","info"]
+      tagType:['',"success","warning","danger","info"],
+      memDrawer:false,
+      memID:1
+
     };
   },
   methods: {
@@ -150,6 +166,13 @@ export default {
 
       })
     },
+    openDrawer(val){
+      this.drawerId = val.roleId
+      this.memDrawer = true
+    },
+    closeDrawerStu(){
+      this.memDrawer = false
+    }
   },
   created () {
     this.teamDrawer = this.drawer
@@ -166,12 +189,7 @@ export default {
         this.initTeam(this.teamID)
       }
     },
-    // id(val){this.teamID = val},
-    // topic(val){this.teamTopic = val},
-    // status(val){this.teamSta = val},
-    // tags(val){this.teamTags = val},
-    // intro(val){this.teamIntro = val},
-    // name(val){this.teamName = val}
+
   },
   props:{
     // data:{type:Object,default:()=>{}},
