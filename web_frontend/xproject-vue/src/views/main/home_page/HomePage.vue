@@ -2,7 +2,7 @@
   <el-card class="base-card">
     <el-col :span="5" :offset="2">
       <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"
-                 :size="290" :fit="'fill'"></el-avatar>
+                 :size="290" :fit="'fill'" style="margin-top: 20px"></el-avatar>
 
       <div>{{ this.$store.state.role.username }}</div>
 
@@ -29,7 +29,9 @@
     </el-col>
 
     <el-col :span="14" :offset="1">
-      <el-tabs :tab-position="tabPosition" type="card" style="height: 100%; margin-top: 20px" v-model="activeName">
+      <el-tabs :tab-position="tabPosition"
+               type="card" v-model="activeName"
+               style="height: 100%; margin-top: 20px" >
         <el-tab-pane label="Overview" name="overview">
           <div style="margin-top: 10px">Recent project</div>
           <el-row>

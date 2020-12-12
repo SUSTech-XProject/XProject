@@ -1,7 +1,8 @@
 <template>
   <el-card class="base-card">
     <el-col :span="14" :offset="2">
-      <el-tabs :tab-position="tabPosition" type="card" style="height: 100%;" v-model="activeName">
+      <el-tabs :tab-position="tabPosition" type="card"
+               style="height: 100%; margin-top: 20px" v-model="activeName">
         <el-tab-pane label="Account Information" name="accountInfo">
           <div style="font-size: 30px; font-weight:bold; margin-left: 20px">
             Account Information
@@ -75,7 +76,7 @@
     </el-col>
 
     <el-col :span="5" :offset="1">
-      <div style="margin-top: 40px; margin-left: 5px; font-weight:bold;">Profile picture</div>
+      <div style="margin-top: 60px; margin-left: 5px; font-weight:bold;">Profile picture</div>
       <div style="margin-top: 5px" align="left">
         <el-upload
           class="avatar-uploader"
