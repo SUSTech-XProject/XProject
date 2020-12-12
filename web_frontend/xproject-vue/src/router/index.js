@@ -18,6 +18,7 @@ import Announcement from '@/views/main/project/announcement/Announcement'
 import Gradebook from "@/views/main/project/gradebook/Gradebook";
 import TeamManaging from '@/views/main/project/team/TeamManaging'
 import StdManage from "@/views/main/project/std-manage/StdManage";
+import Roster from "@/views/main/project/roster/Roster";
 
 Vue.use(Router)
 
@@ -52,6 +53,15 @@ const routes = [
         component: ProjectList,
         meta: {
           requireAuth: true
+        },
+      },
+      {
+        path: 'roster',
+        name: 'Roster',
+        component: Roster,
+        meta: {
+          requireAuth: true,
+          roleType: "Teacher"
         },
       },
       {
@@ -146,7 +156,7 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/test'
+    redirect: '/welcome'
   },
   // YZX: 有用的放到这个上面，临时的放到下面
   {

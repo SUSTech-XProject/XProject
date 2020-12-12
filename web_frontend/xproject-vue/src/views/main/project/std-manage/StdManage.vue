@@ -1,51 +1,52 @@
 <template>
-  <el-tabs type="border-card" id="base-card">
-    <el-tab-pane label="Team of Students">
+  <el-card type="border-card" id="base-card">
+    <div slot="header" class="">
+      <span id="title-text">Student View</span>
+    </div>
 
-      <div class="table-btm-group">
-        <el-button @click="clearFilter" style="margin-right: auto">Clear all filters</el-button>
-        <el-radio-group v-model="teamRadioModel" @change="handleTeamRadioChange" id="teamRadio">
-          <el-radio-button label="all">All</el-radio-button>
-          <el-radio-button label="haveTeam">Have a team</el-radio-button>
-          <el-radio-button label="noTeam">No team</el-radio-button>
-        </el-radio-group>
-        <el-button type="primary" plain>Forming</el-button>
-        <el-button type="primary" plain>Release</el-button>
+    <div class="table-btm-group">
+      <el-button @click="clearFilter" style="margin-right: auto">Clear all filters</el-button>
+      <el-radio-group v-model="teamRadioModel" @change="handleTeamRadioChange" id="teamRadio">
+        <el-radio-button label="all">All</el-radio-button>
+        <el-radio-button label="haveTeam">Have a team</el-radio-button>
+        <el-radio-button label="noTeam">No team</el-radio-button>
+      </el-radio-group>
+      <el-button type="primary" plain>Forming</el-button>
+      <el-button type="primary" plain>Release</el-button>
+    </div>
+
+    <el-card>
+      <el-table
+        ref="stdTable"
+        :data="stdList"
+        empty-text="No Data Found"
+        :default-sort = "{prop: 'index', order: 'increasing'}"
+        style="width: 100%">
+        <el-table-column type="selection"/>
+        <el-table-column label="" type="index" width="50px" sortable/>
+        <el-table-column label="Student Name" prop="stdName" sortable/>
+        <el-table-column label="SID" prop="stdNo" sortable/>
+        <el-table-column label="Group Mark" prop="groupMark" sortable/>
+        <el-table-column label="Team Index" prop="teamIndex" sortable
+                         :filters="teamIndexFList" :filter-method="teamIndexFMethod"/>
+        <el-table-column label="Topic" prop="teamTopic" sortable/>
+        <el-table-column label="Team Status" prop="teamStatus" sortable/>
+      </el-table>
+
+      <div class="block">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="page.current"
+          :page-size="page.page"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="page.total">
+        </el-pagination>
       </div>
 
-      <el-card>
-        <el-table
-          ref="stdTable"
-          :data="stdList"
-          empty-text="No Data Found"
-          :default-sort = "{prop: 'index', order: 'increasing'}"
-          style="width: 100%">
-          <el-table-column type="selection"/>
-          <el-table-column label="" type="index" width="50px" sortable/>
-          <el-table-column label="Student Name" prop="stdName" sortable/>
-          <el-table-column label="SID" prop="stdNo" sortable/>
-          <el-table-column label="Group Mark" prop="groupMark" sortable/>
-          <el-table-column label="Team Index" prop="teamIndex" sortable
-                           :filters="teamIndexFList" :filter-method="teamIndexFMethod"/>
-          <el-table-column label="Topic" prop="teamTopic" sortable/>
-          <el-table-column label="Team Status" prop="teamStatus" sortable/>
-        </el-table>
+    </el-card>
 
-        <div class="block">
-          <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="page.current"
-            :page-size="page.page"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="page.total">
-          </el-pagination>
-        </div>
-
-      </el-card>
-
-    </el-tab-pane>
-  </el-tabs>
+  </el-card>
 </template>
 
 <script>

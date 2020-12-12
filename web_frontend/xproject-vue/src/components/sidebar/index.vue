@@ -27,6 +27,11 @@
           <span slot="title">Project List</span>
         </el-menu-item>
 
+        <el-menu-item index="Roster" v-if="showRoster()">
+          <i class="el-icon-notebook-2"></i>
+          <span slot="title">Roster</span>
+        </el-menu-item>
+
         <el-menu-item index="Account">
           <i class="el-icon-s-custom"></i>
           <span slot="title">Account</span>
@@ -80,20 +85,13 @@
             <span slot="title">Project Info</span>
           </el-menu-item>
 
-          <el-submenu index="@3">
-            <template slot="title">
-              <i class="el-icon-connection"></i>
-              <span v-if="!isCollapse" slot="title">Team</span>
-              <span v-if="isCollapse" slot="title"></span>
-            </template>
-
-            <el-menu-item index="MyTeam">My Team</el-menu-item>
-            <el-menu-item index="Forming">Forming</el-menu-item>
-          </el-submenu>
-
           <el-menu-item index="StdManage" >
             <i class="el-icon-s-order"></i>
             <span slot="title">Students</span>
+          </el-menu-item>
+          <el-menu-item index="TeamManaging" >
+            <i class="el-icon-connection"></i>
+            <span slot="title">Team Managing</span>
           </el-menu-item>
           <el-menu-item index="@3.5" >
             <i class="el-icon-bell"></i>
@@ -149,6 +147,9 @@
       }
     },
     methods: {
+      showRoster () {
+        return isTeacher()
+      },
       showStdProjMenu () {
         return hasProjState() && isStudent()
       },

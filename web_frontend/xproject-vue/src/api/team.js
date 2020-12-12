@@ -26,8 +26,8 @@ export function postTeamCreation(form){
   })
 }
 export function postTeamDeletion(teams){
-  return Vue.prototype.$axios.post('/team-deletion',null,{
-    params:{teamIdList:teams}
+  return Vue.prototype.$axios.post('/team-deletion',{
+    projInstIdList: teams
   })
 }
 export function postTeamConfirmation(teams){

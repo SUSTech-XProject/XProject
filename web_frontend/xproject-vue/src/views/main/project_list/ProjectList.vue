@@ -1,28 +1,79 @@
 <template>
   <el-card style="margin: 12px 10px">
-    <el-row style="display: flex; margin: 0 10px 10px 50px; justify-content: flex-start">
-      <div style="font-size: 30px; font-weight: bold; text-align:left; margin: 0 50px 0 0">Project List</div>
-    </el-row>
-    <el-row style="display: flex; margin: 0 0 20px 0; justify-content: flex-end">
-      <el-button type="primary" plain style="margin-right: 20%"
-                 @click="selectStar">only star <i :class="icn" ></i></el-button>
-    </el-row>
+    <div slot="header" class="">
+      <span id="title-text">Project List</span>
+    </div>
 
-    <div v-for="(list, index) in listArr">
+    <div v-if="this.$store.state.role.roleType === 'Student'">
+      <el-row style="display: flex; margin: 0 0 20px 0; justify-content: flex-end">
+        <el-button type="primary" plain icon="el-icon-search" @click="joinDialogVisible = true">Join</el-button>
+        <el-button type="primary" plain style="margin-right: 20%"
+                   :icon="icn" @click="selectStar">Only star</el-button>
+      </el-row>
+
+      <div v-for="(list, index) in listArr">
         <div v-if="list.star||!star" class="proj">
           <card v-bind:proj="list"
                 v-bind:index="index"
                 @getStarChange = "getStarChange"
                 @click.native= "gotoProjOverview(list.id, list.name)"></card>
         </div>
+      </div>
+
+      <el-dialog title="Join a project"
+                 width="80%"
+                 @open="openJoinDialog"
+                 :visible.sync="joinDialogVisible">
+        <el-table
+          ref="projTable"
+          v-loading="projTableLoading"
+          :data="dialogProjList"
+          empty-text="No Other Project Found"
+          :default-sort = "{prop: 'index', order: 'increasing'}"
+          style="width: 100%">
+          <el-table-column label="" type="index" width="50px" sortable/>
+          <el-table-column label="Name" prop="projName" width="350px" sortable/>
+          <el-table-column label="Course" prop="courseName" width="300px" sortable/>
+          <el-table-column label="Description" prop="description"/>
+          <el-table-column label="Operation" width="300px">
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                type="primary" plain
+                icon="el-icon-plus"
+                @click="openConfirmDialog(scope.row.projId, scope.row.projName)">Join</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <span slot="footer" class="dialog-footer">
+        <el-button @click="joinDialogVisible = false">Cancel</el-button>
+      </span>
+
+        <el-dialog title="Tip"
+                   append-to-body
+                   :visible.sync="confirmDialogVisible">
+          <div>Join project <span style="font-weight: bold">{{this.confirmProjName}}</span> ? </div>
+          <span slot="footer" class="dialog-footer">
+          <el-button @click="confirmDialogVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="confirmDialogVisible = false; joinProj()">Join</el-button>
+        </span>
+        </el-dialog>
+
+      </el-dialog>
     </div>
+
+    <div v-if="this.$store.state.role.roleType === 'Teacher'">
+      Teacher
+    </div>
+
   </el-card>
 </template>
 
 <script>
 import Card   from '@/components/card/projectList/index'
 import Selector from '@/components/selector/single'
-import {getProjList} from "@/api/home_page";
+import {getJoinProj, getProjList, getProjListBySch} from "@/api/home_page";
 
 export default{
   name:'ProjectList',
@@ -37,21 +88,63 @@ export default{
         // {id:2,name:"PROJECT2",course:"COURSE2",star:false},
         // {id:3,name:"PROJECT3",course:"COURSE3",star:true}
       ],
-      selArr:[
-        {value: '选项1', label: '黄金糕'},
-        {value: '选项2',label: '双皮奶'},
-        {value: '选项3',label: '蚵仔煎'},
-        {value: '选项4',label: '龙须面'},
-        {value: '选项5',label: '北京烤鸭'}
-      ],
       star:false,
       icn:"el-icon-star-off",
+      projTableLoading: true,
+      joinDialogVisible: false,
+      confirmDialogVisible: false,
+      dialogProjList: [],
+      confirmProjName: '',
+      confirmProjId: null,
     }
   },
   mounted () {
     this.initProjList()
   },
   methods:{
+    openJoinDialog () {
+      this.projTableLoading = true
+      this.confirmDialogVisible = false
+      getProjListBySch().then(resp => {
+        if (resp.data.code !== 200) {
+          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+          return false
+        }
+        this.dialogProjList = resp.data.data;
+        this.projTableLoading = false
+      }).catch( failResp => {
+        console.log('fail in getProjListBySch, %o', failResp)
+        this.joinDialogVisible = false
+        this.$alert('Fail to load', 'Tip', {
+          confirmButtonText: 'OK'
+        })
+      })
+    },
+    openConfirmDialog (projId, projName) {
+      this.confirmProjId = projId
+      this.confirmProjName = projName
+      this.confirmDialogVisible = true
+    },
+    joinProj () {
+      getJoinProj(
+        this.confirmProjId
+      ).then(resp => {
+        if (resp.data.code !== 200) {
+          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+          return false
+        }
+        this.dialogProjList = resp.data.data;
+      }).catch( failResp => {
+        console.log('fail in getProjListBySch, %o', failResp)
+        this.$alert('Fail to join', 'Tip', {
+          confirmButtonText: 'OK'
+        })
+      })
+    },
     getStarChange (val) {
       console.log(val)
       //更改相应project star值
