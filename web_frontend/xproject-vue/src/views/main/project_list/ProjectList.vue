@@ -64,7 +64,15 @@
     </div>
 
     <div v-if="this.$store.state.role.roleType === 'Teacher'">
-      Teacher
+      Teacher temp version
+      <div v-for="(list, index) in listArr">
+        <div v-if="list.star||!star" class="proj">
+          <card v-bind:proj="list"
+                v-bind:index="index"
+                @getStarChange = "getStarChange"
+                @click.native= "gotoProjOverview(list.id, list.name)"></card>
+        </div>
+      </div>
     </div>
 
   </el-card>
