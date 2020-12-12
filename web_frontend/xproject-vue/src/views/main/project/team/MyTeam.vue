@@ -53,10 +53,10 @@
                            slot="reference"></el-avatar>
               </el-popover>
 
-<!--              <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"-->
-<!--                         :fit="'fill'"-->
-<!--                         style="vertical-align:middle; cursor: pointer"-->
-<!--                         @click="handleJump()"></el-avatar>-->
+              <!--              <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"-->
+              <!--                         :fit="'fill'"-->
+              <!--                         style="vertical-align:middle; cursor: pointer"-->
+              <!--                         @click="handleJump()"></el-avatar>-->
 
               <span style="margin-left: 5px; font-size: 16px;vertical-align:middle;">
               {{ notice.info }}
@@ -82,10 +82,10 @@
                            @click="handleJump()"
                            slot="reference"></el-avatar>
               </el-popover>
-<!--              <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"-->
-<!--                         :fit="'fill'"-->
-<!--                         style="vertical-align:middle; margin-left: 8px; cursor: pointer"-->
-<!--                         @click="handleJump()"></el-avatar>-->
+              <!--              <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"-->
+              <!--                         :fit="'fill'"-->
+              <!--                         style="vertical-align:middle; margin-left: 8px; cursor: pointer"-->
+              <!--                         @click="handleJump()"></el-avatar>-->
             </div>
 
             <div v-if="notice.type==='apply'"
@@ -173,44 +173,54 @@ export default {
       teamMemberList: [],
       noticeList: [
         {
-          id: 0,
           type: 'quit',
           info: ' has quit from your team',
+          applyInfo:'',
+          handler: '',
           time: '',
-          confirmed: false
-        },
-        {
-          id: 1,
-          type: 'joinSuccess',
-          info: ' successfully joined your team',
-          handler: 'https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg',
-          time: '',
-          confirmed: false
-        },
-        {
-          id: 2,
-          type: 'joinFail',
-          info: ' has been refused to join your team',
-          handler: 'https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg',
-          time: '',
-          confirmed: true
-        },
-        {
-          id: 3,
-          type: 'apply',
-          info: ' apply to join your team',
-          applyInfo: 'Please accept me!',
-          time: '',
+          confirmed: false,
           decided: false,
           result: 'rejected'
         },
         {
-          id: 4,
-          type: 'invite',
-          info: ' was invited to join your team',
+          type: 'joinSuccess',
+          info: ' successfully joined your team',
+          applyInfo:'',
           handler: 'https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg',
           time: '',
-          confirmed: true
+          confirmed: false,
+          decided: false,
+          result: 'rejected'
+        },
+        {
+          type: 'joinFail',
+          info: ' has been refused to join your team',
+          applyInfo:'',
+          handler: 'https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg',
+          time: '',
+          confirmed: true,
+          decided: false,
+          result: 'rejected'
+        },
+        {
+          type: 'apply',
+          info: ' apply to join your team',
+          applyInfo: 'Please accept me!',
+          handler: '',
+          time: '',
+          confirmed: true,
+          decided: false,
+          result: 'rejected',
+        },
+        {
+          type: 'invite',
+          info: ' was invited to join your team',
+          applyInfo:'',
+          handler: 'https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg',
+          time: '',
+          confirmed: true,
+          decided: false,
+          result: 'rejected'
         }
       ],
 
@@ -230,19 +240,6 @@ export default {
     },
     haveTeam () {
       return true
-    },
-    typeInfo (type) {
-      if (type === 'quit') {
-        return ' has withdrawn from your team'
-      } else if (type === 'joinSuccess') {
-        return ' successfully joined your team'
-      } else if (type === 'joinFail') {
-        return ' has been refused to join your team'
-      } else if (type === 'apply') {
-        return ' apply to join your team'
-      } else if (type === 'invite') {
-        return ' was invited to join your team'
-      }
     },
     handleAccept (notice) {
       //TODO: logic
