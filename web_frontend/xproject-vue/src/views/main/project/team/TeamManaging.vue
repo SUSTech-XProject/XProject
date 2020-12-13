@@ -88,7 +88,10 @@
             :id="drawerId"
             @closeDrawer = "closeDrawer"></drawer>
 
-    <create :visible.sync="formVisible" @closeForm = 'closeForm'></create>
+    <create :visible.sync="createVisible" @closeForm = 'closeForm'></create>
+    <forming :visible.sync="formingVisible"
+             :team-in="multipleSelection"
+             @closeManaging="closeManaging"></forming>
   </el-card>
 </template>
 
@@ -98,40 +101,24 @@ import {getTeamInfoList} from '@/api/team'
 import CreateTeam from '@/views/main/project/team/CreateTeam'
 import {postTeamDeletion} from '@/api/team'
 import {postTeamConfirmation} from '@/api/team'
+import AutoForming from '@/views/main/project/team/AutoForming'
 
 export default {
   name: "TeamManaging",
   components:{
     drawer:teamdrawer,
-    create:CreateTeam
+    create:CreateTeam,
+    forming:AutoForming
   },
   data(){
     return {
       drawerCtrl:false,
       drawerId:1,
-      tableData: [
-        {
-        index: 1,
-        name: 'Project Helper 0',
-        topic: 'Project Helper',
-        targetMem:4,
-        status:'R',},
-        {
-        index: 2,
-        name: 'Project Helper 1',
-        topic: 'Project Helper',
-        targetMem:3,
-        status:'R'},
-        {
-          index: 3,
-          name: 'DBOJ 1',
-          topic: 'DBOJ',
-          targetMem:3,
-          status:'R'},
-      ],
+      tableData: [],
       topicFilter:[],
       tableLoading:false,
-      formVisible:false,
+      createVisible:false,
+      formingVisible:false,
       multipleSelection: []
     }
   },
@@ -141,7 +128,7 @@ export default {
   methods: {
     initTeams(){
       let id = this.$store.state.proj.projId
-      console.log(id)
+      //console.log(id)
       getTeamInfoList(parseInt(id)).then(resp => {
         if (resp.data.code !== 200) {
           this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
@@ -151,7 +138,7 @@ export default {
         }
 
         let teamList = resp.data.data
-        console.log(teamList)
+        //console.log(teamList)
         this.tableData.splice(0,this.tableData.length)
         this.topicFilter.splice(0,this.topicFilter.length)
         for (let i = 0; i < teamList.length; i++) {
@@ -163,21 +150,32 @@ export default {
             targetMem:team.targetMemNum,
             status:team.status,
           })
-          if(!this.topicFilter.includes(team.topic)){
-            this.topicFilter.push({
-              text:team.topic,
-              value:team.topic
-            })
-          }
 
+          this.topicFilter.push({
+            text:team.topic,
+            value:team.topic
+          })
         }
+        this.topicFilter = this.unique(this.topicFilter)
         console.log(this.topicFilter)
       }).catch(failResp=>{
         console.log('fail in getProjList. message=' + failResp.message)
       })
     },
+    unique(arr){
+      let result = {}
+      let finalResult = []
+      for (let i = 0; i <arr.length ; i++) {
+        result[arr[i].value] = arr[i]
+      }
+      for (const item in result) {
+        finalResult.push(result[item])
+      }
+      return finalResult
+    },
+
     openDrawer(val){
-      console.log(val)
+      //console.log(val)
       this.drawerId = val
       this.drawerCtrl = true
     },
@@ -197,19 +195,31 @@ export default {
       this.initTeams()
       this.tableLoading = false
     },
+
     addTeam(){
-      console.log(this.formVisible)
-      this.formVisible = true
+      console.log(this.createVisible)
+      this.createVisible = true
     },
     closeForm(val){
-      this.formVisible = false
+      this.createVisible = false
       if(val===true){
         //创建队伍重新挂载
         this.reLoad()
       }
     },
-    deleteTeam(){
+    manageTeam(){
+      console.log(this.multipleSelection)
+      this.formingVisible = true
+      //调用组队表单？
+    },
+    closeManaging(val){
+      this.formingVisible = false
+      if(val){
+        this.reLoad()
+      }
+    },
 
+    deleteTeam(){
       if(this.multipleSelection.length===0){
         this.$message.error('No team selected yet')
       }else {
@@ -256,7 +266,7 @@ export default {
           cancelButtonText: 'Cancel',
           type: 'info'
         }).then(() => {
-          var list = []
+          const list = []
           for (let i = 0; i <this.multipleSelection.length ; i++) {
             list.push(parseInt(this.multipleSelection[i].index))
           }
@@ -284,10 +294,7 @@ export default {
         });
       }
     },
-    manageTeam(){
-      console.log(this.multipleSelection)
-      //调用组队表单？
-    },
+
 
   }
 }
