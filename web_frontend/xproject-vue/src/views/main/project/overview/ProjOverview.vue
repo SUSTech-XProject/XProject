@@ -15,7 +15,7 @@
           <div slot="header" class="clearfix" style="font-weight: bold">Recent Announcements</div>
           <!--              TODO: Recent Announcements-->
           <div v-if="this.firstThreeAnnoList.length===0">No Recent Announcements</div>
-          <div v-else v-for="anno in this.firstThreeAnnoList" :key="anno" style="margin-bottom: 20px">
+          <div v-else v-for="(anno,index) in this.firstThreeAnnoList" :key="index" style="margin-bottom: 20px">
           </div>
         </el-card>
       </el-col>
@@ -37,7 +37,7 @@
               <div slot="header" class="clearfix" style="font-weight: bold">Recent Announcements</div>
               <!--              TODO: Recent Announcements-->
               <div v-if="this.firstThreeAnnoList.length===0">No Recent Announcements</div>
-              <div v-else v-for="anno in this.firstThreeAnnoList" :key="anno" style="margin-bottom: 20px">
+              <div v-else v-for="(anno,index) in this.firstThreeAnnoList" :key="index" style="margin-bottom: 20px">
               </div>
             </el-card>
           </el-col>
@@ -99,7 +99,7 @@
               <el-form-item
                 v-for="(topic, index) in topicBO"
                 :label="'Topic ' + index"
-                :key="topic"
+                :key="index"
                 :prop="'topic.' + index + '.value'"
                 style="margin-top: 20px"
               >
@@ -136,7 +136,7 @@ export default {
   data () {
     return {
       //tab pane
-      activeName: 'setting',
+      activeName: 'info',
       tabPosition: 'left',
 
       //el-form
@@ -191,7 +191,18 @@ export default {
           this.form.allow_cross_mark = settings.allow_cross_mark
 
           this.topicBO = JSON.parse(infoDict.topics)
+          console.log(this.topicBO)
+          for (let i = 0; i < this.topicBO.length; ++i) {
+            if (parseInt(this.topicBO[i].max_team_size) === -1) {
+              this.topicBO[i].max_team_size = 'Unlimited'
+            }
+          }
           this.initTopicBo = JSON.parse(infoDict.topics)
+          for (let i = 0; i < this.initTopicBo.length; ++i) {
+            if (parseInt(this.initTopicBo[i].max_team_size) === -1) {
+              this.initTopicBo[i].max_team_size = 'Unlimited'
+            }
+          }
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
           this.$alert(resp.data.message, 'Tip', {
