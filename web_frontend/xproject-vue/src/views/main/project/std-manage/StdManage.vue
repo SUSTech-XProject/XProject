@@ -33,16 +33,16 @@
         <el-table-column label="Team Status" prop="teamStatus" sortable/>
       </el-table>
 
-      <div class="block">
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="page.current"
-          :page-size="page.page"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="page.total">
-        </el-pagination>
-      </div>
+<!--      <div class="block">-->
+<!--        <el-pagination-->
+<!--          @size-change="handleSizeChange"-->
+<!--          @current-change="handleCurrentChange"-->
+<!--          :current-page="page.current"-->
+<!--          :page-size="page.page"-->
+<!--          layout="total, sizes, prev, pager, next, jumper"-->
+<!--          :total="page.total">-->
+<!--        </el-pagination>-->
+<!--      </div>-->
 
     </el-card>
 
@@ -52,6 +52,7 @@
 <script>
   import {getGradeList} from "@/api/grade";
   import {getDatetimeStr} from "@/utils/parse-day-time";
+  import {getProjStdList} from "@/api/std_manage";
 
   export default {
     name: "StdManage",
@@ -92,7 +93,7 @@
       }
     },
     mounted () {
-      // this.initGradebook()
+      this.initStdManage()
     },
     methods:{
       handleTeamRadioChange () {
@@ -104,11 +105,11 @@
       teamIndexFMethod (value, row, column) {
         return value === row.teamIndex;
       },
-      initGradebook () {
+      initStdManage () {
         this.stdList.splice(0, this.stdList.length)   // remove all
         let projId = this.$store.state.proj.projId
 
-        getGradeList(projId).then(resp => {
+        getProjStdList(projId).then(resp => {
           if (resp.data.code !== 200) {
             this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
               confirmButtonText: 'OK'
@@ -116,8 +117,9 @@
             return false
           }
           this.stdList.splice(0, this.stdList.length)   // remove all
-          for (let i = 0; i < resp.data.data.length; i ++) {
-            let record = resp.data.data[i]
+          let stdListRecv = resp.data.data
+          for (let i = 0; i < stdListRecv.length; i ++) {
+            let record = stdListRecv[i]
             record['listIdx'] = i
             console.log(record)
             this.stdList.push(record)
