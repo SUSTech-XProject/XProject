@@ -23,10 +23,10 @@
           <el-input v-model="newDescription" placeholder="New description here..."></el-input>
         </div>
 
-        <div>
-          <el-avatar v-for="member in teamMemberList" :key="member.stdId"
-                     :fit="'fill'" :src="member.iconUrl"
-                     style="margin-top: 15px; margin-right: 10px"
+        <div v-for="member in teamMemberList" :key="member.stdId"
+             @click="handleJump2(member)">
+          <el-avatar :fit="'fill'" :src="member.iconUrl"
+                     style="margin-top: 15px; margin-right: 10px; cursor: pointer"
           ></el-avatar>
         </div>
 
@@ -240,7 +240,14 @@
 
 <script>
 import {isStudent} from '@/utils/role'
-import {getMyTeamDetail, getUngroupedStudents, postQuitTeam} from '@/api/team'
+import {
+  getMyTeamDetail,
+  getTeamMessage,
+  getUngroupedStudents, postInviteStudents,
+  postQuitTeam,
+  postReplyApplication,
+  postTeamDescription
+} from '@/api/team'
 
 export default {
   name: 'MyTeam',
@@ -343,7 +350,7 @@ export default {
           } else {
             this.haveTeam = true
 
-            this.team_avatar=infoDict.iconUrl
+            this.team_avatar = infoDict.iconUrl
             this.status = infoDict.status
             this.teamName = infoDict.teamName
             this.description = infoDict.descriptions
@@ -379,13 +386,46 @@ export default {
       //     confirmButtonText: 'OK'
       //   })
       // })
+
+      // getTeamMessage(this.$store.state.proj.projId).then(resp => {
+      //   if (resp.data.code === 200) {
+      //     let infoDict = resp.data.data
+      //
+      //     this.noticeList=infoDict.message
+      //   } else if (resp.data.code === 400) {
+      //     console.log(resp.data.message)
+      //     this.$alert(resp.data.message, 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   }
+      // }).catch(failResp => {
+      //   this.$alert('Error: ' + failResp.message, 'Tips', {
+      //     confirmButtonText: 'OK'
+      //   })
+      // })
     },
     isStudent () {
       return isStudent()
     },
     handleAccept (notice) {
       //TODO: logic
-
+      // postReplyApplication(notice.msgId, true, null).then(resp => {
+      //   console.log('get response : ' + resp)
+      //   if (resp.data.code === 200) {
+      //     this.$alert('Quit success', 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   } else if (resp.data.code === 400) {
+      //     console.log(resp.data.message)
+      //     this.$alert(resp.data.message, 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   }
+      // }).catch(failResp => {
+      //   this.$alert('Error ' + failResp.message, 'Tip', {
+      //     confirmButtonText: 'OK'
+      //   })
+      // })
       notice.decided = true
       notice.result = 'accepted'
     },
@@ -393,7 +433,23 @@ export default {
       this.visible = false
 
       //TODO: upload reject and reason
-
+      // postReplyApplication(notice.msgId, true, this.rejectReason).then(resp => {
+      //   console.log('get response : ' + resp)
+      //   if (resp.data.code === 200) {
+      //     this.$alert('Quit success', 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   } else if (resp.data.code === 400) {
+      //     console.log(resp.data.message)
+      //     this.$alert(resp.data.message, 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   }
+      // }).catch(failResp => {
+      //   this.$alert('Error ' + failResp.message, 'Tip', {
+      //     confirmButtonText: 'OK'
+      //   })
+      // })
       notice.decided = true
       notice.result = 'rejected'
     },
@@ -403,13 +459,33 @@ export default {
     handleJump (notice, i) {
       if (i === 1) {
         //notice.member
-      } else {
+      } else if (i === 2) {
         //notice.handler
       }
+    },
+    handleJump2 (member) {
+      // member in teamMemberList
     },
     handleEdit () {
       if (this.editing) {
         // todo:upload newDescription
+        // postTeamDescription(this.$store.state.proj.projId, this.description).then(resp => {
+        //   console.log('get response : ' + resp)
+        //   if (resp.data.code === 200) {
+        //     this.$alert('Quit success', 'Tip', {
+        //       confirmButtonText: 'OK'
+        //     })
+        //   } else if (resp.data.code === 400) {
+        //     console.log(resp.data.message)
+        //     this.$alert(resp.data.message, 'Tip', {
+        //       confirmButtonText: 'OK'
+        //     })
+        //   }
+        // }).catch(failResp => {
+        //   this.$alert('Error ' + failResp.message, 'Tip', {
+        //     confirmButtonText: 'OK'
+        //   })
+        // })
         this.description = this.newDescription
         this.newDescription = ''
       }
@@ -451,6 +527,23 @@ export default {
     },
     handleUpdateInvite () {
       // todo: push unavalist
+      // postInviteStudents(this.$store.state.proj.projId, this.unAvaList).then(resp => {
+      //   console.log('get response : ' + resp)
+      //   if (resp.data.code === 200) {
+      //     this.$alert('Quit success', 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   } else if (resp.data.code === 400) {
+      //     console.log(resp.data.message)
+      //     this.$alert(resp.data.message, 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   }
+      // }).catch(failResp => {
+      //   this.$alert('Error ' + failResp.message, 'Tip', {
+      //     confirmButtonText: 'OK'
+      //   })
+      // })
     },
     handleCancelInvite () {
       for (let unAva in this.unAvaList) {

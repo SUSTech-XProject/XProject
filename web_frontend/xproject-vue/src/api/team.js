@@ -79,3 +79,25 @@ export function postInviteStudents (projId, students) {
 export function postQuitTeam (projId) {
   return Vue.prototype.$axios.post('/student/team/quit')
 }
+
+export function postReplyApplication (msgId, accepted, reason) {
+  return Vue.prototype.$axios.post('/student/team/quit', {
+    //todo
+    msg_Id: msgId,
+    accepted: accepted,
+    reason: reason
+  })
+}
+
+export function getTeamMessage (projId) {
+  return Vue.prototype.$axios.get('/student/team/message', {
+    params: {projId: projId}
+  })
+}
+
+export function postTeamDescription (projId, description) {
+  return Vue.prototype.$axios.post('/student/team/quit', {
+    projId: projId,
+    descriptions: description
+  })
+}
