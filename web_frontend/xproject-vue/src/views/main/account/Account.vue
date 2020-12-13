@@ -125,7 +125,7 @@ export default {
       imageUrl: 'https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg',
 
       //impression tag list
-      impressionTagList: ['a','b'],
+      impressionTagList: ['a', 'b'],
       impTagInputVisible: false,
       impTagInputValue: '',
 
@@ -163,12 +163,22 @@ export default {
             this.formInfoList[2].value = name[1]
             this.formInfoList[3].value = infoDict.email
 
-            if(infoDict.flags != null){
+            if (infoDict.flags != null) {
               this.impressionTagList = JSON.parse(infoDict.flags)
             }
-            if(infoDict.skills != null){
+            if (infoDict.skills != null) {
               this.skillTagList = JSON.parse(infoDict.skills)
             }
+          } else if (isTeacher()) {
+            let infoDict = resp.data.data.teacher
+
+            this.bio = infoDict.bio
+
+            this.formInfoList[0].value = infoDict.tchNo
+            let name = infoDict.tchName.split(' ')
+            this.formInfoList[1].value = name[0]
+            this.formInfoList[2].value = name[1]
+            this.formInfoList[3].value = infoDict.email
           }
 
         } else if (resp.data.code === 400) {
