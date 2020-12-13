@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%; width: 100%">
     <el-scrollbar wrap-class="scrollbar-wrapper">
-      <el-menu :default-active="activeIdx"
+      <el-menu :default-active="this.$route.name"
                class="el-menu-vertical-demo"
                id="left-bar"
                @open="handleOpen" @close="handleClose"
@@ -143,7 +143,6 @@
         isCollapse: false,
         show: false,
         logo,
-        activeIdx: '',
       }
     },
     methods: {
@@ -164,7 +163,6 @@
       },
       handleSelect (key, keyPath) {
         console.log(key, keyPath)
-        this.activeIdx = key
         if (key.indexOf("@") !== -1) {
           console.log('Not finished')
         } else {
