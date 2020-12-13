@@ -106,7 +106,7 @@
                 <!--                :rules="{required: true, message: 'Information can not be empty', trigger: 'blur'}"-->
                 <el-input v-model="topic.topic_name" placeholder="topic name"
                           style="width: 40%; margin-left: 10px"></el-input>
-                <el-input v-model="topic.max_team_size" placeholder="max team size"
+                <el-input v-model="topic.max_team_size" placeholder="empty when unlimited"
                           style="width: 30%; margin-left: 10px"></el-input>
                 <el-button @click.prevent="removeDomain(topic)" style="margin-left: 10px">delete</el-button>
               </el-form-item>
@@ -191,18 +191,7 @@ export default {
           this.form.allow_cross_mark = settings.allow_cross_mark
 
           this.topicBO = JSON.parse(infoDict.topics)
-          console.log(this.topicBO)
-          for (let i = 0; i < this.topicBO.length; ++i) {
-            if (parseInt(this.topicBO[i].max_team_size) === -1) {
-              this.topicBO[i].max_team_size = 'Unlimited'
-            }
-          }
           this.initTopicBo = JSON.parse(infoDict.topics)
-          for (let i = 0; i < this.initTopicBo.length; ++i) {
-            if (parseInt(this.initTopicBo[i].max_team_size) === -1) {
-              this.initTopicBo[i].max_team_size = 'Unlimited'
-            }
-          }
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
           this.$alert(resp.data.message, 'Tip', {
@@ -379,3 +368,9 @@ export default {
 <!--              <div slot="header" class="clearfix">Recent Announcements</div>-->
 <!--            </el-card>-->
 <!--          </el-col>-->
+
+<!--// for (let i = 0; i < this.topicBO.length; ++i) {-->
+<!--//   if (parseInt(this.topicBO[i].max_team_size) === -1) {-->
+<!--//     this.topicBO[i].max_team_size = 'Unlimited'-->
+<!--//   }-->
+<!--// }-->
