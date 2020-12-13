@@ -106,14 +106,14 @@
                 <!--                :rules="{required: true, message: 'Information can not be empty', trigger: 'blur'}"-->
                 <el-input v-model="topic.topic_name" placeholder="topic name"
                           style="width: 40%; margin-left: 10px"></el-input>
-                <el-input v-model="topic.max_team_size" placeholder="max team size"
+                <el-input v-model="topic.max_team_size" placeholder="Unlimited size"
                           style="width: 30%; margin-left: 10px"></el-input>
                 <el-button @click.prevent="removeDomain(topic)" style="margin-left: 10px">delete</el-button>
               </el-form-item>
               <el-form-item>
-                <el-button @click="addDomain()">Add</el-button>
                 <el-button type="primary" @click="submitForm('topicDict')">Update</el-button>
-                <el-button @click="resetForm()">reset</el-button>
+                <el-button @click="addDomain()">Add</el-button>
+                <el-button @click="resetForm()">Reset</el-button>
               </el-form-item>
             </el-form>
           </el-col>
@@ -194,13 +194,13 @@ export default {
           console.log(this.topicBO)
           for (let i = 0; i < this.topicBO.length; ++i) {
             if (parseInt(this.topicBO[i].max_team_size) === -1) {
-              this.topicBO[i].max_team_size = 'Unlimited'
+              this.topicBO[i].max_team_size = ''
             }
           }
           this.initTopicBo = JSON.parse(infoDict.topics)
           for (let i = 0; i < this.initTopicBo.length; ++i) {
             if (parseInt(this.initTopicBo[i].max_team_size) === -1) {
-              this.initTopicBo[i].max_team_size = 'Unlimited'
+              this.initTopicBo[i].max_team_size = ''
             }
           }
         } else if (resp.data.code === 400) {
@@ -285,41 +285,49 @@ export default {
 
     //dynamic form
     submitForm (formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          postProjectOverview(
-            this.$store.state.proj.projId, this.initSiteInfo,
-            JSON.stringify(this.topicBO), JSON.stringify(this.initForm)
-          ).then(resp => {
-            console.log('get response : ' + resp)
-            if (resp.data.code === 200) {
-              this.$alert('Update success', 'Tip', {
-                confirmButtonText: 'OK'
-              })
-            } else if (resp.data.code === 400) {
-              console.log(resp.data.message)
-              this.$alert(resp.data.message, 'Tip', {
-                confirmButtonText: 'OK'
-              })
-            }
-          }).catch(failResp => {
-            this.$alert('Error ' + failResp.message, 'Tip', {
-              confirmButtonText: 'OK'
-            })
+      for (let i = 0; i < this.topicBO.length; i++) {
+        let topic = this.topicBO[i]
+        if (topic.max_team_size !== '' && !topic.max_team_size.match(/^\d+$/)) {
+          this.$alert('Max team size is neither empty nor integer', 'Failed', {
+            confirmButtonText: 'OK'
           })
-
-          this.initTopicBo = []
-          for (let i = 0; i < this.topicBO.length; ++i) {
-            this.initTopicBo.push(({
-              topic_name: this.topicBO[i].topic_name,
-              max_team_size: this.topicBO[i].max_team_size
-            }))
-          }
-        } else {
-          console.log('Topic information can not be empty')
           return false
         }
+        if (!topic.topic_name) {
+          this.$alert('Team name can\'t be null', 'Failed', {
+            confirmButtonText: 'OK'
+          })
+          return false
+        }
+      }
+      postProjectOverview(
+        this.$store.state.proj.projId, this.initSiteInfo,
+        JSON.stringify(this.topicBO), JSON.stringify(this.initForm)
+      ).then(resp => {
+        console.log('get response : ' + resp)
+        if (resp.data.code === 200) {
+          this.$alert('Update success', 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        } else if (resp.data.code === 400) {
+          console.log(resp.data.message)
+          this.$alert(resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        }
+      }).catch(failResp => {
+        this.$alert('Error ' + failResp.message, 'Tip', {
+          confirmButtonText: 'OK'
+        })
       })
+
+      this.initTopicBo = []
+      for (let i = 0; i < this.topicBO.length; ++i) {
+        this.initTopicBo.push(({
+          topic_name: this.topicBO[i].topic_name,
+          max_team_size: this.topicBO[i].max_team_size
+        }))
+      }
     },
     resetForm () {
       this.topicBO = []
