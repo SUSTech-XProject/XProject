@@ -163,7 +163,6 @@ name: "AutoForming",
         strategy:'',
         autoSubmit:''
       },
-
       formLabelWidth: '120px'
     }
   },

@@ -4,7 +4,10 @@
              :before-close="closing"
              :visible.sync="dialogFormVisible">
     <div v-if="this.$store.state.role.roleType==='Teacher'">
-      <el-form :model="form" :rules="rules" >
+      <el-form
+        :model="form">
+<!--        :rules="rules" -->
+
         <el-form-item label="Team name" :label-width="formLabelWidth">
           <el-input v-model="form.name" :clearable = "clearable" style="width: 70%"></el-input>
           <el-checkbox v-model="form.withRank" style="margin-left: 20px">with index</el-checkbox>
