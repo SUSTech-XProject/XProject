@@ -4,3 +4,8 @@ export function getEventInst(projId){
     params:{projId:projId}
   })
 }
+export function postEventInstApply(){
+  return Vue.prototype.$axios.post('',{
+
+  })
+}
