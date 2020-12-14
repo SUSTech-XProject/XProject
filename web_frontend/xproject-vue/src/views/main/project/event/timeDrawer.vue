@@ -12,6 +12,7 @@
     <el-card id="base-card">
       <el-table
         :data="tableData"
+        empty-text="No Data Found"
         style="width: 100%">
         <el-table-column
           type="index"
@@ -129,7 +130,7 @@ name: "StuEvents",
             let num = resp.data.data
             this.$message({
               type: 'success',
-              message: 'Confirm ' + num + ' teams successfully'
+              message: 'Applied successfully'
             });
           } else {
             this.$message.error(resp.data.message)
@@ -139,10 +140,6 @@ name: "StuEvents",
         }).catch(failResp => {
           this.$message.error('Back-end no response')
         })
-
-
-
-
       }).catch(() =>{
         this.$message({
           type: 'info',

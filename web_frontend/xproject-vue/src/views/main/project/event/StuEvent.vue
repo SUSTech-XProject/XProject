@@ -96,7 +96,11 @@ name: "StuEvent",
     }
 
   },
+  mounted () {
+    this.init()
+  },
   methods:{
+    init(){},
     openEvent(val){
       this.drawerCtrl = true
       this.eventId = val
