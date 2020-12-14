@@ -78,10 +78,11 @@
                   <!--                           slot="reference"></el-avatar>-->
                   <!--              </el-popover>-->
 
-                  <span @click="handleJump(notice,1)">
+                  <span @click.native:="openDrawer(1)">
                     <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"
                                :fit="'fill'"
-                               style="vertical-align:middle; cursor: pointer"></el-avatar>
+                               style="vertical-align:middle; cursor: pointer"
+                               ></el-avatar>
                   </span>
 
                   <span style="margin-left: 5px; font-size: 16px;vertical-align:middle;">
@@ -235,6 +236,10 @@
       <!--      </div>-->
       <div style="margin-bottom: 40px"></div>
     </el-col>
+
+    <drawer :drawer.sync="memDrawer"
+            :id="memId"
+            @closeDrawerStu = "closeDrawerStu"></drawer>
   </el-card>
 </template>
 
@@ -248,12 +253,19 @@ import {
   postReplyApplication,
   postTeamDescription
 } from '@/api/team'
+import stuInfoDrawer from '@/views/main/project/team/stuInfoDrawer'
 
 export default {
   name: 'MyTeam',
-  components: {},
+  components: {
+    drawer:stuInfoDrawer
+  },
   data () {
     return {
+      //
+      memDrawer:false,
+      memId:1,
+      //
       status: '',
       team_avatar: '',
       haveTeam: false,
@@ -338,6 +350,17 @@ export default {
     this.init()
   },
   methods: {
+    //
+    openDrawer(val){
+      console.log('pic clicked')
+      this.drawerId = val
+      this.memDrawer = true
+      console.log("clicked")
+    },
+    closeDrawerStu(){
+      this.memDrawer = false
+    },
+    //
     init () {
       console.log('init team page')
       getMyTeamDetail(this.$store.state.proj.projId).then(resp => {
