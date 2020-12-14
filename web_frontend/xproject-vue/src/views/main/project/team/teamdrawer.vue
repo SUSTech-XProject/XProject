@@ -192,15 +192,9 @@ export default {
 
   },
   props:{
-    // data:{type:Object,default:()=>{}},
     drawer:{type:Boolean,default:false},
     id:{type:Number,default:-1},
-    // name:{type:String,default:"Default Team"},
-    // topic:{type:String, default:"Topic"},
-    // status:{type:String,default: "1/5"},
-    // tags:{type:Array,default:()=>['tag1','tag2','tag3']},
-    // intro:{type:String,default:"introduction here"},
-  }
+    }
 };
 </script>
 

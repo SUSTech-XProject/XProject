@@ -101,6 +101,7 @@ export default {
 
       topicList:[],
       topicInd:'',
+      //?
       memLimit:[],
       teamSizeLimit:0,
 
@@ -132,9 +133,6 @@ export default {
           this.memLimit.push(topics[i].maxTeamSize)
           //队员数绑定？
         }
-
-
-
       }).catch(failResp=>{
         console.log('fail in getProjTitle. message=' + failResp.message)
       })
@@ -144,6 +142,16 @@ export default {
       console.log('closed')
       this.$emit('closeForm',this.submitted)
       this.submitted = false
+    },
+    clearForm(){
+      this.form.name = ''
+      this.form.topic = ''
+      this.form.member = ''
+      this.form.desc = ''
+      this.form.cnt = ''
+      this.form.projId = ''
+      this.form.withRank = false
+      this.topicInd = ''
     },
     onSubmit() {
       console.log(this.form);
@@ -163,6 +171,7 @@ export default {
               message: 'Create teams successfully'
             });
             this.submitted = true
+            this.clearForm()
             this.closing()
           } else {
             this.$message.error(resp.data.message)
@@ -192,9 +201,10 @@ export default {
     },
     topicInd(val){
       this.topicInd = val;
-      this.form.topic = this.topicList[val]
-      this.teamSizeLimit = this.memLimit[val]
-
+      if(val!==''){
+        this.form.topic = this.topicList[val]
+        this.teamSizeLimit = this.memLimit[val]
+      }
     }
   },
   props:{visible:{type:Boolean,default:false}}
