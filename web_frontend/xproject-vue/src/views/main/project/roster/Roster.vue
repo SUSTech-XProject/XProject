@@ -5,9 +5,62 @@
     </div>
 
     <div class="table-btm-group">
-      <el-button type="danger" plain @click="deleteDialogVisible = true">Delete</el-button>
+      <el-button type="primary" plain @click="createDialogVisible = true">Create</el-button>
       <el-button type="primary" plain @click="importDialogVisible = true">Import</el-button>
+      <el-button type="danger" plain @click="deleteDialogVisible = true">Delete</el-button>
     </div>
+
+    <el-dialog
+      title="Create student account"
+      :visible.sync="createDialogVisible"
+      width="30%"
+      @open="handleDialogOpen">
+
+      <el-form class="reg-container" label-position="right" :model="stdForm"
+               label-width="150px" status-icon ref="registerForm">
+        <el-form-item label="Student Name" prop="stdName">
+          <el-input type="text" v-model="stdForm.stdName"
+                    auto-complete="off"
+                    placeholder="Please input student name"></el-input>
+        </el-form-item>
+        <el-form-item label="Student No" prop="stdNo">
+          <el-input type="text" v-model="stdForm.stdNo"
+                    auto-complete="off"
+                    placeholder="Please input student number"></el-input>
+        </el-form-item>
+        <el-form-item label="Student class" prop="stdClass">
+          <el-input type="text" v-model="stdForm.stdClass"
+                    auto-complete="off"
+                    placeholder="Please input student class"></el-input>
+        </el-form-item>
+        <el-form-item label="Email" prop="stdClass">
+          <el-input type="text" v-model="stdForm.email"
+                    auto-complete="off"
+                    placeholder="Please input email"></el-input>
+        </el-form-item>
+
+        <el-form-item label="Username" prop="username">
+          <el-input type="text" v-model="stdForm.username"
+                    prefix-icon="el-icon-user" auto-complete="off"
+                    placeholder="Please input username"></el-input>
+        </el-form-item>
+        <el-form-item label="Password" prop="password">
+          <el-input type="password" v-model="stdForm.password"
+                    prefix-icon="el-icon-lock" auto-complete="off"
+                    placeholder="Please input password" show-password></el-input>
+        </el-form-item>
+        <el-form-item label="Password again" prop="passwordRepeat">
+          <el-input type="password" v-model="stdForm.passwordRepeat"
+                    prefix-icon="el-icon-lock" auto-complete="off"
+                    placeholder="Please input password again" show-password></el-input>
+        </el-form-item>
+      </el-form>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="createDialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="createDialogVisible = false; createStd()">Create</el-button>
+      </span>
+    </el-dialog>
 
     <el-dialog
       title="Tip"
@@ -60,11 +113,11 @@
         <el-table-column label="" type="index" width="50px" sortable/>
         <el-table-column label="Student Name" prop="stdName" sortable/>
         <el-table-column label="SID" prop="stdNo" sortable/>
-        <el-table-column label="Account Username" prop="username" sortable/>
+        <el-table-column label="Username" prop="username" sortable/>
         <el-table-column label="Class" prop="stdClass" sortable column-key="stdClass"
                          :filters="classFList" :filter-method="classFMethod" :filter-multiple="false"/>
-        <el-table-column label="Email" prop="email" sortable/>
-        <el-table-column label="Operation">
+        <el-table-column label="Email" prop="email" width="300px" sortable/>
+        <el-table-column label="Operation" width="100px">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -73,16 +126,16 @@
         </el-table-column>
       </el-table>
 
-      <div class="block">
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="page.current"
-          :page-size="page.page"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="page.total">
-        </el-pagination>
-      </div>
+<!--      <div class="block">-->
+<!--        <el-pagination-->
+<!--          @size-change="handleSizeChange"-->
+<!--          @current-change="handleCurrentChange"-->
+<!--          :current-page="page.current"-->
+<!--          :page-size="page.page"-->
+<!--          layout="total, sizes, prev, pager, next, jumper"-->
+<!--          :total="page.total">-->
+<!--        </el-pagination>-->
+<!--      </div>-->
 
     </el-card>
 
@@ -92,7 +145,7 @@
 <script>
   import {getGradeList} from "@/api/grade";
   import {getDatetimeStr} from "@/utils/parse-day-time";
-  import {postImportFromExcel} from "@/api/std_manage";
+  import {getProjectListBySch, getProjStdList, postImportFromExcel} from "@/api/std_manage";
 
   export default {
     name: "Roster",
@@ -100,10 +153,20 @@
     },
     data() {
       return {
-        deleteDialogVisible: false,
+        createDialogVisible: false,
         importDialogVisible: false,
+        deleteDialogVisible: false,
         dialogSltList: [],
         teamRadioModel: 'all',
+        stdForm: {
+          stdName: null,
+          stdNo: null,
+          stdClass: null,
+          email: null,
+          username: null,
+          password: null,
+          passwordRepeat: null,
+        },
         stdList: [
           {
             index: 4,
@@ -142,7 +205,7 @@
       }
     },
     mounted () {
-      // this.initGradebook()
+      this.initStdManage()
     },
     methods: {
       handleDialogOpen () {
@@ -178,11 +241,10 @@
       classFMethod (value, row, column) {
         return value === row.stdClass;
       },
-      initGradebook () {
+      initStdManage () {
         this.stdList.splice(0, this.stdList.length)   // remove all
-        let projId = this.$store.state.proj.projId
 
-        getGradeList(projId).then(resp => {
+        getProjectListBySch().then(resp => {
           if (resp.data.code !== 200) {
             this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
               confirmButtonText: 'OK'
@@ -190,8 +252,9 @@
             return false
           }
           this.stdList.splice(0, this.stdList.length)   // remove all
-          for (let i = 0; i < resp.data.data.length; i ++) {
-            let record = resp.data.data[i]
+          let stdListRecv = resp.data.data
+          for (let i = 0; i < stdListRecv.length; i ++) {
+            let record = stdListRecv[i]
             record['listIdx'] = i
             console.log(record)
             this.stdList.push(record)
@@ -200,6 +263,9 @@
         }).catch(failResp => {
           console.log('fail in getGradeList. message=' + failResp.message)
         })
+      },
+      createStd () {
+
       },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);

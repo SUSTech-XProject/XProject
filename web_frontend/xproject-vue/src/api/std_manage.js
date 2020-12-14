@@ -30,8 +30,13 @@ export function postImportFromExcel (formData) {
   return Vue.prototype.$axios(options)
 }
 
+export function getProjectListBySch () {
+  return Vue.prototype.$axios.get('/teacher/students')
+}
+
+
 export function getProjStdList (projId) {
   return Vue.prototype.$axios.get('/teacher/project/students', {
-    projId: projId
+    params: {projId: projId},
   })
 }
