@@ -16,7 +16,7 @@ export function postModifyAnnouncement (annId, title, message) {
 
 export function postAddAnnouncement (projId, title, message) {
   return Vue.prototype.$axios.post('/teacher/project/ann/add', {
-    projID: projId,
+    projId: projId,
     title: title,
     message: message
   })
