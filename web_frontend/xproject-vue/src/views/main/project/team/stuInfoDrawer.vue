@@ -7,11 +7,11 @@
     :before-close="refresh"
     :append-to-body="true"
   >
-    <el-col :span="5" :offset="2">
+    <el-col :span="6" :offset="2">
       <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"
-                 :size="290" :fit="'fill'"></el-avatar>
+                 :size="270" :fit="'fill'"></el-avatar>
 
-      <div>{{ this.stuName }}</div>
+      <div style="margin-top: 60px;margin-bottom:15px;font-size: 20px">{{ this.stuName }}</div>
 
       <div >
         <el-tag v-for="imp in impressionList" :key="imp"
@@ -60,39 +60,39 @@
           <div style="margin-top: 40px">Statistic</div>
         </el-tab-pane>
 
-        <el-tab-pane label="History" name="history">
-          <el-row>
-            <el-col :span="13">
-              <el-input v-model="projNameFilter" placeholder="Find a project..."
-                        style="width: 100%"></el-input>
-            </el-col>
+<!--        <el-tab-pane label="History" name="history">-->
+<!--          <el-row>-->
+<!--            <el-col :span="13">-->
+<!--              <el-input v-model="projNameFilter" placeholder="Find a project..."-->
+<!--                        style="width: 100%"></el-input>-->
+<!--            </el-col>-->
 
-            <el-col :span="4" style="margin-left: 20px">
-              <el-select v-model="valueYear" placeholder="">
-                <el-option v-for="year in yearList" :key="year.value"
-                           :label="'Year: '+year.label" :value="year.value">
-                </el-option>
-              </el-select>
-            </el-col>
+<!--            <el-col :span="4" style="margin-left: 20px">-->
+<!--              <el-select v-model="valueYear" placeholder="">-->
+<!--                <el-option v-for="year in yearList" :key="year.value"-->
+<!--                           :label="'Year: '+year.label" :value="year.value">-->
+<!--                </el-option>-->
+<!--              </el-select>-->
+<!--            </el-col>-->
 
-            <el-col :span="4" style="margin-left: 20px">
-              <el-select v-model="valueCourse" placeholder="">
-                <el-option v-for="course in courseList" :key="course.value"
-                           :label="'Course: '+course.label" :value="course.value">
-                </el-option>
-              </el-select>
-            </el-col>
-          </el-row>
+<!--            <el-col :span="4" style="margin-left: 20px">-->
+<!--              <el-select v-model="valueCourse" placeholder="">-->
+<!--                <el-option v-for="course in courseList" :key="course.value"-->
+<!--                           :label="'Course: '+course.label" :value="course.value">-->
+<!--                </el-option>-->
+<!--              </el-select>-->
+<!--            </el-col>-->
+<!--          </el-row>-->
 
-          <el-card class="box-card" style="width: 93%; margin-top: 20px" shadow="never"
-                   v-for="proj in fullProjList" :key="proj.projName"
-                   v-if="selectivelyDisplay(proj)" @click.native="gotoProjOverview(proj.projId, proj.name)">
-            <div class="title">{{ proj.projName }}</div>
-            <div class="text">{{ proj.description }}</div>
-            <p></p>
-            <div class="small-text">{{ proj.courseName }} {{ proj.createTime }}</div>
-          </el-card>
-        </el-tab-pane>
+<!--          <el-card class="box-card" style="width: 93%; margin-top: 20px" shadow="never"-->
+<!--                   v-for="proj in fullProjList" :key="proj.projName"-->
+<!--                   v-if="selectivelyDisplay(proj)" @click.native="gotoProjOverview(proj.projId, proj.name)">-->
+<!--            <div class="title">{{ proj.projName }}</div>-->
+<!--            <div class="text">{{ proj.description }}</div>-->
+<!--            <p></p>-->
+<!--            <div class="small-text">{{ proj.courseName }} {{ proj.createTime }}</div>-->
+<!--          </el-card>-->
+<!--        </el-tab-pane>-->
       </el-tabs>
     </el-col>
 
@@ -103,9 +103,7 @@
 </template>
 
 <script>
-import {getAccountInfo} from '@/api/account'
-
-import {getProjList} from '@/api/home_page'
+import {getStuInfo} from '@/api/team'
 
 export default {
   name: "stuInfoDrawer",
@@ -153,12 +151,13 @@ export default {
 
     },
     initStu(roleId){
-      getAccountInfo(roleId).then(resp => {
+      getStuInfo(roleId).then(resp => {
+        console.log(resp)
         if (resp.data.code === 200) {
           let infoDict = resp.data.data.student
 
           this.bio = infoDict.bio
-
+          this.stuName = infoDict.stdName
           this.school = resp.data.data.school.schName
           this.location = resp.data.data.school.location
           this.email = infoDict.email
@@ -181,47 +180,47 @@ export default {
           confirmButtonText: 'OK'
         })
       })
-      getProjList(roleId).then(resp => {
-        console.log(resp)
-        if (resp.data.code === 200) {
-          let infoDict = resp.data.data
-
-          for (let i = 0; i < infoDict.length; ++i) {
-            let year = infoDict[i].createTime.substring(0, 4)
-
-            if (!this.inYearList(year)) {
-              let len = this.yearList.length
-              this.yearList.push({value: len, label: year})
-            }
-            infoDict[i].createTime = year
-
-            let projName = infoDict[i].projName
-            this.projNameList.push(projName)
-
-            let courseName = infoDict[i].courseName
-            if (!this.inCourseList(courseName)) {
-              let len = this.courseList.length
-              this.courseList.push({value: len, label: courseName})
-            }
-          }
-
-          this.fullProjList = infoDict
-          for (let i = 0; i < infoDict.length; ++i) {
-            if (i >= 3) break
-            this.firstThreeProjList.push(infoDict[i])
-          }
-
-        } else if (resp.data.code === 400) {
-          console.log(resp.data.message)
-          this.$alert(resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
-        }
-      }).catch(failResp => {
-        this.$alert('Error: ' + failResp.message, 'Tips', {
-          confirmButtonText: 'OK'
-        })
-      })
+      // getProjList(roleId).then(resp => {
+      //   console.log(resp)
+      //   if (resp.data.code === 200) {
+      //     let infoDict = resp.data.data
+      //
+      //     for (let i = 0; i < infoDict.length; ++i) {
+      //       let year = infoDict[i].createTime.substring(0, 4)
+      //
+      //       if (!this.inYearList(year)) {
+      //         let len = this.yearList.length
+      //         this.yearList.push({value: len, label: year})
+      //       }
+      //       infoDict[i].createTime = year
+      //
+      //       let projName = infoDict[i].projName
+      //       this.projNameList.push(projName)
+      //
+      //       let courseName = infoDict[i].courseName
+      //       if (!this.inCourseList(courseName)) {
+      //         let len = this.courseList.length
+      //         this.courseList.push({value: len, label: courseName})
+      //       }
+      //     }
+      //
+      //     this.fullProjList = infoDict
+      //     for (let i = 0; i < infoDict.length; ++i) {
+      //       if (i >= 3) break
+      //       this.firstThreeProjList.push(infoDict[i])
+      //     }
+      //
+      //   } else if (resp.data.code === 400) {
+      //     console.log(resp.data.message)
+      //     this.$alert(resp.data.message, 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   }
+      // }).catch(failResp => {
+      //   this.$alert('Error: ' + failResp.message, 'Tips', {
+      //     confirmButtonText: 'OK'
+      //   })
+      // })
     }
   },
   created () {
