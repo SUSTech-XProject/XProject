@@ -55,7 +55,9 @@ export function getStuInfo (roleId) {
 }
 
 export function postAutoForming (form) {
-  return Vue.prototype.$axios.post('team/teacher/auto-forming', {})
+  return Vue.prototype.$axios.post('team/teacher/auto-forming', {
+    AutoFormingVO:form
+  })
 }
 
 export function getMyTeamDetail (projId) {

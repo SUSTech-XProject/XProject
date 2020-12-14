@@ -17,12 +17,7 @@
         type="selection"
         width="55">
       </el-table-column>
-      <el-table-column
-        prop = "index"
-        label="Index"
-        width="120"
-        sortable>
-      </el-table-column>
+
       <el-table-column
         prop="name"
         label="Team Name"
@@ -45,9 +40,11 @@
       </el-table-column>
       <el-table-column
         prop = "status"
-        label="Status"
+        label="Team Status"
         width="150px"
-        sortable>
+        sortable
+        :filters="teamStatus"
+        :filter-method="teamStatusFMethod">
       </el-table-column>
 
     </el-table>
@@ -56,7 +53,7 @@
     <el-table
       height="205"
       ref="stdTable"
-      :data="stuList"
+      :data="stdList"
       empty-text="No Data Found"
       :default-sort = "{prop: 'index', order: 'increasing'}"
       style="width: 100%"
@@ -66,12 +63,14 @@
       <el-table-column label="Student Name" prop="stdName" sortable/>
       <el-table-column label="SID" prop="stdNo" sortable/>
       <el-table-column label="Group Mark" prop="groupMark" sortable/>
-      <el-table-column label="Team Index" prop="teamIndex" sortable
-                       :filters="teamIndexFList" :filter-method="teamIndexFMethod"/>
-      <el-table-column label="Topic" prop="teamTopic" sortable/>
-      <el-table-column label="Team Status" prop="teamStatus" sortable/>
+      <el-table-column label="Team Index" prop="projInstId" sortable
+                       :filters="teamIndexFList"
+                       :filter-method="teamIndexFMethod"/>
+      <el-table-column label="Topic" prop="topicStr" sortable/>
+      <el-table-column label="Team Status" prop="status" sortable
+                       :filters="teamStatusFList"
+                       :filter-method="teamStatusFMethod"/>
     </el-table>
-
 
     <el-form :model="form" style="padding-top: 20px">
       <el-form-item label="Strategy" :label-width="formLabelWidth">
@@ -103,6 +102,7 @@
 <script>
 import {getTeamInfoList} from '@/api/team'
 import {postAutoForming} from '@/api/team'
+import {getProjStdList} from '@/api/std_manage'
 
 export default {
 name: "AutoForming",
@@ -129,29 +129,38 @@ name: "AutoForming",
           targetMem:3,
           status:'R'},
       ],
+      teamStatus: [
+        {text: 'Raw', value: 'Raw'},
+        {text: 'Confirm', value: 'Confirm'},
+      ],
       //
       teamIndexFList: [
         {text: 1, value: 1},
         {text: 2, value: 2},
       ],
-      stuList: [
+      teamStatusFList: [
+        {text: 'Raw', value: 'Raw'},
+        {text: 'Confirm', value: 'Confirm'},
+        {text: 'No Team', value: null},
+      ],
+      stdList: [
         {
           index: 1,
           stdName: 'Xiaoming Wang',
           stdNo: '11816401',
           groupMark: 'Lab 1',
-          teamIndex: 1,
-          teamTopic: 'Project Helper',
-          teamStatus: 'Row'
+          projInstId: 1,
+          topicStr: 'Project Helper',
+          status: 'Raw'
         },
         {
           index: 3,
           stdName: 'Wushuang Ye',
           stdNo: '11816403',
           groupMark: 'Lab 2',
-          teamIndex: 2,
-          teamTopic: 'Project Helper',
-          teamStatus: 'Row'
+          projInstId: 2,
+          topicStr: 'Project Helper',
+          status: 'Raw'
         },
       ],
       //
@@ -161,7 +170,7 @@ name: "AutoForming",
         teamSelection: [],
         stuSelection:[],
         strategy:'',
-        autoSubmit:''
+        autoSubmit:false
       },
       formLabelWidth: '120px'
     }
@@ -173,7 +182,7 @@ name: "AutoForming",
     //initialize
     init(){
       this.initTeams()
-      //this.initStu
+      this.initStdManage()
     },
     initTeams(){
       let id = this.$store.state.proj.projId
@@ -220,7 +229,39 @@ name: "AutoForming",
       }
       return finalResult
     },
-    initStu(){},
+    initStdManage () {
+      this.stdList.splice(0, this.stdList.length)   // remove all
+      let projId = this.$store.state.proj.projId
+
+      getProjStdList(projId).then(resp => {
+        if (resp.data.code !== 200) {
+          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+          return false
+        }
+        this.stdList.splice(0, this.stdList.length)   // remove all
+        this.teamIndexFList.splice(0, this.teamIndexFList.length)   // remove all
+        // this.teamStatusFList.splice(0, this.teamStatusFList.length)   // remove all
+        let stdListRecv = resp.data.data
+        for (let i = 0; i < stdListRecv.length; i ++) {
+          let record = stdListRecv[i]
+          record['listIdx'] = i
+          console.log(record)
+          this.stdList.push(record)
+
+          let teamIndex = record.projInstId;
+          this.teamIndexFList.push({text:teamIndex, value:teamIndex})
+          // let status = record.status;
+          // this.teamStatusFList.push({text:status, value:status})
+        }
+        this.teamIndexFList = this.unique(this.teamIndexFList)
+        // this.teamStatusFList = this.unique(this.teamStatusFList)
+        console.log(this.stdList)
+      }).catch(failResp => {
+        console.log('fail in getGradeList. message=' + failResp.message)
+      })
+    },
 
     //form managing
     closeManaging(){
@@ -229,7 +270,40 @@ name: "AutoForming",
     submit(){
       console.log(this.form)
       //this.closeManaging()
+      if(this.form.teamSelection.length===0){
+        this.$message.error('No team selected yet')
+      }else if(this.form.stuSelection.length===0){
+        this.$message.error('No student selected yet')
+      }else{
+        this.$confirm('Execute auto forming?', 'Warning', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel',
+          type: 'info'
+        }).then(()=>{
+          postAutoForming(this.form).then(resp=>{
+            if (resp.data.code === 200) {
+              let num = resp.data.data
+              this.$message({
+                type: 'success',
+                message: 'Success'
+              });
+              this.closeManaging()
+            } else {
+              this.$message.error(resp.data.message)
+            }
+          }).catch(failResp => {
+            this.$message.error('Back-end no response')
+          })
+
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Canceled'
+          });
+        });
+      }
     },
+    clearForm(){},
 
     //选择
     teamChange(val) {
@@ -245,7 +319,10 @@ name: "AutoForming",
       return row[property] === value;
     },
     teamIndexFMethod (value, row, column) {
-      return value === row.teamIndex;
+      return value === row.projInstId;
+    },
+    teamStatusFMethod (value, row, column) {
+      return value === row.status;
     },
 
   },
