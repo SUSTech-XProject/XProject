@@ -1,160 +1,238 @@
 <template>
   <el-card class="base-card">
     <el-col :span="4" :offset="3">
-      <div v-if="isStudent() && haveTeam()"
+      <div v-if="isStudent() && haveTeam"
            style="margin-top: 20px">
-        <el-avatar src="https://ww1.sinaimg.cn/thumb150/006z25tvly1genhm1qn9vj30tc0t9wi8.jpg"
+        <el-avatar :src="team_avatar"
                    :size="250" :fit="'fill'"></el-avatar>
 
-        <div style="margin-top: 20px">team name</div>
+        <div style="margin-top: 20px">{{ teamName }}</div>
 
-        <el-tag v-for="tag in tagList" :key="tag"
-                class="el-tag" effect="plain">
-          {{ tag }}
-        </el-tag>
+        <!--        <el-tag v-for="tag in tagList" :key="tag"-->
+        <!--                class="el-tag" effect="plain">-->
+        <!--          {{ tag }}-->
+        <!--        </el-tag>-->
 
-        <div style="width: 100%; margin-top: 20px" align="left">
+        <div v-if="!editing"
+             style="width: 100%; margin-top: 20px" align="left">
           {{ description }}
         </div>
 
-        <el-avatar v-for="member in teamMemberList" :key="member"
-                   :src=member :size="290" :fit="'fill'"
-                   style="margin-top: 15px"></el-avatar>
+        <div v-else
+             style="width: 100%; margin-top: 20px" align="left">
+          <el-input v-model="newDescription" placeholder="New description here..."></el-input>
+        </div>
+
+        <div v-for="member in teamMemberList" :key="member.stdId"
+             @click="handleJump2(member)">
+          <el-avatar :fit="'fill'" :src="member.iconUrl"
+                     style="margin-top: 15px; margin-right: 10px; cursor: pointer"
+          ></el-avatar>
+        </div>
+
+        <div>
+          <el-button @click="handleEdit()"
+                     style="margin-top: 15px;">
+            <div v-if="!editing">Edit</div>
+            <div v-else>Update</div>
+          </el-button>
+          <el-button @click="handleCancel()"
+                     style="margin-top: 15px;">Cancel
+          </el-button>
+        </div>
+        <el-button v-if="status==='Raw'"
+                   @click="handleQuit()"
+                   type="primary"
+                   style="margin-top: 15px; align-items: center">Quit
+        </el-button>
       </div>
 
-      <div v-if="isStudent() && !haveTeam()"
+      <div v-if="isStudent() && !haveTeam"
            style="margin-top: 20px">
         no team yet
       </div>
     </el-col>
 
     <el-col :span="13" :offset="1">
-      <div style="font-size: 30px; font-weight:bold; margin-top: 10px">
-        Notices
-        <el-divider></el-divider>
-      </div>
-      <div v-for="(notice, index) in noticeList" :key="index">
-        <el-card class="box-card" shadow="never"
-                 :class="notice.type"
-                 style="width: 90%; margin-top: 20px;">
-          <el-col :span="17">
-            <div>
-              <el-popover
-                placement="bottom"
-                width="200"
-                trigger="hover">
+      <el-tabs :tab-position="tabPosition"
+               type="card" v-model="activeName"
+               style="margin-top: 20px;">
+        <el-tab-pane label="Notice list" name="notice">
+          <div v-for="(notice, index) in noticeList" :key="index">
+            <el-card class="box-card" shadow="never"
+                     :class="notice.type"
+                     style="width: 90%; margin-top: 20px;">
+              <el-col :span="17">
                 <div>
+                  <!--              <el-popover-->
+                  <!--                placement="bottom"-->
+                  <!--                width="200"-->
+                  <!--                trigger="hover">-->
+                  <!--                <div>-->
 
+                  <!--                </div>-->
+                  <!--                <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"-->
+                  <!--                           :fit="'fill'"-->
+                  <!--                           style="vertical-align:middle; cursor: pointer"-->
+                  <!--                           @click="handleJump()"-->
+                  <!--                           slot="reference"></el-avatar>-->
+                  <!--              </el-popover>-->
+
+                  <span @click="handleJump(notice,1)">
+                    <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"
+                               :fit="'fill'"
+                               style="vertical-align:middle; cursor: pointer"></el-avatar>
+                  </span>
+
+                  <span style="margin-left: 5px; font-size: 16px;vertical-align:middle;">
+                    {{ notice.info }}
+                  </span>
                 </div>
-                <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"
-                           :fit="'fill'"
-                           style="vertical-align:middle; cursor: pointer"
-                           @click="handleJump()"
-                           slot="reference"></el-avatar>
-              </el-popover>
 
-              <!--              <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"-->
-              <!--                         :fit="'fill'"-->
-              <!--                         style="vertical-align:middle; cursor: pointer"-->
-              <!--                         @click="handleJump()"></el-avatar>-->
+                <div v-if="notice.type==='joinSuccess'|| notice.type==='joinFail'|| notice.type==='invite'"
+                     style="margin-top: 10px; margin-left: 10px;">
+                  <span v-if="notice.type==='invite'"
+                        style="vertical-align:middle; font-size: 13px">
+                    Inviter:
+                  </span>
+                  <span v-else style="vertical-align:middle; font-size: 13px">
+                    Handler:
+                  </span>
+                  <!--              <el-popover-->
+                  <!--                placement="bottom"-->
+                  <!--                width="200"-->
+                  <!--                trigger="hover">-->
+                  <!--                <div>-->
 
-              <span style="margin-left: 5px; font-size: 16px;vertical-align:middle;">
-              {{ notice.info }}
-            </span>
-            </div>
-
-            <div v-if="notice.type==='joinSuccess'|| notice.type==='joinFail'|| notice.type==='invite'"
-                 style="margin-top: 10px; margin-left: 10px;">
-            <span v-if="notice.type==='invite'"
-                  style="vertical-align:middle; font-size: 13px">Inviter: </span>
-              <span v-else
-                    style="vertical-align:middle; font-size: 13px">Handler: </span>
-              <el-popover
-                placement="bottom"
-                width="200"
-                trigger="hover">
-                <div>
-
+                  <!--                </div>-->
+                  <!--                <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"-->
+                  <!--                           :fit="'fill'"-->
+                  <!--                           style="vertical-align:middle; margin-left: 8px; cursor: pointer"-->
+                  <!--                           @click="handleJump()"-->
+                  <!--                           slot="reference"></el-avatar>-->
+                  <!--              </el-popover>-->
+                  <span @click="handleJump(notice,2)">
+                    <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"
+                               :fit="'fill'"
+                               style="vertical-align:middle; margin-left: 8px; cursor: pointer"></el-avatar>
+                  </span>
                 </div>
-                <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"
-                           :fit="'fill'"
-                           style="vertical-align:middle; margin-left: 8px; cursor: pointer"
-                           @click="handleJump()"
-                           slot="reference"></el-avatar>
-              </el-popover>
-              <!--              <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"-->
-              <!--                         :fit="'fill'"-->
-              <!--                         style="vertical-align:middle; margin-left: 8px; cursor: pointer"-->
-              <!--                         @click="handleJump()"></el-avatar>-->
-            </div>
 
-            <div v-if="notice.type==='apply'"
-                 style="margin-top: 20px; margin-left: 10px; font-size: 13px">
-              ApplyInfo: {{ notice.applyInfo }}
-            </div>
+                <div v-if="notice.type==='apply'"
+                     style="margin-top: 20px; margin-left: 10px; font-size: 13px">
+                  ApplyInfo: {{ notice.applyInfo }}
+                </div>
 
-            <div style="margin-top: 20px; margin-left: 10px; font-size: 13px">
-              Date: {{ notice.time }}
-            </div>
+                <div style="margin-top: 20px; margin-left: 10px; font-size: 13px">
+                  Date: {{ notice.time }}
+                </div>
 
-            <div style="margin-bottom: 20px"></div>
-          </el-col>
+                <div style="margin-bottom: 20px"></div>
+              </el-col>
 
-          <el-col :span="7">
-            <div v-if="notice.type==='apply'">
+              <el-col :span="7">
+                <div v-if="notice.type==='apply'">
 
-              <div v-if="!notice.decided"
-                   style="margin-top: 35px">
-                <el-popover
-                  placement="bottom"
-                  width="340"
-                  v-model="visible">
-                  <div>
-                    Reason:
-                    <el-input style="width: 200px;"></el-input>
-                    <el-button @click="handleReject(notice)">Reply</el-button>
+                  <div v-if="!notice.decided"
+                       style="margin-top: 35px">
+                    <el-popover
+                      placement="bottom"
+                      width="340"
+                      v-model="visible">
+                      <div>
+                        Reason:
+                        <el-input style="width: 200px;"></el-input>
+                        <el-button v-model="rejectReason" placeholder="Reason here..."
+                                   @click="handleReject(notice)">
+                          Reply
+                        </el-button>
+                      </div>
+                      <el-button slot="reference">Reject</el-button>
+                    </el-popover>
+
+                    <el-button type="primary" @click="handleAccept(notice)">Accept</el-button>
                   </div>
-                  <el-button slot="reference">Reject</el-button>
-                </el-popover>
 
-                <el-button type="primary" @click="handleAccept(notice)">Accept</el-button>
-              </div>
+                  <div v-else
+                       style="margin-top: 45px; margin-left: 49px">
+                    <div>{{ notice.result }}</div>
+                  </div>
+                </div>
 
-              <div v-else
-                   style="margin-top: 45px; margin-left: 49px">
-                <div>{{ notice.result }}</div>
-              </div>
-            </div>
+                <div v-else-if="notice.type==='quit'">
+                  <el-button @click="handleConfirm(notice)"
+                             v-if="!notice.confirmed"
+                             style="margin-top: 20px;  margin-left: 30px">
+                    I know that
+                  </el-button>
 
-            <div v-else-if="notice.type==='quit'">
-              <el-button @click="handleConfirm(notice)"
-                         v-if="!notice.confirmed"
-                         style="margin-top: 20px;  margin-left: 30px">
-                I know that
-              </el-button>
+                  <div v-else
+                       style="margin-top: 30px; margin-left: 20px">
+                    Already confirmed
+                  </div>
+                </div>
 
-              <div v-else
-                   style="margin-top: 30px; margin-left: 20px">
-                Already confirmed
-              </div>
-            </div>
+                <div v-else>
+                  <el-button @click="handleConfirm(notice)"
+                             v-if="!notice.confirmed"
+                             style="margin-top: 40px; margin-left: 30px">
+                    I know that
+                  </el-button>
 
-            <div v-else>
-              <el-button @click="handleConfirm(notice)"
-                         v-if="!notice.confirmed"
-                         style="margin-top: 40px; margin-left: 30px">
-                I know that
-              </el-button>
+                  <div v-else
+                       style="margin-top: 50px; margin-left: 20px">
+                    Already confirmed
+                  </div>
+                </div>
+              </el-col>
+            </el-card>
+          </div>
+        </el-tab-pane>
 
-              <div v-else
-                   style="margin-top: 50px; margin-left: 20px">
-                Already confirmed
-              </div>
-            </div>
-          </el-col>
-        </el-card>
-      </div>
+        <el-tab-pane label="Invite teammates" name="invite"
+                     v-if="haveTeam">
+          <el-row>
+            <el-col style="width: 47%; margin-left: 2%">
+              <el-card class="box-card" style="min-height: 155px">
+                <div slot="header" class="clearfix">
+                  <span>Available classmates</span>
+                </div>
+                <span v-for="(ava, index) in avaList" :key="index"
+                      @click="handleInvite(index)">
+                <el-avatar :fit="'fill'"
+                           style="margin-top: 15px; margin-right: 10px; cursor: pointer"
+                ></el-avatar>
+              </span>
+                <!--        :src=member-->
+              </el-card>
+            </el-col>
 
+            <el-col style="width: 47%; margin-left: 2%">
+              <el-card class="box-card" style="min-height: 155px">
+                <div slot="header" class="clearfix">
+                  <span>Invite list</span>
+                </div>
+                <span v-for="(unava, index) in unAvaList" :key="index"
+                      @click="handleUnInvite(index)">
+                <el-avatar :fit="'fill'"
+                           style="margin-top: 15px; margin-right: 10px; cursor: pointer"
+                ></el-avatar>
+              </span>
+                <!--        :src=member-->
+              </el-card>
+            </el-col>
+          </el-row>
+
+          <div align="center" style="margin-top: 20px;">
+            <el-button type="primary" @click="handleUpdateInvite()">Invite</el-button>
+            <el-button @click="handleCancelInvite()">Cancel</el-button>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+      <!--      <div style="font-size: 30px; font-weight:bold; margin-top: 10px">-->
+      <!--        Notices-->
+      <!--        <el-divider></el-divider>-->
+      <!--      </div>-->
       <div style="margin-bottom: 40px"></div>
     </el-col>
   </el-card>
@@ -162,20 +240,44 @@
 
 <script>
 import {isStudent} from '@/utils/role'
+import {
+  getMyTeamDetail,
+  getTeamMessage,
+  getUngroupedStudents, postInviteStudents,
+  postQuitTeam,
+  postReplyApplication,
+  postTeamDescription
+} from '@/api/team'
 
 export default {
   name: 'MyTeam',
   components: {},
   data () {
     return {
+      status: '',
+      team_avatar: '',
+      haveTeam: false,
+
+      tabPosition: 'top',
+      activeName: 'invite',
+
+      teamName: '',
       tagList: [],
+
+      avaList: [],
+      unAvaList: [],
+
       description: '',
+      newDescription: '',
+      editing: false,
+
       teamMemberList: [],
       noticeList: [
         {
+          member: '',
           type: 'quit',
           info: ' has quit from your team',
-          applyInfo:'',
+          applyInfo: '',
           handler: '',
           time: '',
           confirmed: false,
@@ -183,9 +285,10 @@ export default {
           result: 'rejected'
         },
         {
+          member: '',
           type: 'joinSuccess',
           info: ' successfully joined your team',
-          applyInfo:'',
+          applyInfo: '',
           handler: 'https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg',
           time: '',
           confirmed: false,
@@ -193,9 +296,10 @@ export default {
           result: 'rejected'
         },
         {
+          member: '',
           type: 'joinFail',
           info: ' has been refused to join your team',
-          applyInfo:'',
+          applyInfo: '',
           handler: 'https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg',
           time: '',
           confirmed: true,
@@ -203,6 +307,7 @@ export default {
           result: 'rejected'
         },
         {
+          member: '',
           type: 'apply',
           info: ' apply to join your team',
           applyInfo: 'Please accept me!',
@@ -213,9 +318,10 @@ export default {
           result: 'rejected',
         },
         {
+          member: '',
           type: 'invite',
           info: ' was invited to join your team',
-          applyInfo:'',
+          applyInfo: '',
           handler: 'https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg',
           time: '',
           confirmed: true,
@@ -223,8 +329,9 @@ export default {
           result: 'rejected'
         }
       ],
+      visible: false,
 
-      visible: false
+      rejectReason: ''
     }
   },
   mounted () {
@@ -233,33 +340,216 @@ export default {
   methods: {
     init () {
       console.log('init team page')
-      //TODO: init
+      getMyTeamDetail(this.$store.state.proj.projId).then(resp => {
+        if (resp.data.code === 200) {
+          let infoDict = resp.data.data
+          console.log(resp.data)
+
+          if (infoDict == null) {
+            this.haveTeam = false
+          } else {
+            this.haveTeam = true
+
+            this.team_avatar = infoDict.iconUrl
+            this.status = infoDict.status
+            this.teamName = infoDict.teamName
+            this.description = infoDict.descriptions
+            this.tagList = JSON.parse(infoDict.tags)
+            this.teamMemberList = infoDict.teamMemberList
+          }
+        } else if (resp.data.code === 400) {
+          console.log(resp.data.message)
+          this.$alert(resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        }
+      }).catch(failResp => {
+        this.$alert('Error: ' + failResp.message, 'Tips', {
+          confirmButtonText: 'OK'
+        })
+      })
+
+      // getUngroupedStudents(this.$store.state.proj.projId).then(resp => {
+      //   if (resp.data.code === 200) {
+      //     let infoDict = resp.data.data
+      //
+      //     this.avaList = infoDict.stuList
+      //     this.avaStatus = new Array(len(this.avaList)).fill(true)
+      //   } else if (resp.data.code === 400) {
+      //     console.log(resp.data.message)
+      //     this.$alert(resp.data.message, 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   }
+      // }).catch(failResp => {
+      //   this.$alert('Error: ' + failResp.message, 'Tips', {
+      //     confirmButtonText: 'OK'
+      //   })
+      // })
+
+      // getTeamMessage(this.$store.state.proj.projId).then(resp => {
+      //   if (resp.data.code === 200) {
+      //     let infoDict = resp.data.data
+      //
+      //     this.noticeList=infoDict.message
+      //   } else if (resp.data.code === 400) {
+      //     console.log(resp.data.message)
+      //     this.$alert(resp.data.message, 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   }
+      // }).catch(failResp => {
+      //   this.$alert('Error: ' + failResp.message, 'Tips', {
+      //     confirmButtonText: 'OK'
+      //   })
+      // })
     },
     isStudent () {
       return isStudent()
     },
-    haveTeam () {
-      return true
-    },
     handleAccept (notice) {
       //TODO: logic
-
+      // postReplyApplication(notice.msgId, true, null).then(resp => {
+      //   console.log('get response : ' + resp)
+      //   if (resp.data.code === 200) {
+      //     this.$alert('Quit success', 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   } else if (resp.data.code === 400) {
+      //     console.log(resp.data.message)
+      //     this.$alert(resp.data.message, 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   }
+      // }).catch(failResp => {
+      //   this.$alert('Error ' + failResp.message, 'Tip', {
+      //     confirmButtonText: 'OK'
+      //   })
+      // })
       notice.decided = true
       notice.result = 'accepted'
     },
     handleReject (notice) {
       this.visible = false
 
-      //TODO: logic
-
+      //TODO: upload reject and reason
+      // postReplyApplication(notice.msgId, true, this.rejectReason).then(resp => {
+      //   console.log('get response : ' + resp)
+      //   if (resp.data.code === 200) {
+      //     this.$alert('Quit success', 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   } else if (resp.data.code === 400) {
+      //     console.log(resp.data.message)
+      //     this.$alert(resp.data.message, 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   }
+      // }).catch(failResp => {
+      //   this.$alert('Error ' + failResp.message, 'Tip', {
+      //     confirmButtonText: 'OK'
+      //   })
+      // })
       notice.decided = true
       notice.result = 'rejected'
     },
     handleConfirm (notice) {
       notice.confirmed = true
     },
-    handleJump () {
-
+    handleJump (notice, i) {
+      if (i === 1) {
+        //notice.member
+      } else if (i === 2) {
+        //notice.handler
+      }
+    },
+    handleJump2 (member) {
+      // member in teamMemberList
+    },
+    handleEdit () {
+      if (this.editing) {
+        // todo:upload newDescription
+        // postTeamDescription(this.$store.state.proj.projId, this.description).then(resp => {
+        //   console.log('get response : ' + resp)
+        //   if (resp.data.code === 200) {
+        //     this.$alert('Quit success', 'Tip', {
+        //       confirmButtonText: 'OK'
+        //     })
+        //   } else if (resp.data.code === 400) {
+        //     console.log(resp.data.message)
+        //     this.$alert(resp.data.message, 'Tip', {
+        //       confirmButtonText: 'OK'
+        //     })
+        //   }
+        // }).catch(failResp => {
+        //   this.$alert('Error ' + failResp.message, 'Tip', {
+        //     confirmButtonText: 'OK'
+        //   })
+        // })
+        this.description = this.newDescription
+        this.newDescription = ''
+      }
+      this.editing = !this.editing
+    },
+    handleCancel () {
+      this.newDescription = ''
+      this.editing = false
+    },
+    handleQuit () {
+      this.haveTeam = false
+      // todo
+      // postQuitTeam(this.$store.state.proj.projId).then(resp => {
+      //   console.log('get response : ' + resp)
+      //   if (resp.data.code === 200) {
+      //     this.$alert('Quit success', 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   } else if (resp.data.code === 400) {
+      //     console.log(resp.data.message)
+      //     this.$alert(resp.data.message, 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   }
+      // }).catch(failResp => {
+      //   this.$alert('Error ' + failResp.message, 'Tip', {
+      //     confirmButtonText: 'OK'
+      //   })
+      // })
+    },
+    handleInvite (index) {
+      this.unAvaList.push(this.avaList[index])
+      this.avaList.splice(index, 1)
+    },
+    handleUnInvite (index) {
+      console.log(index)
+      this.avaList.push(this.unAvaList[index])
+      this.unAvaList.splice(index, 1)
+    },
+    handleUpdateInvite () {
+      // todo: push unavalist
+      // postInviteStudents(this.$store.state.proj.projId, this.unAvaList).then(resp => {
+      //   console.log('get response : ' + resp)
+      //   if (resp.data.code === 200) {
+      //     this.$alert('Quit success', 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   } else if (resp.data.code === 400) {
+      //     console.log(resp.data.message)
+      //     this.$alert(resp.data.message, 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   }
+      // }).catch(failResp => {
+      //   this.$alert('Error ' + failResp.message, 'Tip', {
+      //     confirmButtonText: 'OK'
+      //   })
+      // })
+    },
+    handleCancelInvite () {
+      for (let unAva in this.unAvaList) {
+        this.avaList.push(unAva)
+        this.unAvaList = []
+      }
     }
   }
 }
