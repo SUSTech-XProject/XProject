@@ -41,7 +41,8 @@
       </el-table-column>
       <el-table-column
         label="time"
-        prop="modifiedTime">
+        prop="modifiedTime"
+        sortable>
       </el-table-column>
       <el-table-column>
         <template slot-scope="scope">
@@ -95,7 +96,11 @@ name: "StuEvent",
     }
 
   },
+  mounted () {
+    this.init()
+  },
   methods:{
+    init(){},
     openEvent(val){
       this.drawerCtrl = true
       this.eventId = val
