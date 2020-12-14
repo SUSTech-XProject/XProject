@@ -70,7 +70,7 @@ router.beforeEach((to, from, next) => {
           // })
         })
       } else {
-          console.log('fail in beforeEach :')
+        console.log('fail in beforeEach :')
         next({
           name: 'Login',
           query: {redirect: to.fullPath}

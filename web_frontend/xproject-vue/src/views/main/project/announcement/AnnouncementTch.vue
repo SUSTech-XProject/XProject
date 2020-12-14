@@ -119,7 +119,7 @@ import {getDatetimeStr} from '@/utils/parse-day-time'
 import {postModifyAnnouncement} from '@/api/announcement'
 import {getAnnouncementList} from '@/api/announcement'
 import {postAddAnnouncement} from '@/api/announcement'
-import {postDeleteAnnouncement} from '@/api/announcement'
+import {getDeleteAnnouncement} from '@/api/announcement'
 
 export default{
   name:'AnnouncementTch',
@@ -154,7 +154,7 @@ export default{
     }
   },
   mounted () {
-    this.initGradebook()
+    this.init()
   },
   methods:{
     dateTimeFormatter (row, col) {
@@ -210,6 +210,7 @@ export default{
             this.announcementlist[this.mod_id].message = this.mod_message
             this.announcementlist[this.mod_id].title = this.mod_title
             this.$alert('Modify successfully!','Tip')
+            this.init()
           } else if (resp.data.code === 400) {
             console.log(resp.data.message)
             this.$alert(resp.data.message, 'Tip', {
@@ -241,19 +242,7 @@ export default{
       ).then(resp => {
         console.log('get response : ' + resp)
         if (resp.data.code === 200) {
-          let new_row = {
-            index: this.announcementlist.length,
-            annId: '',
-            projId: '',
-            creatorId: '',
-            title: this.new_title,
-            message: this.new_message,
-            modifiedTime: create_time,
-            createdTime: create_time,
-            tchName: '',
-            email: ''
-          }
-          this.announcementlist.push(new_row)
+          this.init()
           this.$alert('Add successfully!','Tip')
         } else if (resp.data.code === 400) {
 
@@ -274,8 +263,8 @@ export default{
       this.$confirm('Are you sure to delete?')
         .then(_ => {
           console.log('deleting data')
-          alert(annId)
-          postDeleteAnnouncement(
+          // alert(annId)
+          getDeleteAnnouncement(
             JSON.stringify(annId)
             // annId
           ).then(resp => {
@@ -298,7 +287,7 @@ export default{
         })
         .catch(_ => {});
     },
-    initGradebook () {
+    init () {
       this.announcementlist.splice(0, this.announcementlist.length)   // remove all
       let projId = this.$store.state.proj.projId
 

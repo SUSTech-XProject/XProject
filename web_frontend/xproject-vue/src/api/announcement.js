@@ -22,8 +22,10 @@ export function postAddAnnouncement (projId, title, message) {
   })
 }
 
-export function postDeleteAnnouncement (annId) {
-  return Vue.prototype.$axios.post('/teacher/project/ann/delete', {
-    annId: annId
+export function getDeleteAnnouncement (annId) {
+  return Vue.prototype.$axios.get('/teacher/project/ann/delete', {
+    params: {
+      annId: annId
+    }
   })
 }
