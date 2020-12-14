@@ -1,0 +1,380 @@
+<template>
+  <el-card id="base-card">
+    <div slot="header" class="">
+      <span id="title-text">Announcement</span>
+      <el-button @click="add_drawer = true" type="success" style="margin-left: 75%;">
+        Add
+      </el-button>
+      <el-drawer
+        title="Details"
+        :visible.sync="add_drawer">
+        <div>
+          <el-card id="add_card">
+            Input announcement title:
+            <el-input
+              type="textarea"
+              :autosize="{ minRows: 2, maxRows: 5}"
+              placeholder="Please input"
+              v-model="new_title">
+            </el-input>
+          <br>
+            <br>
+            Input detail message:
+            <el-input
+              type="textarea"
+              :autosize="{ minRows: 7, maxRows: 10}"
+              placeholder="Please input"
+              v-model="new_message">
+            </el-input>
+          <br>
+            <br>
+            Creator:
+            <el-input
+              type="textarea"
+              :autosize="{ minRows: 1, maxRows: 3}"
+              placeholder="Please input"
+              v-model="new_name">
+            </el-input>
+          </el-card>
+        </div>
+        <br>
+        <el-button @click="commit_add" type="primary" style="margin-left: 50px;">
+          Add
+        </el-button>
+      </el-drawer>
+    </div>
+
+    <el-table
+      :data="announcementlist"
+      empty-text="No Data Found"
+      :default-sort = "{prop: 'index', order: 'increasing'}"
+      style="width: 100%">
+      <el-table-column label="" type="index" width="50px"/>
+      <el-table-column label="Title" prop="rcdName" sortable>
+        <template slot-scope="scope">
+          <span style="margin-left: 0px">{{scope.row.title}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="Modified time" prop="modifiedTime" :formatter="dateTimeFormatter" sortable>
+        <template slot-scope="scope">
+          <span style="margin-left: 0px">{{scope.row.modifiedTime}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="Creator">
+        <template slot-scope="scope">
+          <span style="margin-left: 0px">{{scope.row.tchName}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column>
+        <template slot-scope="scope">
+          <el-button @click="opendrawer(scope.row.annId, scope.row.title, scope.row.message, scope.row.index)" type="primary" style="margin-left: 10px;">
+            Modify
+          </el-button>
+          <el-button @click="deleterow(scope.row.index, scope.row.annId)" type="danger" style="margin-left: 10px;">
+            Delete
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-drawer
+      title="Details"
+      :visible.sync="modify_drawer">
+      <div>
+        <el-card id="modify_card">
+          Modify title:
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 5}"
+            placeholder="Please input"
+            v-model="mod_title">
+          </el-input>
+        <br>
+          <br>
+          Modify message:
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 7, maxRows: 10}"
+            placeholder="Please input"
+            v-model="mod_message">
+          </el-input>
+        <br>
+        </el-card>
+      </div>
+      <br>
+      <el-button @click="commit_modify()" type="primary" style="margin-left: 50px;">
+        Update
+      </el-button>
+    </el-drawer>
+  </el-card>
+
+</template>
+
+<script>
+import LeftBar from '@/components/sidebar/index'
+import Header from '@/components/header/index'
+import Card   from '@/components/card/announceList/index'
+import Selector from '@/components/selector/single'
+import Drawer from '@/components/drawer/announcement/index'
+import {getDatetimeStr} from '@/utils/parse-day-time'
+import {postModifyAnnouncement} from '@/api/announcement'
+import {getAnnouncementList} from '@/api/announcement'
+import {postAddAnnouncement} from '@/api/announcement'
+import {postDeleteAnnouncement} from '@/api/announcement'
+
+export default{
+  name:'AnnouncementTch',
+  components:{
+    LeftBar,Header,card:Card,sele:Selector,drawer:Drawer
+  },
+  data(){
+    return{
+      add_drawer: false,
+      modify_drawer:false,
+      mod_id: 0,
+      mod_message: '',
+      mod_title: '',
+      mod_annId: 0,
+      new_message: '',
+      new_title: '',
+      new_name: '',
+      announcementlist: [
+        {
+          index: 1,
+          annId: 0,
+          projId: 0,
+          creatorId: 1,
+          title: 'Project of OOAD has been released',
+          message: 'This is truly reliable!Start your project as soon as possible',
+          modifiedTime: '12/04/2020 12:24',
+          createdTime: '12/04/2020 12:24',
+          tchName: 'ZYM',
+          email: '30000000@mail.sustech.edu.cn'
+        }
+      ]
+    }
+  },
+  mounted () {
+    this.initGradebook()
+  },
+  methods:{
+    dateTimeFormatter (row, col) {
+      return getDatetimeStr(row.modified_time)
+    },
+    formatDate(date) {
+      let month = date.getMonth() + 1
+      let monthstr = String(month)
+      let day = date.getDate()
+      let daystr = String(day)
+      let hour = date.getHours()
+      let hourstr = String(hour)
+      let minutes = date.getMinutes()
+      let minstr = String(minutes)
+      if (day < 10){
+        daystr = '0'+ daystr
+      }
+      if (month < 10){
+        monthstr = '0'+ monthstr
+      }
+      if (hour < 10){
+        hourstr = '0'+ hourstr
+      }
+      if (minutes < 10){
+        minstr = '0'+ minstr
+      }
+      let year = date.getFullYear()
+      return monthstr + '/' + daystr + '/' + year + ' ' + hourstr + ':' + minstr
+    },
+    opendrawer(annId, title, message, index){
+      // alert(annId)
+      this.mod_annId = annId
+      this.modify_drawer = true
+      this.mod_message = message
+      this.mod_title = title
+      this.mod_id = index - 1
+    },
+    commit_modify(){
+        console.log('send modified data')
+        // alert(this.mod_annId)
+        // let mod_time = this.formatDate(new Date())
+        // let modifiedmess = this.mod_message + '\nModified by ' + this.mod_name + ' in '+ modified_time + '.'
+        // this.announcementlist[this.mod_id].message = modifiedmess
+        // this.announcementlist[this.mod_id].modified_time = modified_time
+        // this.announcementlist[this.mod_id].title = this.mod_title
+        postModifyAnnouncement(
+          this.mod_annId,
+          this.mod_title,
+          this.mod_message
+        ).then(resp => {
+          console.log('get response : ' + resp)
+          if (resp.data.code === 200) {
+            this.announcementlist[this.mod_id].message = this.mod_message
+            this.announcementlist[this.mod_id].title = this.mod_title
+            this.$alert('Modify successfully!','Tip')
+          } else if (resp.data.code === 400) {
+            console.log(resp.data.message)
+            this.$alert(resp.data.message, 'Tip', {
+              confirmButtonText: 'OK'
+            })
+          }
+        }).catch(failResp => {
+          this.$alert('Error ' + failResp.message, 'Tips', {
+            confirmButtonText: 'OK'
+          })
+        });
+    },
+    commit_add(){
+      console.log('send created data')
+      let create_time = this.formatDate(new Date())
+      // let new_row = {
+      //   index: this.announcementlist.length,
+      //   title: this.new_title,
+      //   message: this.new_message,
+      //   modified_time: create_time,
+      //   created_time: create_time,
+      //   creator_name: this.new_name
+      // }
+      // this.announcementlist.push(new_row)
+      postAddAnnouncement(
+        this.$store.state.proj.projId,
+        this.new_title,
+        this.new_message
+      ).then(resp => {
+        console.log('get response : ' + resp)
+        if (resp.data.code === 200) {
+          let new_row = {
+            index: this.announcementlist.length,
+            annId: '',
+            projId: '',
+            creatorId: '',
+            title: this.new_title,
+            message: this.new_message,
+            modifiedTime: create_time,
+            createdTime: create_time,
+            tchName: '',
+            email: ''
+          }
+          this.announcementlist.push(new_row)
+          this.$alert('Add successfully!','Tip')
+        } else if (resp.data.code === 400) {
+
+          console.log(resp.data.message)
+          this.$alert(resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        }
+      }).catch(failResp => {
+        this.$alert('Error ' + failResp.message, 'Tips', {
+          confirmButtonText: 'OK'
+        })
+      });
+    },
+    deleterow(index, annId){
+      // this.announcementlist.splice(index - 1, 1)
+
+      this.$confirm('Are you sure to delete?')
+        .then(_ => {
+          console.log('deleting data')
+          alert(annId)
+          postDeleteAnnouncement(
+            JSON.stringify(annId)
+            // annId
+          ).then(resp => {
+            console.log('get response : ' + resp)
+            if (resp.data.code === 200) {
+              this.announcementlist.splice(index - 1, 1)
+              this.$alert('Delete successfully!','Tip')
+            } else if (resp.data.code === 400) {
+              // this.announcementlist.splice(index - 1, 1)
+              console.log(resp.data.message)
+              this.$alert(resp.data.message, 'Tip', {
+                confirmButtonText: 'OK'
+              })
+            }
+          }).catch(failResp => {
+            this.$alert('Error ' + failResp.message, 'Tips', {
+              confirmButtonText: 'OK'
+            })
+          });
+        })
+        .catch(_ => {});
+    },
+    initGradebook () {
+      this.announcementlist.splice(0, this.announcementlist.length)   // remove all
+      let projId = this.$store.state.proj.projId
+
+      getAnnouncementList(projId).then(resp => {
+        if (resp.data.code !== 200) {
+          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+          return false
+        }
+        this.announcementlist.splice(0, this.announcementlist.length)   // remove all
+        for (let i = 0; i < resp.data.data.length; i++) {
+          let new_row = {
+            index: i+1,
+            annId: resp.data.data[i].annId,
+            projId: resp.data.data[i].projId,
+            creatorId: resp.data.data[i].creatorId,
+            title: resp.data.data[i].title,
+            message: resp.data.data[i].message,
+            modifiedTime: getDatetimeStr(resp.data.data[i].modifiedTime),
+            createdTime: resp.data.data[i].createdTime,
+            tchName: resp.data.data[i].tchName,
+            email: resp.data.data[i].email
+          }
+          console.log(new_row)
+          this.announcementlist.push(new_row)
+        }
+        console.log(this.announcementlist)
+      }).catch(failResp => {
+        console.log('fail in getAnnouncementList. message=' + failResp.message)
+      })
+    }
+  }
+}
+</script>
+
+<style scoped>
+html,body{
+  /*设置内部填充为0，几个布局元素之间没有间距*/
+  padding: 0;
+  /*外部间距也是如此设置*/
+  margin: 0;
+  /*统一设置高度为100%*/
+  height: 100%;
+}
+
+.proj{
+  height: 150px;
+  text-align: center;
+  margin: 0;
+}
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+#base-card {
+  margin: 15px 10px
+}
+#add_card, #modify_card{
+  margin-left: 20px;
+  margin-right: 20px;
+}
+#title-text {
+  font-size: 20px;
+}
+</style>
