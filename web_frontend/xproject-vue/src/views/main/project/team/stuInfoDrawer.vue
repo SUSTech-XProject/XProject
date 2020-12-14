@@ -113,7 +113,7 @@ export default {
     return{
       //
       stuName:'',
-      size:'52%',
+      size:'80%',
       stuDrawer:'',
       //
       bio: '',
@@ -243,5 +243,42 @@ export default {
 </script>
 
 <style scoped>
+.text {
+  font-size: 15px;
+  color: #aaaaaa
+}
 
+.title {
+  font-size: 20px
+}
+
+.small-text {
+  font-size: 13px;
+  color: #aaaaaa
+}
+
+.box-card {
+  width: 480px;
+}
+
+.el-tag {
+  margin-right: 10px;
+  margin-top: 15px;
+}
+
+.el-select-dropdown .el-scrollbar >>> .el-scrollbar__wrap {
+  overflow: scroll;
+}
+
+.base-card {
+  margin: 15px 10px;
+  min-height: 95.7%;
+}
+
+.handle-overflow {
+  overflow: hidden;
+  white-space: nowrap;
+  /*text-overflow: ellipsis;*/
+  width: 100%;
+}
 </style>

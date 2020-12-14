@@ -99,8 +99,9 @@ export default {
           if(!this.op_sta.includes(team.targetMemNum)){
             this.op_sta.push(team.targetMemNum)
           }
-          for (let j = 0; j <team.tags.length ; j++) {
-            let tag = team.tags[j]
+
+          for (let j = 0; j <JSON.parse(team.tags).length ; j++) {
+            let tag = JSON.parse(team.tags)[j]
             if(!this.op_tag.includes(tag)){
               this.op_tag.push(tag)
             }

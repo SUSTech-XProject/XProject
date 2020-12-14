@@ -29,12 +29,12 @@
             type="selection"
             width="55">
           </el-table-column>
-          <el-table-column
-            prop = "index"
-            label="Index"
-            width="120"
-            sortable>
-          </el-table-column>
+<!--          <el-table-column-->
+<!--            prop = "index"-->
+<!--            label="Index"-->
+<!--            width="120"-->
+<!--            sortable>-->
+<!--          </el-table-column>-->
           <el-table-column
             prop="name"
             label="Team Name"
@@ -193,6 +193,9 @@ export default {
     reLoad(){
       this.tableLoading = true
       this.initTeams()
+      setTimeout(()=>{
+        this.tableLoading = false
+      },1000)
       this.tableLoading = false
     },
 
