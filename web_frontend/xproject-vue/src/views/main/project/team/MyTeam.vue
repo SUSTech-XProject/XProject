@@ -50,8 +50,13 @@
       </div>
 
       <div v-if="isStudent() && !haveTeam"
-           style="margin-top: 10px">
-        no team yet
+           style="margin-top: 10px;font-size: 30px;">
+        <el-avatar src="https://github.com/Carl-Rabbit/my_sync_repo/blob/master/fig_bed/default_team.png?raw=true"
+                   :size="250" :fit="'fill'"></el-avatar>
+
+        <div style="font-size: 25px; font-weight:bold; margin-top: 20px">
+          no team yet
+        </div>
       </div>
     </el-col>
 
@@ -84,7 +89,7 @@
                     <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"
                                :fit="'fill'"
                                style="vertical-align:middle; cursor: pointer"
-                               ></el-avatar>
+                    ></el-avatar>
                   </span>
 
                   <span style="margin-left: 5px; font-size: 16px;vertical-align:middle;">
@@ -217,10 +222,11 @@
                 </div>
                 <span v-for="(unava, index) in unAvaList" :key="index"
                       @click="handleUnInvite(index)">
-                <el-avatar :fit="'fill'"
-                           style="margin-top: 15px; margin-right: 10px; cursor: pointer"
-                ></el-avatar>
-              </span>
+                  <el-avatar :fit="'fill'"
+                             style="margin-top: 15px; margin-right: 10px; cursor: pointer"
+                  ></el-avatar>
+                  {{ unava.stdName }}
+                </span>
                 <!--        :src=member-->
               </el-card>
             </el-col>
@@ -241,7 +247,7 @@
 
     <drawer :drawer.sync="memDrawer"
             :id="memId"
-            @closeDrawerStu = "closeDrawerStu"></drawer>
+            @closeDrawerStu="closeDrawerStu"></drawer>
   </el-card>
 </template>
 
@@ -260,20 +266,20 @@ import stuInfoDrawer from '@/views/main/project/team/stuInfoDrawer'
 export default {
   name: 'MyTeam',
   components: {
-    drawer:stuInfoDrawer
+    drawer: stuInfoDrawer
   },
   data () {
     return {
       //
-      memDrawer:false,
-      memId:1,
+      memDrawer: false,
+      memId: 1,
       //
       status: '',
       team_avatar: '',
       haveTeam: false,
 
       tabPosition: 'top',
-      activeName: 'invite',
+      activeName: 'notice',
 
       teamName: '',
       tagList: [],
@@ -353,13 +359,13 @@ export default {
   },
   methods: {
     //
-    openDrawer(val){
+    openDrawer (val) {
       console.log('pic clicked')
       this.drawerId = val
       this.memDrawer = true
-      console.log("clicked")
+      console.log('clicked')
     },
-    closeDrawerStu(){
+    closeDrawerStu () {
       this.memDrawer = false
     },
     //

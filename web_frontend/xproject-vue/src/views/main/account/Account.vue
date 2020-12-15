@@ -180,7 +180,7 @@ export default {
             this.formInfoList[2].value = name[1]
             this.formInfoList[3].value = infoDict.email
           }
-
+          this.imageUrl = resp.data.data.role.iconUrl
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
           this.$alert(resp.data.message, 'Tip', {
