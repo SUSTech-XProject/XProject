@@ -158,7 +158,7 @@ export default{
   },
   methods:{
     dateTimeFormatter (row, col) {
-      return getDatetimeStr(row.modified_time)
+      return getDatetimeStr(row.modifiedTime)
     },
     formatDate(date) {
       let month = date.getMonth() + 1
@@ -243,6 +243,10 @@ export default{
         console.log('get response : ' + resp)
         if (resp.data.code === 200) {
           this.init()
+          this.add_drawer = false
+          this.new_title = ''
+          this.new_message = ''
+          this.new_name = ''
           this.$alert('Add successfully!','Tip')
         } else if (resp.data.code === 400) {
 
@@ -356,6 +360,11 @@ html,body{
   display: table;
   content: "";
 }
+/*.el-drawer{*/
+/*/deep/ :focus {*/
+/*  outline: 0;*/
+/*}*/
+/*}*/
 #base-card {
   margin: 15px 10px
 }
