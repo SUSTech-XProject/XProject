@@ -1,10 +1,12 @@
 <template>
   <el-card class="base-card">
     <el-col :span="5" :offset="2">
-      <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"
+      <el-avatar :src="avatar"
                  :size="290" :fit="'fill'" style="margin-top: 20px"></el-avatar>
 
-      <div>{{ this.$store.state.role.username }}</div>
+      <div style="font-size: 25px; font-weight:bold; margin-top: 10px;">
+        {{ this.$store.state.role.username }}
+      </div>
 
       <div v-if="isStudent()">
         <el-tag v-for="imp in impressionList" :key="imp"
@@ -31,7 +33,7 @@
     <el-col :span="14" :offset="1">
       <el-tabs :tab-position="tabPosition"
                type="card" v-model="activeName"
-               style="height: 100%; margin-top: 20px" >
+               style="height: 100%; margin-top: 10px">
         <el-tab-pane label="Overview" name="overview">
           <div style="margin-top: 10px">Recent project</div>
           <el-row>
@@ -44,7 +46,7 @@
             </el-col>
           </el-row>
 
-          <div v-if="isStudent">
+          <div v-if="isStudent()">
             <div style="margin-top: 40px">Skill List</div>
             <el-tag v-for="skill in skillList" :key="skill"
                     effect="plain" class="el-tag">
@@ -95,7 +97,7 @@
 
 <script>
 import {getProjList} from '@/api/home_page'
-import {isStudent} from '@/utils/role'
+import {isStudent, isTeacher} from '@/utils/role'
 import {getAccountInfo} from '@/api/account'
 
 export default {
@@ -104,6 +106,8 @@ export default {
   data () {
     return {
       roleType: '',
+
+      avatar: '',
 
       bio: '',
       school: '',
@@ -141,10 +145,10 @@ export default {
       console.log('init home page')
 
       this.roleType = this.$store.state.role.roleType
-      console.log(this.roleType)
 
       getAccountInfo().then(resp => {
         if (resp.data.code === 200) {
+          console.log(resp.data)
           if (isStudent()) {
             let infoDict = resp.data.data.student
 
@@ -154,12 +158,21 @@ export default {
             this.location = resp.data.data.school.location
             this.email = infoDict.email
 
+            this.avatar = resp.data.data.role.iconUrl
+
             if (infoDict.flags != null) {
               this.impressionList = JSON.parse(infoDict.flags)
             }
             if (infoDict.skills != null) {
               this.skillList = JSON.parse(infoDict.skills)
             }
+          } else if (isTeacher()) {
+            let infoDict = resp.data.data.teacher
+
+            this.avatar = resp.data.data.role.iconUrl
+            this.email = infoDict.email
+            this.school = resp.data.data.school.schName
+            this.location = resp.data.data.school.location
           }
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
@@ -213,6 +226,7 @@ export default {
           confirmButtonText: 'OK'
         })
       })
+
     },
     inYearList (year) {
       for (let i = 0; i < this.yearList.length; ++i) {
