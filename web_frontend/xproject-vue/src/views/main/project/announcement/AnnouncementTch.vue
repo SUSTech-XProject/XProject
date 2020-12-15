@@ -200,6 +200,10 @@ export default{
         console.log('get response : ' + resp)
         if (resp.data.code === 200) {
           this.init()
+          this.add_drawer = false
+          this.new_title = ''
+          this.new_message = ''
+          this.new_name = ''
           this.$alert('Add successfully!','Tip')
         } else if (resp.data.code === 400) {
 

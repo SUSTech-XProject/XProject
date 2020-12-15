@@ -83,7 +83,7 @@
 
           <el-card class="box-card" style="width: 93%; margin-top: 20px" shadow="never"
                    v-for="proj in fullProjList" :key="proj.projName"
-                   v-if="selectivelyDisplay(proj)" @click.native="gotoProjOverview(proj.projId, proj.name)">
+                   v-if="selectivelyDisplay(proj)">
             <div class="title">{{ proj.projName }}</div>
             <div class="text">{{ proj.description }}</div>
             <p></p>

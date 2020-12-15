@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import timeDrawer from '@/views/main/project/event/timeDrawer'
+import timeDrawer from '@/views/main/project/event/InstDrawer'
 export default {
 name: "StuEvent",
   components:{
