@@ -2,11 +2,13 @@
   <el-card class="base-card">
     <el-col :span="4" :offset="3">
       <div v-if="isStudent() && haveTeam"
-           style="margin-top: 20px">
+           style="margin-top: 10px">
         <el-avatar :src="team_avatar"
                    :size="250" :fit="'fill'"></el-avatar>
 
-        <div style="margin-top: 20px">{{ teamName }}</div>
+        <div style="font-size: 25px; font-weight:bold; margin-top: 20px">
+          {{ teamName }}
+        </div>
 
         <!--        <el-tag v-for="tag in tagList" :key="tag"-->
         <!--                class="el-tag" effect="plain">-->
@@ -48,7 +50,7 @@
       </div>
 
       <div v-if="isStudent() && !haveTeam"
-           style="margin-top: 20px">
+           style="margin-top: 10px">
         no team yet
       </div>
     </el-col>
