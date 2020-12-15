@@ -2,7 +2,7 @@
   <el-card class="base-card">
     <el-col :span="14" :offset="2">
       <el-tabs :tab-position="tabPosition" type="card"
-               style="height: 100%; margin-top: 20px" v-model="activeName">
+               style="height: 100%; margin-top: 10px" v-model="activeName">
         <el-tab-pane label="Account Information" name="accountInfo">
           <div style="font-size: 30px; font-weight:bold; margin-left: 20px">
             Account Information
