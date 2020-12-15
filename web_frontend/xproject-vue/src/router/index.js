@@ -19,6 +19,7 @@ import Gradebook from "@/views/main/project/gradebook/Gradebook";
 import TeamManaging from '@/views/main/project/team/TeamManaging'
 import StdManage from "@/views/main/project/std-manage/StdManage";
 import Roster from "@/views/main/project/roster/Roster";
+import AnnouncementTch from "@/views/main/project/announcement/AnnouncementTch";
 
 Vue.use(Router)
 
@@ -38,6 +39,9 @@ const routes = [
     path: '/index',
     name: 'MainPage',
     component: MainPage,
+    meta: {
+      requireAuth: true
+    },
     children: [
       {
         path: 'home-page',
@@ -115,6 +119,15 @@ const routes = [
             component: Announcement,
             meta: {
               requireAuth: true
+            },
+          },
+          {
+            path: 'announcement-tch',
+            name: 'AnnouncementTch',
+            component: AnnouncementTch,
+            meta: {
+              requireAuth: true,
+              roleType: 'Teacher'
             },
           },
           {
