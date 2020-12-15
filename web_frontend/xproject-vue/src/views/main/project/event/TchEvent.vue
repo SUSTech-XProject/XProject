@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import timeDrawer from '@/views/main/project/event/timeDrawer'
+import InstDrawer from '@/views/main/project/event/InstDrawer'
 import {postEventDeletion} from '@/api/event'
 import {postEventCreation} from '@/api/event'
 
@@ -109,7 +109,7 @@ import {postEventCreation} from '@/api/event'
 export default {
   name: "TchEvent",
   components:{
-    drawer:timeDrawer,
+    drawer:InstDrawer,
   },
   data(){
     return{
