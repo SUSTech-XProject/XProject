@@ -3,7 +3,7 @@
     <div slot="header">
       <span id="title-text">Submission</span>
       <el-button icon="el-icon-circle-plus-outline" @click="addDrawer=true" type="success" style="margin-left: 75%;">
-
+        Create
       </el-button>
 
       <el-drawer
@@ -131,7 +131,7 @@
           <span style="margin-left: 0px">{{scope.row.status}}</span>
         </template>
       </el-table-column>
-      <el-table-column>
+      <el-table-column min-width="150%">
         <template slot-scope="scope" style="margin-left: 10%">
           <el-button-group>
           <el-button
@@ -139,17 +139,18 @@
             size="mini"
             type="primary" plain
             icon="el-icon-info"
-            @click="viewDetail(scope.row.index, scope.row.submId)"></el-button>
+            @click="viewDetail(scope.row.index, scope.row.submId)">Detail</el-button>
           <el-button
             type="success" plain
             size="mini"
             icon="el-icon-edit"
-            @click="modifySubmission(scope.row.index)"></el-button>
+            @click="modifySubmission(scope.row.index)">Modify</el-button>
           <el-button
             size="mini"
             @click="deleterow(scope.row.index, scope.row.submId)"
             type="danger"
             icon="el-icon-delete">
+            Delete
           </el-button>
           </el-button-group>
         </template>

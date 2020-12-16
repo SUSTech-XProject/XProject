@@ -14,7 +14,7 @@ import MyTeam from "@/views/main/project/team/MyTeam";
 import Forming from "@/views/main/project/team/Forming";
 import ProjOverview from "@/views/main/project/overview/ProjOverview";
 import ProjPage from "@/views/main/project/ProjPage";
-import Announcement from '@/views/main/project/announcement/AnnouncementTch'
+import AnnouncementStu from '@/views/main/project/announcement/AnnouncementStu'
 import Gradebook from "@/views/main/project/gradebook/Gradebook";
 import TeamManaging from '@/views/main/project/team/TeamManaging'
 import StdManage from "@/views/main/project/std-manage/StdManage";
@@ -22,6 +22,8 @@ import Roster from "@/views/main/project/roster/Roster";
 import AnnouncementTch from "@/views/main/project/announcement/AnnouncementTch";
 import StuEvent from "@/views/main/project/event/StuEvent";
 import TchEvent from "@/views/main/project/event/TchEvent";
+import SubmissionStu from "@/views/main/project/submission/SubmissionStu";
+import SubmissionTch from "@/views/main/project/submission/SubmissionTch";
 
 Vue.use(Router)
 
@@ -116,9 +118,9 @@ const routes = [
             },
           },
           {
-            path: 'announcement',
-            name: 'Announcement',
-            component: Announcement,
+            path: 'announcement-Stu',
+            name: 'AnnouncementStu',
+            component: AnnouncementStu,
             meta: {
               requireAuth: true
             },
@@ -144,6 +146,23 @@ const routes = [
             path: 'event-tch',
             name: 'TchEvent',
             component: TchEvent,
+            meta: {
+              requireAuth: true,
+              roleType: 'Teacher'
+            },
+          },
+          {
+            path: 'submission',
+            name: 'SubmissionStu',
+            component: SubmissionStu,
+            meta: {
+              requireAuth: true
+            },
+          },
+          {
+            path: 'submission-tch',
+            name: 'SubmissionTch',
+            component: SubmissionTch,
             meta: {
               requireAuth: true,
               roleType: 'Teacher'
