@@ -4,10 +4,8 @@ export function getAccountInfo () {
   return Vue.prototype.$axios.get('account-info')
 }
 
-export function postSelfIntroduction (impTagList, skillTagList, bio) {
+export function postSelfIntroduction (acInfoStdUpdateVO) {
   return Vue.prototype.$axios.post('/self-intro', {
-    flags: impTagList,
-    skills: skillTagList,
-    bio: bio
+    acInfoStdUpdateVO: acInfoStdUpdateVO
   })
 }
