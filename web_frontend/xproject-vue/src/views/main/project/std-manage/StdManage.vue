@@ -52,7 +52,7 @@
     </el-card>
 
     <AutoForming :visible.sync="formingVisible"
-             :stu-in="stdList"
+             :stu-in="stdSelectedList"
              @closeManaging="closeManaging(false)"></AutoForming>
 
   </el-card>
@@ -105,6 +105,7 @@
           {text: 'Confirm', value: 'Confirm'},
           {text: 'No Team', value: null},
         ],
+        stdSelectedList: []
       }
     },
     mounted () {
@@ -148,7 +149,6 @@
           let stdListRecv = resp.data.data
           for (let i = 0; i < stdListRecv.length; i ++) {
             let record = stdListRecv[i]
-            record['listIdx'] = i
             console.log(record)
             this.stdList.push(record)
 
@@ -171,8 +171,8 @@
       //   console.log(`当前页: ${val}`);
       // },
       manageTeam(){
-        console.log(this.multipleSelection)
-        this.multipleSelection = this.$refs.stdTable.selection
+        console.log(this.stdSelectedList)
+        this.stdSelectedList = this.$refs.stdTable.selection
         this.formingVisible = true
         //调用组队表单？
       },

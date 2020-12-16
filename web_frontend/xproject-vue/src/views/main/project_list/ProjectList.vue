@@ -338,4 +338,8 @@ html, body {
   min-height: 95.7%;
 }
 
+  #title-text {
+    font-size: 20px;
+  }
+
 </style>

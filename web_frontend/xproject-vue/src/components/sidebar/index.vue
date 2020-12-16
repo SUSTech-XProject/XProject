@@ -56,7 +56,7 @@
             <el-menu-item index="Forming">Forming</el-menu-item>
           </el-submenu>
 
-          <el-menu-item index="@3.5" >
+          <el-menu-item index="Announcement" >
             <i class="el-icon-bell"></i>
             <span slot="title">Announcements</span>
           </el-menu-item>
@@ -93,7 +93,7 @@
             <i class="el-icon-connection"></i>
             <span slot="title">Team Managing</span>
           </el-menu-item>
-          <el-menu-item index="@3.5" >
+          <el-menu-item index="AnnouncementTch" >
             <i class="el-icon-bell"></i>
             <span slot="title">Announcements</span>
           </el-menu-item>

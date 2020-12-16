@@ -2,47 +2,41 @@
   <el-card id="base-card">
     <div slot="header" class="">
       <span id="title-text">Announcement</span>
-      <el-button @click="add_drawer = true" type="success" style="margin-left: 75%;">
-        Add
-      </el-button>
-      <el-drawer
-        title="Details"
-        :visible.sync="add_drawer">
-        <div>
-          <el-card id="add_card">
-            Input announcement title:
-            <el-input
-              type="textarea"
-              :autosize="{ minRows: 2, maxRows: 5}"
-              placeholder="Please input"
-              v-model="new_title">
-            </el-input>
-          <br>
-            <br>
-            Input detail message:
-            <el-input
-              type="textarea"
-              :autosize="{ minRows: 7, maxRows: 10}"
-              placeholder="Please input"
-              v-model="new_message">
-            </el-input>
-          <br>
-            <br>
-            Creator:
-            <el-input
-              type="textarea"
-              :autosize="{ minRows: 1, maxRows: 3}"
-              placeholder="Please input"
-              v-model="new_name">
-            </el-input>
-          </el-card>
-        </div>
-        <br>
-        <el-button @click="commit_add" type="primary" style="margin-left: 50px;">
-          Add
-        </el-button>
-      </el-drawer>
     </div>
+
+    <el-button @click="add_drawer = true" type="success" style="margin-left: 75%;">
+      Create
+    </el-button>
+
+    <el-drawer
+      title="Create new announcement"
+      :visible.sync="add_drawer">
+      <div>
+        <el-card id="add_card">
+          Input announcement title:
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 5}"
+            placeholder="Please input"
+            v-model="new_title">
+          </el-input>
+          <br>
+          <br>
+          Input detail message:
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 7, maxRows: 10}"
+            placeholder="Please input"
+            v-model="new_message">
+          </el-input>
+          <br>
+        </el-card>
+      </div>
+      <br>
+      <el-button @click="commit_add" type="primary" style="margin-left: 50px;">
+        Create
+      </el-button>
+    </el-drawer>
 
     <el-table
       :data="announcementlist"
@@ -63,12 +57,14 @@
       <el-table-column label="Creator">
         <template slot-scope="scope">
           <span style="margin-left: 0px">{{scope.row.tchName}}</span>
+          <span style="margin-left: 5px; color: #afafaf;">{{scope.row.email}}</span>
         </template>
       </el-table-column>
       <el-table-column>
         <template slot-scope="scope">
-          <el-button @click="opendrawer(scope.row.annId, scope.row.title, scope.row.message, scope.row.index)" type="primary" style="margin-left: 10px;">
-            Modify
+          <el-button @click="opendrawer(scope.row.annId, scope.row.title, scope.row.message, scope.row.index)"
+                     type="primary" style="margin-left: 10px;">
+            Detail
           </el-button>
           <el-button @click="deleterow(scope.row.index, scope.row.annId)" type="danger" style="margin-left: 10px;">
             Delete
@@ -76,6 +72,7 @@
         </template>
       </el-table-column>
     </el-table>
+
     <el-drawer
       title="Details"
       :visible.sync="modify_drawer">
@@ -158,31 +155,7 @@ export default{
   },
   methods:{
     dateTimeFormatter (row, col) {
-      return getDatetimeStr(row.modified_time)
-    },
-    formatDate(date) {
-      let month = date.getMonth() + 1
-      let monthstr = String(month)
-      let day = date.getDate()
-      let daystr = String(day)
-      let hour = date.getHours()
-      let hourstr = String(hour)
-      let minutes = date.getMinutes()
-      let minstr = String(minutes)
-      if (day < 10){
-        daystr = '0'+ daystr
-      }
-      if (month < 10){
-        monthstr = '0'+ monthstr
-      }
-      if (hour < 10){
-        hourstr = '0'+ hourstr
-      }
-      if (minutes < 10){
-        minstr = '0'+ minstr
-      }
-      let year = date.getFullYear()
-      return monthstr + '/' + daystr + '/' + year + ' ' + hourstr + ':' + minstr
+      return getDatetimeStr(row.modifiedTime)
     },
     opendrawer(annId, title, message, index){
       // alert(annId)
@@ -194,12 +167,6 @@ export default{
     },
     commit_modify(){
         console.log('send modified data')
-        // alert(this.mod_annId)
-        // let mod_time = this.formatDate(new Date())
-        // let modifiedmess = this.mod_message + '\nModified by ' + this.mod_name + ' in '+ modified_time + '.'
-        // this.announcementlist[this.mod_id].message = modifiedmess
-        // this.announcementlist[this.mod_id].modified_time = modified_time
-        // this.announcementlist[this.mod_id].title = this.mod_title
         postModifyAnnouncement(
           this.mod_annId,
           this.mod_title,
@@ -225,16 +192,6 @@ export default{
     },
     commit_add(){
       console.log('send created data')
-      let create_time = this.formatDate(new Date())
-      // let new_row = {
-      //   index: this.announcementlist.length,
-      //   title: this.new_title,
-      //   message: this.new_message,
-      //   modified_time: create_time,
-      //   created_time: create_time,
-      //   creator_name: this.new_name
-      // }
-      // this.announcementlist.push(new_row)
       postAddAnnouncement(
         this.$store.state.proj.projId,
         this.new_title,
@@ -243,6 +200,10 @@ export default{
         console.log('get response : ' + resp)
         if (resp.data.code === 200) {
           this.init()
+          this.add_drawer = false
+          this.new_title = ''
+          this.new_message = ''
+          this.new_name = ''
           this.$alert('Add successfully!','Tip')
         } else if (resp.data.code === 400) {
 
@@ -366,4 +327,7 @@ html,body{
 #title-text {
   font-size: 20px;
 }
+  /deep/ :focus {
+    outline: 0;
+  }
 </style>
