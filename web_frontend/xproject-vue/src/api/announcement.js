@@ -1,7 +1,7 @@
 import Vue from 'vue'
 
 export function getAnnouncementList (projId) {
-  return Vue.prototype.$axios.get('all/project/ann', {
+  return Vue.prototype.$axios.get('/all/project/ann', {
     params: {projId: projId}
   })
 }

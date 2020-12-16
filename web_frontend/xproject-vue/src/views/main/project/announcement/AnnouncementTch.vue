@@ -178,6 +178,7 @@ export default{
             this.announcementlist[this.mod_id].title = this.mod_title
             this.$alert('Modify successfully!','Tip')
             this.init()
+            this.modify_drawer = false
           } else if (resp.data.code === 400) {
             console.log(resp.data.message)
             this.$alert(resp.data.message, 'Tip', {
