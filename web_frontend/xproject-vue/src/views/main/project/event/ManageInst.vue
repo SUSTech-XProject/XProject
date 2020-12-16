@@ -1,102 +1,73 @@
 <template>
-  <el-dialog title="Managing"
-             :before-close="closeManaging"
+  <el-drawer :before-close="closeManaging"
              :visible.sync="dialogFormVisible"
              :append-to-body="true"
-             width="70%"
+             size="70%"
+             title="Managing"
              class="autoForming">
-    <div class="title">Teams</div>
-    <el-table
-      height="205"
-      ref="multipleTable"
-      :data="teamList"
-      empty-text="No Data Found"
-      tooltip-effect="dark"
-      style="width: 100%"
-      @selection-change="teamChange">
-      <el-table-column
-        type="selection"
-        width="55">
-      </el-table-column>
+    <el-scrollbar>
+      <el-tabs v-model="activeName" style="width: 90%;padding-left: 40px">
+        <el-tab-pane label="Events" name="event">
+          <el-card class="base-card">
+            <el-table
+              class="inst-table"
+              :data="eventList"
+              empty-text="No Data Found"
+              style="width: 100%;margin-top: 0"
+              @selection-change="handleSelectionChange">
+              <el-table-column type="selection" width="55">
+              </el-table-column>
+              <el-table-column type="index" width="50"></el-table-column>
+              <el-table-column property="date" label="Date" width="120" sortable></el-table-column>
+              <el-table-column property="week" label="Week" width="120" sortable></el-table-column>
+              <el-table-column property="time" label="Duration" sortable></el-table-column>
+              <el-table-column label="Statue" property="statue" sortable></el-table-column>
+              <el-table-column property="teamInfo" label="Team">
+                <template slot-scope="scope">
+                  <span v-if="scope.row.teamInfo===''" style="color: #8c939d">- -</span>
+                  <span v-else>{{scope.row.teamInfo}}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-card>
 
-      <el-table-column
-        prop="name"
-        label="Team Name"
-        sortable
-        show-overflow-tooltip>
-      </el-table-column>
-      <el-table-column
-        prop="topic"
-        label="Topic"
-        sortable
-        show-overflow-tooltip
-        :filters="topicFilter"
-        :filter-method="filtTopic">
-      </el-table-column>
-      <el-table-column
-        prop ="targetMem"
-        label="Size"
-        width="150px"
-        sortable>
-      </el-table-column>
-      <el-table-column
-        prop = "status"
-        label="Team Status"
-        width="150px"
-        sortable
-        :filters="teamStatus"
-        :filter-method="teamStatusFMethod">
-      </el-table-column>
+        </el-tab-pane>
+        <el-tab-pane label="Teams" name="team">
+          <el-card class="base-card">
+            <el-table
+              ref="multipleTable"
+              :data="teamList"
+              empty-text="No Data Found"
+              tooltip-effect="dark"
+              style="width: 100%"
+              @selection-change="teamChange">
+              <el-table-column type="selection" width="55"></el-table-column>
+              <el-table-column prop="name" label="Team Name" sortable show-overflow-tooltip></el-table-column>
+              <el-table-column prop="topic" label="Topic" sortable show-overflow-tooltip :filters="topicFilter" :filter-method="filtTopic"></el-table-column>
+              <el-table-column prop ="curMem" label="Current" width="150px" sortable></el-table-column>
+              <el-table-column prop ="targetMem" label="Size" width="150px" sortable></el-table-column>
+              <el-table-column prop = "status" label="Team Status"
+                               width="150px" sortable :filters="teamStatus" :filter-method="teamStatusFMethod"></el-table-column>
 
-    </el-table>
-    <el-divider></el-divider>
-    <div class="title">Events</div>
-    <el-table
-      height="205"
-      class="inst-table"
-      :data="eventList"
-      empty-text="No Data Found"
-      style="width: 100%;margin-top: 0"
-      @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55">
-      </el-table-column>
-      <el-table-column type="index" width="50"></el-table-column>
-      <el-table-column property="date" label="Date" width="120" sortable></el-table-column>
-      <el-table-column property="week" label="Week" width="120" sortable></el-table-column>
-      <el-table-column property="time" label="Duration" sortable></el-table-column>
-      <el-table-column label="Statue" property="statue" sortable></el-table-column>
-      <el-table-column property="teamInfo" label="Team">
-        <template slot-scope="scope">
-          <span v-if="scope.row.teamInfo===''" style="color: #8c939d">- -</span>
-          <span v-else>{{scope.row.teamInfo}}</span>
-        </template>
-      </el-table-column>
-    </el-table>
+            </el-table>
+          </el-card>
 
-    <el-form :model="form" style="padding-top: 20px">
-      <el-form-item label="Strategy" :label-width="formLabelWidth">
-        <el-select v-model="form.strategy" placeholder="selecting..." style="margin-left: 20px">
-          <el-option v-for="item in options"
-                     :key="item"
-                     :value="item">
-          </el-option>
-
-        </el-select>
-
-      </el-form-item>
-      <el-form-item label="Auto Submit" :label-width="formLabelWidth">
-        <el-checkbox v-model="form.autoSubmit" style="margin-left: 20px"></el-checkbox>
-      </el-form-item>
-
-    </el-form>
+        </el-tab-pane>
+      </el-tabs>
 
 
 
-    <div slot="footer" class="dialog-footer">
-      <el-button @click="closeManaging">Cancel</el-button>
-      <el-button type="primary" @click="submit">Create</el-button>
-    </div>
-  </el-dialog>
+
+
+
+    <footer>
+      <div style="margin-left: 80px">
+        <el-button @click="closeManaging">Cancel</el-button>
+        <el-button type="primary" @click="submit">Create</el-button>
+      </div>
+    </footer>
+    </el-scrollbar>
+  </el-drawer>
 
 </template>
 
@@ -109,6 +80,8 @@ export default {
 name: "AutoForming",
   data(){
     return{
+      activeName:'event',
+      //
       dialogFormVisible: this.visible,
       teamList: [
         {
@@ -185,7 +158,7 @@ name: "AutoForming",
     //initialize
     init(){
       this.initTeams()
-
+      //initEvent
     },
     initTeams(){
       let id = this.$store.state.proj.projId
@@ -210,6 +183,7 @@ name: "AutoForming",
             topic: team.topic,
             targetMem:team.targetMemNum,
             status:team.status,
+            curMem:team.curMemNum
           })
           this.topicFilter.push({
             text:team.topic,
@@ -284,6 +258,9 @@ name: "AutoForming",
     handleSelectionChange(val){
       this.form.eventSelection = val;
     },
+    teamStatusFMethod (value, row, column) {
+      return value === row.status;
+    },
 
     //筛选
     filtTopic(value, row, column) {
@@ -320,20 +297,37 @@ name: "AutoForming",
 </script>
 
 <style scoped>
+/deep/ :focus {
+  outline: 0;
+}
 .title{
   padding-left: 10px;
   padding-top: 2px;
   font-size: 18px;
   color: #919497;
 }
+.el-scrollbar {
+  height: 100%;
+  background: #ffffff;
+  overflow-x: hidden;
+}
+
+.el-scrollbar >>> .el-scrollbar__wrap {
+  overflow-x: hidden;
+  height: 100%;
+}
 #team_table{
   padding:0;
 }
-#title-text {
-  font-size: 20px;
-}
-#card-body{
 
+footer {
+  bottom: 30px;
+  position: fixed;
+  width: 62%;
+}
+.base-card{
+  margin: 15px 10px;
+  /*height: 90%;*/
 }
 </style>
 <style>

@@ -35,12 +35,7 @@
 <!--            width="120"-->
 <!--            sortable>-->
 <!--          </el-table-column>-->
-          <el-table-column
-            prop="name"
-            label="Team Name"
-            sortable
-            show-overflow-tooltip>
-          </el-table-column>
+          <el-table-column prop="name" label="Team Name" sortable show-overflow-tooltip></el-table-column>
           <el-table-column
             prop="topic"
             label="Topic"
@@ -48,6 +43,12 @@
             show-overflow-tooltip
             :filters="topicFilter"
             :filter-method="filterHandler">
+          </el-table-column>
+          <el-table-column
+            prop ="curMem"
+            label="Current"
+            width="150px"
+            sortable>
           </el-table-column>
           <el-table-column
             prop ="targetMem"
@@ -59,6 +60,8 @@
             prop = "status"
             label="Status"
             width="150px"
+            :filters="teamStatus"
+            :filter-method="teamStatusFMethod"
             sortable>
           </el-table-column>
           <el-table-column>
@@ -116,6 +119,10 @@ export default {
       drawerId:1,
       tableData: [],
       topicFilter:[],
+      teamStatus: [
+        {text: 'Raw', value: 'Raw'},
+        {text: 'Confirm', value: 'Confirm'},
+      ],
       tableLoading:false,
       createVisible:false,
       formingVisible:false,
@@ -138,7 +145,7 @@ export default {
         }
 
         let teamList = resp.data.data
-        //console.log(teamList)
+        console.log(teamList)
         this.tableData.splice(0,this.tableData.length)
         this.topicFilter.splice(0,this.topicFilter.length)
         for (let i = 0; i < teamList.length; i++) {
@@ -149,6 +156,7 @@ export default {
             topic: team.topic,
             targetMem:team.targetMemNum,
             status:team.status,
+            curMem:team.curMemNum
           })
 
           this.topicFilter.push({
@@ -188,6 +196,9 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
+    },
+    teamStatusFMethod (value, row, column) {
+      return value === row.status;
     },
 
     reLoad(){

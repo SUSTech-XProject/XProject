@@ -71,6 +71,7 @@
 
     <drawer :drawer.sync="drawerCtrl"
             :ID="eventId"
+            :role="true"
             @closeEvent = "closeEvent"></drawer>
 
     <el-dialog title="Create Task" :visible.sync="dialogFormVisible" width="500px">
@@ -89,6 +90,14 @@
         <el-form-item label="Description" :label-width="formLabelWidth" style="width: 85%">
           <el-input v-model="form.desc" type="textarea" :clearable = "true"></el-input>
         </el-form-item>
+        <el-form-item :label-width="formLabelWidth">
+          <el-switch
+            v-model="form.auto"
+            active-text="Auto distribution">
+          </el-switch>
+
+        </el-form-item>
+
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -139,7 +148,8 @@ export default {
       form: {
         title:'',
         due:'',
-        desc:''
+        desc:'',
+        auto:false,
       },
       formLabelWidth: '120px'
     }

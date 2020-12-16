@@ -33,6 +33,12 @@
         :filter-method="filtTopic">
       </el-table-column>
       <el-table-column
+        prop ="curMem"
+        label="Current"
+        width="150px"
+        sortable>
+      </el-table-column>
+      <el-table-column
         prop ="targetMem"
         label="Size"
         width="150px"
@@ -109,26 +115,7 @@ name: "AutoForming",
   data(){
     return{
       dialogFormVisible: this.visible,
-      teamList: [
-        {
-          index: 1,
-          name: 'Project Helper 0',
-          topic: 'Project Helper',
-          targetMem:4,
-          status:'R',},
-        {
-          index: 2,
-          name: 'Project Helper 1',
-          topic: 'Project Helper',
-          targetMem:3,
-          status:'R'},
-        {
-          index: 3,
-          name: 'DBOJ 1',
-          topic: 'DBOJ',
-          targetMem:3,
-          status:'R'},
-      ],
+      teamList: [],
       teamStatus: [
         {text: 'Raw', value: 'Raw'},
         {text: 'Confirm', value: 'Confirm'},
@@ -143,26 +130,7 @@ name: "AutoForming",
         {text: 'Confirm', value: 'Confirm'},
         {text: 'No Team', value: null},
       ],
-      stdList: [
-        {
-          index: 1,
-          stdName: 'Xiaoming Wang',
-          stdNo: '11816401',
-          groupMark: 'Lab 1',
-          projInstId: 1,
-          topicStr: 'Project Helper',
-          status: 'Raw'
-        },
-        {
-          index: 3,
-          stdName: 'Wushuang Ye',
-          stdNo: '11816403',
-          groupMark: 'Lab 2',
-          projInstId: 2,
-          topicStr: 'Project Helper',
-          status: 'Raw'
-        },
-      ],
+      stdList: [],
       //
       topicFilter:[],
       options:['Random','Team First','Size Balance'],
@@ -207,6 +175,7 @@ name: "AutoForming",
             topic: team.topic,
             targetMem:team.targetMemNum,
             status:team.status,
+            curMem:team.curMemNum
           })
           this.topicFilter.push({
             text:team.topic,

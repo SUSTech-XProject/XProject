@@ -59,6 +59,7 @@
 
     <drawer :drawer.sync="drawerCtrl"
             :ID="eventId"
+            :role="false"
             @closeEvent = "closeEvent"></drawer>
   </el-card>
 
