@@ -68,7 +68,7 @@
             <i class="el-icon-folder-opened"></i>
             <span slot="title">Resources</span>
           </el-menu-item>
-          <el-menu-item index="@6">
+          <el-menu-item index="SubmissionStu">
             <i class="el-icon-document"></i>
             <span slot="title">Submissions</span>
           </el-menu-item>
@@ -105,7 +105,7 @@
             <i class="el-icon-folder-opened"></i>
             <span slot="title">Resources</span>
           </el-menu-item>
-          <el-menu-item index="@6">
+          <el-menu-item index="SubmissionTch">
             <i class="el-icon-document"></i>
             <span slot="title">Submissions</span>
           </el-menu-item>

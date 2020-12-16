@@ -22,6 +22,8 @@ import Roster from "@/views/main/project/roster/Roster";
 import AnnouncementTch from "@/views/main/project/announcement/AnnouncementTch";
 import StuEvent from "@/views/main/project/event/StuEvent";
 import TchEvent from "@/views/main/project/event/TchEvent";
+import SubmissionStu from "@/views/main/project/submission/SubmissionStu";
+import SubmissionTch from "@/views/main/project/submission/SubmissionTch";
 
 Vue.use(Router)
 
@@ -144,6 +146,23 @@ const routes = [
             path: 'event-tch',
             name: 'TchEvent',
             component: TchEvent,
+            meta: {
+              requireAuth: true,
+              roleType: 'Teacher'
+            },
+          },
+          {
+            path: 'submission',
+            name: 'SubmissionStu',
+            component: SubmissionStu,
+            meta: {
+              requireAuth: true
+            },
+          },
+          {
+            path: 'submission-tch',
+            name: 'SubmissionTch',
+            component: SubmissionTch,
             meta: {
               requireAuth: true,
               roleType: 'Teacher'
