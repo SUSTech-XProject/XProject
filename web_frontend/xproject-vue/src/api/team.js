@@ -91,8 +91,14 @@ export function postReplyApplication (msgId, accepted, reason) {
   })
 }
 
-export function getTeamMessage (projId) {
-  return Vue.prototype.$axios.get('/student/team/message', {
+export function getTeamMessage (projInstId) {
+  return Vue.prototype.$axios.get('/all/team/message', {
+    params: {projInstId: projInstId}
+  })
+}
+
+export function getPersonalMessage (projId) {
+  return Vue.prototype.$axios.get('/all/project/message', {
     params: {projId: projId}
   })
 }

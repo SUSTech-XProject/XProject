@@ -26,7 +26,7 @@
         </div>
 
         <div v-for="member in teamMemberList" :key="member.stdId"
-             @click="handleJump2(member)">
+             @click.native:="openDrawer(member.roleId)">
           <el-avatar :fit="'fill'" :src="member.iconUrl"
                      style="margin-top: 15px; margin-right: 10px; cursor: pointer"
           ></el-avatar>
@@ -71,29 +71,15 @@
                      style="width: 90%; margin-top: 20px;">
               <el-col :span="17">
                 <div>
-                  <!--              <el-popover-->
-                  <!--                placement="bottom"-->
-                  <!--                width="200"-->
-                  <!--                trigger="hover">-->
-                  <!--                <div>-->
-
-                  <!--                </div>-->
-                  <!--                <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"-->
-                  <!--                           :fit="'fill'"-->
-                  <!--                           style="vertical-align:middle; cursor: pointer"-->
-                  <!--                           @click="handleJump()"-->
-                  <!--                           slot="reference"></el-avatar>-->
-                  <!--              </el-popover>-->
-
-                  <span @click.native:="openDrawer(1)">
-                    <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"
+                  <span @click.native:="openDrawer(notice.creatorRoleId)">
+                    <el-avatar :src="notice.crtIconUrl"
                                :fit="'fill'"
                                style="vertical-align:middle; cursor: pointer"
                     ></el-avatar>
                   </span>
 
                   <span style="margin-left: 5px; font-size: 16px;vertical-align:middle;">
-                    {{ notice.info }}
+                    {{ notice.title }}
                   </span>
                 </div>
 
@@ -106,33 +92,21 @@
                   <span v-else style="vertical-align:middle; font-size: 13px">
                     Handler:
                   </span>
-                  <!--              <el-popover-->
-                  <!--                placement="bottom"-->
-                  <!--                width="200"-->
-                  <!--                trigger="hover">-->
-                  <!--                <div>-->
 
-                  <!--                </div>-->
-                  <!--                <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"-->
-                  <!--                           :fit="'fill'"-->
-                  <!--                           style="vertical-align:middle; margin-left: 8px; cursor: pointer"-->
-                  <!--                           @click="handleJump()"-->
-                  <!--                           slot="reference"></el-avatar>-->
-                  <!--              </el-popover>-->
-                  <span @click="handleJump(notice,2)">
-                    <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"
+                  <span @click="openDrawer(notice.handlerRoleId)">
+                    <el-avatar :src="notice.hdlIconUrl"
                                :fit="'fill'"
                                style="vertical-align:middle; margin-left: 8px; cursor: pointer"></el-avatar>
                   </span>
                 </div>
 
-                <div v-if="notice.type==='apply'"
-                     style="margin-top: 20px; margin-left: 10px; font-size: 13px">
-                  ApplyInfo: {{ notice.applyInfo }}
-                </div>
+                <!--                <div v-if="notice.type==='apply'"-->
+                <!--                     style="margin-top: 20px; margin-left: 10px; font-size: 13px">-->
+                <!--                  ApplyInfo: {{ notice.applyInfo }}-->
+                <!--                </div>-->
 
                 <div style="margin-top: 20px; margin-left: 10px; font-size: 13px">
-                  Date: {{ notice.time }}
+                  Date: {{ notice.createdTime }}
                 </div>
 
                 <div style="margin-bottom: 20px"></div>
@@ -254,7 +228,7 @@
 <script>
 import {isStudent} from '@/utils/role'
 import {
-  getMyTeamDetail,
+  getMyTeamDetail, getPersonalMessage,
   getTeamMessage,
   getUngroupedStudents, postInviteStudents,
   postQuitTeam,
@@ -262,6 +236,7 @@ import {
   postTeamDescription
 } from '@/api/team'
 import stuInfoDrawer from '@/views/main/project/team/stuInfoDrawer'
+import {getDatetimeStr} from '@/utils/parse-day-time'
 
 export default {
   name: 'MyTeam',
@@ -292,63 +267,7 @@ export default {
       editing: false,
 
       teamMemberList: [],
-      noticeList: [
-        {
-          member: '',
-          type: 'quit',
-          info: ' has quit from your team',
-          applyInfo: '',
-          handler: '',
-          time: '',
-          confirmed: false,
-          decided: false,
-          result: 'rejected'
-        },
-        {
-          member: '',
-          type: 'joinSuccess',
-          info: ' successfully joined your team',
-          applyInfo: '',
-          handler: 'https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg',
-          time: '',
-          confirmed: false,
-          decided: false,
-          result: 'rejected'
-        },
-        {
-          member: '',
-          type: 'joinFail',
-          info: ' has been refused to join your team',
-          applyInfo: '',
-          handler: 'https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg',
-          time: '',
-          confirmed: true,
-          decided: false,
-          result: 'rejected'
-        },
-        {
-          member: '',
-          type: 'apply',
-          info: ' apply to join your team',
-          applyInfo: 'Please accept me!',
-          handler: '',
-          time: '',
-          confirmed: true,
-          decided: false,
-          result: 'rejected',
-        },
-        {
-          member: '',
-          type: 'invite',
-          info: ' was invited to join your team',
-          applyInfo: '',
-          handler: 'https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg',
-          time: '',
-          confirmed: true,
-          decided: false,
-          result: 'rejected'
-        }
-      ],
+      noticeList: [],
       visible: false,
 
       rejectReason: ''
@@ -358,7 +277,6 @@ export default {
     this.init()
   },
   methods: {
-    //
     openDrawer (val) {
       console.log('pic clicked')
       this.drawerId = val
@@ -368,13 +286,12 @@ export default {
     closeDrawerStu () {
       this.memDrawer = false
     },
-    //
     init () {
       console.log('init team page')
       getMyTeamDetail(this.$store.state.proj.projId).then(resp => {
         if (resp.data.code === 200) {
           let infoDict = resp.data.data
-          console.log(resp.data)
+          console.log(infoDict)
 
           if (infoDict == null) {
             this.haveTeam = false
@@ -418,22 +335,30 @@ export default {
       //   })
       // })
 
-      // getTeamMessage(this.$store.state.proj.projId).then(resp => {
-      //   if (resp.data.code === 200) {
-      //     let infoDict = resp.data.data
-      //
-      //     this.noticeList=infoDict.message
-      //   } else if (resp.data.code === 400) {
-      //     console.log(resp.data.message)
-      //     this.$alert(resp.data.message, 'Tip', {
-      //       confirmButtonText: 'OK'
-      //     })
-      //   }
-      // }).catch(failResp => {
-      //   this.$alert('Error: ' + failResp.message, 'Tips', {
-      //     confirmButtonText: 'OK'
-      //   })
-      // })
+      getPersonalMessage(this.$store.state.proj.projId).then(resp => {
+        if (resp.data.code === 200) {
+          let infoDict = resp.data.data
+
+          // console.log(infoDict)
+          for (let i = 0; i < infoDict.length; ++i) {
+            infoDict[i].createdTime = getDatetimeStr(infoDict[i].createdTime)
+            this.noticeList.push(infoDict[i])
+          }
+
+          this.noticeList.sort(function (a, b) {
+            return -Date.parse(b.createdTime) + Date.parse(a.createdTime)
+          })
+        } else if (resp.data.code === 400) {
+          console.log(resp.data.message)
+          this.$alert(resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        }
+      }).catch(failResp => {
+        this.$alert('Error: ' + failResp.message, 'Tips', {
+          confirmButtonText: 'OK'
+        })
+      })
     },
     isStudent () {
       return isStudent()
@@ -686,3 +611,85 @@ export default {
 <!--      </el-tabs>-->
 <!--    </div>-->
 <!--  </div>-->
+
+<!--{-->
+<!--member: '',-->
+<!--type: 'quit',-->
+<!--info: ' has quit from your team',-->
+<!--applyInfo: '',-->
+<!--handler: '',-->
+<!--time: '',-->
+<!--confirmed: false,-->
+<!--decided: false,-->
+<!--result: 'rejected'-->
+<!--}-->
+<!--{-->
+<!--member: '',-->
+<!--type: 'joinSuccess',-->
+<!--info: ' successfully joined your team',-->
+<!--applyInfo: '',-->
+<!--handler: 'https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg',-->
+<!--time: '',-->
+<!--confirmed: false,-->
+<!--decided: false,-->
+<!--result: 'rejected'-->
+<!--},-->
+<!--{-->
+<!--member: '',-->
+<!--type: 'joinFail',-->
+<!--info: ' has been refused to join your team',-->
+<!--applyInfo: '',-->
+<!--handler: 'https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg',-->
+<!--time: '',-->
+<!--confirmed: true,-->
+<!--decided: false,-->
+<!--result: 'rejected'-->
+<!--},-->
+<!--{-->
+<!--member: '',-->
+<!--type: 'apply',-->
+<!--info: ' apply to join your team',-->
+<!--applyInfo: 'Please accept me!',-->
+<!--handler: '',-->
+<!--time: '',-->
+<!--confirmed: true,-->
+<!--decided: false,-->
+<!--result: 'rejected',-->
+<!--},-->
+<!--{-->
+<!--member: '',-->
+<!--type: 'invite',-->
+<!--info: ' was invited to join your team',-->
+<!--applyInfo: '',-->
+<!--handler: 'https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg',-->
+<!--time: '',-->
+<!--confirmed: true,-->
+<!--decided: false,-->
+<!--result: 'rejected'-->
+<!--}-->
+<!--              <el-popover-->
+<!--                placement="bottom"-->
+<!--                width="200"-->
+<!--                trigger="hover">-->
+<!--                <div>-->
+
+<!--                </div>-->
+<!--                <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"-->
+<!--                           :fit="'fill'"-->
+<!--                           style="vertical-align:middle; cursor: pointer"-->
+<!--                           @click="handleJump()"-->
+<!--                           slot="reference"></el-avatar>-->
+<!--              </el-popover>-->
+<!--              <el-popover-->
+<!--                placement="bottom"-->
+<!--                width="200"-->
+<!--                trigger="hover">-->
+<!--                <div>-->
+
+<!--                </div>-->
+<!--                <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"-->
+<!--                           :fit="'fill'"-->
+<!--                           style="vertical-align:middle; margin-left: 8px; cursor: pointer"-->
+<!--                           @click="handleJump()"-->
+<!--                           slot="reference"></el-avatar>-->
+<!--              </el-popover>-->
