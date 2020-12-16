@@ -20,6 +20,8 @@ import TeamManaging from '@/views/main/project/team/TeamManaging'
 import StdManage from "@/views/main/project/std-manage/StdManage";
 import Roster from "@/views/main/project/roster/Roster";
 import AnnouncementTch from "@/views/main/project/announcement/AnnouncementTch";
+import StuEvent from "@/views/main/project/event/StuEvent";
+import TchEvent from "@/views/main/project/event/TchEvent";
 
 Vue.use(Router)
 
@@ -125,6 +127,23 @@ const routes = [
             path: 'announcement-tch',
             name: 'AnnouncementTch',
             component: AnnouncementTch,
+            meta: {
+              requireAuth: true,
+              roleType: 'Teacher'
+            },
+          },
+          {
+            path: 'event',
+            name: 'StuEvent',
+            component: StuEvent,
+            meta: {
+              requireAuth: true
+            },
+          },
+          {
+            path: 'event-tch',
+            name: 'TchEvent',
+            component: TchEvent,
             meta: {
               requireAuth: true,
               roleType: 'Teacher'
