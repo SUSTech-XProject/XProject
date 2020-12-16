@@ -56,7 +56,7 @@ export function getStuInfo (roleId) {
 
 export function postAutoForming (form) {
   return Vue.prototype.$axios.post('team/teacher/auto-forming', {
-    AutoFormingVO:form
+    AutoFormingVO: form
   })
 }
 
@@ -72,14 +72,17 @@ export function getUngroupedStudents (projId) {
   })
 }
 
-export function postInviteStudents (projId, students) {
+export function postInviteStudents (roleIdList, projId) {
   return Vue.prototype.$axios.post('/student/team/invite', {
-    // todo
+    projId: projId,
+    stdRoleIdList: roleIdList
   })
 }
 
 export function postQuitTeam (projId) {
-  return Vue.prototype.$axios.post('/student/team/quit')
+  return Vue.prototype.$axios.post('/student/team/quit', {
+    params: {projId: projId}
+  })
 }
 
 export function postReplyApplication (msgId, accepted, reason) {

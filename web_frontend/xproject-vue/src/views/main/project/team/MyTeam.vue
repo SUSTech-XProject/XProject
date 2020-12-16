@@ -83,9 +83,9 @@
                   </span>
                 </div>
 
-                <div v-if="notice.type==='joinSuccess'|| notice.type==='joinFail'|| notice.type==='invite'"
+                <div v-if="notice.type==='JoinSuccess'|| notice.type==='JoinFail'|| notice.type==='Invite'"
                      style="margin-top: 10px; margin-left: 10px;">
-                  <span v-if="notice.type==='invite'"
+                  <span v-if="notice.type==='Invite'"
                         style="vertical-align:middle; font-size: 13px">
                     Inviter:
                   </span>
@@ -100,7 +100,7 @@
                   </span>
                 </div>
 
-                <!--                <div v-if="notice.type==='apply'"-->
+                <!--                <div v-if="notice.type==='Apply'"-->
                 <!--                     style="margin-top: 20px; margin-left: 10px; font-size: 13px">-->
                 <!--                  ApplyInfo: {{ notice.applyInfo }}-->
                 <!--                </div>-->
@@ -113,19 +113,18 @@
               </el-col>
 
               <el-col :span="7">
-                <div v-if="notice.type==='apply'">
+                <div v-if="notice.type==='Apply'">
 
                   <div v-if="!notice.decided"
-                       style="margin-top: 35px">
+                       style="margin-top: 20px">
                     <el-popover
                       placement="bottom"
                       width="340"
                       v-model="visible">
                       <div>
                         Reason:
-                        <el-input style="width: 200px;"></el-input>
-                        <el-button v-model="rejectReason" placeholder="Reason here..."
-                                   @click="handleReject(notice)">
+                        <el-input v-model="rejectReason" placeholder="Reason here..." style="width: 200px;"></el-input>
+                        <el-button @click="handleReject(notice)">
                           Reply
                         </el-button>
                       </div>
@@ -136,12 +135,12 @@
                   </div>
 
                   <div v-else
-                       style="margin-top: 45px; margin-left: 49px">
+                       style="margin-top: 30px; margin-left: 49px">
                     <div>{{ notice.result }}</div>
                   </div>
                 </div>
 
-                <div v-else-if="notice.type==='quit'">
+                <div v-else-if="notice.type==='Quit'">
                   <el-button @click="handleConfirm(notice)"
                              v-if="!notice.confirmed"
                              style="margin-top: 20px;  margin-left: 30px">
@@ -173,38 +172,44 @@
 
         <el-tab-pane label="Invite teammates" name="invite"
                      v-if="haveTeam">
-          <el-row>
-            <el-col style="width: 47%; margin-left: 2%">
-              <el-card class="box-card" style="min-height: 155px">
-                <div slot="header" class="clearfix">
-                  <span>Available classmates</span>
-                </div>
-                <span v-for="(ava, index) in avaList" :key="index"
-                      @click="handleInvite(index)">
-                <el-avatar :fit="'fill'"
-                           style="margin-top: 15px; margin-right: 10px; cursor: pointer"
-                ></el-avatar>
-              </span>
-                <!--        :src=member-->
-              </el-card>
-            </el-col>
+          <el-card class="box-card" style="min-height: 155px">
+            <div slot="header" class="clearfix">
+              <span>Available classmates</span>
+            </div>
 
-            <el-col style="width: 47%; margin-left: 2%">
-              <el-card class="box-card" style="min-height: 155px">
-                <div slot="header" class="clearfix">
-                  <span>Invite list</span>
-                </div>
-                <span v-for="(unava, index) in unAvaList" :key="index"
-                      @click="handleUnInvite(index)">
+            <el-row>
+              <el-col :span="6" v-for="(std, index) in ungroupList" :key="index">
+                <div @click="handleInvite(index)">
                   <el-avatar :fit="'fill'"
-                             style="margin-top: 15px; margin-right: 10px; cursor: pointer"
+                             :src="std.iconUrl"
+                             style="margin-top: 15px; margin-right: 10px; cursor: pointer; vertical-align:middle;"
                   ></el-avatar>
-                  {{ unava.stdName }}
-                </span>
-                <!--        :src=member-->
-              </el-card>
-            </el-col>
-          </el-row>
+                  <span style="vertical-align: middle">{{ std.stdName }}</span>
+                </div>
+              </el-col>
+            </el-row>
+
+            <div style="margin-top: 10px"></div>
+          </el-card>
+
+          <el-card class="box-card" style="min-height: 155px; margin-top: 20px;">
+            <div slot="header" class="clearfix">
+              <span>Invite list</span>
+            </div>
+            <el-row>
+              <el-col :span="8" v-for="(std, index) in inviteList" :key="index">
+                <div @click="handleUnInvite(index)">
+                  <el-avatar :fit="'fill'"
+                             :src="std.iconUrl"
+                             style="margin-top: 15px; margin-right: 10px; cursor: pointer; vertical-align:middle;"
+                  ></el-avatar>
+                  <span style="vertical-align: middle">{{ std.stdName }}</span>
+                </div>
+              </el-col>
+            </el-row>
+
+            <div style="margin-top: 10px"></div>
+          </el-card>
 
           <div align="center" style="margin-top: 20px;">
             <el-button type="primary" @click="handleUpdateInvite()">Invite</el-button>
@@ -259,8 +264,8 @@ export default {
       teamName: '',
       tagList: [],
 
-      avaList: [],
-      unAvaList: [],
+      ungroupList: [],
+      inviteList: [],
 
       description: '',
       newDescription: '',
@@ -270,7 +275,9 @@ export default {
       noticeList: [],
       visible: false,
 
-      rejectReason: ''
+      rejectReason: '',
+
+      projInstId: null
     }
   },
   mounted () {
@@ -286,12 +293,12 @@ export default {
     closeDrawerStu () {
       this.memDrawer = false
     },
+
     init () {
       console.log('init team page')
       getMyTeamDetail(this.$store.state.proj.projId).then(resp => {
         if (resp.data.code === 200) {
           let infoDict = resp.data.data
-          console.log(infoDict)
 
           if (infoDict == null) {
             this.haveTeam = false
@@ -304,6 +311,34 @@ export default {
             this.description = infoDict.descriptions
             this.tagList = JSON.parse(infoDict.tags)
             this.teamMemberList = infoDict.teamMemberList
+
+            this.projInstId = infoDict.projInstId
+
+            if (this.projInstId != null) {
+              getTeamMessage(this.projInstId).then(resp => {
+                if (resp.data.code === 200) {
+                  let infoDict = resp.data.data
+
+                  for (let i = 0; i < infoDict.length; ++i) {
+                    infoDict[i].createdTime = getDatetimeStr(infoDict[i].createdTime)
+                    this.noticeList.push(infoDict[i])
+                  }
+
+                  this.noticeList.sort(function (a, b) {
+                    return Date.parse(b.createdTime) - Date.parse(a.createdTime)
+                  })
+                } else if (resp.data.code === 400) {
+                  console.log(resp.data.message)
+                  this.$alert(resp.data.message, 'Tip', {
+                    confirmButtonText: 'OK'
+                  })
+                }
+              }).catch(failResp => {
+                this.$alert('Error: ' + failResp.message, 'Tips', {
+                  confirmButtonText: 'OK'
+                })
+              })
+            }
           }
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
@@ -317,36 +352,34 @@ export default {
         })
       })
 
-      // getUngroupedStudents(this.$store.state.proj.projId).then(resp => {
-      //   if (resp.data.code === 200) {
-      //     let infoDict = resp.data.data
-      //
-      //     this.avaList = infoDict.stuList
-      //     this.avaStatus = new Array(len(this.avaList)).fill(true)
-      //   } else if (resp.data.code === 400) {
-      //     console.log(resp.data.message)
-      //     this.$alert(resp.data.message, 'Tip', {
-      //       confirmButtonText: 'OK'
-      //     })
-      //   }
-      // }).catch(failResp => {
-      //   this.$alert('Error: ' + failResp.message, 'Tips', {
-      //     confirmButtonText: 'OK'
-      //   })
-      // })
+      getUngroupedStudents(this.$store.state.proj.projId).then(resp => {
+        if (resp.data.code === 200) {
+          this.ungroupList = resp.data.data
+          this.avaStatus = new Array(this.ungroupList.length).fill(true)
+        } else if (resp.data.code === 400) {
+          console.log(resp.data.message)
+          this.$alert(resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        }
+      }).catch(failResp => {
+        this.$alert('Error: ' + failResp.message, 'Tips', {
+          confirmButtonText: 'OK'
+        })
+      })
 
       getPersonalMessage(this.$store.state.proj.projId).then(resp => {
         if (resp.data.code === 200) {
           let infoDict = resp.data.data
 
-          // console.log(infoDict)
+          console.log(infoDict)
           for (let i = 0; i < infoDict.length; ++i) {
             infoDict[i].createdTime = getDatetimeStr(infoDict[i].createdTime)
             this.noticeList.push(infoDict[i])
           }
 
           this.noticeList.sort(function (a, b) {
-            return -Date.parse(b.createdTime) + Date.parse(a.createdTime)
+            return Date.parse(b.createdTime) - Date.parse(a.createdTime)
           })
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
@@ -360,14 +393,15 @@ export default {
         })
       })
     },
-    isStudent () {
-      return isStudent()
-    },
+
     handleAccept (notice) {
       //TODO: logic
       // postReplyApplication(notice.msgId, true, null).then(resp => {
       //   console.log('get response : ' + resp)
       //   if (resp.data.code === 200) {
+      // notice.decided = true
+      // notice.result = 'accepted'
+      //
       //     this.$alert('Quit success', 'Tip', {
       //       confirmButtonText: 'OK'
       //     })
@@ -382,8 +416,6 @@ export default {
       //     confirmButtonText: 'OK'
       //   })
       // })
-      notice.decided = true
-      notice.result = 'accepted'
     },
     handleReject (notice) {
       this.visible = false
@@ -392,6 +424,9 @@ export default {
       // postReplyApplication(notice.msgId, true, this.rejectReason).then(resp => {
       //   console.log('get response : ' + resp)
       //   if (resp.data.code === 200) {
+      // notice.decided = true
+      // notice.result = 'rejected'
+      //
       //     this.$alert('Quit success', 'Tip', {
       //       confirmButtonText: 'OK'
       //     })
@@ -406,21 +441,9 @@ export default {
       //     confirmButtonText: 'OK'
       //   })
       // })
-      notice.decided = true
-      notice.result = 'rejected'
     },
     handleConfirm (notice) {
       notice.confirmed = true
-    },
-    handleJump (notice, i) {
-      if (i === 1) {
-        //notice.member
-      } else if (i === 2) {
-        //notice.handler
-      }
-    },
-    handleJump2 (member) {
-      // member in teamMemberList
     },
     handleEdit () {
       if (this.editing) {
@@ -452,61 +475,72 @@ export default {
       this.editing = false
     },
     handleQuit () {
-      this.haveTeam = false
-      // todo
-      // postQuitTeam(this.$store.state.proj.projId).then(resp => {
-      //   console.log('get response : ' + resp)
-      //   if (resp.data.code === 200) {
-      //     this.$alert('Quit success', 'Tip', {
-      //       confirmButtonText: 'OK'
-      //     })
-      //   } else if (resp.data.code === 400) {
-      //     console.log(resp.data.message)
-      //     this.$alert(resp.data.message, 'Tip', {
-      //       confirmButtonText: 'OK'
-      //     })
-      //   }
-      // }).catch(failResp => {
-      //   this.$alert('Error ' + failResp.message, 'Tip', {
-      //     confirmButtonText: 'OK'
-      //   })
-      // })
+      postQuitTeam(this.$store.state.proj.projId).then(resp => {
+        console.log('get response : ' + resp)
+        if (resp.data.code === 200) {
+          this.haveTeam = false
+
+          this.$alert('Quit success', 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        } else if (resp.data.code === 400) {
+          console.log(resp.data.message)
+          this.$alert(resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        }
+      }).catch(failResp => {
+        this.$alert('Error ' + failResp.message, 'Tip', {
+          confirmButtonText: 'OK'
+        })
+      })
     },
+
     handleInvite (index) {
-      this.unAvaList.push(this.avaList[index])
-      this.avaList.splice(index, 1)
+      this.inviteList.push(this.ungroupList[index])
+      this.ungroupList.splice(index, 1)
     },
     handleUnInvite (index) {
       console.log(index)
-      this.avaList.push(this.unAvaList[index])
-      this.unAvaList.splice(index, 1)
+      this.ungroupList.push(this.inviteList[index])
+      this.inviteList.splice(index, 1)
     },
     handleUpdateInvite () {
-      // todo: push unavalist
-      // postInviteStudents(this.$store.state.proj.projId, this.unAvaList).then(resp => {
-      //   console.log('get response : ' + resp)
-      //   if (resp.data.code === 200) {
-      //     this.$alert('Quit success', 'Tip', {
-      //       confirmButtonText: 'OK'
-      //     })
-      //   } else if (resp.data.code === 400) {
-      //     console.log(resp.data.message)
-      //     this.$alert(resp.data.message, 'Tip', {
-      //       confirmButtonText: 'OK'
-      //     })
-      //   }
-      // }).catch(failResp => {
-      //   this.$alert('Error ' + failResp.message, 'Tip', {
-      //     confirmButtonText: 'OK'
-      //   })
-      // })
+      let roleIdList = []
+      for (let i = 0; i < this.inviteList.length; ++i) {
+        roleIdList.push(this.inviteList[i].roleId)
+      }
+
+      postInviteStudents(roleIdList, this.$store.state.proj.projId).then(resp => {
+        console.log('get response : ' + resp)
+        if (resp.data.code === 200) {
+          this.inviteList = []
+
+          this.$alert('Changed success', 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        } else if (resp.data.code === 400) {
+          console.log(resp.data.message)
+          this.$alert(resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        }
+      }).catch(failResp => {
+        this.$alert('Error ' + failResp.message, 'Tip', {
+          confirmButtonText: 'OK'
+        })
+      })
     },
     handleCancelInvite () {
-      for (let unAva in this.unAvaList) {
-        this.avaList.push(unAva)
-        this.unAvaList = []
+      for (let i = 0; i < this.inviteList.length; ++i) {
+        this.ungroupList.push(this.inviteList[i])
       }
-    }
+      this.inviteList = []
+    },
+
+    isStudent () {
+      return isStudent()
+    },
   }
 }
 </script>
@@ -517,27 +551,27 @@ export default {
   min-height: 95.7%;
 }
 
-.quit {
+.Quit {
   /*red*/
   background: #fef0f0;
 }
 
-.joinSuccess {
+.JoinSuccess {
   /*green*/
   background: #f0f9eb;
 }
 
-.joinFail {
+.JoinFail {
   /*grey*/
   background: #f4f4f5;
 }
 
-.apply {
+.Apply {
   /*yellow*/
   background: #fdf6ec;
 }
 
-.invite {
+.Invite {
   /*blue*/
   background: #ecf5ff;
 }
