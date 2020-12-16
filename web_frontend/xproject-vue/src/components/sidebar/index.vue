@@ -60,7 +60,7 @@
             <i class="el-icon-bell"></i>
             <span slot="title">Announcements</span>
           </el-menu-item>
-          <el-menu-item index="@4" >
+          <el-menu-item index="StuEvent" >
             <i class="el-icon-date"></i>
             <span slot="title">Events</span>
           </el-menu-item>
@@ -97,7 +97,7 @@
             <i class="el-icon-bell"></i>
             <span slot="title">Announcements</span>
           </el-menu-item>
-          <el-menu-item index="@4" >
+          <el-menu-item index="TchEvent" >
             <i class="el-icon-date"></i>
             <span slot="title">Events</span>
           </el-menu-item>
