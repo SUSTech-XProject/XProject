@@ -14,7 +14,7 @@ import MyTeam from "@/views/main/project/team/MyTeam";
 import Forming from "@/views/main/project/team/Forming";
 import ProjOverview from "@/views/main/project/overview/ProjOverview";
 import ProjPage from "@/views/main/project/ProjPage";
-import Announcement from '@/views/main/project/announcement/AnnouncementTch'
+import AnnouncementStu from '@/views/main/project/announcement/AnnouncementStu'
 import Gradebook from "@/views/main/project/gradebook/Gradebook";
 import TeamManaging from '@/views/main/project/team/TeamManaging'
 import StdManage from "@/views/main/project/std-manage/StdManage";
@@ -118,9 +118,9 @@ const routes = [
             },
           },
           {
-            path: 'announcement',
-            name: 'Announcement',
-            component: Announcement,
+            path: 'announcement-Stu',
+            name: 'AnnouncementStu',
+            component: AnnouncementStu,
             meta: {
               requireAuth: true
             },
