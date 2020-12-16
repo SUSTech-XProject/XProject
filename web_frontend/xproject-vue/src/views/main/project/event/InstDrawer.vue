@@ -135,7 +135,7 @@ name: "StuEvents",
       eventDrawer:'',
       taskId:'',
       size:'80%',
-      isTeacher:true,
+      isTeacher:this.role,
       multipleSelection:[],
       //
       CreateVisible: false,
@@ -231,7 +231,8 @@ name: "StuEvents",
   },
   props:{
     drawer:{type:Boolean,default:false},
-    ID:{type:Number,default:1}
+    ID:{type:Number,default:1},
+    role:{type:Boolean,default:false}
   }
 }
 </script>

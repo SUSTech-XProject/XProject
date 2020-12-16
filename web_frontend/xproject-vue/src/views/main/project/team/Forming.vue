@@ -8,7 +8,7 @@
         <el-col :span="7" style="padding-left: 50px" >Topics:
           <selector :in-list="op_topic" :index.sync="Topic_ind" ></selector>
         </el-col>
-        <el-col :span="7">Target Members:
+        <el-col :span="7">Target Mems:
           <selector :in-list="op_sta" :index.sync="Status_ind"></selector>
         </el-col>
         <el-col :span="7">Tags:
