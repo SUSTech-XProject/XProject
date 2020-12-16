@@ -112,3 +112,8 @@ export function postTeamDescription (projId, description) {
     descriptions: description
   })
 }
+export function getStuProj (roleId) {
+  return Vue.prototype.$axios.get('/all/team/stu-proj', {
+    params: {roleId:roleId}
+  })
+}
