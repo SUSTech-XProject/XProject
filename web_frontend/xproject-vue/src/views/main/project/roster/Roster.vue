@@ -68,7 +68,7 @@
       width="30%"
       @open="handleDialogOpen">
 
-      <span v-if="dialogSltList.length">Delete selected {{dialogSltList.length}} student(s) ?</span>
+      <span v-if="dialogSltList.length">Delete selected {{ dialogSltList.length }} student(s) ?</span>
       <span v-else>Please select students</span>
 
       <span slot="footer" class="dialog-footer">
@@ -96,7 +96,7 @@
       </el-upload>
 
       <span slot="footer" class="dialog-footer">
-        <el-button @click="cancelExcel" >Cancel</el-button>
+        <el-button @click="cancelExcel">Cancel</el-button>
         <el-button type="primary" @click="uploadExcelCaller">Upload</el-button>
       </span>
     </el-dialog>
@@ -106,7 +106,7 @@
         ref="stdTable"
         :data="stdList"
         empty-text="No Data Found"
-        :default-sort = "{prop: 'index', order: 'increasing'}"
+        :default-sort="{prop: 'index', order: 'increasing'}"
         @filter-change="handleFilterChange"
         style="width: 100%">
         <el-table-column type="selection"/>
@@ -121,21 +121,22 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
+              @click="handleEdit(scope.$index, scope.row)">Edit
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
 
-<!--      <div class="block">-->
-<!--        <el-pagination-->
-<!--          @size-change="handleSizeChange"-->
-<!--          @current-change="handleCurrentChange"-->
-<!--          :current-page="page.current"-->
-<!--          :page-size="page.page"-->
-<!--          layout="total, sizes, prev, pager, next, jumper"-->
-<!--          :total="page.total">-->
-<!--        </el-pagination>-->
-<!--      </div>-->
+      <!--      <div class="block">-->
+      <!--        <el-pagination-->
+      <!--          @size-change="handleSizeChange"-->
+      <!--          @current-change="handleCurrentChange"-->
+      <!--          :current-page="page.current"-->
+      <!--          :page-size="page.page"-->
+      <!--          layout="total, sizes, prev, pager, next, jumper"-->
+      <!--          :total="page.total">-->
+      <!--        </el-pagination>-->
+      <!--      </div>-->
 
     </el-card>
 
@@ -143,186 +144,202 @@
 </template>
 
 <script>
-  import {getGradeList} from "@/api/grade";
-  import {getDatetimeStr} from "@/utils/parse-day-time";
-  import {getProjectListBySch, getProjStdList, postImportFromExcel} from "@/api/std_manage";
+import {getGradeList} from '@/api/grade'
+import {getDatetimeStr} from '@/utils/parse-day-time'
+import {getProjectListBySch, getProjStdList, postImportFromExcel} from '@/api/std_manage'
 
-  export default {
-    name: "Roster",
-    components:{
-    },
-    data() {
-      return {
-        createDialogVisible: false,
-        importDialogVisible: false,
-        deleteDialogVisible: false,
-        dialogSltList: [],
-        teamRadioModel: 'all',
-        stdForm: {
-          stdName: null,
-          stdNo: null,
-          stdClass: null,
-          email: null,
-          username: null,
-          password: null,
-          passwordRepeat: null,
+export default {
+  name: 'Roster',
+  components: {},
+  data () {
+    return {
+      createDialogVisible: false,
+      importDialogVisible: false,
+      deleteDialogVisible: false,
+      dialogSltList: [],
+      teamRadioModel: 'all',
+      stdForm: {
+        stdName: null,
+        stdNo: null,
+        stdClass: null,
+        email: null,
+        username: null,
+        password: null,
+        passwordRepeat: null,
+      },
+      stdList: [
+        {
+          index: 4,
+          stdName: 'Gang Li',
+          stdNo: '11816501',
+          username: 'sustech11816501',
+          stdClass: '1865',
+          email: '11816501@mail.sustech.edu.cn',
         },
-        stdList: [
-          {
-            index: 4,
-            stdName: 'Gang Li',
-            stdNo: '11816501',
-            username: 'sustech11816501',
-            stdClass: '1865',
-            email: '11816501@mail.sustech.edu.cn',
-          },
-          {
-            index: 5,
-            stdName: 'Wushuang Ye',
-            stdNo: '11816502',
-            username: 'sustech11816502',
-            stdClass: '1865',
-            email: '11816502@mail.sustech.edu.cn',
-          },
-          {
-            index: 6,
-            stdName: 'Xiaohong he',
-            stdNo: '11816601',
-            username: 'sustech11816601',
-            stdClass: '1866',
-            email: '11816601@mail.sustech.edu.cn',
-          },
-        ],
-        classFList: [
-          {text: "1865", value: "1865"},
-          {text: "1866", value: "1866"},
-        ],
-        page: {
-          current: 1,
-          size: 100,
-          total: 400,
-        }
+        {
+          index: 5,
+          stdName: 'Wushuang Ye',
+          stdNo: '11816502',
+          username: 'sustech11816502',
+          stdClass: '1865',
+          email: '11816502@mail.sustech.edu.cn',
+        },
+        {
+          index: 6,
+          stdName: 'Xiaohong he',
+          stdNo: '11816601',
+          username: 'sustech11816601',
+          stdClass: '1866',
+          email: '11816601@mail.sustech.edu.cn',
+        },
+      ],
+      classFList: [],
+      page: {
+        current: 1,
+        size: 100,
+        total: 400,
       }
-    },
-    mounted () {
-      this.initStdManage()
-    },
-    methods: {
-      handleDialogOpen () {
-        this.dialogSltList = this.$refs.stdTable.selection;
-      },
-      deleteStd () {
-        let sltList = this.$refs.stdTable.selection
-        console.log("delete sltList=%o", sltList)
-      },
-      uploadExcelCaller () {
-        this.$refs.excelUpload.submit()
-      },
-      uploadExcel (file) {
-        let formData = new window.FormData()
-        formData.append('file', file)
-        postImportFromExcel(formData).then(resp => {
-          console.log('In uploadExcel: %o', resp)
-        }).catch(failResp => {
-          console.log('fail in uploadExcel: %o', failResp)
-        })
-        this.importDialogVisible = false
-      },
-      cancelExcel () {
-        this.$refs.excelUpload.clearFiles()
-        this.importDialogVisible = false
-      },
-      handleFilterChange (filters) {
-        console.log("filter value: %o", filters)
-      },
-      handleEdit (index, row) {
-        console.log(index, row);
-      },
-      classFMethod (value, row, column) {
-        return value === row.stdClass;
-      },
-      initStdManage () {
-        this.stdList.splice(0, this.stdList.length)   // remove all
-
-        getProjectListBySch().then(resp => {
-          if (resp.data.code !== 200) {
-            this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
-              confirmButtonText: 'OK'
-            })
-            return false
-          }
-          this.stdList.splice(0, this.stdList.length)   // remove all
-          let stdListRecv = resp.data.data
-          for (let i = 0; i < stdListRecv.length; i ++) {
-            let record = stdListRecv[i]
-            record['listIdx'] = i
-            console.log(record)
-            this.stdList.push(record)
-          }
-          console.log(this.stdList)
-        }).catch(failResp => {
-          console.log('fail in getGradeList. message=' + failResp.message)
-        })
-      },
-      createStd () {
-
-      },
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-      },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-      },
     }
+  },
+  mounted () {
+    this.initStdManage()
+  },
+  methods: {
+    handleDialogOpen () {
+      this.dialogSltList = this.$refs.stdTable.selection
+    },
+    deleteStd () {
+      let sltList = this.$refs.stdTable.selection
+      console.log('delete sltList=%o', sltList)
+    },
+    uploadExcelCaller () {
+      this.$refs.excelUpload.submit()
+    },
+    uploadExcel (file) {
+      let formData = new window.FormData()
+      formData.append('file', file)
+      postImportFromExcel(formData).then(resp => {
+        console.log('In uploadExcel: %o', resp)
+      }).catch(failResp => {
+        console.log('fail in uploadExcel: %o', failResp)
+      })
+      this.importDialogVisible = false
+    },
+    cancelExcel () {
+      this.$refs.excelUpload.clearFiles()
+      this.importDialogVisible = false
+    },
+    handleFilterChange (filters) {
+      console.log('filter value: %o', filters)
+    },
+    handleEdit (index, row) {
+      console.log(index, row)
+    },
+    classFMethod (value, row, column) {
+      return value === row.stdClass
+    },
+    unique (arr) {
+      let result = {}
+      let finalResult = []
+      for (let i = 0; i < arr.length; i++) {
+        result[arr[i].value] = arr[i]
+      }
+      for (const item in result) {
+        finalResult.push(result[item])
+      }
+      return finalResult
+    },
+    initStdManage () {
+      this.stdList.splice(0, this.stdList.length)   // remove all
+
+      getProjectListBySch().then(resp => {
+        if (resp.data.code !== 200) {
+          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+          return false
+        }
+        this.stdList.splice(0, this.stdList.length)   // remove all
+        let stdListRecv = resp.data.data
+        for (let i = 0; i < stdListRecv.length; i++) {
+          let record = stdListRecv[i]
+          record['listIdx'] = i
+          console.log(record)
+          this.stdList.push(record)
+
+          let stdClass = record.stdClass
+          this.classFList.push({text: stdClass, value: stdClass})
+        }
+        this.classFList = this.unique(this.classFList)
+        console.log(this.stdList)
+      }).catch(failResp => {
+        console.log('fail in getGradeList. message=' + failResp.message)
+      })
+    },
+    createStd () {
+
+    },
+    handleSizeChange (val) {
+      console.log(`每页 ${val} 条`)
+    },
+    handleCurrentChange (val) {
+      console.log(`当前页: ${val}`)
+    },
   }
+}
 </script>
 
 <style scoped>
-  .demo-table-expand {
-    font-size: 0;
-  }
-  .demo-table-expand label {
-    width: 90px;
-    color: #99a9bf;
-  }
-  .demo-table-expand .el-form-item {
-    margin-right: 0;
-    margin-bottom: 0;
-    width: 50%;
-  }
-  .clearfix:before,
-  .clearfix:after {
-    display: table;
-    content: "";
-  }
-  #base-card {
-    margin: 15px 10px
-  }
-  #title-text {
-    font-size: 20px;
-  }
+.demo-table-expand {
+  font-size: 0;
+}
 
-  .table-btm-group {
-    margin: 10px 0 20px 0;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
 
-  #teamRadio {
-    margin-right: 10px;
-  }
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
 
-  .el-pagination {
-    margin: 30px 0 10px 0;
-    text-align: center;
-  }
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
 
-  #title-text {
-    font-size: 20px;
-  }
+#base-card {
+  margin: 15px 10px;
+}
 
-  .upload-demo {
-    text-align: center;
-  }
+#title-text {
+  font-size: 20px;
+}
+
+.table-btm-group {
+  margin: 10px 0 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+#teamRadio {
+  margin-right: 10px;
+}
+
+.el-pagination {
+  margin: 30px 0 10px 0;
+  text-align: center;
+}
+
+#title-text {
+  font-size: 20px;
+}
+
+.upload-demo {
+  text-align: center;
+}
 </style>
