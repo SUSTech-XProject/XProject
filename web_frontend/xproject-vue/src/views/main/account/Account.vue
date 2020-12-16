@@ -24,10 +24,15 @@
             <el-divider></el-divider>
           </div>
 
+          <div class="personalInfoTypesetting personalInfoTitle">
+            Email
+          </div>
+          <div class="personalInfoTypesetting" style="width:90%; margin-top: 20px;">
+            <el-input v-model="newEmail" :placeholder="formInfoList[3].value"></el-input>
+          </div>
+
           <div v-if="this.roleType==='Student'">
-            <!--            TODO: Indentation issues of add tag-->
-            <!--            TODO: Multi-line tag line spacing problem-->
-            <div class="personalInfoTitle" style="margin-left: 20px; margin-bottom: 20px">
+            <div class="personalInfoTitle" style="margin-left: 20px; margin-bottom: 20px; margin-top: 20px;">
               Impression Tags
             </div>
             <div class="personalInfoTypesetting">
@@ -120,12 +125,13 @@ export default {
         {label: 'Status', value: ''},
         {label: 'Register Time', value: ''}
       ],
+      newEmail: '',
 
       //avatar uploader
       imageUrl: 'https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg',
 
       //impression tag list
-      impressionTagList: ['a', 'b'],
+      impressionTagList: [],
       impTagInputVisible: false,
       impTagInputValue: '',
 
@@ -250,21 +256,32 @@ export default {
 
     //update personal information
     handleUpdate () {
-      let impTagList = null, skillTagList = null, bio = null
+      let acInfoStdUpdateVO = {
+        'bio': '',
+        'flags': [],
+        'skills': [],
+        'email': ''
+      }
+
       if (isTeacher()) {
-        bio = this.bio
+        acInfoStdUpdateVO.bio = this.bio
+        acInfoStdUpdateVO.email = this.newEmail
       } else if (isStudent()) {
-        impTagList = this.impressionTagList
-        skillTagList = this.skillTagList
-        bio = this.bio
+        acInfoStdUpdateVO.impTagList = this.impressionTagList
+        acInfoStdUpdateVO.skillTagList = this.skillTagList
+        acInfoStdUpdateVO.bio = this.bio
+        acInfoStdUpdateVO.email = this.newEmail
       }
 
       //TODO: Update avatar
       postSelfIntroduction(
-        impTagList, skillTagList, bio
+        acInfoStdUpdateVO
       ).then(resp => {
         console.log('get response : ' + resp)
         if (resp.data.code === 200) {
+          this.formInfoList[3].value = this.newEmail
+          this.newEmail = ''
+
           this.$alert('Changed successfully', 'Tip', {
             confirmButtonText: 'OK'
           })
