@@ -77,6 +77,12 @@ router.beforeEach((to, from, next) => {
         })
       }
     } else {
+      if (store.state.role.username) {
+        store.commit('removeProj')
+        next({
+          name: 'HomePage'
+        })
+      }
       next()
     }
   }

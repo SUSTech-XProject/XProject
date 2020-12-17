@@ -30,13 +30,13 @@ export default new Vuex.Store({
       state.proj.projName = null
     },
     logout (state) {
-      state.role.username = ''
-      state.role.roleType = ''
+      state.role.username = null
+      state.role.roleType = null
       window.localStorage.removeItem('role')
 
-      window.localStorage.removeItem('proj')
       state.proj.projId = null
       state.proj.projName = null
+      window.localStorage.removeItem('proj')
     },
     updateRoleType (state, roleType) {
       state.role.roleType = roleType
