@@ -1,25 +1,25 @@
 import Vue from 'vue'
 
 export function getTeamInfoList (projId) {
-  return Vue.prototype.$axios.get('/team-info-list', {
+  return Vue.prototype.$axios.get('/all/team/list', {
     params: {projId: projId}
   })
 }
 
 export function getTeamDetail (teamId) {
-  return Vue.prototype.$axios.get('/team-detail', {
+  return Vue.prototype.$axios.get('/all/team/info/detail', {
     params: {teamId: teamId}
   })
 }
 
 export function postApply (teamId) {
-  return Vue.prototype.$axios.post('/team-apply', {
+  return Vue.prototype.$axios.post('/student/team/apply', {
     teamId: teamId,
   })
 }
 
 export function postTeamCreation (form) {
-  return Vue.prototype.$axios.post('/team-creation', {
+  return Vue.prototype.$axios.post('/all/team/creation', {
     description: form.desc,
     generateNum: form.cnt===''?1:form.cnt,
     idealSize: form.member,
