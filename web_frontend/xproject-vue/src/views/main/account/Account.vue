@@ -128,7 +128,7 @@ export default {
       newEmail: '',
 
       //avatar uploader
-      imageUrl: 'https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg',
+      imageUrl: '',
 
       //impression tag list
       impressionTagList: [],
@@ -258,8 +258,8 @@ export default {
     handleUpdate () {
       let acInfoStdUpdateVO = {
         'bio': '',
-        'flags': [],
-        'skills': [],
+        'flags': null,
+        'skills': null,
         'email': ''
       }
 
