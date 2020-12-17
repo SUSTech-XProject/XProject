@@ -12,7 +12,7 @@ import {getAuth} from "@/api/role";
 const axios = require('axios')
 // 设置反向代理，前端请求默认发送到 http://localhost:8443/api
 axios.defaults.baseURL = 'http://localhost:8443/api'
-axios.defaults.timeout = 2000
+axios.defaults.timeout = 5000
 // 全局注册，之后可在其他组件中通过 this.$axios 发送数据
 Vue.prototype.$axios = axios
 
@@ -64,10 +64,11 @@ router.beforeEach((to, from, next) => {
             return false
           }
           console.log(failResp)
-          // next({
-          //   name: 'Login',
-          //   query: {redirect: to.fullPath}
-          // })
+          store.commit('logout')
+          next({
+            name: 'Login',
+            query: {redirect: to.fullPath}
+          })
         })
       } else {
         console.log('fail in beforeEach :')
