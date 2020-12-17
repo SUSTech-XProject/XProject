@@ -43,7 +43,7 @@ export function postTeamConfirmation (teams) {
 }
 
 export function getProjectTopics (projId) {
-  return Vue.prototype.$axios.get('/proj-topic', {
+  return Vue.prototype.$axios.get('/all/project/topic', {
     params: {projId: projId}
   })
 }
@@ -106,10 +106,9 @@ export function getPersonalMessage (projId) {
   })
 }
 
-export function postTeamDescription (projId, description) {
-  return Vue.prototype.$axios.post('/student/team/quit', {
-    projId: projId,
-    descriptions: description
+export function postEditedTeamInfo (projId) {
+  return Vue.prototype.$axios.post('/student/team/change/info', {
+   // todo
   })
 }
 export function getStuProj (roleId) {

@@ -10,19 +10,13 @@
           {{ teamName }}
         </div>
 
-        <!--        <el-tag v-for="tag in tagList" :key="tag"-->
-        <!--                class="el-tag" effect="plain">-->
-        <!--          {{ tag }}-->
-        <!--        </el-tag>-->
+        <el-tag v-for="tag in tagList" :key="tag"
+                class="el-tag" effect="plain">
+          {{ tag }}
+        </el-tag>
 
-        <div v-if="!editing"
-             style="width: 100%; margin-top: 20px" align="left">
+        <div style="width: 100%; margin-top: 20px" align="left">
           {{ description }}
-        </div>
-
-        <div v-else
-             style="width: 100%; margin-top: 20px" align="left">
-          <el-input v-model="newDescription" placeholder="New description here..."></el-input>
         </div>
 
         <div v-for="member in teamMemberList" :key="member.stdId"
@@ -32,16 +26,6 @@
           ></el-avatar>
         </div>
 
-        <div>
-          <el-button @click="handleEdit()"
-                     style="margin-top: 15px;">
-            <div v-if="!editing">Edit</div>
-            <div v-else>Update</div>
-          </el-button>
-          <el-button @click="handleCancel()"
-                     style="margin-top: 15px;">Cancel
-          </el-button>
-        </div>
         <el-button v-if="status==='Raw'"
                    @click="handleQuit()"
                    type="primary"
@@ -57,6 +41,11 @@
         <div style="font-size: 25px; font-weight:bold; margin-top: 20px">
           no team yet
         </div>
+
+        <el-button @click="createMyTeam()"
+                   type="primary"
+                   style="margin-top: 15px; align-items: center">Create my team
+        </el-button>
       </div>
     </el-col>
 
@@ -120,7 +109,7 @@
                     <el-popover
                       placement="bottom"
                       width="340"
-                      v-model="visible">
+                      v-model="rejInfoVisible">
                       <div>
                         Reason:
                         <el-input v-model="rejectReason" placeholder="Reason here..." style="width: 200px;"></el-input>
@@ -216,6 +205,61 @@
             <el-button @click="handleCancelInvite()">Cancel</el-button>
           </div>
         </el-tab-pane>
+
+        <el-tab-pane label="Settings" name="settings" v-if="haveTeam">
+          <div class="personalInfoTitle">
+            Team information
+          </div>
+          <el-form label-width="auto" style="margin-top: 20px;">
+            <el-form-item label="Team name">
+              <el-input v-model="newTeamName" style="width: 70%">
+              </el-input>
+            </el-form-item>
+
+            <el-form-item label="Number of target members">
+              <el-input v-model="newTargetMemNum" style="width: 70%">
+              </el-input>
+            </el-form-item>
+
+            <el-form-item label="Topic">
+              <el-select v-model="newTopic">
+                <el-option
+                  v-for="topic in topicList"
+                  :key="topic.value"
+                  :label="topic.label"
+                  :value="topic.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="Description">
+              <el-input type="textarea" :rows="4" v-model="newDescription"
+                        style="width: 90%">
+              </el-input>
+            </el-form-item>
+          </el-form>
+
+          <div class="personalInfoTitle" style="margin-bottom: 20px; margin-top: 20px;">
+            Team Tags
+          </div>
+          <div>
+            <el-tag :key="tag" v-for="tag in newTagList" closable
+                    :disable-transitions="false" effect="plain"
+                    @close="handleTagClose(tag)" class="el-tag-dy">
+              {{ tag }}
+            </el-tag>
+            <el-input class="input-new-tag" v-if="tagInputVisible" v-model="tagInputValue" ref="saveTagInput"
+                      size="small"
+                      @keyup.enter.native="handleTagInputConfirm" @blur="handleTagInputConfirm">
+            </el-input>
+            <el-button v-else class="input-new-tag" size="small" @click="showTagInput">+ New Tag</el-button>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <el-button type="primary" @click="handleEdit()">Update</el-button>
+            <el-button @click="handleCancel()">Cancel</el-button>
+          </div>
+        </el-tab-pane>
       </el-tabs>
       <!--      <div style="font-size: 30px; font-weight:bold; margin-top: 10px">-->
       <!--        Notices-->
@@ -227,26 +271,32 @@
     <drawer :drawer.sync="memDrawer"
             :id="memId"
             @closeDrawerStu="closeDrawerStu"></drawer>
+
+    <CreateTeam :visible.sync="creatingTeam"
+                @closeForm='closeAddDialog'></CreateTeam>
+
   </el-card>
 </template>
 
 <script>
 import {isStudent} from '@/utils/role'
 import {
-  getMyTeamDetail, getPersonalMessage,
+  getMyTeamDetail, getPersonalMessage, getProjectTopics,
   getTeamMessage,
   getUngroupedStudents, postInviteStudents,
   postQuitTeam,
   postReplyApplication,
-  postTeamDescription
+  postEditedTeamInfo
 } from '@/api/team'
 import stuInfoDrawer from '@/views/main/project/team/stuInfoDrawer'
 import {getDatetimeStr} from '@/utils/parse-day-time'
+import CreateTeam from '@/views/main/project/team/CreateTeam'
 
 export default {
   name: 'MyTeam',
   components: {
-    drawer: stuInfoDrawer
+    drawer: stuInfoDrawer,
+    CreateTeam,
   },
   data () {
     return {
@@ -254,30 +304,51 @@ export default {
       memDrawer: false,
       memId: 1,
       //
-      status: '',
-      team_avatar: '',
-      haveTeam: false,
 
       tabPosition: 'top',
       activeName: 'notice',
 
+      //team info
+      haveTeam: false,
       teamName: '',
       tagList: [],
+      status: '',
+      team_avatar: '',
+      description: '',
+      targetMemNum: '',
+      topic: '',
+      topicList: [],
+      teamMemberList: [],
+      noticeList: [],
+
+      //edit team info
+      newTeamName: '',
+      newTagList: [],
+      newDescription: '',
+      newTargetMemNum: '',
+      newTopic: '',
+      tagInputVisible: false,
+      tagInputValue: '',
+
+      rejInfoVisible: false,
+      rejectReason: '',
 
       ungroupList: [],
       inviteList: [],
 
-      description: '',
-      newDescription: '',
-      editing: false,
+      projInstId: null,
 
-      teamMemberList: [],
-      noticeList: [],
-      visible: false,
-
-      rejectReason: '',
-
-      projInstId: null
+      creatingTeam: false,
+      newTeamInfo: {
+        name: '',
+        topic: '',
+        member: '',
+        desc: '',
+        cnt: 1,
+        projId: '',
+        withRank: false,
+      },
+      formLabelWidth: '120px',
     }
   },
   mounted () {
@@ -305,12 +376,22 @@ export default {
           } else {
             this.haveTeam = true
 
+            console.log(infoDict)
+
             this.team_avatar = infoDict.iconUrl
             this.status = infoDict.status
             this.teamName = infoDict.teamName
             this.description = infoDict.descriptions
             this.tagList = JSON.parse(infoDict.tags)
             this.teamMemberList = infoDict.teamMemberList
+            this.targetMemNum = infoDict.targetMemNum
+            this.topic = infoDict.topic
+
+            this.newDescription = infoDict.descriptions
+            this.newTeamName = infoDict.teamName
+            this.newTargetMemNum = infoDict.targetMemNum
+            this.newTagList = JSON.parse(infoDict.tags)
+            this.newTopic = infoDict.topic
 
             this.projInstId = infoDict.projInstId
 
@@ -342,9 +423,11 @@ export default {
           }
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
-          this.$alert(resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
+          if (resp.data.message !== 'No team') {
+            this.$alert(resp.data.message, 'Tip', {
+              confirmButtonText: 'OK'
+            })
+          }
         }
       }).catch(failResp => {
         this.$alert('Error: ' + failResp.message, 'Tips', {
@@ -392,6 +475,24 @@ export default {
           confirmButtonText: 'OK'
         })
       })
+
+      getProjectTopics(this.$store.state.proj.projId).then(resp => {
+        if (resp.data.code !== 200) {
+          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+          return false
+        }
+
+        let topics = resp.data.data
+        this.topicList.splice(0, this.topicList.length)
+
+        for (let i = 0; i < topics.length; i++) {
+          this.topicList.push({label: topics[i].topicName, value: topics[i].topicName})
+        }
+      }).catch(failResp => {
+        console.log('fail in getProjTitle. message=' + failResp.message)
+      })
     },
 
     handleAccept (notice) {
@@ -418,7 +519,7 @@ export default {
       // })
     },
     handleReject (notice) {
-      this.visible = false
+      this.rejInfoVisible = false
 
       //TODO: upload reject and reason
       // postReplyApplication(notice.msgId, true, this.rejectReason).then(resp => {
@@ -446,39 +547,43 @@ export default {
       notice.confirmed = true
     },
     handleEdit () {
-      if (this.editing) {
-        // todo:upload newDescription
-        // postTeamDescription(this.$store.state.proj.projId, this.description).then(resp => {
-        //   console.log('get response : ' + resp)
-        //   if (resp.data.code === 200) {
-        //     this.$alert('Quit success', 'Tip', {
-        //       confirmButtonText: 'OK'
-        //     })
-        //   } else if (resp.data.code === 400) {
-        //     console.log(resp.data.message)
-        //     this.$alert(resp.data.message, 'Tip', {
-        //       confirmButtonText: 'OK'
-        //     })
-        //   }
-        // }).catch(failResp => {
-        //   this.$alert('Error ' + failResp.message, 'Tip', {
-        //     confirmButtonText: 'OK'
-        //   })
-        // })
-        this.description = this.newDescription
-        this.newDescription = ''
-      }
-      this.editing = !this.editing
+      // todo:upload newDescription
+      // postEditedTeamInfo(this.$store.state.proj.projId, this.description).then(resp => {
+      //   console.log('get response : ' + resp)
+      //   if (resp.data.code === 200) {
+      // this.description = this.newDescription
+      // this.topic = this.newTopic
+      // this.teamName = this.newTeamName
+      // this.targetMemNum = this.newTargetMemNum
+      // this.tagList = this.newTagList
+      //     this.$alert('Quit success', 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   } else if (resp.data.code === 400) {
+      //     console.log(resp.data.message)
+      //     this.$alert(resp.data.message, 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   }
+      // }).catch(failResp => {
+      //   this.$alert('Error ' + failResp.message, 'Tip', {
+      //     confirmButtonText: 'OK'
+      //   })
+      // })
     },
     handleCancel () {
-      this.newDescription = ''
-      this.editing = false
+      this.newDescription = this.description
+      this.newTopic = this.topic
+      this.newTeamName = this.teamName
+      this.newTargetMemNum = this.targetMemNum
+      this.newTagList = this.tagList
     },
     handleQuit () {
       postQuitTeam(this.$store.state.proj.projId).then(resp => {
         console.log('get response : ' + resp)
         if (resp.data.code === 200) {
           this.haveTeam = false
+          this.status = ''
 
           this.$alert('Quit success', 'Tip', {
             confirmButtonText: 'OK'
@@ -541,6 +646,37 @@ export default {
     isStudent () {
       return isStudent()
     },
+
+    createMyTeam () {
+      this.creatingTeam = true
+    },
+    closeAddDialog () {
+      this.$confirm('Cancel update？')
+        .then(_ => {
+          this.creatingTeam = false
+        })
+        .catch(_ => {
+        })
+    },
+
+    //impression tag list
+    handleTagClose (tag) {
+      this.newTagList.splice(this.newTagList.indexOf(tag), 1)
+    },
+    showTagInput () {
+      this.tagInputVisible = true
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus()
+      })
+    },
+    handleTagInputConfirm () {
+      let inputValue = this.tagInputValue
+      if (inputValue) {
+        this.newTagList.push(inputValue)
+      }
+      this.tagInputVisible = false
+      this.tagInputValue = ''
+    },
   }
 }
 </script>
@@ -576,6 +712,32 @@ export default {
   background: #ecf5ff;
 }
 
+.personalInfoTitle {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.el-tag {
+  margin-right: 10px;
+  margin-top: 15px;
+}
+
+/*dynamic tags*/
+.el-tag-dy {
+  margin-right: 10px;
+  /*margin-top: 20px;*/
+  margin-bottom: 20px;
+}
+
+.input-new-tag {
+  width: 90px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+  vertical-align: bottom;
+  margin-bottom: 20px;
+}
 </style>
 
 
@@ -727,3 +889,11 @@ export default {
 <!--                           @click="handleJump()"-->
 <!--                           slot="reference"></el-avatar>-->
 <!--              </el-popover>-->
+
+
+<!--<div class="personalInfoTitle">-->
+<!--Description-->
+<!--</div>-->
+<!--<el-input type="textarea" :rows="4" :placeholder="description" v-model="newDescription"-->
+<!--          style="margin-top: 20px; width: 70%">-->
+<!--</el-input>-->
