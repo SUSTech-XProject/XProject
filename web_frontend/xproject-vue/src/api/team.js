@@ -21,7 +21,7 @@ export function postApply (teamId) {
 export function postTeamCreation (form) {
   return Vue.prototype.$axios.post('/team-creation', {
     description: form.desc,
-    generateNum: form.cnt,
+    generateNum: form.cnt===''?1:form.cnt,
     idealSize: form.member,
     projId: form.projId,
     teamName: form.name,

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 //特定时间
-export function getEventInst(projId){
-  return Vue.prototype.$axios.get('',{
+export function getEATaskList(projId){
+  return Vue.prototype.$axios.get('all/event',{
     params:{projId:projId}
   })
 }
