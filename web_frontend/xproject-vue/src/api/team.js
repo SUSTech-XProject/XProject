@@ -49,13 +49,13 @@ export function getProjectTopics (projId) {
 }
 
 export function getStuInfo (roleId) {
-  return Vue.prototype.$axios.get('/team/stu-info', {
+  return Vue.prototype.$axios.get('/all/team/stu-info', {
     params: {roleId: roleId}
   })
 }
 
 export function postAutoForming (form) {
-  return Vue.prototype.$axios.post('team/teacher/auto-forming', {
+  return Vue.prototype.$axios.post('/teacher/team/auto-forming', {
     AutoFormingVO: form
   })
 }

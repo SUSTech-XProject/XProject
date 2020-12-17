@@ -1,7 +1,7 @@
 import Vue from 'vue'
 
 export function getProjOverview (projId) {
-  return Vue.prototype.$axios.get('/project/overview', {
+  return Vue.prototype.$axios.get('/all/project/overview', {
     params: {projId: projId}
   })
 }

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 
 export function postLogin (username, password, rememberMe) {
-  return Vue.prototype.$axios.post('/login', {
+  return Vue.prototype.$axios.post('/visitor/login', {
     username: username,
     password: password,
     rememberMe: rememberMe
@@ -9,7 +9,7 @@ export function postLogin (username, password, rememberMe) {
 }
 
 export function postRegister (type, username, password) {
-  return Vue.prototype.$axios.post('/register', {
+  return Vue.prototype.$axios.post('/visitor/register', {
     type: type,
     username: username,
     password: password

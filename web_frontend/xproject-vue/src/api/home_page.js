@@ -1,15 +1,15 @@
 import Vue from 'vue'
 
 export function getUserHomeInfo () {
-  return Vue.prototype.$axios.get('/home-page-info')
+  return Vue.prototype.$axios.get('/all/home-page/info')
 }
 
 export function getProjList () {
-  return Vue.prototype.$axios.get('/project-list')
+  return Vue.prototype.$axios.get('/all/project/list')
 }
 
 export function getProjListBySch () {
-  return Vue.prototype.$axios.get('/project-list/school')
+  return Vue.prototype.$axios.get('/all/project/by-sch')
 }
 
 export function getAddProj (newProj) {
@@ -19,7 +19,7 @@ export function getAddProj (newProj) {
 }
 
 export function getJoinProj (projId) {
-  return Vue.prototype.$axios.get('/project/join', {
+  return Vue.prototype.$axios.get('/student/project/join', {
     params: {projId: projId}
   })
 }
