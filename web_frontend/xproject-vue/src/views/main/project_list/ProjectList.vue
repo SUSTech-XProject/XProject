@@ -95,9 +95,12 @@
           <el-form-item label="Course name">
             <el-input v-model="newProj.courseName"></el-input>
           </el-form-item>
+          <el-form-item label="Year">
+            <el-input v-model="newProj.year"></el-input>
+          </el-form-item>
           <el-form-item label="Semester">
-            <el-radio v-model="newProj.semester" label="Spring">Spring</el-radio>
-            <el-radio v-model="newProj.semester" label="Fall">Fall</el-radio>
+            <el-radio v-model="newProj.semester" label="01">Spring</el-radio>
+            <el-radio v-model="newProj.semester" label="02">Fall</el-radio>
           </el-form-item>
         </el-form>
 
@@ -157,9 +160,10 @@ export default {
       newProj: {
         projName: '',
         courseName: '',
-        semester: 'Spring',
+        semester: '01',
         topic: null,
-        settings: null
+        settings: null,
+        year: '',
       },
     }
   },
@@ -338,8 +342,8 @@ html, body {
   min-height: 95.7%;
 }
 
-  #title-text {
-    font-size: 20px;
-  }
+#title-text {
+  font-size: 20px;
+}
 
 </style>
