@@ -1,7 +1,7 @@
 import Vue from 'vue'
 
 export function getSubmissionList (projId) {
-  return Vue.prototype.$axios.get('/teacher/project/submission', {
+  return Vue.prototype.$axios.get('/all/project/submission', {
     params: {projId: projId}
   })
 }

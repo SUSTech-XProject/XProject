@@ -60,9 +60,9 @@
             <el-select v-model="status" placeholder="Choose Status">
               <el-option
                 v-for="item in Status"
-                :key="item.status"
+                :key="item.label"
                 :label="item.label"
-                :value="item.status">
+                :value="item.label">
                 <span style="float: left">{{ item.status }}</span>
                 <span style="float: right; color: #8492a6; font-size: 13px">{{ item.label }}</span>
               </el-option>
@@ -102,14 +102,14 @@
             <el-form-item label="Create Time">
               <span>{{ props.row.createdTime }}</span>
             </el-form-item>
-            <el-form-item label="Due time">
+            <el-form-item label="Final Time">
+            <span>{{ props.row.finalTime }}</span>
+          </el-form-item>
+            <el-form-item label="Due Time">
             <span>{{ props.row.dueTime }}</span>
             </el-form-item>
-            <el-form-item label="Modify Time">
-              <span>{{ props.row.modifiedTime }}</span>
-            </el-form-item>
-            <el-form-item label="Status">
-              <span>{{ props.row.status }}</span>
+            <el-form-item label="Creator">
+              <span>{{ props.row.creator }}</span>
             </el-form-item>
           </el-form>
         </template>
@@ -287,11 +287,7 @@
 <script>
 import {getDatetimeStr} from '@/utils/parse-day-time'
 // import timeDrawer from '@/views/main/project/event/timeDrawer'
-import {getSubmissionList} from '@/api/submission'
-import {getAllSubmissionList} from '@/api/submission'
-import {postAddSubmission} from '@/api/submission'
-import {postModifySubmission} from '@/api/submission'
-import {getDeleteSubmission} from '@/api/submission'
+import {getDeleteSubmission, getSubmissionList, postAddSubmission, postModifySubmission} from '@/api/submission'
 
 export default {
   name: "SubmissionTch",
@@ -313,6 +309,7 @@ export default {
           maxSubmissionTime: 10,
           status: 'S',
           resources: 'test',
+          creator: 'De hualiu'
         },
         {
           index:2,
@@ -326,6 +323,7 @@ export default {
           maxSubmissionTime: null,
           status: 'E',
           resources: 'test2',
+          creator: 'ssss'
         }],
       submissionInstanceList:[
         {
@@ -350,14 +348,11 @@ export default {
         }
       ],
       Status: [{
-        status: 'S',
-        label: 'Start'
+        status: 'En',
+        label: 'Enable'
       }, {
-        status: 'E',
-        label: 'End'
-      }, {
-        status: 'R',
-        label: 'Restart'
+        status: 'Dis',
+        label: 'Disable'
       }],
       status: '',
       detailDrawer:false,
@@ -384,12 +379,29 @@ export default {
     }
 
   },
-  // mounted () {
-  //   this.init()
-  // },
+  mounted () {
+    this.initSubmissionList()
+  },
   methods:{
     dateTimeFormatter (row, col) {
       return getDatetimeStr(row.modifiedTime)
+    },
+    dateFormat(date){
+      let seperator1 = "-";
+      let seperator2 = ":"
+      let year = date.getFullYear();
+      let month = date.getMonth() + 1;
+      let strDate = date.getDate();
+      let hh = new Date().getHours() < 10 ? '0' + new Date().getHours() : new Date().getHours()
+      let mm = new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes()
+      let ss = new Date().getSeconds() < 10 ? '0' + new Date().getSeconds() : new Date().getSeconds()
+      if (month >= 1 && month <= 9) {
+        month = "0" + month;
+      }
+      if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+      }
+      return year + seperator1 + month + seperator1 + strDate + " "+ hh + seperator2 + mm + seperator2 + ss;
     },
     initSubmissionList(){
       this.submissionList.splice(0, this.submissionList.length)   // remove all
@@ -403,16 +415,29 @@ export default {
           return false
         }
         this.submissionList.splice(0, this.submissionList.length)   // remove all
+
         for (let i = 0; i < resp.data.data.length; i++) {
+          // alert(resp.data.data[i].submission.title)
+          // alert(resp.data.data[i].teacher.tchName)
+          let dueTime = resp.data.data[i].submission.dueTime == null? null: getDatetimeStr(resp.data.data[i].submission.dueTime)
+          let finalTime = resp.data.data[i].submission.finalTime == null? null:getDatetimeStr(resp.data.data[i].submission.finalTime)
           let new_row = {
             index: i+1,
-            submissionInsId: resp.data.data[i].submissionInsId,
-            submissionId: resp.data.data[i].submissionId,
-            projInsId: resp.data.data[i].projInsId,
-            submitTime: resp.data.data[i].submitTime,
-            submitter: resp.data.data[i].submitter,
-            submissionLeft: resp.data.data[i].submissionLeft,
-            attachments: resp.data.data[i].attachments
+            submId:resp.data.data[i].submission.submId,
+            title: resp.data.data[i].submission.title,
+            description:resp.data.data[i].submission.description,
+            // createdTime:getDatetimeStr(resp.data.data[i].submission.createdTime),
+            // modifiedTime:getDatetimeStr(resp.data.data[i].submission.modifiedTime),
+            // dueTime:getDatetimeStr(resp.data.data[i].submission.dueTime),
+            // finalTime:getDatetimeStr(resp.data.data[i].submission.finalTime),
+            createdTime:getDatetimeStr(resp.data.data[i].submission.createdTime),
+            modifiedTime:getDatetimeStr(resp.data.data[i].submission.modifiedTime),
+            dueTime:dueTime,
+            finalTime:finalTime,
+            maxSubmissionTime: resp.data.data[i].submission.maxSubmissionTime,
+            status: resp.data.data[i].submission.status,
+            resources: resp.data.data[i].submission.resources,
+            creator: resp.data.data[i].teacher.tchName
           }
           console.log(new_row)
           this.submissionList.push(new_row)
@@ -433,19 +458,17 @@ export default {
           return false
         }
         this.submissionInstanceList.splice(0, this.submissionInstanceList.length)   // remove all
+
         for (let i = 0; i < resp.data.data.length; i++) {
           let new_row = {
             index: i+1,
-            submId:resp.data.data[i].submId,
-            title: resp.data.data[i].title,
-            description:resp.data.data[i].description,
-            createdTime:resp.data.data[i].createdTime,
-            modifiedTime:resp.data.data[i].modifiedTime,
-            dueTime:resp.data.data[i].dueTime,
-            finalTime:resp.data.data[i].finalTime,
-            maxSubmissionTime: resp.data.data[i].maxSubmissionTime,
-            status: resp.data.data[i].status,
-            resources: resp.data.data[i].resources,
+            submissionInsId: resp.data.data[i].submissionInsId,
+            submissionId: resp.data.data[i].submissionId,
+            projInsId: resp.data.data[i].projInsId,
+            submitTime: resp.data.data[i].submitTime,
+            submitter: resp.data.data[i].submitter,
+            submissionLeft: resp.data.data[i].submissionLeft,
+            attachments: resp.data.data[i].attachments
           }
           console.log(new_row)
           this.submissionInstanceList.push(new_row)
@@ -459,6 +482,7 @@ export default {
       // alert(index)
       this.detailDrawer = true
       this.currentTitle = this.submissionList[index - 1].title
+      this.initAllSubmissionList(submId)
       // alert(this.currentTitle)
       // this.initAllSubmissionList(submId)
       //test without init
@@ -476,9 +500,24 @@ export default {
       this.modResource = this.submissionList[index - 1].resources
     },
     commitAdd(){
+      // alert(this.dueTime <= this.finalTime)
+      // alert(getDatetimeStr(new Date()) >= this.dueTime)
+      // alert(this.dateFormat(new Date()) <= this.dueTime)
+      // alert(this.dueTime === '')
       // console.log(this.dueTime)
       // alert("duetime:"+this.dueTime)
       // alert("fianltime:"+this.finalTime)
+      alert(this.finalTime)
+      if ((this.dueTime !== '' && this.dueTime < this.dateFormat(new Date())) || (this.finalTime!== '' && this.finalTime < this.dateFormat(new Date()))){
+        this.$alert('Due time or Final time can not before now!','Warning')
+        // return false
+      }
+      if (this.dueTime !== '' && this.finalTime !== ''){
+        if (this.dueTime > this.finalTime){
+          this.$alert('Final time should not be earlier than due time!','Warning')
+          // return false
+        }
+      }
       console.log('send new submission item')
       let projId = this.$store.state.proj.projId
       let maxSbmTime = this.unlimited? null: this.submissionTimes

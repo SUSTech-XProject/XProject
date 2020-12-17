@@ -135,28 +135,6 @@ export default {
           status: 'E',
           resources: 'test2',
         }],
-      submissionInstanceList:[
-        {
-          index:1,
-          submissionInsId: 0,
-          submissionId:0,
-          projInsId:0,
-          submitTime: '2020-12-18 15:02',
-          submitter: 'Zhang San',
-          submissionLeft: 9,
-          attachments:'test.jpg'
-        },
-        {
-          index:2,
-          submissionInsId: 1,
-          submissionId:1,
-          projInsId:1,
-          submitTime: '2020-12-19 02:02',
-          submitter: 'Zhang Si',
-          submissionLeft: 4,
-          attachments:'test2.txt'
-        }
-      ],
       fileList:[],
       Status: [{
         status: 'S',
@@ -176,9 +154,9 @@ export default {
     }
 
   },
-  // mounted () {
-  //   this.init()
-  // },
+  mounted () {
+    this.initSubmissionList()
+  },
   methods:{
     dateTimeFormatter (row, col) {
       return getDatetimeStr(row.modifiedTime)
@@ -195,16 +173,29 @@ export default {
           return false
         }
         this.submissionList.splice(0, this.submissionList.length)   // remove all
+
         for (let i = 0; i < resp.data.data.length; i++) {
+          // alert(resp.data.data[i].submission.title)
+          // alert(resp.data.data[i].teacher.tchName)
+          let dueTime = resp.data.data[i].submission.dueTime == null? null: getDatetimeStr(resp.data.data[i].submission.dueTime)
+          let finalTime = resp.data.data[i].submission.finalTime == null? null:getDatetimeStr(resp.data.data[i].submission.finalTime)
           let new_row = {
             index: i+1,
-            submissionInsId: resp.data.data[i].submissionInsId,
-            submissionId: resp.data.data[i].submissionId,
-            projInsId: resp.data.data[i].projInsId,
-            submitTime: resp.data.data[i].submitTime,
-            submitter: resp.data.data[i].submitter,
-            submissionLeft: resp.data.data[i].submissionLeft,
-            attachments: resp.data.data[i].attachments
+            submId:resp.data.data[i].submission.submId,
+            title: resp.data.data[i].submission.title,
+            description:resp.data.data[i].submission.description,
+            // createdTime:getDatetimeStr(resp.data.data[i].submission.createdTime),
+            // modifiedTime:getDatetimeStr(resp.data.data[i].submission.modifiedTime),
+            // dueTime:getDatetimeStr(resp.data.data[i].submission.dueTime),
+            // finalTime:getDatetimeStr(resp.data.data[i].submission.finalTime),
+            createdTime:getDatetimeStr(resp.data.data[i].submission.createdTime),
+            modifiedTime:getDatetimeStr(resp.data.data[i].submission.modifiedTime),
+            dueTime:dueTime,
+            finalTime:finalTime,
+            maxSubmissionTime: resp.data.data[i].submission.maxSubmissionTime,
+            status: resp.data.data[i].submission.status,
+            resources: resp.data.data[i].submission.resources,
+            creator: resp.data.data[i].teacher.tchName
           }
           console.log(new_row)
           this.submissionList.push(new_row)
