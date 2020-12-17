@@ -2,6 +2,7 @@
 
   <el-dialog title="Creating Team"
              :before-close="closing"
+             width="35%"
              :visible.sync="dialogFormVisible">
     <div v-if="this.$store.state.role.roleType==='Teacher'">
       <el-form
@@ -9,8 +10,31 @@
 <!--        :rules="rules" -->
 
         <el-form-item label="Team name" :label-width="formLabelWidth">
-          <el-input v-model="form.name" :clearable = "clearable" style="width: 70%"></el-input>
+          <el-input v-model="form.name" :clearable = "clearable" style="width: 60%"></el-input>
           <el-checkbox v-model="form.withRank" style="margin-left: 20px">with index</el-checkbox>
+        </el-form-item>
+        <el-form-item label="Topic" :label-width="formLabelWidth" prop="topic">
+          <selector :in-list="topicList" :index.sync="topicInd"></selector>
+        </el-form-item>
+        <el-form-item label="Members" :label-width="formLabelWidth" prop="maxTeamMem" style="width: 45%">
+          <el-input v-model="form.member" :clearable = "clearable"></el-input>
+        </el-form-item>
+        <el-form-item label="Description" :label-width="formLabelWidth" style="width: 70%">
+          <el-input v-model="form.desc" type="textarea" :clearable = "clearable"></el-input>
+        </el-form-item>
+        <el-form-item label="Counts" :label-width="formLabelWidth" style="width: 45%">
+          <el-input v-model="form.cnt" :clearable = "clearable"></el-input>
+        </el-form-item>
+      </el-form>
+    </div>
+
+    <div v-else>
+      <el-form
+        :model="form">
+        <!--        :rules="rules" -->
+
+        <el-form-item label="Team name" :label-width="formLabelWidth">
+          <el-input v-model="form.name" :clearable = "clearable" style="width: 70%"></el-input>
         </el-form-item>
         <el-form-item label="Topic" :label-width="formLabelWidth" prop="topic">
           <selector :in-list="topicList" :index.sync="topicInd"></selector>
@@ -21,13 +45,9 @@
         <el-form-item label="Description" :label-width="formLabelWidth" style="width: 70%">
           <el-input v-model="form.desc" type="textarea" :clearable = "clearable"></el-input>
         </el-form-item>
-        <el-form-item label="Counts" :label-width="formLabelWidth" style="width: 70%">
-          <el-input v-model="form.cnt" :clearable = "clearable"></el-input>
-        </el-form-item>
       </el-form>
-    </div>
 
-    <div v-else-if="this.$store.state.role.roleType==='Student'">
+
 
     </div>
 
