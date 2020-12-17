@@ -56,7 +56,7 @@
             <el-menu-item index="Forming">Forming</el-menu-item>
           </el-submenu>
 
-          <el-menu-item index="Announcement" >
+          <el-menu-item index="AnnouncementStu" >
             <i class="el-icon-bell"></i>
             <span slot="title">Announcements</span>
           </el-menu-item>
