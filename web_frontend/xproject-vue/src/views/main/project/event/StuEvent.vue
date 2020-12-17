@@ -18,7 +18,7 @@
             <el-form-item label="Create Time">
               <span>{{ props.row.createdTime }}</span>
             </el-form-item>
-            <el-form-item label="Modify Time">
+            <el-form-item label="Due Time">
               <span>{{ props.row.modifiedTime }}</span>
             </el-form-item>
             <el-form-item label="Mode">
@@ -67,6 +67,8 @@
 
 <script>
 import timeDrawer from '@/views/main/project/event/InstDrawer'
+import {getEATaskList} from '@/api/event'
+
 export default {
 name: "StuEvent",
   components:{
@@ -83,7 +85,8 @@ name: "StuEvent",
         mode:'?',
         createdTime:'2020-12-32',
         modifiedTime:'2021-01-00'
-      },{
+      },
+        {
         id:2,
         creator:'Teacher 2',
         title:'Final presentation',
@@ -101,7 +104,36 @@ name: "StuEvent",
     this.init()
   },
   methods:{
-    init(){},
+    init(){
+      let id = this.$store.state.proj.projId
+      getEATaskList(parseInt(id)).then(resp => {
+        if (resp.data.code !== 200) {
+          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+          return false
+        }
+        let EAlist = resp.data.data
+        console.log(EAlist)
+        this.events.splice(0,this.events.length)
+        for (let i = 0; i <EAlist.length ; i++) {
+          let EA = EAlist[i]
+          this.events.push({
+            id:EA.eaTask.eaTaskId,
+            creator:EA.creator.tchName ,
+            title: EA.eaTask.title,
+            description:EA.eaTask.description ,
+            mode: EA.eaTask.stdAdaptable,
+            createdTime: EA.eaTask.createdTime.substr(0,10),
+            modifiedTime: EA.eaTask.dueTime,
+          })
+        }
+
+
+      }).catch(failResp=>{
+        console.log('fail in getEAlist. message=' + failResp.message)
+      })
+    },
     openEvent(val){
       this.drawerCtrl = true
       this.eventId = val

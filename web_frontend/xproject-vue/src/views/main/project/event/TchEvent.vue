@@ -81,6 +81,7 @@
         </el-form-item>
         <el-form-item label="Due date" :label-width="formLabelWidth">
           <el-date-picker
+            value-format="yyyy-MM-dd HH:mm:ss"
             style="width: 65%"
             v-model="form.due"
             type="datetime"
@@ -111,7 +112,7 @@
 
 <script>
 import InstDrawer from '@/views/main/project/event/InstDrawer'
-import {postEventDeletion} from '@/api/event'
+import {getEATaskList, postEventDeletion} from '@/api/event'
 import {postEventCreation} from '@/api/event'
 
 
@@ -149,14 +150,51 @@ export default {
         title:'',
         due:'',
         desc:'',
+        id:this.$store.state.proj.projId,
         auto:false,
       },
       formLabelWidth: '120px'
     }
 
   },
+  mounted () {
+    this.init()
+  },
   methods:{
-    init(){},
+    init(){
+      let id = this.$store.state.proj.projId
+      console.log("init tchEvent")
+      getEATaskList(parseInt(id)).then(resp => {
+        if (resp.data.code !== 200) {
+          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+          return false
+        }
+        let EAlist = resp.data.data
+        console.log(EAlist)
+        this.events.splice(0,this.events.length)
+        for (let i = 0; i <EAlist.length ; i++) {
+          let EA = EAlist[i]
+          this.events.push({
+            id:EA.eaTask.eaTaskId,
+            creator:EA.creator.tchName ,
+            title: EA.eaTask.title,
+            description:EA.eaTask.description ,
+            mode: EA.eaTask.stdAdaptable,
+            //createdTime: EA.eaTask.createdTime.substr(0,10),
+            modifiedTime: EA.eaTask.dueTime,
+          })
+        }
+
+
+      }).catch(failResp=>{
+        console.log('fail in getEAlist. message=' + failResp.message)
+      })
+    },
+    refresh(){
+      this.init()
+    },
     openEvent(val){
       this.drawerCtrl = true
       this.eventId = val
@@ -172,23 +210,23 @@ export default {
       this.dialogFormVisible = true
     },
     creatingTask(){
-      console.log(this.form)
+      //console.log(this.form)
       this.$confirm('Submit form?', 'Warning', {
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Cancel',
         type: 'warning'
       }).then(() => {
         console.log(this.form)
-        postEventCreation(
-          this.form
-        ).then(resp => {
+        postEventCreation(this.form).then(resp => {
           console.log(resp)
+          console.log("in function")
           if (resp.data.code === 200) {
             this.$message({
               type: 'success',
               message: 'Create task successfully'
             });
             this.dialogFormVisible = false
+            this.refresh()
           } else {
             this.$message.error(resp.data.message)
           }
@@ -196,6 +234,7 @@ export default {
           this.$message.error('Back-end no response')
         })
       }).catch(() => {
+        console.log("???")
         this.$message({
           type: 'info',
           message: 'Canceled'
@@ -204,26 +243,26 @@ export default {
     },
     deleteTask(){
       //入参 this.currentRow
-      console.log(this.currentRow)
       if(this.currentRow===''){
         this.$message.error('No task selected')
       }else{
+        console.log(this.currentRow)
         this.$confirm('Delete selected task?', 'Warning', {
           confirmButtonText: 'Confirm',
           cancelButtonText: 'Cancel',
           type: 'warning'
         }).then(()=>{
-          postEventDeletion().then(resp=>{
+          console.log(this.currentRow.id)
+          postEventDeletion(this.currentRow.id).then(resp=>{
             if (resp.data.code === 200) {
               this.$message({
                 type: 'success',
                 message: 'Delete successfully'
               });
+              this.refresh()
             } else {
               this.$message.error(resp.data.message)
             }
-
-
           }).catch(failResp => {
             this.$message.error('Back-end no response')
           })
