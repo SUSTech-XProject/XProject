@@ -10,6 +10,7 @@
       <span>Timing List</span>
     </div>
 
+
     <el-card id="base-card">
       <div style="text-align: right;padding-right: 30px" v-if="isTeacher">
         <el-button type="primary" plain
@@ -17,7 +18,7 @@
         <el-button type="danger" plain
                    icon="el-icon-delete" @click="deleteInst">Delete</el-button>
         <el-button type="info" plain
-                   icon="el-icon-remove-outline" @click="removeTeams">Remove</el-button>
+                   icon="el-icon-remove-outline" @click="removeTeams">Clear</el-button>
         <el-button type="warning" plain
                    icon="el-icon-edit" @click="manageInst">Manage</el-button>
 
@@ -25,6 +26,8 @@
       <el-table
         class="inst-table"
         :data="tableData"
+        height="580px"
+        v-loading="tableLoading"
         :row-class-name="tableRowClassName"
         empty-text="No Data Found"
         style="width: 100%;margin-top: 0"
@@ -62,19 +65,19 @@
                  :append-to-body="true" width="450px">
         <el-form :model="form">
           <el-form-item label="Date" :label-width="formLabelWidth">
-            <el-date-picker v-model="form.date" type="date" placeholder="selecting...">
+            <el-date-picker v-model="form.date" type="date" value-format="yyyy-MM-dd" placeholder="selecting...">
             </el-date-picker>
           </el-form-item>
           <el-form-item label="Start time" :label-width="formLabelWidth">
-            <el-time-picker v-model="form.staTime"
-              placeholder="Selecting..."
+            <el-time-picker v-model="form.startTime" value-format="HH:mm:ss"
+                            placeholder="Selecting..."
             ></el-time-picker>
           </el-form-item>
           <el-form-item label="Duration" :label-width="formLabelWidth">
             <el-input v-model="form.duration" style="width: 60%" clearable></el-input>
           </el-form-item>
           <el-form-item label="Team counts" :label-width="formLabelWidth">
-            <el-input v-model="form.cnt" style="width: 60%" clearable></el-input>
+            <el-input v-model="form.counts" style="width: 60%" clearable></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -84,6 +87,7 @@
       </el-dialog>
       <managing :visible.sync="ManageVisible"
                 :event-in="multipleSelection"
+                :event-id="taskId"
                 @closeManaging="closeManaging"></managing>
 
     </el-card>
@@ -94,43 +98,21 @@
 </template>
 
 <script>
-import {postEventInstApply} from '@/api/event'
+import {
+  getEventTaskList,
+  postEventInstApply,
+  postEventInstClearTch,
+  postEventInstCreation,
+  postEventInstDeletion
+} from '@/api/event'
 import ManageInst from '@/views/main/project/event/ManageInst'
 export default {
 name: "StuEvents",
   components:{managing:ManageInst},
   data(){
     return {
-      tableData: [
-        { id:1,
-          date:'2020-12-18',
-          week:'Friday',
-          time:'14:00-14:20',
-          statue:'true',
-          teamInfo:'Team 1'
-        },{
-          id:2,
-          date:'2020-12-17',
-          week:'Thursday',
-          time:'14:00-14:20',
-          statue:'false',
-          teamInfo:''
-        },{
-          id:3,
-          date:'2020-12-18',
-          week:'Friday',
-          time:'14:00-14:20',
-          statue:'true',
-          teamInfo:'Team 1'
-        },{
-          id:4,
-          date:'2020-12-17',
-          week:'Thursday',
-          time:'14:00-14:20',
-          statue:'false',
-          teamInfo:''
-        },
-        ],
+      tableData: [],
+      tableLoading:false,
       currentRow: null,
       eventDrawer:'',
       taskId:'',
@@ -141,9 +123,10 @@ name: "StuEvents",
       CreateVisible: false,
       form: {
         date:'',
-        staTime:'',
+        startTime:'',
         duration:'',
-        cnt:''
+        counts:'',
+        eaTaskId:'',
       },
       formLabelWidth: '120px',
       //
@@ -158,7 +141,42 @@ name: "StuEvents",
     this.init()
   },
   methods:{
-    init(){},
+    init(){
+      console.log(this.taskId)
+      getEventTaskList(this.taskId).then(resp=>{
+        if (resp.data.code !== 200) {
+          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+          return false
+        }
+        let tasks = resp.data.data
+        console.log(tasks)
+        this.tableData.splice(0,this.tableData.length)
+        for (let i = 0; i <tasks.length ; i++) {
+          let task = tasks[i]
+          this.tableData.push({
+            id:task.eventInst.eventId,
+            date:task.eventInst.date.substr(0,10),
+            week:task.eventInst.week,
+            time:task.eventInst.startTime.substr(11,5)+"-"+task.eventInst.endTime.substr(11,5),
+            statue:task.eventInst.status,
+            teamInfo:task.eventInst.projInstId===null?'':'have team'
+          })
+        }
+
+      }).catch(failResp=>{
+        console.log('fail in getEventTasklist. message=' + failResp.message)
+      })
+
+    },
+    reLoad(){
+      this.tableLoading = true
+      this.init()
+      setTimeout(()=>{
+        this.tableLoading = false
+      },1000)
+    },
     refresh(){
       this.$emit("closeEvent","msg")
     },
@@ -194,19 +212,117 @@ name: "StuEvents",
     },
     //tch
     createInst(){
+      console.log(this.form)
+      this.$confirm('Submit this form?', 'Alert', {
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(()=>{
+        postEventInstCreation(this.form).then(resp=>{
+          console.log("submit")
+          if (resp.data.code === 200) {
+            this.$message({
+              type: 'success',
+              message: 'Create taskInst successfully'
+            });
+            this.CreateVisible = false
+            this.reLoad()
+          } else {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error('Back-end no response')
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Canceled'
+        });
+      });
 
     },
-    deleteInst(){},
-    removeTeams(){},
+    deleteInst(){
+      console.log(this.multipleSelection)
+      if(this.multipleSelection.length===0){
+        this.$message.error('No eventInst selected')
+      }else{
+        this.$confirm('Delete selected eventInst?', 'Warning', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(()=>{
+          let list = []
+          for (let i = 0; i < this.multipleSelection.length; i++) {
+            list.push(parseInt(this.multipleSelection[i].id))
+          }
+          console.log(list)
+          postEventInstDeletion(list).then(resp=>{
+            if (resp.data.code === 200) {
+              this.$message({
+                type: 'success',
+                message: 'Delete successfully'
+              });
+              this.reLoad()
+            } else {
+              this.$message.error(resp.data.message)
+            }
+          }).catch(failResp => {
+            this.$message.error('Back-end no response')
+          })
+        }).catch(() =>{
+          this.$message({
+            type: 'info',
+            message: 'Canceled'
+          });
+        })
+      }
+
+
+    },
+    removeTeams(){
+      console.log(this.multipleSelection)
+      if(this.multipleSelection.length===0){
+        this.$message.error('No eventInst selected')
+      }else{
+        this.$confirm('Clear selected eventInst?', 'Warning', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(()=>{
+          let list = []
+          for (let i = 0; i < this.multipleSelection.length; i++) {
+            list.push(parseInt(this.multipleSelection[i].id))
+          }
+          console.log(list)
+          postEventInstClearTch(list).then(resp=>{
+            if (resp.data.code === 200) {
+              this.$message({
+                type: 'success',
+                message: 'Clear successfully'
+              });
+              this.reLoad()
+            } else {
+              this.$message.error(resp.data.message)
+            }
+          }).catch(failResp => {
+            this.$message.error('Back-end no response')
+          })
+        }).catch(() =>{
+          this.$message({
+            type: 'info',
+            message: 'Canceled'
+          });
+        })
+      }
+    },
     manageInst(){
       console.log(this.multipleSelection)
       this.ManageVisible = true
     },
     closeManaging(val){
-      console.log('drawer recv')
       this.ManageVisible = false
       if(val){
-        //this.reLoad()
+        this.reLoad()
       }
     },
     //
@@ -227,6 +343,8 @@ name: "StuEvents",
     },
     ID(val){
       this.taskId = val
+      this.form.eaTaskId = val
+      this.reLoad()
     }
   },
   props:{
@@ -240,6 +358,7 @@ name: "StuEvents",
 <style scoped>
 #base-card{
   margin: 15px 10px;
+  height: 80%;
   /*height: 90%;*/
 }
 .header{

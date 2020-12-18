@@ -2,7 +2,7 @@
 
   <el-dialog title="Creating Team"
              :before-close="closing"
-             width="35%"
+             width="45%"
              :visible.sync="dialogFormVisible">
     <div v-if="this.$store.state.role.roleType==='Teacher'">
       <el-form
