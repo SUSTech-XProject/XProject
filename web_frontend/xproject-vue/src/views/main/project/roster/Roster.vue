@@ -86,9 +86,9 @@
         class="upload-demo"
         ref="excelUpload"
         drag
-        :action="null"
+        :action="'not-matter'"
         :auto-upload="false"
-        :before-upload="uploadExcel"
+        :http-request="uploadExcel"
         :multiple="false">
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">Drag the file here, or<em> click to upload</em></div>
@@ -215,7 +215,8 @@ export default {
     uploadExcelCaller () {
       this.$refs.excelUpload.submit()
     },
-    uploadExcel (file) {
+    uploadExcel (param) {
+      let file = param.file
       let formData = new window.FormData()
       formData.append('file', file)
       postImportFromExcel(formData).then(resp => {

@@ -20,7 +20,7 @@ export function postDeleteStudentAc (deleteSltList) {
 
 export function postImportFromExcel (formData) {
   let options = {
-    url: '/teacher/students/import',
+    url: '/teacher/students/excel',
     data: formData,
     method: 'post',
     headers: {
