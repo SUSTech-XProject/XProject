@@ -7,7 +7,7 @@
       <!--        <el-radio-button label="haveTeam">Have a team</el-radio-button>-->
       <!--        <el-radio-button label="noTeam">No team</el-radio-button>-->
       <!--      </el-radio-group>-->
-      <el-button type="primary" plain @click="initAddDrawer()">Add</el-button>
+      <el-button type="primary" plain icon="el-icon-plus" @click="initAddDrawer()">Add</el-button>
       <el-button type="primary" plain @click="releaseStd">Release</el-button>
       <el-button type="warning" plain icon="el-icon-edit" @click="manageTeam">Manage</el-button>
     </div>
@@ -59,7 +59,10 @@
       size="80%">
 
       <div align="right" style="margin-right: 40px;">
-        <el-button type="primary" @click="addStd">Add</el-button>
+        <el-input placeholder="Group mark here..."
+                  v-model="groupMarkOfAdd"
+                  style="width: 40%; margin-right: 10px;"></el-input>
+        <el-button type="primary" icon="el-icon-plus" @click="addStd">Add</el-button>
         <el-button @click="closeAddDrawer">Cancel</el-button>
       </div>
 
@@ -117,6 +120,7 @@ export default {
       direction: 'rtl',
       allStdList: [],
       classFList: [],
+      groupMarkOfAdd: '',
     }
   },
   mounted () {
@@ -204,11 +208,11 @@ export default {
     },
 
     closeAddDrawer () {
-      this.$confirm('Cancel update？')
+      this.$confirm('Cancel add？')
         .then(_ => {
           this.addDrawerVisible = false
-        })
-        .catch(_ => {
+          this.groupMarkOfAdd = ''
+          this.$message.info('Add canceled')
         })
     },
     classFMethod (value, row, column) {
@@ -243,32 +247,39 @@ export default {
       })
     },
     addStd () {
-      let chosenList = this.$refs.allStdTable.selection
-      let roleIdList = []
+      this.$confirm('Confirm to add?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(() => {
+        let chosenList = this.$refs.allStdTable.selection
+        let roleIdList = []
 
-      for (let i = 0; i < chosenList.length; ++i) {
-        roleIdList.push(chosenList[i].roleId)
-      }
+        for (let i = 0; i < chosenList.length; ++i) {
+          roleIdList.push(chosenList[i].roleId)
+        }
 
-      // postAddStdIntoProj(roleIdList).then(resp => {
-      //   console.log('get response : ' + resp)
-      //   if (resp.data.code === 200) {
-      //     this.$alert('Changed successfully', 'Tip', {
-      //       confirmButtonText: 'OK'
-      //     })
-      //   } else if (resp.data.code === 400) {
-      //     console.log(resp.data.message)
-      //     this.$alert(resp.data.message, 'Tip', {
-      //       confirmButtonText: 'OK'
-      //     })
-      //   }
-      // }).catch(failResp => {
-      //   this.$alert('Error ' + failResp.message, 'Tip', {
-      //     confirmButtonText: 'OK'
-      //   })
-      // })
-      //
-      // this.initStdManage()
+        let pasVO = {
+          'groupMark': this.groupMarkOfAdd,
+          'projId': this.$store.state.proj.projId,
+          'stdRoleIdList': roleIdList
+        }
+
+        postAddStdIntoProj(pasVO).then(resp => {
+          if (resp.data.code === 200) {
+            this.initStdManage()
+            this.groupMarkOfAdd = ''
+
+            this.$message.success('Add success')
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
+        })
+      }).catch(() => {
+        this.$message.info('Add canceled')
+      })
     }
   }
 }
