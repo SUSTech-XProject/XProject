@@ -130,7 +130,7 @@ export default {
     }
   },
   mounted () {
-    this.initTeams()
+    this.reLoad()
   },
   methods: {
     initTeams(){
@@ -207,7 +207,8 @@ export default {
       setTimeout(()=>{
         this.tableLoading = false
       },1000)
-      this.tableLoading = false
+
+
     },
 
     addTeam(){

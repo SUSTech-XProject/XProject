@@ -12,6 +12,7 @@
     </div>
     <el-card class="base-card">
       <el-table
+        v-loading = "tableLoading"
         :data="events"
         ref="singleTable"
         highlight-current-row
@@ -142,6 +143,7 @@ export default {
         modifiedTime:'2021-01-00'
       }],
       drawerCtrl:false,
+      tableLoading:false,
       eventId:0,
       currentRow:'',
       //
@@ -158,7 +160,7 @@ export default {
 
   },
   mounted () {
-    this.init()
+    this.reLoad()
   },
   methods:{
     init(){
@@ -192,8 +194,12 @@ export default {
         console.log('fail in getEAlist. message=' + failResp.message)
       })
     },
-    refresh(){
+    reLoad(){
+      this.tableLoading = true
       this.init()
+      setTimeout(()=>{
+        this.tableLoading = false
+      },1000)
     },
     openEvent(val){
       this.drawerCtrl = true
@@ -218,15 +224,13 @@ export default {
       }).then(() => {
         console.log(this.form)
         postEventCreation(this.form).then(resp => {
-          console.log(resp)
-          console.log("in function")
           if (resp.data.code === 200) {
             this.$message({
               type: 'success',
               message: 'Create task successfully'
             });
             this.dialogFormVisible = false
-            this.refresh()
+            this.reLoad()
           } else {
             this.$message.error(resp.data.message)
           }
@@ -259,7 +263,7 @@ export default {
                 type: 'success',
                 message: 'Delete successfully'
               });
-              this.refresh()
+              this.reLoad()
             } else {
               this.$message.error(resp.data.message)
             }
