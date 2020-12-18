@@ -31,13 +31,13 @@ export function postTeamCreation (form) {
 }
 
 export function postTeamDeletion (teams) {
-  return Vue.prototype.$axios.post('/team-deletion', {
+  return Vue.prototype.$axios.post('/teacher/team/deletion', {
     projInstIdList: teams
   })
 }
 
 export function postTeamConfirmation (teams) {
-  return Vue.prototype.$axios.post('/team-confirm', {
+  return Vue.prototype.$axios.post('/all/team/confirm', {
     projInstIdList: teams
   })
 }
