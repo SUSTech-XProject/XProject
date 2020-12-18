@@ -175,15 +175,10 @@ export default {
             this.location = resp.data.data.school.location
           }
         } else if (resp.data.code === 400) {
-          console.log(resp.data.message)
-          this.$alert(resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
+          this.$message.error(resp.data.message)
         }
       }).catch(failResp => {
-        this.$alert('Error: ' + failResp.message, 'Tips', {
-          confirmButtonText: 'OK'
-        })
+        this.$message.error(failResp.message)
       })
 
       getProjList().then(resp => {
@@ -216,15 +211,10 @@ export default {
           }
 
         } else if (resp.data.code === 400) {
-          console.log(resp.data.message)
-          this.$alert(resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
+          this.$message.error(resp.data.message)
         }
       }).catch(failResp => {
-        this.$alert('Error: ' + failResp.message, 'Tips', {
-          confirmButtonText: 'OK'
-        })
+        this.$message.error(failResp.message)
       })
 
     },

@@ -5,7 +5,7 @@
     <div v-if="isStudent()">
       <el-col style="width: 48.5%; margin-left: 0.75%; margin-top: 10px" class="el-tabs_item">
         <el-card style="height: 670px">
-          <div slot="header" class="clearfix" style="font-weight: bold">Site Information</div>
+          <div slot="header" class="clearfix" style="font-weight: bold">Project Information</div>
           {{ this.siteInfo }}
         </el-card>
       </el-col>
@@ -27,7 +27,7 @@
         <el-tab-pane label="Overview" name="info" style="height: 100%">
           <el-col style="width: 48.5%; margin-left: 0.75%" class="el-tabs_item">
             <el-card style="height: 670px">
-              <div slot="header" class="clearfix" style="font-weight: bold">Site Information</div>
+              <div slot="header" class="clearfix" style="font-weight: bold">Project Information</div>
               {{ this.siteInfo }}
             </el-card>
           </el-col>
@@ -44,20 +44,31 @@
         </el-tab-pane>
 
         <el-tab-pane label="Settings" name="setting">
-          <div style="font-size: 25px; font-weight:bold; margin-left: 20px; width: 85%">
-            Settings
-            <el-divider></el-divider>
-          </div>
+          <!--          <div style="font-size: 25px; font-weight:bold; margin-left: 20px; width: 85%">-->
+          <!--            Settings-->
+          <!--            <el-divider></el-divider>-->
+          <!--          </div>-->
 
           <el-col :span="9">
             <div class="settingTitle" style="margin-left: 20px;">
-              Site Information
+              Project Information
             </div>
-            <el-input type="textarea" :rows="4" v-model="siteInfo"
-                      style="margin-left: 20px; margin-top: 20px; width: 90%">
-            </el-input>
+            <el-form style="margin-left: 20px; margin-top: 20px;"
+                     label-width="auto">
+              <el-form-item label="description">
+                <el-input type="textarea" :rows="2" v-model="siteInfo"></el-input>
+              </el-form-item>
+              <el-form-item label="Year">
+                <el-input v-model="newYear"></el-input>
+              </el-form-item>
+              <el-form-item label="Semester">
+                <el-radio v-model="newSemester" label="01">Spring</el-radio>
+                <el-radio v-model="newSemester" label="02">Fall</el-radio>
+              </el-form-item>
+            </el-form>
+
             <div style="margin-top: 25px; margin-left: 20px">
-              <el-button type="primary" @click="handleSiteInfoUpdate">Update</el-button>
+              <el-button type="primary" @click="handleProjInfoUpdate">Update</el-button>
               <el-button @click="handleSiteInfoReset">Reset</el-button>
             </div>
 
@@ -111,7 +122,7 @@
                 <el-button @click.prevent="removeDomain(topic)" style="margin-left: 10px">delete</el-button>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" @click="submitForm('topicDict')">Update</el-button>
+                <el-button type="primary" @click="handleFormUpdate()">Update</el-button>
                 <el-button @click="addDomain()">Add</el-button>
                 <el-button @click="resetForm()">Reset</el-button>
               </el-form-item>
@@ -161,7 +172,12 @@ export default {
       firstThreeAnnoList: [],
 
       topicBO: [],
-      initTopicBo: []
+      initTopicBo: [],
+
+      year: '',
+      semester: '',
+      newYear: '',
+      newSemester: '',
     }
   },
   mounted () {
@@ -173,9 +189,16 @@ export default {
       getProjOverview(this.$store.state.proj.projId).then(resp => {
         if (resp.data.code === 200) {
           let infoDict = resp.data.data
+          console.log(infoDict)
 
           this.initSiteInfo = infoDict.description
           this.siteInfo = this.initSiteInfo
+
+          let term = infoDict.term
+          this.year = term.substring(0, 4)
+          this.semester = term.substring(4)
+          this.newYear = this.year
+          this.newSemester = this.semester
 
           let settings = JSON.parse(infoDict.projSettings)
           this.initForm.use_recruit = settings.use_recruit
@@ -204,15 +227,10 @@ export default {
             }
           }
         } else if (resp.data.code === 400) {
-          console.log(resp.data.message)
-          this.$alert(resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
+          this.$message.error(resp.data.message)
         }
       }).catch(failResp => {
-        this.$alert('Error: ' + failResp.message, 'Tips', {
-          confirmButtonText: 'OK'
-        })
+        this.$message.error(failResp.message)
       })
     },
     isStudent () {
@@ -226,27 +244,43 @@ export default {
 
     //el-form
     handleRecruitUpdate () {
-      postProjectOverview(
-        this.$store.state.proj.projId, this.initSiteInfo,
-        JSON.stringify(this.initTopicBo), JSON.stringify(this.form)
-      ).then(resp => {
-        console.log('get response : ' + resp)
-        if (resp.data.code === 200) {
-          this.$alert('Update success', 'Tip', {
-            confirmButtonText: 'OK'
-          })
-        } else if (resp.data.code === 400) {
-          console.log(resp.data.message)
-          this.$alert(resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
+      this.$confirm('Confirm to update?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(() => {
+        let projectVO = {
+          'courseName': null,
+          'description': null,
+          'projId': this.$store.state.proj.projId,
+          'projName': null,
+          'projSettings': JSON.stringify(this.form),
+          'term': null,
+          'topics': null
         }
-      }).catch(failResp => {
-        this.$alert('Error ' + failResp.message, 'Tip', {
-          confirmButtonText: 'OK'
+
+        postProjectOverview(projectVO).then(resp => {
+          console.log('get response : ' + resp)
+          if (resp.data.code === 200) {
+            this.initForm = this.form
+
+            this.$message.success('Update success')
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
+        })
+        this.$message({
+          type: 'success',
+          message: 'Update success'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Update canceled'
         })
       })
-      this.initForm = this.form
     },
     handleRecruitReset () {
       this.form.use_recruit = this.initForm.use_recruit
@@ -256,78 +290,111 @@ export default {
       this.form.allow_cross_mark = this.initForm.allow_cross_mark
     },
 
-    handleSiteInfoUpdate () {
-      postProjectOverview(
-        this.$store.state.proj.projId, this.siteInfo,
-        JSON.stringify(this.initTopicBo), JSON.stringify(this.initForm)
-      ).then(resp => {
-        console.log('get response : ' + resp)
-        if (resp.data.code === 200) {
-          this.$alert('Update success', 'Tip', {
-            confirmButtonText: 'OK'
-          })
-        } else if (resp.data.code === 400) {
-          console.log(resp.data.message)
-          this.$alert(resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
+    handleProjInfoUpdate () {
+      this.$confirm('Confirm to update?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(() => {
+        let projectVO = {
+          'courseName': null,
+          'description': this.siteInfo,
+          'projId': this.$store.state.proj.projId,
+          'projName': null,
+          'projSettings': null,
+          'term': this.newYear + this.newSemester,
+          'topics': null
         }
-      }).catch(failResp => {
-        this.$alert('Error ' + failResp.message, 'Tip', {
-          confirmButtonText: 'OK'
+
+        postProjectOverview(projectVO).then(resp => {
+          console.log('get response : ' + resp)
+          if (resp.data.code === 200) {
+            this.initSiteInfo = this.siteInfo
+            this.year = this.newYear
+            this.semester = this.newSemester
+
+            this.$message.success('Update success')
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
+        })
+        this.$message({
+          type: 'success',
+          message: 'Update success'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Update canceled'
         })
       })
-      this.initSiteInfo = this.siteInfo
     },
     handleSiteInfoReset () {
       this.siteInfo = this.initSiteInfo
+      this.newYear = this.year
+      this.newSemester = this.semester
     },
 
     //dynamic form
-    submitForm (formName) {
-      for (let i = 0; i < this.topicBO.length; i++) {
-        let topic = this.topicBO[i]
-        if (topic.max_team_size !== '' && !topic.max_team_size.match(/^\d+$/)) {
-          this.$alert('Max team size is neither empty nor integer', 'Failed', {
-            confirmButtonText: 'OK'
-          })
-          return false
+    handleFormUpdate () {
+      this.$confirm('Confirm to update?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(() => {
+        for (let i = 0; i < this.topicBO.length; i++) {
+          let topic = this.topicBO[i]
+          if (topic.max_team_size !== '' && !topic.max_team_size.match(/^\d+$/)) {
+            this.$message.error('Max team size is neither empty nor integer')
+            return false
+          }
+          if (!topic.topic_name) {
+            this.$message.error('Team name can\'t be null')
+            return false
+          }
         }
-        if (!topic.topic_name) {
-          this.$alert('Team name can\'t be null', 'Failed', {
-            confirmButtonText: 'OK'
-          })
-          return false
+
+        let projectVO = {
+          'courseName': null,
+          'description': null,
+          'projId': this.$store.state.proj.projId,
+          'projName':null,
+          'projSettings': null,
+          'term': null,
+          'topics': JSON.stringify(this.topicBO)
         }
-      }
-      postProjectOverview(
-        this.$store.state.proj.projId, this.initSiteInfo,
-        JSON.stringify(this.topicBO), JSON.stringify(this.initForm)
-      ).then(resp => {
-        console.log('get response : ' + resp)
-        if (resp.data.code === 200) {
-          this.$alert('Update success', 'Tip', {
-            confirmButtonText: 'OK'
-          })
-        } else if (resp.data.code === 400) {
-          console.log(resp.data.message)
-          this.$alert(resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
-        }
-      }).catch(failResp => {
-        this.$alert('Error ' + failResp.message, 'Tip', {
-          confirmButtonText: 'OK'
+
+        postProjectOverview(projectVO).then(resp => {
+          console.log('get response : ' + resp)
+          if (resp.data.code === 200) {
+            this.initTopicBo = []
+            for (let i = 0; i < this.topicBO.length; ++i) {
+              this.initTopicBo.push(({
+                topic_name: this.topicBO[i].topic_name,
+                max_team_size: this.topicBO[i].max_team_size
+              }))
+            }
+
+            this.$message('Update success')
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
+        })
+        this.$message({
+          type: 'success',
+          message: 'Update success'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Update canceled'
         })
       })
 
-      this.initTopicBo = []
-      for (let i = 0; i < this.topicBO.length; ++i) {
-        this.initTopicBo.push(({
-          topic_name: this.topicBO[i].topic_name,
-          max_team_size: this.topicBO[i].max_team_size
-        }))
-      }
     },
     resetForm () {
       this.topicBO = []
@@ -379,7 +446,7 @@ export default {
 
 <!--          <el-col style="width: 49.6%; margin-top: 20px">-->
 <!--            <el-card style="height: 630px">-->
-<!--              <div slot="header" class="clearfix">Site Information</div>-->
+<!--              <div slot="header" class="clearfix">Project Information</div>-->
 <!--            </el-card>-->
 <!--          </el-col>-->
 <!--          <el-col style="width: 49.6%; margin-left: 0.8%; margin-top: 20px">-->

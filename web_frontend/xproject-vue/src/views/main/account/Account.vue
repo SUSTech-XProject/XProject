@@ -66,6 +66,8 @@
             </div>
           </div>
 
+          <div v-if="isTeacher" style="margin-top: 20px;"></div>
+
           <div class="personalInfoTypesetting personalInfoTitle">
             Bio
           </div>
@@ -188,15 +190,10 @@ export default {
           }
           this.imageUrl = resp.data.data.role.iconUrl
         } else if (resp.data.code === 400) {
-          console.log(resp.data.message)
-          this.$alert(resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
+          this.$message.error(resp.data.message)
         }
       }).catch(failResp => {
-        this.$alert('Error: ' + failResp.message, 'Tips', {
-          confirmButtonText: 'OK'
-        })
+        this.$message.error(failResp.message)
       })
     },
 
@@ -256,46 +253,61 @@ export default {
 
     //update personal information
     handleUpdate () {
-      let acInfoStdUpdateVO = {
-        'bio': '',
-        'flags': null,
-        'skills': null,
-        'email': ''
-      }
-
-      if (isTeacher()) {
-        acInfoStdUpdateVO.bio = this.bio
-        acInfoStdUpdateVO.email = this.newEmail
-      } else if (isStudent()) {
-        acInfoStdUpdateVO.impTagList = this.impressionTagList
-        acInfoStdUpdateVO.skillTagList = this.skillTagList
-        acInfoStdUpdateVO.bio = this.bio
-        acInfoStdUpdateVO.email = this.newEmail
-      }
-
-      //TODO: Update avatar
-      postSelfIntroduction(
-        acInfoStdUpdateVO
-      ).then(resp => {
-        console.log('get response : ' + resp)
-        if (resp.data.code === 200) {
-          this.formInfoList[3].value = this.newEmail
-          this.newEmail = ''
-
-          this.$alert('Changed successfully', 'Tip', {
-            confirmButtonText: 'OK'
-          })
-        } else if (resp.data.code === 400) {
-          console.log(resp.data.message)
-          this.$alert(resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
+      this.$confirm('Confirm to update?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(() => {
+        let acInfoStdUpdateVO = {
+          'bio': '',
+          'flags': null,
+          'skills': null,
+          'email': ''
         }
-      }).catch(failResp => {
-        this.$alert('Error ' + failResp.message, 'Tip', {
-          confirmButtonText: 'OK'
+
+        if (isTeacher()) {
+          acInfoStdUpdateVO.bio = this.bio
+          acInfoStdUpdateVO.email = this.newEmail
+        } else if (isStudent()) {
+          acInfoStdUpdateVO.impTagList = this.impressionTagList
+          acInfoStdUpdateVO.skillTagList = this.skillTagList
+          acInfoStdUpdateVO.bio = this.bio
+          acInfoStdUpdateVO.email = this.newEmail
+        }
+
+        //TODO: Update avatar
+        postSelfIntroduction(
+          acInfoStdUpdateVO
+        ).then(resp => {
+          console.log('get response : ' + resp)
+          if (resp.data.code === 200) {
+            this.formInfoList[3].value = this.newEmail
+            this.newEmail = ''
+
+            this.$alert('Changed successfully', 'Tip', {
+              confirmButtonText: 'OK'
+            })
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
         })
-      })
+
+        this.$message({
+          type: 'success',
+          message: 'Update success'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Update canceled'
+        });
+      });
+    },
+
+    isTeacher () {
+      return isTeacher
     }
   }
 }

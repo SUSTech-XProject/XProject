@@ -26,11 +26,11 @@
           ></el-avatar>
         </div>
 
-        <el-button v-if="status==='Raw'"
-                   @click="handleQuit()"
-                   type="primary"
-                   style="margin-top: 15px; align-items: center">Quit
-        </el-button>
+        <div v-if="status==='Raw'" style="margin-top: 15px; align-items: center">
+          <el-button @click="handleQuit()">Quit</el-button>
+          <el-button @click="handleTeamConfirm()"
+                     type="primary">Confirm</el-button>
+        </div>
       </div>
 
       <div v-if="isStudent() && !haveTeam"
@@ -130,7 +130,7 @@
                 </div>
 
                 <div v-else-if="notice.type==='Quit'">
-                  <el-button @click="handleConfirm(notice)"
+                  <el-button @click="handleMessageConfirm(notice)"
                              v-if="!notice.confirmed"
                              style="margin-top: 20px;  margin-left: 30px">
                     I know that
@@ -143,7 +143,7 @@
                 </div>
 
                 <div v-else>
-                  <el-button @click="handleConfirm(notice)"
+                  <el-button @click="handleMessageConfirm(notice)"
                              v-if="!notice.confirmed"
                              style="margin-top: 40px; margin-left: 30px">
                     I know that
@@ -286,7 +286,7 @@ import {
   getUngroupedStudents, postInviteStudents,
   postQuitTeam,
   postReplyApplication,
-  postEditedTeamInfo
+  postEditedTeamInfo, postTeamConfirmation
 } from '@/api/team'
 import stuInfoDrawer from '@/views/main/project/team/stuInfoDrawer'
 import {getDatetimeStr} from '@/utils/parse-day-time'
@@ -409,30 +409,21 @@ export default {
                     return Date.parse(b.createdTime) - Date.parse(a.createdTime)
                   })
                 } else if (resp.data.code === 400) {
-                  console.log(resp.data.message)
-                  this.$alert(resp.data.message, 'Tip', {
-                    confirmButtonText: 'OK'
-                  })
+                  this.$message.error(resp.data.message)
                 }
               }).catch(failResp => {
-                this.$alert('Error: ' + failResp.message, 'Tips', {
-                  confirmButtonText: 'OK'
-                })
+                this.$message.error(failResp.message)
               })
             }
           }
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
           if (resp.data.message !== 'No team') {
-            this.$alert(resp.data.message, 'Tip', {
-              confirmButtonText: 'OK'
-            })
+            this.$message.error(resp.data.message)
           }
         }
       }).catch(failResp => {
-        this.$alert('Error: ' + failResp.message, 'Tips', {
-          confirmButtonText: 'OK'
-        })
+        this.$message.error(failResp.message)
       })
 
       getUngroupedStudents(this.$store.state.proj.projId).then(resp => {
@@ -440,15 +431,10 @@ export default {
           this.ungroupList = resp.data.data
           this.avaStatus = new Array(this.ungroupList.length).fill(true)
         } else if (resp.data.code === 400) {
-          console.log(resp.data.message)
-          this.$alert(resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
+          this.$message.error(resp.data.message)
         }
       }).catch(failResp => {
-        this.$alert('Error: ' + failResp.message, 'Tips', {
-          confirmButtonText: 'OK'
-        })
+        this.$message.error(failResp.message)
       })
 
       getPersonalMessage(this.$store.state.proj.projId).then(resp => {
@@ -465,15 +451,10 @@ export default {
             return Date.parse(b.createdTime) - Date.parse(a.createdTime)
           })
         } else if (resp.data.code === 400) {
-          console.log(resp.data.message)
-          this.$alert(resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
+          this.$message.error(resp.data.message)
         }
       }).catch(failResp => {
-        this.$alert('Error: ' + failResp.message, 'Tips', {
-          confirmButtonText: 'OK'
-        })
+        this.$message.error(failResp.message)
       })
 
       getProjectTopics(this.$store.state.proj.projId).then(resp => {
@@ -543,10 +524,26 @@ export default {
       //   })
       // })
     },
-    handleConfirm (notice) {
+    handleMessageConfirm (notice) {
       notice.confirmed = true
     },
     handleEdit () {
+      this.$confirm('Confirm to update?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(() => {
+
+        this.$message({
+          type: 'success',
+          message: 'Update success'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Update canceled'
+        });
+      });
       // todo:upload newDescription
       // postEditedTeamInfo(this.$store.state.proj.projId, this.description).then(resp => {
       //   console.log('get response : ' + resp)
@@ -579,26 +576,38 @@ export default {
       this.newTagList = this.tagList
     },
     handleQuit () {
-      postQuitTeam(this.$store.state.proj.projId).then(resp => {
-        console.log('get response : ' + resp)
-        if (resp.data.code === 200) {
-          this.haveTeam = false
-          this.status = ''
+      this.$confirm('Confirm to quit?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(() => {
+        postQuitTeam(this.$store.state.proj.projId).then(resp => {
+          console.log('get response : ' + resp)
+          if (resp.data.code === 200) {
+            this.haveTeam = false
+            this.status = ''
 
-          this.$alert('Quit success', 'Tip', {
-            confirmButtonText: 'OK'
-          })
-        } else if (resp.data.code === 400) {
-          console.log(resp.data.message)
-          this.$alert(resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
-        }
-      }).catch(failResp => {
-        this.$alert('Error ' + failResp.message, 'Tip', {
-          confirmButtonText: 'OK'
+            this.$alert('Quit success', 'Tip', {
+              confirmButtonText: 'OK'
+            })
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
         })
-      })
+
+        this.$message({
+          type: 'success',
+          message: 'Quit success'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Quit canceled'
+        });
+      });
+
     },
 
     handleInvite (index) {
@@ -611,30 +620,42 @@ export default {
       this.inviteList.splice(index, 1)
     },
     handleUpdateInvite () {
-      let roleIdList = []
-      for (let i = 0; i < this.inviteList.length; ++i) {
-        roleIdList.push(this.inviteList[i].roleId)
-      }
-
-      postInviteStudents(roleIdList, this.$store.state.proj.projId).then(resp => {
-        console.log('get response : ' + resp)
-        if (resp.data.code === 200) {
-          this.inviteList = []
-
-          this.$alert('Changed success', 'Tip', {
-            confirmButtonText: 'OK'
-          })
-        } else if (resp.data.code === 400) {
-          console.log(resp.data.message)
-          this.$alert(resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
+      this.$confirm('Confirm to invite?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(() => {
+        let roleIdList = []
+        for (let i = 0; i < this.inviteList.length; ++i) {
+          roleIdList.push(this.inviteList[i].roleId)
         }
-      }).catch(failResp => {
-        this.$alert('Error ' + failResp.message, 'Tip', {
-          confirmButtonText: 'OK'
+
+        postInviteStudents(roleIdList, this.$store.state.proj.projId).then(resp => {
+          console.log('get response : ' + resp)
+          if (resp.data.code === 200) {
+            this.inviteList = []
+
+            this.$alert('Changed success', 'Tip', {
+              confirmButtonText: 'OK'
+            })
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
         })
-      })
+
+        this.$message({
+          type: 'success',
+          message: 'Invite success'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Invite canceled'
+        });
+      });
+
     },
     handleCancelInvite () {
       for (let i = 0; i < this.inviteList.length; ++i) {
@@ -677,6 +698,39 @@ export default {
       this.tagInputVisible = false
       this.tagInputValue = ''
     },
+
+    handleTeamConfirm(){
+      this.$confirm('Confirm to confirm?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(() => {
+        postTeamConfirmation([]).then(resp => {
+          console.log('get response : ' + resp)
+          if (resp.data.code === 200) {
+            this.$message({
+              type: 'success',
+              message: 'Confirm successfully'
+            })
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
+        })
+
+        this.$message({
+          type: 'success',
+          message: 'Confirm success'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Confirm canceled'
+        });
+      });
+
+    }
   }
 }
 </script>

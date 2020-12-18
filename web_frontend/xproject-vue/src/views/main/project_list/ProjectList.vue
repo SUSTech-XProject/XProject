@@ -95,6 +95,9 @@
           <el-form-item label="Course name">
             <el-input v-model="newProj.courseName"></el-input>
           </el-form-item>
+          <el-form-item label="Description">
+            <el-input v-model="newProj.description"></el-input>
+          </el-form-item>
           <el-form-item label="Year">
             <el-input v-model="newProj.year"></el-input>
           </el-form-item>
@@ -105,23 +108,9 @@
         </el-form>
 
         <div align="right">
-          <el-button type="primary" @click="confirmDialogVisible = true">Add</el-button>
+          <el-button type="primary" @click="handleAddProj()">Add</el-button>
           <el-button @click="joinDialogVisible = false">Cancel</el-button>
         </div>
-
-        <el-dialog title="Tip"
-                   append-to-body
-                   width="25%" style="margin-top: 20px;"
-                   :visible.sync="confirmDialogVisible">
-          <div style="margin-left: 20px;">Add project <span style="font-weight: bold">{{ this.confirmProjName }}</span>
-            ?
-          </div>
-          <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="confirmDialogVisible = false; handleAddProj()">Add</el-button>
-            <el-button @click="confirmDialogVisible = false">Cancel</el-button>
-          </span>
-        </el-dialog>
-
       </el-dialog>
     </div>
 
@@ -131,8 +120,9 @@
 <script>
 import Card from '@/components/card/projectList/index'
 import Selector from '@/components/selector/single'
-import {getAddProj, getJoinProj, getProjList, getProjListBySch} from '@/api/home_page'
+import {getJoinProj, getProjList, getProjListBySch} from '@/api/home_page'
 import {isStudent, isTeacher} from '@/utils/role'
+import {postProjectOverview} from '@/api/proj_overview'
 
 export default {
   name: 'ProjectList',
@@ -164,6 +154,7 @@ export default {
         topic: null,
         settings: null,
         year: '',
+        description: ''
       },
     }
   },
@@ -280,32 +271,55 @@ export default {
     },
 
     handleAddProj () {
-      // getAddProj(
-      //   this.newProj
-      // ).then(resp => {
-      //   if (resp.data.code !== 200) {
-      //     this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
-      //       confirmButtonText: 'OK'
-      //     })
-      //     return false
-      //   }
-      //   this.initProjList()
-      //
-      //   this.joinDialogVisible = false
-      //   this.confirmDialogVisible = false
-      //   this.newProj={
-      //     projName: '',
-      //     courseName: '',
-      //     semester: 'Spring',
-      //     topic: null,
-      //     settings: null
-      //   }
-      // }).catch(failResp => {
-      //   console.log('fail in getProjListBySch, %o', failResp)
-      //   this.$alert('Fail to join', 'Tip', {
-      //     confirmButtonText: 'OK'
-      //   })
-      // })
+      this.$confirm('Confirm to add?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(() => {
+        let projectVO = {
+          'courseName': this.newProj.courseName,
+          'description': this.newProj.description,
+          'projId': null,
+          'projName': this.newProj.projName,
+          'projSettings': null,
+          'term': this.newProj.year + this.newProj.semester,
+          'topics': null
+        }
+
+        postProjectOverview(projectVO).then(resp => {
+          if (resp.data.code !== 200) {
+            this.$message.error(resp.data.code)
+            return false
+          }
+          this.initProjList()
+
+          this.joinDialogVisible = false
+          this.confirmDialogVisible = false
+          this.newProj = {
+            projName: '',
+            courseName: '',
+            semester: '01',
+            topic: null,
+            settings: null,
+            year: '',
+            description: ''
+          }
+        }).catch(failResp => {
+          console.log('fail in getProjListBySch, %o', failResp)
+          this.$alert('Fail to join', 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        })
+        this.$message({
+          type: 'success',
+          message: 'Add success'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Add canceled'
+        })
+      })
     }
   }
 }

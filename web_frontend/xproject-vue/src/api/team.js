@@ -21,7 +21,7 @@ export function postApply (teamId) {
 export function postTeamCreation (form) {
   return Vue.prototype.$axios.post('/all/team/creation', {
     description: form.desc,
-    generateNum: form.cnt===''?1:form.cnt,
+    generateNum: form.cnt === '' ? 1 : form.cnt,
     idealSize: form.member,
     projId: form.projId,
     teamName: form.name,
@@ -73,9 +73,13 @@ export function getUngroupedStudents (projId) {
 }
 
 export function postInviteStudents (roleIdList, projId) {
-  return Vue.prototype.$axios.post('/student/team/invite', {
+  let inviteParamVO = {
     projId: projId,
     stdRoleIdList: roleIdList
+  }
+
+  return Vue.prototype.$axios.post('/student/team/invite', {
+    inviteParamVO: inviteParamVO
   })
 }
 
@@ -108,11 +112,12 @@ export function getPersonalMessage (projId) {
 
 export function postEditedTeamInfo (projId) {
   return Vue.prototype.$axios.post('/student/team/change/info', {
-   // todo
+    // todo
   })
 }
+
 export function getStuProj (roleId) {
   return Vue.prototype.$axios.get('/all/team/stu-proj', {
-    params: {roleId:roleId}
+    params: {roleId: roleId}
   })
 }

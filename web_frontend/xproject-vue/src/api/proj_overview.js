@@ -6,15 +6,8 @@ export function getProjOverview (projId) {
   })
 }
 
-export function postProjectOverview (
-  projId,
-  siteInfo,
-  topicBO,
-  projSettingsBO) {
+export function postProjectOverview (projectVO) {
   return Vue.prototype.$axios.post('/teacher/update-overview', {
-    projId: projId,
-    description: siteInfo,
-    topics: topicBO,
-    projSettings: projSettingsBO
+    projectVO: projectVO
   })
 }
