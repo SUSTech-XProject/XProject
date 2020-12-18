@@ -67,7 +67,7 @@
               </el-form-item>
             </el-form>
 
-            <div style="margin-top: 25px; margin-left: 20px">
+            <div style="margin-left: 20px">
               <el-button type="primary" @click="handleProjInfoUpdate">Update</el-button>
               <el-button @click="handleSiteInfoReset">Reset</el-button>
             </div>
@@ -271,15 +271,8 @@ export default {
         }).catch(failResp => {
           this.$message.error(failResp.message)
         })
-        this.$message({
-          type: 'success',
-          message: 'Update success'
-        })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: 'Update canceled'
-        })
+        this.$message.info('Update canceled')
       })
     },
     handleRecruitReset () {
@@ -320,15 +313,8 @@ export default {
         }).catch(failResp => {
           this.$message.error(failResp.message)
         })
-        this.$message({
-          type: 'success',
-          message: 'Update success'
-        })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: 'Update canceled'
-        })
+        this.$message.info('Update canceled')
       })
     },
     handleSiteInfoReset () {
@@ -360,7 +346,7 @@ export default {
           'courseName': null,
           'description': null,
           'projId': this.$store.state.proj.projId,
-          'projName':null,
+          'projName': null,
           'projSettings': null,
           'term': null,
           'topics': JSON.stringify(this.topicBO)
@@ -376,7 +362,6 @@ export default {
                 max_team_size: this.topicBO[i].max_team_size
               }))
             }
-
             this.$message('Update success')
           } else if (resp.data.code === 400) {
             this.$message.error(resp.data.message)
@@ -384,17 +369,9 @@ export default {
         }).catch(failResp => {
           this.$message.error(failResp.message)
         })
-        this.$message({
-          type: 'success',
-          message: 'Update success'
-        })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: 'Update canceled'
-        })
+        this.$message.info('Update canceled')
       })
-
     },
     resetForm () {
       this.topicBO = []

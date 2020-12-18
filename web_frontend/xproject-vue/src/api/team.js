@@ -110,9 +110,9 @@ export function getPersonalMessage (projId) {
   })
 }
 
-export function postEditedTeamInfo (projId) {
+export function postEditedTeamInfo (piuVO) {
   return Vue.prototype.$axios.post('/student/team/change/info', {
-    // todo
+    piuVO: piuVO
   })
 }
 
