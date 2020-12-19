@@ -27,6 +27,7 @@
         class="inst-table"
         :data="tableData"
         height="580px"
+        :default-sort="{prop: 'date', order: 'increasing'}"
         v-loading="tableLoading"
         :row-class-name="tableRowClassName"
         empty-text="No Data Found"
