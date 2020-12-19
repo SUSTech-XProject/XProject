@@ -156,12 +156,11 @@
                         placeholder="Comment here..."
                         style="width: 250px; margin-left: 20px;">
               </el-input>
+            </div>
 
-              <div align="right" style="margin-right: 40px;">
-                <el-button type="primary"
-                           @click="updateScore(props.row)">Scoring</el-button>
-              </div>
-
+            <div align="right" style="margin-right: 40px;">
+              <el-button type="primary"
+                         @click="updateScore(props.row)">Scoring</el-button>
             </div>
           </template>
         </el-table-column>
