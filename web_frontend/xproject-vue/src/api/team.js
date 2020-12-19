@@ -89,13 +89,9 @@ export function postQuitTeam (projId) {
   })
 }
 
-export function postReplyApplication (msgId, accepted, reason) {
-  return Vue.prototype.$axios.post('/student/team/quit', {
-    //todo
-    msg_Id: msgId,
-    accepted: accepted,
-    reason: reason
-  })
+export function postReplyApplication (applyReplyParamVO) {
+  return Vue.prototype.$axios.post('/student/team/reply/application', applyReplyParamVO
+  )
 }
 
 export function getTeamMessage (projInstId) {
