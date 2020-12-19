@@ -55,11 +55,10 @@
               style="margin-left: 10px;"
               type="primary" plain
               icon="el-icon-document-add"
-              @click="submit(scope.row.index, scope.row.submId)">Submit</el-button>
+              @click="submit(scope.row)">Submit</el-button>
         </template>
       </el-table-column>
     </el-table>
-
 
     <el-drawer
       title="Submission"
@@ -74,10 +73,11 @@
           <br>
           <el-upload
             class="upload"
-            ref="upload"
-            action="http://localhost:8443/api/upload"
+            ref="uploadfiles"
+            action="null"
             :on-preview="handlePreview"
             :on-remove="handleRemove"
+            :before-upload="uploadFiles"
             :file-list="fileList"
             :auto-upload="false">
             <el-button slot="trigger"  type="primary">Choose</el-button>
@@ -100,69 +100,61 @@ import {getAllSubmissionList} from '@/api/submission'
 import {postAddSubmission} from '@/api/submission'
 import {postModifySubmission} from '@/api/submission'
 import {getDeleteSubmission} from '@/api/submission'
+import {getLeftSubmissionTime} from '@/api/submission'
+import {postUploadSubmission} from '@/api/submission'
 
 export default {
-  name: "SubmissionStu",
-  components:{
+  name: 'SubmissionStu',
+  components: {
     // drawer:timeDrawer,
   },
-  data(){
-    return{
-      submissionList:[
+  data () {
+    return {
+      sbmObj: null,
+      submissionList: [
         {
-          index:1,
+          index: 1,
           submId: 0,
           title: 'no-back-end test',
-          description:'test without init from back-end',
-          createdTime:'2020-12-15 15:03',
-          modifiedTime:'2020-12-15 15:03',
-          dueTime:'2020-12-15 15:03',
+          description: 'test without init from back-end',
+          createdTime: '2020-12-15 15:03',
+          modifiedTime: '2020-12-15 15:03',
+          dueTime: '2020-12-15 15:03',
           finalTime: '2020-12-15 15:03',
           maxSubmissionTime: 10,
-          status: 'S',
-          resources: 'test',
+          status: 'S'
         },
         {
-          index:2,
+          index: 2,
           submId: 0,
           title: 'no-back-end test2',
-          description:'test2 without init from back-end',
-          createdTime:'2020-12-15 15:04',
-          modifiedTime:'2020-12-15 15:04',
-          dueTime:'2020-12-15 15:04',
+          description: 'test2 without init from back-end',
+          createdTime: '2020-12-15 15:04',
+          modifiedTime: '2020-12-15 15:04',
+          dueTime: '2020-12-15 15:04',
           finalTime: '2020-12-15 15:04',
           maxSubmissionTime: null,
-          status: 'E',
-          resources: 'test2',
+          status: 'E'
         }],
-      fileList:[],
-      Status: [{
-        status: 'S',
-        label: 'Start'
-      }, {
-        status: 'E',
-        label: 'End'
-      }, {
-        status: 'R',
-        label: 'Restart'
-      }],
+      fileList: [],
       status: '',
-      submitDrawer:false,
-      eventId:0,
+      submitDrawer: false,
+      eventId: 0,
       submitSize: '50%',
       currentTitle: '',
+      currentSbmId: 0,
+      currentProjInsId: 0
     }
-
   },
   mounted () {
     this.initSubmissionList()
   },
-  methods:{
+  methods: {
     dateTimeFormatter (row, col) {
       return getDatetimeStr(row.modifiedTime)
     },
-    initSubmissionList(){
-      this.submissionList.splice(0, this.submissionList.length)   // remove all
+    initSubmissionList () {
+      this.submissionList.splice(0, this.submissionList.length) // remove all
       let projId = this.$store.state.proj.projId
 
       getSubmissionList(projId).then(resp => {
@@ -172,26 +164,27 @@ export default {
           })
           return false
         }
-        this.submissionList.splice(0, this.submissionList.length)   // remove all
+        this.submissionList.splice(0, this.submissionList.length) // remove all
 
         for (let i = 0; i < resp.data.data.length; i++) {
           // alert(resp.data.data[i].submission.title)
           // alert(resp.data.data[i].teacher.tchName)
-          let dueTime = resp.data.data[i].submission.dueTime == null? null: getDatetimeStr(resp.data.data[i].submission.dueTime)
-          let finalTime = resp.data.data[i].submission.finalTime == null? null:getDatetimeStr(resp.data.data[i].submission.finalTime)
+          let dueTime = resp.data.data[i].submission.dueTime == null ? null : getDatetimeStr(resp.data.data[i].submission.dueTime)
+          let finalTime = resp.data.data[i].submission.finalTime == null ? null : getDatetimeStr(resp.data.data[i].submission.finalTime)
+          // eslint-disable-next-line camelcase
           let new_row = {
-            index: i+1,
-            submId:resp.data.data[i].submission.submId,
+            index: i + 1,
+            submId: resp.data.data[i].submission.submId,
             title: resp.data.data[i].submission.title,
-            description:resp.data.data[i].submission.description,
+            description: resp.data.data[i].submission.description,
             // createdTime:getDatetimeStr(resp.data.data[i].submission.createdTime),
             // modifiedTime:getDatetimeStr(resp.data.data[i].submission.modifiedTime),
             // dueTime:getDatetimeStr(resp.data.data[i].submission.dueTime),
             // finalTime:getDatetimeStr(resp.data.data[i].submission.finalTime),
-            createdTime:getDatetimeStr(resp.data.data[i].submission.createdTime),
-            modifiedTime:getDatetimeStr(resp.data.data[i].submission.modifiedTime),
-            dueTime:dueTime,
-            finalTime:finalTime,
+            createdTime: getDatetimeStr(resp.data.data[i].submission.createdTime),
+            modifiedTime: getDatetimeStr(resp.data.data[i].submission.modifiedTime),
+            dueTime: dueTime,
+            finalTime: finalTime,
             maxSubmissionTime: resp.data.data[i].submission.maxSubmissionTime,
             status: resp.data.data[i].submission.status,
             resources: resp.data.data[i].submission.resources,
@@ -205,34 +198,56 @@ export default {
         console.log('fail in getSubmissionList. message=' + failResp.message)
       })
     },
-    submit(index, submId){
+    submit (sbmObj) {
       // alert(index)
       this.submitDrawer = true
-      this.currentTitle = this.submissionList[index - 1].title
+      this.sbmObj = sbmObj
+      // this.currentTitle = this.submissionList[index - 1].title
+      // this.currentSbmId = this.submissionList[index - 1].submId
+      // alert(typeof this.currentSbmId)
+      alert(typeof ('' + this.currentSbmId))
       // alert(this.currentTitle)
       // this.initAllSubmissionList(submId)
-      //test without init
+      // test without init
     },
-    submitUpload() {
-      this.$refs.upload.submit();
+    uploadFiles (file) {
+      let formData = new window.FormData()
+      // for (let i = 0; i < this.fileList.length; i++) {
+      //   formData.append('file', file)
+      // }
+      console.log(this.sbmObj)
+
+      formData.append('files', file)
+      formData.append('sbmId', this.sbmObj.submId)
+      formData.append('projId', this.$store.state.proj.projId)
+      postUploadSubmission(formData).then(resp => {
+        // console.log('In uploadExcel: %o', resp)
+        console.log('???')
+      }).catch(failResp => {
+        console.log('fail in uploadExcel: %o', failResp)
+      })
+      this.submitDrawer = false
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
+    submitUpload () {
+      this.$refs.uploadfiles.submit()
     },
-    handlePreview(file) {
-      console.log(file);
+    handleRemove (file, fileList) {
+      console.log(file, fileList)
     },
-    handleChange(value) {
-      console.log(value);
+    handlePreview (file) {
+      console.log(file)
     },
-    openEvent(val){
+    handleChange (value) {
+      console.log(value)
+    },
+    openEvent (val) {
       this.drawerCtrl = true
       this.eventId = val
       console.log(val)
     },
-    closeEvent(){
+    closeEvent () {
       this.drawerCtrl = false
-    },
+    }
   }
 
 }
@@ -273,4 +288,3 @@ export default {
   outline: 0;
 }
 </style>
-

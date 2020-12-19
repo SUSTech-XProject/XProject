@@ -13,11 +13,12 @@ export function getTeamDetail (teamId) {
 }
 
 export function postApply (msg,teamId) {
+  console.log(teamId)
   return Vue.prototype.$axios.post('/student/team/apply', {
-    params:{
+
       message:msg,
       projInstId: parseInt(teamId),
-    }
+
   })
 }
 
