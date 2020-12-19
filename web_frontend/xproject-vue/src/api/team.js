@@ -81,9 +81,7 @@ export function postInviteStudents (roleIdList, projId) {
     stdRoleIdList: roleIdList
   }
 
-  return Vue.prototype.$axios.post('/student/team/invite', {
-    inviteParamVO: inviteParamVO
-  })
+  return Vue.prototype.$axios.post('/student/team/invite', inviteParamVO)
 }
 
 export function postQuitTeam (projId) {
@@ -93,8 +91,7 @@ export function postQuitTeam (projId) {
 }
 
 export function postReplyApplication (applyReplyParamVO) {
-  return Vue.prototype.$axios.post('/student/team/reply/application', applyReplyParamVO
-  )
+  return Vue.prototype.$axios.post('/student/team/reply/application', applyReplyParamVO)
 }
 
 export function getTeamMessage (projInstId) {
@@ -110,9 +107,7 @@ export function getPersonalMessage (projId) {
 }
 
 export function postEditedTeamInfo (piuVO) {
-  return Vue.prototype.$axios.post('/student/team/change/info', {
-    piuVO: piuVO
-  })
+  return Vue.prototype.$axios.post('/student/team/change/info', piuVO)
 }
 
 export function getStuProj (roleId) {
