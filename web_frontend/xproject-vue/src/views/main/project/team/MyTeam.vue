@@ -374,8 +374,6 @@ export default {
           } else {
             this.haveTeam = true
 
-            console.log(infoDict)
-
             this.team_avatar = infoDict.iconUrl
             this.status = infoDict.status
             this.teamName = infoDict.teamName
@@ -392,6 +390,8 @@ export default {
             this.newTopic = infoDict.topic
 
             this.projInstId = infoDict.projInstId
+
+            this.noticeList.splice(this.noticeList.length)
 
             if (this.projInstId != null) {
               getTeamMessage(this.projInstId).then(resp => {
@@ -413,6 +413,26 @@ export default {
                 this.$message.error(failResp.message)
               })
             }
+
+            getPersonalMessage(this.$store.state.proj.projId).then(resp => {
+              if (resp.data.code === 200) {
+                let infoDict = resp.data.data
+                console.log(infoDict)
+
+                for (let i = 0; i < infoDict.length; ++i) {
+                  infoDict[i].createdTime = getDatetimeStr(infoDict[i].createdTime)
+                  this.noticeList.push(infoDict[i])
+                }
+
+                this.noticeList.sort(function (a, b) {
+                  return Date.parse(b.createdTime) - Date.parse(a.createdTime)
+                })
+              } else if (resp.data.code === 400) {
+                this.$message.error(resp.data.message)
+              }
+            }).catch(failResp => {
+              this.$message.error(failResp.message)
+            })
           }
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
@@ -428,28 +448,6 @@ export default {
         if (resp.data.code === 200) {
           this.ungroupList = resp.data.data
           this.avaStatus = new Array(this.ungroupList.length).fill(true)
-        } else if (resp.data.code === 400) {
-          this.$message.error(resp.data.message)
-        }
-      }).catch(failResp => {
-        this.$message.error(failResp.message)
-      })
-
-      getPersonalMessage(this.$store.state.proj.projId).then(resp => {
-        if (resp.data.code === 200) {
-          let infoDict = resp.data.data
-
-          console.log(infoDict)
-          this.noticeList = []
-
-          for (let i = 0; i < infoDict.length; ++i) {
-            infoDict[i].createdTime = getDatetimeStr(infoDict[i].createdTime)
-            this.noticeList.push(infoDict[i])
-          }
-
-          this.noticeList.sort(function (a, b) {
-            return Date.parse(b.createdTime) - Date.parse(a.createdTime)
-          })
         } else if (resp.data.code === 400) {
           this.$message.error(resp.data.message)
         }
@@ -477,49 +475,61 @@ export default {
     },
 
     handleAccept (notice) {
-      let applyReplyParamVO = {
-        'accepted': true,
-        'message': null,
-        'msgId': notice.msgId
-      }
-
-      console.log(notice.msgId)
-
-      postReplyApplication(applyReplyParamVO).then(resp => {
-        console.log('get response : ' + resp)
-        if (resp.data.code === 200) {
-          notice.decided = true
-          notice.result = 'accepted'
-
-          // this.$message.success('Accept success')
-          this.$message.success(resp.data.message)
-        } else if (resp.data.code === 400) {
-          this.$message.error(resp.data.message)
+      this.$confirm('Confirm to accept?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(()=>{
+        let applyReplyParamVO = {
+          'accepted': true,
+          'message': null,
+          'msgId': notice.msgId
         }
-      }).catch(failResp => {
-        this.$message.error(failResp.message)
+
+        postReplyApplication(applyReplyParamVO).then(resp => {
+          console.log('get response : ' + resp)
+          if (resp.data.code === 200) {
+            // notice.decided = true
+            // notice.result = 'accepted'
+            this.init()
+            this.$message.success(resp.data.message)
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
+        })
+      }).catch(() => {
+        this.$message.info('Accept canceled')
       })
     },
     handleReject (notice) {
-      let applyReplyParamVO = {
-        'accepted': false,
-        'message': this.rejectReason,
-        'msgId': notice.msgId
-      }
-      console.log(notice.msgId)
-      postReplyApplication(applyReplyParamVO).then(resp => {
-        console.log('get response : ' + resp)
-        if (resp.data.code === 200) {
-          notice.decided = true
-          notice.result = 'rejected'
-
-          // this.$message.success('Reject success')
-          this.$message.success(resp.data.message)
-        } else if (resp.data.code === 400) {
-          this.$message.error(resp.data.message)
+      this.$confirm('Confirm to reject?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(()=>{
+        let applyReplyParamVO = {
+          'accepted': false,
+          'message': this.rejectReason,
+          'msgId': notice.msgId
         }
-      }).catch(failResp => {
-        this.$message.error(failResp.message)
+
+        postReplyApplication(applyReplyParamVO).then(resp => {
+          console.log('get response : ' + resp)
+          if (resp.data.code === 200) {
+            // notice.decided = true
+            // notice.result = 'rejected'
+            this.init()
+            this.$message.success(resp.data.message)
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
+        })
+      }).catch(() => {
+        this.$message.info('Reject canceled')
       })
     },
     handleMessageConfirm (notice) {
