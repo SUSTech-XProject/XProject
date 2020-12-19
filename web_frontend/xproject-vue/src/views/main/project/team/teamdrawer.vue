@@ -135,7 +135,6 @@ export default {
           cancelButtonText: 'cancel',
           type: 'info'
         }).then(() => {
-          //后台发送！！！
           postApply(msg, this.teamID
           ).then(resp =>{
             if(resp.data.code===200){
@@ -168,11 +167,7 @@ export default {
       getMyTeamDetail(this.$store.state.proj.projId).then(resp => {
         if (resp.data.code === 200) {
           let infoDict = resp.data.data
-
-          if (infoDict == null) {
-            this.haveTeam = false
-          } else {
-            this.haveTeam = true}
+          this.haveTeam = infoDict != null;
         }
       })
       getTeamDetail(teamId).then(resp => {
