@@ -5,9 +5,12 @@ export function getEATaskList(projId){
     params:{projId:projId}
   })
 }
-export function postEventInstApply(){
-  return Vue.prototype.$axios.post('',{
-
+export function postEventInstApply(eventInstId,projId){
+  return Vue.prototype.$axios.post('/student/event/inst/apply',null,{
+    params:{
+      eventInstId:parseInt(eventInstId),
+      projId:parseInt(projId)
+    }
   })
 }
 export function postEventDeletion(taskID){
@@ -49,5 +52,20 @@ export function postEventInstDeletion(list){
 export function postEventInstClearTch(list){
   return Vue.prototype.$axios.post('/teacher/event/inst/clear',{
     eventInstIdList:list
+  })
+}
+export function postEventInstAuto(eaTaskList,projInstList){
+  return Vue.prototype.$axios.post('/teacher/event/inst/manage',{
+    eventInstIdList:eaTaskList,
+    projInstIdList:projInstList
+  })
+}
+
+export function postEventInstClearStd(eventInstId,projId){
+  return Vue.prototype.$axios.post('/student/event/inst/clear',null,{
+    params:{
+      eventInstId:parseInt(eventInstId),
+      projId:parseInt(projId)
+    }
   })
 }
