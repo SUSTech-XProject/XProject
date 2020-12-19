@@ -6,36 +6,37 @@ export function getSubmissionList (projId) {
   })
 }
 
-export function getAllSubmissionList (sbmId) {
+export function getSbmInsList (sbmId, projId) {
   return Vue.prototype.$axios.get('/teacher/project/submission-ins', {
-    params: {submId: sbmId}
+    params: {
+      sbmId: sbmId,
+      projId: projId
+    }
   })
 }
 
-export function postAddSubmission (projId, title, description, dueTime, finalTime, maxSubmission, status, resources) {
-    return Vue.prototype.$axios.post('/teacher/project/sub/add', {
+export function postAddSubmission (projId, title, description, dueTime, finalTime, maxSubmission, status) {
+  return Vue.prototype.$axios.post('/teacher/project/sub/add', {
     projId: projId,
     title: title,
     description: description,
     dueTime: dueTime,
     finalTime: finalTime,
     maxSubmission: maxSubmission,
-    status: status,
-    resources: resources
+    status: status
   })
 }
 
 export function postModifySubmission (projId, sbm_id, title, description, dueTime, finalTime, maxSubmission, status, resources) {
   return Vue.prototype.$axios.post('/teacher/project/sub/modify', {
     projId: projId,
-    sbm_id:sbm_id,
+    sbm_id: sbm_id,
     title: title,
     description: description,
     dueTime: dueTime,
     finalTime: finalTime,
     maxSubmission: maxSubmission,
-    status: status,
-    resources: resources
+    status: status
   })
 }
 
@@ -45,4 +46,45 @@ export function getDeleteSubmission (sbmId) {
       sbmId: sbmId
     }
   })
+}
+
+export function getLeftSubmissionTime (projId,submId) {
+  return Vue.prototype.$axios.get('/student/project/sub/sbm-left', {
+    params: {
+      projId: projId,
+      submId: submId
+    }
+  })
+}
+
+// export function postUploadSubmission(files, sbmId, projInsId){
+//   return Vue.prototype.$axios.post('/student/submission/upload', {
+//     files: files,
+//     sbmId: sbmId,
+//     projInsId: projInsId
+//   })
+// }
+export function postUploadSubmission (formData) {
+  // eslint-disable-next-line no-unused-vars
+  let options = {
+    url: '/student/submission/upload',
+    data: formData,
+    method: 'post',
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }
+  return Vue.prototype.$axios(options)
+}
+
+export function postImportFromExcel (formData) {
+  let options = {
+    url: '/teacher/students/import',
+    data: formData,
+    method: 'post',
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }
+  return Vue.prototype.$axios(options)
 }
