@@ -11,7 +11,9 @@
           <el-card class="base-card">
             <el-table
               class="inst-table"
+              v-loading="tableLoading"
               :data="eventList"
+              max-height="450px"
               empty-text="No Data Found"
               style="width: 100%;margin-top: 0"
               @selection-change="handleSelectionChange">
@@ -37,6 +39,8 @@
             <el-table
               ref="multipleTable"
               :data="teamList"
+              v-loading="tableLoading"
+              max-height="450px"
               empty-text="No Data Found"
               tooltip-effect="dark"
               style="width: 100%"
@@ -63,7 +67,7 @@
     <footer>
       <div style="margin-left: 80px">
         <el-button @click="closeManaging">Cancel</el-button>
-        <el-button type="primary" @click="submit">Create</el-button>
+        <el-button type="primary" @click="submit">Execute</el-button>
       </div>
     </footer>
     </el-scrollbar>
@@ -73,7 +77,7 @@
 
 <script>
 import {getTeamInfoList} from '@/api/team'
-import {postAutoForming} from '@/api/team'
+import {getEventTaskList, postEventInstAuto} from '@/api/event'
 
 
 export default {
@@ -140,25 +144,31 @@ name: "AutoForming",
       ],
 
       //
+      tableLoading:false,
       topicFilter:[],
       options:['Random','Team First','Size Balance'],
       form:{
         teamSelection: [],
         eventSelection:[],
-        strategy:'',
-        autoSubmit:false
       },
       formLabelWidth: '120px'
     }
   },
   mounted () {
-    this.init()
+    this.reLoad()
   },
   methods:{
     //initialize
     init(){
       this.initTeams()
-      //initEvent
+      this.initEvent()
+    },
+    reLoad(){
+      this.tableLoading = true
+      this.init()
+      setTimeout(()=>{
+        this.tableLoading = false
+      },1000)
     },
     initTeams(){
       let id = this.$store.state.proj.projId
@@ -206,32 +216,75 @@ name: "AutoForming",
       }
       return finalResult
     },
-    //initEvent
+    initEvent(){
+      console.log(this.eventId)
+      getEventTaskList(this.eventId).then(resp=>{
+        if (resp.data.code !== 200) {
+          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+          return false
+        }
+        let tasks = resp.data.data
+        console.log(tasks)
+        this.eventList.splice(0,this.eventList.length)
+        for (let i = 0; i <tasks.length ; i++) {
+          let task = tasks[i]
+          if(task.eventInst.projInstId!==null){continue}
+          this.eventList.push({
+            id:task.eventInst.eventId,
+            date:task.eventInst.date.substr(0,10),
+            week:task.eventInst.week,
+            time:task.eventInst.startTime.substr(11,5)+"-"+task.eventInst.endTime.substr(11,5),
+            statue:task.eventInst.status,
+            teamInfo:''
+          })
+        }
+
+      }).catch(failResp=>{
+        console.log('fail in getEventTasklist. message=' + failResp.message)
+      })
+    },
+
 
     //form managing
     closeManaging(){
       this.$emit('closeManaging','msg')
     },
     submit(){
-      console.log(this.form)
+
       //this.closeManaging()
       if(this.form.teamSelection.length===0){
         this.$message.error('No team selected yet')
       }else if(this.form.eventSelection.length===0){
         this.$message.error('No event selected yet')
       }else{
+        console.log(this.form)
+        //team:index
+        //event:id
         this.$confirm('Execute auto forming?', 'Warning', {
           confirmButtonText: 'Confirm',
           cancelButtonText: 'Cancel',
           type: 'info'
         }).then(()=>{
           //todo 修改函数
-          postAutoForming(this.form).then(resp=>{
+          let teamsId = []
+          let eventsId = []
+          for (let i = 0; i <this.form.teamSelection.length ; i++) {
+            teamsId.push(parseInt(this.form.teamSelection[i].index))
+            console.log(this.form.teamSelection[i].index)
+          }
+          for (let i = 0; i <this.form.eventSelection.length ; i++) {
+            eventsId.push(parseInt(this.form.eventSelection[i].id))
+          }
+          console.log(eventsId)
+          console.log(teamsId)
+          postEventInstAuto(eventsId,teamsId).then(resp=>{
             if (resp.data.code === 200) {
-              let num = resp.data.data
+              let msg = resp.data.message
               this.$message({
                 type: 'success',
-                message: 'Success'
+                message: msg
               });
               this.closeManaging()
             } else {
@@ -275,23 +328,29 @@ name: "AutoForming",
       this.dialogFormVisible = val
       this.initTeams()
     },
-    teamIn(val){
-      if(val.length===0){
-        this.initTeams()
-        //this.form.teamSelection = []
-      }else{
-        this.teamList = val
-        //this.form.teamSelection = val
-      }
-    },
     eventIn(val){
-      this.stuList = val
+      if(val.length===0){
+        this.initEvent()
+      }else{
+        let list = []
+        for (let i = 0; i <val.length ; i++) {
+          if(val[i].teamInfo===''){
+            list.push(val[i])
+          }
+        }
+        this.eventList = list
+      }
+
+    },
+    eventId(val){
+      this.reLoad()
     }
 
   },
   props:{
     visible:{type: Boolean,default:false},
-    eventIn:{type:Array}
+    eventIn:{type:Array},
+    eventId:{type:Number,default:0}
   }
 }
 </script>

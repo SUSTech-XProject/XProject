@@ -5,7 +5,5 @@ export function getAccountInfo () {
 }
 
 export function postSelfIntroduction (acInfoStdUpdateVO) {
-  return Vue.prototype.$axios.post('/student/self-intro', {
-    acInfoStdUpdateVO: acInfoStdUpdateVO
-  })
+  return Vue.prototype.$axios.post('/student/self-intro', acInfoStdUpdateVO)
 }
