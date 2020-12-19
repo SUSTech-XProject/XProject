@@ -119,7 +119,6 @@
       size="80%">
 
       <div align="right" style="margin-right: 40px;">
-        <el-button type="primary" @click="updateScore">Scoring</el-button>
         <el-button @click="cancelScoring">Cancel</el-button>
       </div>
 
@@ -134,13 +133,14 @@
               <el-avatar :fit="'fill'" :src="member.iconUrl"
                          style="vertical-align:middle; margin-right: 10px; cursor: pointer"
               ></el-avatar>
-              <span style="vertical-align:middle;">{{ member.stdName }}</span>
+              <span style="vertical-align:middle;">{{ member.stdNo }}</span>
+              <span style="vertical-align:middle; margin-left: 3px;">{{ member.stdName }}</span>
 
               <span v-if="props.row.type==='Point'">
                 <el-input v-model="props.row.content"
                           style="width: 50px; margin-left: 20px;">
                 </el-input>
-                / {{ props.row.baseContent }}, with {{ props.row.laborDivision }} division of labor
+                / {{ props.row.baseContent }}
               </span>
 
               <span v-else-if="props.row.type==='Grade'||props.row.type==='PF'">
@@ -150,13 +150,18 @@
                              :label="grade.label" :value="grade.value">
                   </el-option>
                 </el-select>
-                , with {{ props.row.laborDivision }} division of labor
               </span>
 
               <el-input v-model="props.row.comment"
                         placeholder="Comment here..."
                         style="width: 250px; margin-left: 20px;">
               </el-input>
+
+              <div align="right" style="margin-right: 40px;">
+                <el-button type="primary"
+                           @click="updateScore(props.row)">Scoring</el-button>
+              </div>
+
             </div>
           </template>
         </el-table-column>
@@ -216,7 +221,6 @@ export default {
           type: 'Point',
           content: '',
           baseContent: 100,
-          laborDivision: '40%',
           comment: '1.2 no pic -2; 1.4 no text -2'
         },
         {
@@ -227,7 +231,6 @@ export default {
           type: 'Grade',
           content: '',
           baseContent: '',
-          laborDivision: '90%',
           comment: ''
         },
         {
@@ -238,7 +241,6 @@ export default {
           type: 'Comment',
           content: '',
           baseContent: '',
-          laborDivision: '10%',
           comment: ''
         },
       ],
@@ -478,32 +480,32 @@ export default {
       //   console.log('fail in getGradeList. message=' + failResp.message)
       // })
     },
-    updateScore () {
-      postNewGrade().then(resp => {
-        if (resp.data.code === 200) {
-          // getGradeList(this.$store.state.proj.projId).then(resp => {
-          //   if (resp.data.code !== 200) {
-          //     this.$message.error(resp.data.code + '\n' + resp.data.message)
-          //     return false
-          //   }
-          //   this.gradeList.splice(0, this.gradeList.length)   // remove all
-          //   for (let i = 0; i < resp.data.data.length; i++) {
-          //     let record = resp.data.data[i]
-          //     record['listIdx'] = i
-          //     this.gradeList.push(record)
-          //   }
-          //   console.log(this.gradeList)
-          // }).catch(failResp => {
-          //   console.log('fail in getGradeList. message=' + failResp.message)
-          // })
-
-          this.$message.success('Add success')
-        } else if (resp.data.code === 400) {
-          this.$message.error(resp.data.message)
-        }
-      }).catch(failResp => {
-        this.$message.error(failResp.message)
-      })
+    updateScore (row) {
+      // postNewGrade().then(resp => {
+      //   if (resp.data.code === 200) {
+      //     // getGradeList(this.$store.state.proj.projId).then(resp => {
+      //     //   if (resp.data.code !== 200) {
+      //     //     this.$message.error(resp.data.code + '\n' + resp.data.message)
+      //     //     return false
+      //     //   }
+      //     //   this.gradeList.splice(0, this.gradeList.length)   // remove all
+      //     //   for (let i = 0; i < resp.data.data.length; i++) {
+      //     //     let record = resp.data.data[i]
+      //     //     record['listIdx'] = i
+      //     //     this.gradeList.push(record)
+      //     //   }
+      //     //   console.log(this.gradeList)
+      //     // }).catch(failResp => {
+      //     //   console.log('fail in getGradeList. message=' + failResp.message)
+      //     // })
+      //
+      //     this.$message.success('Add success')
+      //   } else if (resp.data.code === 400) {
+      //     this.$message.error(resp.data.message)
+      //   }
+      // }).catch(failResp => {
+      //   this.$message.error(failResp.message)
+      // })
     },
     cancelScoring () {
       this.$confirm('Cancel scoring？')
