@@ -13,7 +13,7 @@
           <el-col :span="4" :offset="2">
             <div>
               <!--                <el-avatar :size="200"><div style="font-size: 80px; text-align:center; margin-top: -5px">n</div></el-avatar>-->
-              <el-avatar src="http://wx1.sinaimg.cn/large/0072GgNply1g5takxmar5j309q09w3yl.jpg"
+              <el-avatar :src="teamURL"
                          :size="150"></el-avatar>
             </div>
           </el-col>
@@ -46,12 +46,12 @@
                 <div v-for="stu in teamMembers">
                   <el-row>
                     <el-col :span="3" class="left">
-                      <el-avatar src="https://ww1.sinaimg.cn/thumb150/006z25tvly1genhm1qn9vj30tc0t9wi8.jpg"
-                                 :size="50"></el-avatar>
+                      <span @click.native:="openDrawer(stu)">
+                        <el-avatar :src="stu.iconUrl" :size="50"></el-avatar>
+                      </span>
                     </el-col>
                     <el-col :span="12">
                       <div
-                        @click.native:="openDrawer(stu)"
                         style="font-size: 20px; padding:0; text-align:left; margin-top: 22px">
                         {{ stu.username }}</div>
                     </el-col>
@@ -71,8 +71,14 @@
       ></drawer>
 
       <footer>
-        <div style="margin-left: 80px">
-          <el-button type = "primary" @click="confirmed">Apply</el-button>
+        <div v-if="this.$store.state.role.roleType!=='Teacher'" style="margin-left: 80px">
+          <span v-if="haveTeam">
+            <el-button type = "info" disabled @click="confirmed">Apply</el-button>
+          </span>
+          <span v-else>
+            <el-button type = "primary" @click="confirmed">Apply</el-button>
+          </span>
+
         </div>
       </footer>
 
@@ -82,7 +88,7 @@
 </template>
 
 <script>
-import {getTeamDetail} from '@/api/team'
+import {getMyTeamDetail, getTeamDetail} from '@/api/team'
 import {postApply} from '@/api/team'
 import stuInfoDrawer from '@/views/main/project/team/stuInfoDrawer'
 
@@ -96,11 +102,13 @@ export default {
       size:'62%',
       teamDrawer:'',
       teamID:'',
+      haveTeam:false,
       teamName:'',
       teamTopic:'',
       teamSta:'',
       teamTags:[],
       teamIntro:'',
+      teamURL:'',
       teamMembers:[],
       isConfirmed:false,
       tagType:['',"success","warning","danger","info"],
@@ -116,36 +124,52 @@ export default {
 
     },
     confirmed(){
-      this.$confirm('Apply for this team?', 'Alert', {
-        confirmButtonText: 'confirm',
-        cancelButtonText: 'cancel',
-        type: 'info'
-      }).then(() => {
-        //后台发送！！！
-        postApply(
-          //this.$store.state.role.username,
-          this.teamID
-        ).then(resp =>{
-          if(resp.data.code===200){
-            this.$message({
-              type: 'success',
-              message: 'Applied successfully'
-            });
-            this.refresh()
-          }else{
-            this.$message.error(resp.data.message)
-          }
-        }).catch(failResponse=>{
-          this.$message.error('Back-end no response')
-        })
-      }).catch(() => {
+      console.log(this.teamID)
+
+      this.$prompt('Please input application information:','Alert',{
+        confirmButtonText:'Submit',
+        cancelButtonText:'Cancel'
+      }).then(({msg})=>{
+        this.$confirm('Apply for this team?', 'Alert', {
+          confirmButtonText: 'confirm',
+          cancelButtonText: 'cancel',
+          type: 'info'
+        }).then(() => {
+          postApply(msg, this.teamID
+          ).then(resp =>{
+            if(resp.data.code===200){
+              this.$message({
+                type: 'success',
+                message: 'Applied successfully'
+              });
+              this.refresh()
+            }else{
+              this.$message.error(resp.data.message)
+            }
+          }).catch(failResponse=>{
+            this.$message.error('Back-end no response')
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'canceled'
+          });
+        });
+      }).catch(()=>{
         this.$message({
           type: 'info',
-          message: 'canceled'
+          message: 'Apply canceled'
         });
-      });
+      })
+
     },
     initTeam(teamId){
+      getMyTeamDetail(this.$store.state.proj.projId).then(resp => {
+        if (resp.data.code === 200) {
+          let infoDict = resp.data.data
+          this.haveTeam = infoDict != null;
+        }
+      })
       getTeamDetail(teamId).then(resp => {
         if (resp.data.code !== 200) {
           this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
@@ -162,11 +186,13 @@ export default {
         this.teamMembers = team.teamMemberList
         this.teamSta = this.teamMembers.length+"/"+team.targetMemNum
         this.teamTopic = team.topic
+        this.teamURL = team.iconUrl
         console.log(this.teamTags)
 
       })
     },
     openDrawer(val){
+      console.log("open stu drawer")
       this.drawerId = val.roleId
       this.memDrawer = true
     },

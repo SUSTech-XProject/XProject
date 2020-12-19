@@ -7,7 +7,5 @@ export function getProjOverview (projId) {
 }
 
 export function postProjectOverview (projectVO) {
-  return Vue.prototype.$axios.post('/teacher/update-overview', {
-    projectVO: projectVO
-  })
+  return Vue.prototype.$axios.post('/teacher/update-overview', projectVO)
 }

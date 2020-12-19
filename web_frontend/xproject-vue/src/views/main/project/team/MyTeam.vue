@@ -105,18 +105,15 @@
               <el-col :span="7">
                 <div v-if="notice.type==='Apply'">
 
-                  <div v-if="!notice.decided"
-                       style="margin-top: 20px">
+                  <div v-if="!notice.decided" style="margin-top: 20px">
                     <el-popover
                       placement="bottom"
-                      width="340"
-                      v-model="rejInfoVisible">
+                      width="340">
                       <div>
                         Reason:
-                        <el-input v-model="rejectReason" placeholder="Reason here..." style="width: 200px;"></el-input>
-                        <el-button @click="handleReject(notice)">
-                          Reply
-                        </el-button>
+                        <el-input v-model="rejectReason" placeholder="Reason here..."
+                                  style="width: 200px;"></el-input>
+                        <el-button @click="handleReject(notice)">Reply</el-button>
                       </div>
                       <el-button slot="reference">Reject</el-button>
                     </el-popover>
@@ -331,7 +328,6 @@ export default {
       tagInputVisible: false,
       tagInputValue: '',
 
-      rejInfoVisible: false,
       rejectReason: '',
 
       ungroupList: [],
@@ -378,8 +374,6 @@ export default {
           } else {
             this.haveTeam = true
 
-            console.log(infoDict)
-
             this.team_avatar = infoDict.iconUrl
             this.status = infoDict.status
             this.teamName = infoDict.teamName
@@ -396,6 +390,8 @@ export default {
             this.newTopic = infoDict.topic
 
             this.projInstId = infoDict.projInstId
+
+            this.noticeList.splice(this.noticeList.length)
 
             if (this.projInstId != null) {
               getTeamMessage(this.projInstId).then(resp => {
@@ -417,6 +413,26 @@ export default {
                 this.$message.error(failResp.message)
               })
             }
+
+            getPersonalMessage(this.$store.state.proj.projId).then(resp => {
+              if (resp.data.code === 200) {
+                let infoDict = resp.data.data
+                console.log(infoDict)
+
+                for (let i = 0; i < infoDict.length; ++i) {
+                  infoDict[i].createdTime = getDatetimeStr(infoDict[i].createdTime)
+                  this.noticeList.push(infoDict[i])
+                }
+
+                this.noticeList.sort(function (a, b) {
+                  return Date.parse(b.createdTime) - Date.parse(a.createdTime)
+                })
+              } else if (resp.data.code === 400) {
+                this.$message.error(resp.data.message)
+              }
+            }).catch(failResp => {
+              this.$message.error(failResp.message)
+            })
           }
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
@@ -432,29 +448,6 @@ export default {
         if (resp.data.code === 200) {
           this.ungroupList = resp.data.data
           this.avaStatus = new Array(this.ungroupList.length).fill(true)
-        } else if (resp.data.code === 400) {
-          this.$message.error(resp.data.message)
-        }
-      }).catch(failResp => {
-        this.$message.error(failResp.message)
-      })
-
-      getPersonalMessage(this.$store.state.proj.projId).then(resp => {
-        if (resp.data.code === 200) {
-          let infoDict = resp.data.data
-
-          console.log(infoDict)
-          for (let i = 0; i < infoDict.length; ++i) {
-            infoDict[i].createdTime = getDatetimeStr(infoDict[i].createdTime)
-            this.noticeList.push(infoDict[i])
-          }
-
-          this.noticeList.sort(function (a, b) {
-            return Date.parse(b.createdTime) - Date.parse(a.createdTime)
-          })
-
-          console.log('notice list')
-          console.log(this.noticeList)
         } else if (resp.data.code === 400) {
           this.$message.error(resp.data.message)
         }
@@ -482,52 +475,62 @@ export default {
     },
 
     handleAccept (notice) {
-      //TODO: logic
-      // postReplyApplication(notice.msgId, true, null).then(resp => {
-      //   console.log('get response : ' + resp)
-      //   if (resp.data.code === 200) {
-      // notice.decided = true
-      // notice.result = 'accepted'
-      //
-      //     this.$alert('Quit success', 'Tip', {
-      //       confirmButtonText: 'OK'
-      //     })
-      //   } else if (resp.data.code === 400) {
-      //     console.log(resp.data.message)
-      //     this.$alert(resp.data.message, 'Tip', {
-      //       confirmButtonText: 'OK'
-      //     })
-      //   }
-      // }).catch(failResp => {
-      //   this.$alert('Error ' + failResp.message, 'Tip', {
-      //     confirmButtonText: 'OK'
-      //   })
-      // })
+      this.$confirm('Confirm to accept?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(()=>{
+        let applyReplyParamVO = {
+          'accepted': true,
+          'message': null,
+          'msgId': notice.msgId
+        }
+
+        postReplyApplication(applyReplyParamVO).then(resp => {
+          console.log('get response : ' + resp)
+          if (resp.data.code === 200) {
+            // notice.decided = true
+            // notice.result = 'accepted'
+            this.init()
+            this.$message.success(resp.data.message)
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
+        })
+      }).catch(() => {
+        this.$message.info('Accept canceled')
+      })
     },
     handleReject (notice) {
-      this.rejInfoVisible = false
+      this.$confirm('Confirm to reject?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(()=>{
+        let applyReplyParamVO = {
+          'accepted': false,
+          'message': this.rejectReason,
+          'msgId': notice.msgId
+        }
 
-      //TODO: upload reject and reason
-      // postReplyApplication(notice.msgId, true, this.rejectReason).then(resp => {
-      //   console.log('get response : ' + resp)
-      //   if (resp.data.code === 200) {
-      // notice.decided = true
-      // notice.result = 'rejected'
-      //
-      //     this.$alert('Quit success', 'Tip', {
-      //       confirmButtonText: 'OK'
-      //     })
-      //   } else if (resp.data.code === 400) {
-      //     console.log(resp.data.message)
-      //     this.$alert(resp.data.message, 'Tip', {
-      //       confirmButtonText: 'OK'
-      //     })
-      //   }
-      // }).catch(failResp => {
-      //   this.$alert('Error ' + failResp.message, 'Tip', {
-      //     confirmButtonText: 'OK'
-      //   })
-      // })
+        postReplyApplication(applyReplyParamVO).then(resp => {
+          console.log('get response : ' + resp)
+          if (resp.data.code === 200) {
+            // notice.decided = true
+            // notice.result = 'rejected'
+            this.init()
+            this.$message.success(resp.data.message)
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
+        })
+      }).catch(() => {
+        this.$message.info('Reject canceled')
+      })
     },
     handleMessageConfirm (notice) {
       notice.confirmed = true

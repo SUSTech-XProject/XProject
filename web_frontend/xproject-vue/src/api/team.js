@@ -12,9 +12,13 @@ export function getTeamDetail (teamId) {
   })
 }
 
-export function postApply (teamId) {
+export function postApply (msg,teamId) {
+  console.log(teamId)
   return Vue.prototype.$axios.post('/student/team/apply', {
-    teamId: teamId,
+
+      message:msg,
+      projInstId: parseInt(teamId),
+
   })
 }
 
@@ -78,9 +82,7 @@ export function postInviteStudents (roleIdList, projId) {
     stdRoleIdList: roleIdList
   }
 
-  return Vue.prototype.$axios.post('/student/team/invite', {
-    inviteParamVO: inviteParamVO
-  })
+  return Vue.prototype.$axios.post('/student/team/invite', inviteParamVO)
 }
 
 export function postQuitTeam (projId) {
@@ -89,13 +91,8 @@ export function postQuitTeam (projId) {
   })
 }
 
-export function postReplyApplication (msgId, accepted, reason) {
-  return Vue.prototype.$axios.post('/student/team/quit', {
-    //todo
-    msg_Id: msgId,
-    accepted: accepted,
-    reason: reason
-  })
+export function postReplyApplication (applyReplyParamVO) {
+  return Vue.prototype.$axios.post('/student/team/reply/application', applyReplyParamVO)
 }
 
 export function getTeamMessage (projInstId) {
@@ -111,9 +108,7 @@ export function getPersonalMessage (projId) {
 }
 
 export function postEditedTeamInfo (piuVO) {
-  return Vue.prototype.$axios.post('/student/team/change/info', {
-    piuVO: piuVO
-  })
+  return Vue.prototype.$axios.post('/student/team/change/info', piuVO)
 }
 
 export function getStuProj (roleId) {

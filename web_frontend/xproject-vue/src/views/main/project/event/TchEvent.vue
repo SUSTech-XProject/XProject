@@ -184,8 +184,8 @@ export default {
             title: EA.eaTask.title,
             description:EA.eaTask.description ,
             mode: EA.eaTask.stdAdaptable,
-            //createdTime: EA.eaTask.createdTime.substr(0,10),
-            modifiedTime: EA.eaTask.dueTime,
+            createdTime: EA.eaTask.createdTime.substr(0,10)+' '+EA.eaTask.createdTime.substr(11,8),
+            modifiedTime: EA.eaTask.dueTime.substr(0,10)+' '+EA.eaTask.dueTime.substr(11,8),
           })
         }
 

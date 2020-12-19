@@ -27,6 +27,7 @@
         class="inst-table"
         :data="tableData"
         height="580px"
+        :default-sort="{prop: 'date', order: 'increasing'}"
         v-loading="tableLoading"
         :row-class-name="tableRowClassName"
         empty-text="No Data Found"
@@ -46,6 +47,12 @@
             <span v-if="scope.row.teamInfo===''">
               <el-button type="primary" plain size="mini" icon="el-icon-circle-plus-outline"
                          @click="apply(scope.row.id)">Apply</el-button>
+            </span>
+            <span v-else-if="scope.row.teamId===myTeamId">
+              <el-button type="success" plain disabled icon="el-icon-circle-check"
+                         size="mini">{{scope.row.teamInfo}}</el-button>
+              <el-button type="danger" plain icon="el-icon-remove-outline" @click="undo(scope.row.id)"
+                         size="mini">undo</el-button>
             </span>
             <span v-else>
             <el-button type="info" plain disabled icon="el-icon-circle-check"
@@ -100,12 +107,13 @@
 <script>
 import {
   getEventTaskList,
-  postEventInstApply,
+  postEventInstApply, postEventInstClearStd,
   postEventInstClearTch,
   postEventInstCreation,
   postEventInstDeletion
 } from '@/api/event'
 import ManageInst from '@/views/main/project/event/ManageInst'
+import {getMyTeamDetail} from '@/api/team'
 export default {
 name: "StuEvents",
   components:{managing:ManageInst},
@@ -119,6 +127,7 @@ name: "StuEvents",
       size:'80%',
       isTeacher:this.role,
       multipleSelection:[],
+      myTeamId:-1,
       //
       CreateVisible: false,
       form: {
@@ -138,16 +147,22 @@ name: "StuEvents",
     this.taskId = this.ID
   },
   mounted () {
-    this.init()
+    this.reLoad()
   },
   methods:{
     init(){
       console.log(this.taskId)
+      let projId = this.$store.state.proj.projId
+      getMyTeamDetail(projId).then(resp=>{
+        if(resp.data.code===200){
+          if(resp.data.data!==null){
+            this.myTeamId = resp.data.data.projInstId
+          }
+        }
+      })
       getEventTaskList(this.taskId).then(resp=>{
         if (resp.data.code !== 200) {
-          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
+          this.$message.error(resp.data.code + '\n' + resp.data.message)
           return false
         }
         let tasks = resp.data.data
@@ -161,7 +176,8 @@ name: "StuEvents",
             week:task.eventInst.week,
             time:task.eventInst.startTime.substr(11,5)+"-"+task.eventInst.endTime.substr(11,5),
             statue:task.eventInst.status,
-            teamInfo:task.eventInst.projInstId===null?'':'have team'
+            teamInfo:task.eventInst.projInstId===null?'':task.projInst.teamName,
+            teamId:task.eventInst.projInstId===null?-1:task.projInst.projInstId,
           })
         }
 
@@ -182,23 +198,23 @@ name: "StuEvents",
     },
     //stu
     apply(eventId){
+      let projId = this.$store.state.proj.projId
+      console.log(eventId)
       this.$confirm('Confirm selected teams?', 'Alert', {
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Cancel',
         type: 'info'
       }).then(()=>{
-        postEventInstApply().then(resp=>{
+        postEventInstApply(eventId,projId).then(resp=>{
           if (resp.data.code === 200) {
-            let num = resp.data.data
             this.$message({
               type: 'success',
               message: 'Applied successfully'
             });
+            this.reLoad()
           } else {
             this.$message.error(resp.data.message)
           }
-
-
         }).catch(failResp => {
           this.$message.error('Back-end no response')
         })
@@ -209,6 +225,35 @@ name: "StuEvents",
         });
       })
 
+    },
+    undo(eventId){
+      let projId = this.$store.state.proj.projId
+      console.log(eventId)
+      this.$confirm('Confirm selected teams?', 'Alert', {
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        type: 'info'
+      }).then(()=>{
+        postEventInstClearStd(eventId,projId).then(resp=>{
+          if (resp.data.code === 200) {
+            let num = resp.data.data
+            this.$message({
+              type: 'success',
+              message: 'Undo successfully'
+            });
+            this.reLoad()
+          } else {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error('Back-end no response')
+        })
+      }).catch(() =>{
+        this.$message({
+          type: 'info',
+          message: 'Canceled'
+        });
+      })
     },
     //tch
     createInst(){
