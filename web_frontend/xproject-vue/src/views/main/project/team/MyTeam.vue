@@ -29,7 +29,8 @@
         <div v-if="status==='Raw'" style="margin-top: 15px; align-items: center">
           <el-button @click="handleQuit()">Quit</el-button>
           <el-button @click="handleTeamConfirm()"
-                     type="primary">Confirm</el-button>
+                     type="primary">Confirm
+          </el-button>
         </div>
       </div>
 
@@ -357,7 +358,8 @@ export default {
   methods: {
     openDrawer (val) {
       console.log('pic clicked')
-      this.drawerId = val
+      console.log(val)
+      this.memId = val
       this.memDrawer = true
       console.log('clicked')
     },
@@ -450,6 +452,9 @@ export default {
           this.noticeList.sort(function (a, b) {
             return Date.parse(b.createdTime) - Date.parse(a.createdTime)
           })
+
+          console.log('notice list')
+          console.log(this.noticeList)
         } else if (resp.data.code === 400) {
           this.$message.error(resp.data.message)
         }
@@ -533,40 +538,36 @@ export default {
         cancelButtonText: 'cancel',
         type: 'warning'
       }).then(() => {
+        let piuVO = {
+          'description': this.newDescription,
+          'projId': this.$store.state.proj.projId,
+          'tags': JSON.stringify(this.newTagList),
+          'targetMemNum': this.newTargetMemNum,
+          'teamName': this.newTeamName,
+          'topic': this.newTopic
+        }
 
-        this.$message({
-          type: 'success',
-          message: 'Update success'
-        });
+        postEditedTeamInfo(piuVO).then(resp => {
+          console.log('get response : ' + resp)
+          if (resp.data.code === 200) {
+            this.description = this.newDescription
+            this.topic = this.newTopic
+            this.teamName = this.newTeamName
+            this.targetMemNum = this.newTargetMemNum
+            this.tagList = this.newTagList
+
+            this.$message.success('Update success')
+          } else if (resp.data.code === 400) {
+            console.log(resp.data.message)
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
+        })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: 'Update canceled'
-        });
-      });
-      // todo:upload newDescription
-      // postEditedTeamInfo(this.$store.state.proj.projId, this.description).then(resp => {
-      //   console.log('get response : ' + resp)
-      //   if (resp.data.code === 200) {
-      // this.description = this.newDescription
-      // this.topic = this.newTopic
-      // this.teamName = this.newTeamName
-      // this.targetMemNum = this.newTargetMemNum
-      // this.tagList = this.newTagList
-      //     this.$alert('Quit success', 'Tip', {
-      //       confirmButtonText: 'OK'
-      //     })
-      //   } else if (resp.data.code === 400) {
-      //     console.log(resp.data.message)
-      //     this.$alert(resp.data.message, 'Tip', {
-      //       confirmButtonText: 'OK'
-      //     })
-      //   }
-      // }).catch(failResp => {
-      //   this.$alert('Error ' + failResp.message, 'Tip', {
-      //     confirmButtonText: 'OK'
-      //   })
-      // })
+        this.$message.info('Update canceled')
+      })
+
     },
     handleCancel () {
       this.newDescription = this.description
@@ -587,27 +588,16 @@ export default {
             this.haveTeam = false
             this.status = ''
 
-            this.$alert('Quit success', 'Tip', {
-              confirmButtonText: 'OK'
-            })
+            this.$message.success('Quit success')
           } else if (resp.data.code === 400) {
             this.$message.error(resp.data.message)
           }
         }).catch(failResp => {
           this.$message.error(failResp.message)
         })
-
-        this.$message({
-          type: 'success',
-          message: 'Quit success'
-        });
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: 'Quit canceled'
-        });
-      });
-
+        this.$message.info('Quit canceled')
+      })
     },
 
     handleInvite (index) {
@@ -634,28 +624,19 @@ export default {
           console.log('get response : ' + resp)
           if (resp.data.code === 200) {
             this.inviteList = []
-
-            this.$alert('Changed success', 'Tip', {
-              confirmButtonText: 'OK'
-            })
+            this.$message.success('Change success')
           } else if (resp.data.code === 400) {
             this.$message.error(resp.data.message)
           }
         }).catch(failResp => {
           this.$message.error(failResp.message)
         })
-
-        this.$message({
-          type: 'success',
-          message: 'Invite success'
-        });
       }).catch(() => {
         this.$message({
           type: 'info',
           message: 'Invite canceled'
-        });
-      });
-
+        })
+      })
     },
     handleCancelInvite () {
       for (let i = 0; i < this.inviteList.length; ++i) {
@@ -699,7 +680,7 @@ export default {
       this.tagInputValue = ''
     },
 
-    handleTeamConfirm(){
+    handleTeamConfirm () {
       this.$confirm('Confirm to confirm?', 'Tip', {
         confirmButtonText: 'confirm',
         cancelButtonText: 'cancel',
@@ -708,27 +689,19 @@ export default {
         postTeamConfirmation([]).then(resp => {
           console.log('get response : ' + resp)
           if (resp.data.code === 200) {
-            this.$message({
-              type: 'success',
-              message: 'Confirm successfully'
-            })
+            this.$message.success('Confirm success')
           } else if (resp.data.code === 400) {
             this.$message.error(resp.data.message)
           }
         }).catch(failResp => {
           this.$message.error(failResp.message)
         })
-
-        this.$message({
-          type: 'success',
-          message: 'Confirm success'
-        });
       }).catch(() => {
         this.$message({
           type: 'info',
           message: 'Confirm canceled'
-        });
-      });
+        })
+      })
 
     }
   }

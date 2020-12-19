@@ -284,26 +284,19 @@ export default {
             this.formInfoList[3].value = this.newEmail
             this.newEmail = ''
 
-            this.$alert('Changed successfully', 'Tip', {
-              confirmButtonText: 'OK'
-            })
+            this.$message.success('Update success')
           } else if (resp.data.code === 400) {
             this.$message.error(resp.data.message)
           }
         }).catch(failResp => {
           this.$message.error(failResp.message)
         })
-
-        this.$message({
-          type: 'success',
-          message: 'Update success'
-        });
       }).catch(() => {
         this.$message({
           type: 'info',
           message: 'Update canceled'
-        });
-      });
+        })
+      })
     },
 
     isTeacher () {
