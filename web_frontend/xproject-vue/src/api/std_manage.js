@@ -34,9 +34,9 @@ export function getProjectListBySch () {
   return Vue.prototype.$axios.get('/teacher/students')
 }
 
-export function postAddStdIntoProj (roleIdList) {
+export function postAddStdIntoProj (pasVO) {
   return Vue.prototype.$axios.post('/teacher/project/add/std', {
-    roleIdList: roleIdList
+    pasVO: pasVO
   })
 }
 

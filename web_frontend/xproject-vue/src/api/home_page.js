@@ -12,12 +12,6 @@ export function getProjListBySch () {
   return Vue.prototype.$axios.get('/all/project/by-sch')
 }
 
-export function getAddProj (newProj) {
-  return Vue.prototype.$axios.get('/teacher/project/add', {
-    // todo
-  })
-}
-
 export function getJoinProj (projId) {
   return Vue.prototype.$axios.get('/student/project/join', {
     params: {projId: projId}
