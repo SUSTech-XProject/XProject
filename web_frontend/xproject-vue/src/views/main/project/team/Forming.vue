@@ -1,6 +1,6 @@
 <template>
   <el-card id="base-card">
-    <div slot="header">
+    <div slot="header" style="font-size: 20px;">
      Team Wanted !
     </div>
     <div style="margin-top: 0">
@@ -17,7 +17,7 @@
       </el-row>
     </div>
 
-    <div class="board">
+    <div class="board" v-loading="dataLoading">
       <div v-for="team in teams" class="cardList">
         <teamcard v-bind="team"
                   v-if="isVisible(team)"
@@ -48,6 +48,7 @@ export default {
   },
   data(){
     return{
+      dataLoading:false,
       op_topic: [],
       op_sta:[],
       op_tag:[],
@@ -61,8 +62,7 @@ export default {
     }
   },
   mounted () {
-    this.initTeams()
-
+    this.reLoad()
   },
   methods:{
     initTeams(){
@@ -85,17 +85,20 @@ export default {
         this.op_tag.splice(0,this.op_tag.length)
         for (let i = 0; i < teamList.length; i++) {
           let team = teamList[i]
+          if(!this.op_topic.includes(team.topic)){
+            this.op_topic.push(team.topic)
+          }
           this.teams.push({
             id:team.projInstId,
             name: team.teamName,
             topic: team.topic,
             status:team.targetMemNum,
             tags: JSON.parse(team.tags),
-            intro:team.descriptions
+            intro:team.descriptions,
+            color_ind:this.getColorIndex(team.topic)
           })
-          if(!this.op_topic.includes(team.topic)){
-            this.op_topic.push(team.topic)
-          }
+
+
           if(!this.op_sta.includes(team.targetMemNum)){
             this.op_sta.push(team.targetMemNum)
           }
@@ -108,9 +111,25 @@ export default {
 
           }
         }
+
       }).catch(failResp=>{
         console.log('fail in getProjList. message=' + failResp.message)
       })
+    },
+    getColorIndex(topic){
+      for (let i = 0; i <this.op_topic.length ; i++) {
+        if(this.op_topic[i]==topic){
+          console.log(i)
+          return i;}
+      }
+      return -1;
+    },
+    reLoad(){
+      this.dataLoading = true;
+      this.initTeams()
+      setTimeout(()=>{
+        this.dataLoading = false
+      },500)
     },
     openDrawer(val){
       this.drawerId = val.id
