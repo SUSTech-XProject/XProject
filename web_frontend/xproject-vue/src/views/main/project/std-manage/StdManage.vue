@@ -32,6 +32,16 @@
         <el-table-column label="Team Status" prop="status" sortable
                          :filters="teamStatusFList"
                          :filter-method="teamStatusFMethod"/>
+        <el-table-column>
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="primary" plain
+              icon="el-icon-document-checked"
+              @click="startScoring(scope.row)">Scoring
+            </el-button>
+          </template>
+        </el-table-column>
       </el-table>
 
       <!--      <div class="block">-->
@@ -86,12 +96,80 @@
       </el-card>
     </el-drawer>
 
+    <el-drawer
+      :title="drawerTitle"
+      :visible.sync="scoringDrawerVisible"
+      direction="rtl"
+      :before-close="cancelScoring"
+      size="80%">
+
+      <div align="right" style="margin-right: 40px;">
+        <el-button @click="cancelScoring">Cancel</el-button>
+      </div>
+
+      <el-table
+        :data="gradeList"
+        empty-text="No Data Found"
+        :default-sort="{prop: 'index', order: 'increasing'}"
+        style="width: 100%; margin-top: 20px;">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <div v-for="member in teamMemberList" :key="member.stdId">
+              <el-avatar :fit="'fill'" :src="member.iconUrl"
+                         style="vertical-align:middle; margin-right: 10px; cursor: pointer"
+              ></el-avatar>
+              <span style="vertical-align:middle;">{{ member.stdNo }}</span>
+              <span style="vertical-align:middle; margin-left: 3px;">{{ member.stdName }}</span>
+
+              <span v-if="props.row.type==='Point'">
+                <el-input v-model="props.row.content"
+                          style="width: 50px; margin-left: 20px;">
+                </el-input>
+                / {{ props.row.baseContent }}
+              </span>
+
+              <span v-else-if="props.row.type==='Grade'||props.row.type==='PF'">
+                <el-select v-model="props.row.content" placeholder=""
+                           style="width: 60px; margin-left: 20px;">
+                  <el-option v-for="grade in gradeSelector" :key="grade.value"
+                             :label="grade.label" :value="grade.value">
+                  </el-option>
+                </el-select>
+              </span>
+
+              <el-input v-model="props.row.comment"
+                        placeholder="Comment here..."
+                        style="width: 250px; margin-left: 20px;">
+              </el-input>
+
+              <div v-if="member.roleId===props.row.roleId">
+                Teammates
+              </div>
+            </div>
+
+            <div align="right" style="margin-right: 40px;">
+              <el-button type="primary"
+                         @click="updateScore(props.row)">Scoring</el-button>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="" prop="index" width="50px" sortable/>
+        <el-table-column label="Name" prop="rcdName" sortable/>
+        <el-table-column label="Type" prop="type" sortable/>
+        <el-table-column label="Creator: " prop="tchName" sortable/>
+        <el-table-column label="Modified time" prop="modifiedTime"
+                         :formatter="dateTimeFormatter" sortable/>
+      </el-table>
+
+    </el-drawer>
+
   </el-card>
 </template>
 
 <script>
 import {getProjectListBySch, getProjStdList, postAddStdIntoProj} from '@/api/std_manage'
 import AutoForming from '@/views/main/project/team/AutoForming'
+import {getTeamDetail} from '@/api/team'
 
 export default {
   name: 'StdManage',
@@ -121,12 +199,62 @@ export default {
       allStdList: [],
       classFList: [],
       groupMarkOfAdd: '',
+
+      multipleSelection: [],
+      scoringDrawerVisible: false,
+      drawerTitle: '',
+      scoringTeamMateList: [],
+      gradeList: [
+        {
+          index: 1,
+          rcdName: 'assignment1',
+          modifiedTime: '12/01/2020 14:00',
+          tchName: 'Dehua Liu',
+          type: 'Point',
+          content: '',
+          baseContent: 100,
+          comment: '1.2 no pic -2; 1.4 no text -2'
+        },
+        {
+          index: 2,
+          rcdName: 'assignment2',
+          modifiedTime: '12/01/2020 14:00',
+          tchName: 'Dehua Liu',
+          type: 'Grade',
+          content: '',
+          baseContent: '',
+          comment: ''
+        },
+        {
+          index: 3,
+          rcdName: 'assignment3',
+          modifiedTime: '12/01/2020 14:00',
+          tchName: 'Dehua Liu',
+          type: 'Comment',
+          content: '',
+          baseContent: '',
+          comment: ''
+        },
+      ],
+      teamMemberList: [],
+      gradeSelector: [
+        {value: 'A', label: 'A'},
+        {value: 'B', label: 'B'},
+        {value: 'C', label: 'C'},
+        {value: 'D', label: 'D'},
+        {value: 'E', label: 'E'},
+        {value: 'F', label: 'F'},
+      ]
     }
   },
   mounted () {
     this.initStdManage()
   },
   methods: {
+    dateTimeFormatter (row, col) {
+      // return getDatetimeStr(row.modifiedTime)
+      return row.modifiedTime
+    },
     clearFilter () {
       this.$refs.stdTable.clearFilter()
     },
@@ -280,6 +408,79 @@ export default {
       }).catch(() => {
         this.$message.info('Add canceled')
       })
+    },
+
+    startScoring (std) {
+      console.log(this.stdList)
+      this.drawerTitle = 'Scoring ' + std.stdName
+      this.scoringDrawerVisible = true
+
+      // todo: get teammates by roleId, first one is student itself
+
+      // getGradeList(this.$store.state.proj.projId).then(resp => {
+      //   if (resp.data.code !== 200) {
+      //     this.$message.error(resp.data.code + '\n' + resp.data.message)
+      //     return false
+      //   }
+      //   this.gradeList.splice(0, this.gradeList.length)   // remove all
+      //   for (let i = 0; i < resp.data.data.length; i++) {
+      //     let record = resp.data.data[i]
+      //     record['listIdx'] = i
+      //     this.gradeList.push(record)
+      //   }
+      //   console.log(this.gradeList)
+      // }).catch(failResp => {
+      //   console.log('fail in getGradeList. message=' + failResp.message)
+      // })
+    },
+    updateScore (row) {
+      // postNewGrade().then(resp => {
+      //   if (resp.data.code === 200) {
+      //     // getGradeList(this.$store.state.proj.projId).then(resp => {
+      //     //   if (resp.data.code !== 200) {
+      //     //     this.$message.error(resp.data.code + '\n' + resp.data.message)
+      //     //     return false
+      //     //   }
+      //     //   this.gradeList.splice(0, this.gradeList.length)   // remove all
+      //     //   for (let i = 0; i < resp.data.data.length; i++) {
+      //     //     let record = resp.data.data[i]
+      //     //     record['listIdx'] = i
+      //     //     this.gradeList.push(record)
+      //     //   }
+      //     //   console.log(this.gradeList)
+      //     // }).catch(failResp => {
+      //     //   console.log('fail in getGradeList. message=' + failResp.message)
+      //     // })
+      //
+      //     this.$message.success('Add success')
+      //   } else if (resp.data.code === 400) {
+      //     this.$message.error(resp.data.message)
+      //   }
+      // }).catch(failResp => {
+      //   this.$message.error(failResp.message)
+      // })
+    },
+    cancelScoring () {
+      this.$confirm('Cancel scoring？')
+        .then(_ => {
+          this.scoringDrawerVisible = false
+          // getGradeList(this.$store.state.proj.projId).then(resp => {
+          //   if (resp.data.code !== 200) {
+          //     this.$message.error(resp.data.code + '\n' + resp.data.message)
+          //     return false
+          //   }
+          //   this.gradeList.splice(0, this.gradeList.length)   // remove all
+          //   for (let i = 0; i < resp.data.data.length; i++) {
+          //     let record = resp.data.data[i]
+          //     record['listIdx'] = i
+          //     this.gradeList.push(record)
+          //   }
+          //   console.log(this.gradeList)
+          // }).catch(failResp => {
+          //   console.log('fail in getGradeList. message=' + failResp.message)
+          // })
+          this.$message.info('Scoring canceled')
+        })
     }
   }
 }

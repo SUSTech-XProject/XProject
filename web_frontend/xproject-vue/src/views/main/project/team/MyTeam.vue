@@ -166,10 +166,10 @@
 
             <el-row>
               <el-col :span="6" v-for="(std, index) in ungroupList" :key="index">
-                <div @click="handleInvite(index)">
+                <div @click="handleInvite(index)" style="margin-top: 15px;">
                   <el-avatar :fit="'fill'"
                              :src="std.iconUrl"
-                             style="margin-top: 15px; margin-right: 10px; cursor: pointer; vertical-align:middle;"
+                             style="margin-right: 10px; cursor: pointer; vertical-align: middle;"
                   ></el-avatar>
                   <span style="vertical-align: middle">{{ std.stdName }}</span>
                 </div>
@@ -185,10 +185,10 @@
             </div>
             <el-row>
               <el-col :span="8" v-for="(std, index) in inviteList" :key="index">
-                <div @click="handleUnInvite(index)">
+                <div @click="handleUnInvite(index)" style="margin-top: 15px;">
                   <el-avatar :fit="'fill'"
                              :src="std.iconUrl"
-                             style="margin-top: 15px; margin-right: 10px; cursor: pointer; vertical-align:middle;"
+                             style="margin-right: 10px; cursor: pointer; vertical-align:middle;"
                   ></el-avatar>
                   <span style="vertical-align: middle">{{ std.stdName }}</span>
                 </div>

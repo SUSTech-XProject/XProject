@@ -77,7 +77,7 @@
 
 <script>
 import {getTeamInfoList} from '@/api/team'
-import {getEventTaskList, postEventInstAuto} from '@/api/event'
+import {getEventTaskList, getTeamsNoArrange, postEventInstAuto} from '@/api/event'
 
 
 export default {
@@ -173,7 +173,7 @@ name: "AutoForming",
     initTeams(){
       let id = this.$store.state.proj.projId
       //console.log(id)
-      getTeamInfoList(parseInt(id)).then(resp => {
+      getTeamsNoArrange(this.eventId,parseInt(id)).then(resp => {
         if (resp.data.code !== 200) {
           this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
             confirmButtonText: 'OK'
@@ -182,7 +182,6 @@ name: "AutoForming",
         }
 
         let teamList = resp.data.data
-        //console.log(teamList)
         this.teamList.splice(0,this.teamList.length)
         this.topicFilter.splice(0,this.topicFilter.length)
         for (let i = 0; i < teamList.length; i++) {

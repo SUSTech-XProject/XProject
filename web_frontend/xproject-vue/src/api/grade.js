@@ -9,3 +9,7 @@ export function getGradeList (projId) {
 export function postAddRecord (obj) {
   return Vue.prototype.$axios.post('/teacher/grade/new/record', obj)
 }
+
+export function postNewGrade (obj) {
+  return Vue.prototype.$axios.post('/teacher/grade/new/grade', obj)
+}
