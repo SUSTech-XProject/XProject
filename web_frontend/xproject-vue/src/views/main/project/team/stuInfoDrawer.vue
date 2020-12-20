@@ -8,7 +8,7 @@
     :append-to-body="true"
   >
     <el-col :span="6" :offset="2">
-      <el-avatar src="https://ww4.sinaimg.cn/thumb150/006GJQvhgy1fxwx1568khj3036034mx2.jpg"
+      <el-avatar :src="iconUrl"
                  :size="270" :fit="'fill'"></el-avatar>
 
       <div style="margin-top: 60px;margin-bottom:15px;font-size: 20px">{{ this.stuName }}</div>
@@ -81,6 +81,7 @@ export default {
       stuName:'',
       size:'80%',
       stuDrawer:'',
+      iconUrl:'',
       //
       bio: '',
       school: '',
@@ -122,6 +123,7 @@ export default {
       getStuInfo(roleId).then(resp => {
         console.log(resp)
         if (resp.data.code === 200) {
+          this.iconUrl = resp.data.data.role.iconUrl
           let infoDict = resp.data.data.student
 
           this.bio = infoDict.bio
