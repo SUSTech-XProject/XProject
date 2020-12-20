@@ -69,3 +69,11 @@ export function postEventInstClearStd(eventInstId,projId){
     }
   })
 }
+export function getTeamsNoArrange(eaTaskId,projId){
+  return Vue.prototype.$axios.get('/teacher/event/team/no-arrange',{
+    params:{
+      eaTaskId:eaTaskId,
+      projId:projId
+    }
+  })
+}
