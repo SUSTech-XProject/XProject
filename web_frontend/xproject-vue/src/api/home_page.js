@@ -17,3 +17,8 @@ export function getJoinProj (projId) {
     params: {projId: projId}
   })
 }
+export function postProjQuit(projId){
+  return Vue.prototype.$axios.post('/student/proj/quit',null,{
+    params:{projId:parseInt(projId)}
+  })
+}

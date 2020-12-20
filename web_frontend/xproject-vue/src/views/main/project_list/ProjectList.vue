@@ -131,7 +131,7 @@
 <script>
 import Card from '@/components/card/projectList/index'
 import Selector from '@/components/selector/single'
-import {getJoinProj, getProjList, getProjListBySch} from '@/api/home_page'
+import {getJoinProj, getProjList, getProjListBySch, postProjQuit} from '@/api/home_page'
 import {isStudent, isTeacher} from '@/utils/role'
 import {postProjectOverview} from '@/api/proj_overview'
 
@@ -187,6 +187,30 @@ export default {
     //todo: quit proj dialog
     openQuitDialog(id,name){
       console.log(id,name)
+      this.$confirm('Are you sure to quit '+name+' ?','Warning',{
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(()=>{
+        postProjQuit(id).then(resp=>{
+          if (resp.data.code === 200) {
+            this.$message({
+              type: 'success',
+              message: 'Quit successfully'
+            });
+            this.initProjList()
+          } else {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error('Back-end no response')
+        })
+      }).catch(()=>{
+        this.$message({
+          type: 'info',
+          message: 'Canceled'
+        });
+      })
     },
     openJoinDialog () {
       this.projTableLoading = true
@@ -227,8 +251,14 @@ export default {
             confirmButtonText: 'OK'
           })
           return false
+        }else{
+          this.$message({
+            type: 'success',
+            message: 'Join successfully'
+          });
+          this.initProjList()
         }
-        this.dialogProjList = resp.data.data
+        //this.dialogProjList = resp.data.data
       }).catch(failResp => {
         console.log('fail in getProjListBySch, %o', failResp)
         this.$alert('Fail to join', 'Tip', {
