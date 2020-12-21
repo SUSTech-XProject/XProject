@@ -160,8 +160,12 @@
                         style="width: 250px; margin-left: 20px;">
               </el-input>
 
-              <div style="margin-top: 10px; margin-left: 20px;">
+              <div style="margin-top: 10px; margin-left: 20px;"
+                   v-if="inst.modifiedTime==='' || inst.tchName==='' || inst.email===''">
                 Last Modified: {{ inst.modifiedTime }}, {{ inst.tchName }}, {{ inst.email }}
+              </div>
+              <div style="margin-top: 10px; margin-left: 20px;" v-else>
+                Last Modified: no record
               </div>
             </div>
 
@@ -186,13 +190,13 @@
 
 <script>
 import teamdrawer from '@/views/main/project/team/teamdrawer'
-import {getMyTeamDetail, getPersonalMessage, getTeamDetail, getTeamInfoList, getTeamMessage} from '@/api/team'
+import {getTeamInfoList} from '@/api/team'
 import CreateTeam from '@/views/main/project/team/CreateTeam'
 import {postTeamDeletion} from '@/api/team'
 import {postTeamConfirmation} from '@/api/team'
 import AutoForming from '@/views/main/project/team/AutoForming'
 import {getDatetimeStr} from '@/utils/parse-day-time'
-import {getAllRecord, getGradeList, getRecordInst, postDeleteRecord, postNewGrade} from '@/api/grade'
+import {getAllRecord, getRecordInst, postNewGrade} from '@/api/grade'
 
 export default {
   name: 'TeamManaging',
@@ -496,21 +500,6 @@ export default {
         .then(_ => {
           this.scoringDrawerVisible = false
           this.expandRowList.splice(0, this.expandRowList.length)
-          // getGradeList(this.$store.state.proj.projId).then(resp => {
-          //   if (resp.data.code !== 200) {
-          //     this.$message.error(resp.data.code + '\n' + resp.data.message)
-          //     return false
-          //   }
-          //   this.gradeList.splice(0, this.gradeList.length)   // remove all
-          //   for (let i = 0; i < resp.data.data.length; i++) {
-          //     let record = resp.data.data[i]
-          //     record['listIdx'] = i
-          //     this.gradeList.push(record)
-          //   }
-          //   console.log(this.gradeList)
-          // }).catch(failResp => {
-          //   console.log('fail in getGradeList. message=' + failResp.message)
-          // })
           this.$message.info('Scoring canceled')
         })
     },

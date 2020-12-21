@@ -145,11 +145,15 @@
                         style="width: 250px; margin-left: 20px;">
               </el-input>
 
-              <div style="margin-top: 10px; margin-left: 20px;">
+              <div style="margin-top: 10px; margin-left: 20px;"
+                   v-if="inst.modifiedTime==='' || inst.tchName==='' || inst.email===''">
                 Last Modified: {{ inst.modifiedTime }}, {{ inst.tchName }}, {{ inst.email }}
               </div>
+              <div style="margin-top: 10px; margin-left: 20px;" v-else>
+                Last Modified: no record
+              </div>
 
-              <div v-if="inst.roleId===scoringStdRoleId"
+              <div v-if="inst.roleId===scoringStdRoleId && recordInstList.length > 1"
                    style="margin-top: 20px; font-size: 20px; font-weight: bold">
                 Teammates:
               </div>
