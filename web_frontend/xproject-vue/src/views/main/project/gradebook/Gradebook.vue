@@ -51,6 +51,10 @@
                    @click="addDialogVisible=true">
           Add
         </el-button>
+        <el-button icon="el-icon-minus"
+                   @click="deleteRecord">
+          Delete
+        </el-button>
       </div>
 
       <el-dialog title="Add a record"
@@ -76,57 +80,42 @@
 
         <div align="right" style="margin-top: 40px;">
           <el-button type="primary" icon="el-icon-plus"
-                     @click="addScoringItem">Add</el-button>
+                     @click="addRecord">Add
+          </el-button>
           <el-button @click="addDialogVisible = false">Cancel</el-button>
         </div>
       </el-dialog>
 
       <el-table
-        :data="gradeList"
+        ref="recordTable"
+        :data="recordList"
         empty-text="No Data Found"
         :default-sort="{prop: 'index', order: 'increasing'}"
         style="width: 100%">
+        <el-table-column type="selection"></el-table-column>
+
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
-              <el-form-item label="Creator: ">
-                <span>{{ props.row.tchName }}</span>
-                <span style="margin-left: 10px">{{ props.row.email }}</span>
-              </el-form-item>
-              <el-form-item label="Type: ">
-                <span>{{ props.row.type }}</span>
-              </el-form-item>
-              <el-form-item v-if="props.row.derivedStr"
-                            label="Derived from: ">
-                <span>{{ props.row.derivedStr }}</span>
-              </el-form-item>
-              <br>
-              <el-form-item label="Comment: " v-if="props.row.comments">
-                <span>{{ props.row.comments }}</span>
+              <el-form-item label="Email of creator: ">
+                <span>{{ props.row.creator.email }}</span>
               </el-form-item>
             </el-form>
           </template>
         </el-table-column>
-
-        <el-table-column type="selection"></el-table-column>
-        <el-table-column label="" type="index" width="50px" sortable/>
-        <el-table-column label="Name" prop="rcdName" sortable/>
-        <el-table-column label="Modified time" prop="modifiedTime" :formatter="dateTimeFormatter" sortable
-                         :sort-method="gradeSorter"/>
-        <el-table-column label="Grade" sortable :sort-method="gradeSorter">
-          <template slot-scope="scope">
-            <span style="margin-left: 10px">{{ scope.row.content }}</span>
-            <span v-if="scope.row.baseContent"
-                  style="margin-left: 2px">/ {{ scope.row.baseContent }}</span>
-          </template>
-        </el-table-column>
+        <el-table-column label="" type="index" width="50px"/>
+        <el-table-column label="Name" prop="record.rcdName" sortable/>
+        <el-table-column label="Type" prop="record.type"/>
+        <el-table-column label="Creator" prop="creator.tchName"/>
+        <el-table-column label="Created time" prop="record.createdTime"
+                         :formatter="dateTimeFormatter" sortable/>
       </el-table>
     </div>
   </el-card>
 </template>
 
 <script>
-import {getGradeList, postAddRecord} from '@/api/grade'
+import {getAllRecord, getGradeList, postDeleteRecord, postNewRecord} from '@/api/grade'
 import {getDatetimeStr} from '@/utils/parse-day-time'
 import {isStudent, isTeacher} from '@/utils/role'
 
@@ -203,7 +192,8 @@ export default {
         {value: 'PF', label: 'PF'},
         {value: 'Grade', label: 'Grade'},
         {value: 'Point', label: 'Point'}
-      ]
+      ],
+      recordList: [],
     }
   },
   mounted () {
@@ -211,33 +201,45 @@ export default {
   },
   methods: {
     dateTimeFormatter (row, col) {
-      return getDatetimeStr(row.modifiedTime)
-    },
-    gradeSorter (row, col) {
-      return row.content
+      return getDatetimeStr(row.record.createdTime)
     },
     getTime (str) {
       return 'abc'
     },
     initGradebook () {
-      this.gradeList.splice(0, this.gradeList.length)   // remove all
       let projId = this.$store.state.proj.projId
 
-      getGradeList(projId).then(resp => {
-        if (resp.data.code !== 200) {
-          this.$message.error(resp.data.code + '\n' + resp.data.message)
-          return false
-        }
-        this.gradeList.splice(0, this.gradeList.length)   // remove all
-        for (let i = 0; i < resp.data.data.length; i++) {
-          let record = resp.data.data[i]
-          record['listIdx'] = i
-          this.gradeList.push(record)
-        }
-        console.log(this.gradeList)
-      }).catch(failResp => {
-        console.log('fail in getGradeList. message=' + failResp.message)
-      })
+      if (isStudent()) {
+        getGradeList(projId).then(resp => {
+          if (resp.data.code !== 200) {
+            this.$message.error(resp.data.code + '\n' + resp.data.message)
+            return false
+          }
+          this.gradeList.splice(0, this.gradeList.length)   // remove all
+          // for (let i = 0; i < resp.data.data.length; i++) {
+          //   let record = resp.data.data[i]
+          //   record['listIdx'] = i
+          //   this.gradeList.push(record)
+          // }
+          this.gradeList = resp.data.data
+          console.log(this.gradeList)
+        }).catch(failResp => {
+          console.log('fail in getGradeList. message=' + failResp.message)
+        })
+      } else {
+        getAllRecord(projId).then(resp => {
+          if (resp.data.code !== 200) {
+            this.$message.error(resp.data.code + '\n' + resp.data.message)
+            return false
+          }
+
+          this.recordList.splice(0, this.recordList.length)   // remove all
+          this.recordList = resp.data.data
+          console.log(this.recordList)
+        }).catch(failResp => {
+          console.log('fail in getGradeList. message=' + failResp.message)
+        })
+      }
     },
 
     isStudent () {
@@ -247,22 +249,41 @@ export default {
       return isTeacher()
     },
 
-    addScoringItem () {
+    addRecord () {
       this.$confirm('Confirm to add?', 'Tip', {
         confirmButtonText: 'confirm',
         cancelButtonText: 'cancel',
         type: 'warning'
       }).then(() => {
-        // postAddRecord().then(resp => {
-        //   if (resp.data.code === 200) {
-        //     this.initGradebook()
-        //     this.$message.success('Add success')
-        //   } else if (resp.data.code === 400) {
-        //     this.$message.error(resp.data.message)
-        //   }
-        // }).catch(failResp => {
-        //   this.$message.error(failResp.message)
-        // })
+        let recordCreationVO = {
+          'baseContent': this.newRecord.baseContent,
+          'name': this.newRecord.name,
+          'projId': this.$store.state.proj.projId,
+          'type': this.newRecord.type
+        }
+        postNewRecord(recordCreationVO).then(resp => {
+          if (resp.data.code === 200) {
+            getAllRecord(this.$store.state.proj.projId).then(resp => {
+              if (resp.data.code !== 200) {
+                this.$message.error(resp.data.code + '\n' + resp.data.message)
+                return false
+              }
+
+              this.recordList.splice(0, this.recordList.length)   // remove all
+              this.recordList = resp.data.data
+              console.log(this.recordList)
+            }).catch(failResp => {
+              console.log('fail in getGradeList. message=' + failResp.message)
+            })
+
+            this.$message.success('Add success')
+            this.addDialogVisible = false
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
+        })
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -270,6 +291,50 @@ export default {
         })
       })
     },
+    deleteRecord () {
+      this.$confirm('Confirm to delete?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(() => {
+        let selectedRecord = this.$refs.recordTable.selection
+        let recordDeletionVO = {
+          rcdIdList: []
+        }
+
+        for (let i = 0; i < selectedRecord.length; ++i) {
+          recordDeletionVO.rcdIdList.push(selectedRecord[i].record.rcdId)
+        }
+
+        postDeleteRecord(recordDeletionVO).then(resp => {
+          if (resp.data.code === 200) {
+            getAllRecord(this.$store.state.proj.projId).then(resp => {
+              if (resp.data.code !== 200) {
+                this.$message.error(resp.data.code + '\n' + resp.data.message)
+                return false
+              }
+
+              this.recordList.splice(0, this.recordList.length)   // remove all
+              this.recordList = resp.data.data
+              console.log(this.recordList)
+            }).catch(failResp => {
+              console.log('fail in getGradeList. message=' + failResp.message)
+            })
+
+            this.$message.success('Delete success')
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Delete canceled'
+        })
+      })
+    }
   }
 }
 </script>

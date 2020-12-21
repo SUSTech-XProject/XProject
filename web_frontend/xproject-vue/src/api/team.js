@@ -12,9 +12,9 @@ export function getTeamDetail (teamId) {
   })
 }
 
-export function postApply (msg,teamId) {
+export function postApply (msg, teamId) {
   return Vue.prototype.$axios.post('/student/team/apply', {
-    message:msg,
+    message: msg,
     projInstId: parseInt(teamId),
   })
 }
@@ -111,5 +111,14 @@ export function postEditedTeamInfo (piuVO) {
 export function getStuProj (roleId) {
   return Vue.prototype.$axios.get('/all/team/stu-proj', {
     params: {roleId: roleId}
+  })
+}
+
+export function getTeammatesByRoleId (projId, roleId) {
+  return Vue.prototype.$axios.get('/all/teammates/by/id', {
+    params: {
+      roleId: roleId,
+      projId: projId
+    }
   })
 }

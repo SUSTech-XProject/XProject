@@ -1,15 +1,34 @@
 import Vue from 'vue'
 
 export function getGradeList (projId) {
-  return Vue.prototype.$axios.get('/all/grade/list', {
+  return Vue.prototype.$axios.get('/student/grade/list', {
     params: {projId: projId}
   })
 }
 
-export function postAddRecord (obj) {
-  return Vue.prototype.$axios.post('/teacher/grade/new/record', obj)
+export function getAllRecord (projId) {
+  return Vue.prototype.$axios.get('/all/record', {
+    params: {projId: projId}
+  })
 }
 
-export function postNewGrade (obj) {
-  return Vue.prototype.$axios.post('/teacher/grade/new/grade', obj)
+export function getRecordInst (projInstId, rcdId) {
+  return Vue.prototype.$axios.get('/teacher/record/inst', {
+    params: {
+      projInstId: projInstId,
+      rcdId: rcdId
+    }
+  })
+}
+
+export function postNewRecord (recordCreationVO) {
+  return Vue.prototype.$axios.post('/teacher/grade/new/record', recordCreationVO)
+}
+
+export function postDeleteRecord (recordDeletionVO) {
+  return Vue.prototype.$axios.post('/teacher/grade/delete/record', recordDeletionVO)
+}
+
+export function postNewGrade (recordInstUpdateParamVO) {
+  return Vue.prototype.$axios.post('/teacher/grade/new/grade', recordInstUpdateParamVO)
 }
