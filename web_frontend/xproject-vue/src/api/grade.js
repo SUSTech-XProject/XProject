@@ -21,6 +21,15 @@ export function getRecordInst (projInstId, rcdId) {
   })
 }
 
+export function getRecordInstStudent (rcdId, stdRoleId) {
+  return Vue.prototype.$axios.get('/teacher/record/inst/student', {
+    params: {
+      stdRoleId: stdRoleId,
+      rcdId: rcdId
+    }
+  })
+}
+
 export function postNewRecord (recordCreationVO) {
   return Vue.prototype.$axios.post('/teacher/grade/new/record', recordCreationVO)
 }

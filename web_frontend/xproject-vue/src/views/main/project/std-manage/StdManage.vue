@@ -148,6 +148,11 @@
               <div style="margin-top: 10px; margin-left: 20px;">
                 Last Modified: {{ inst.modifiedTime }}, {{ inst.tchName }}, {{ inst.email }}
               </div>
+
+              <div v-if="inst.roleId===scoringStdRoleId"
+                   style="margin-top: 20px; font-size: 20px; font-weight: bold">
+                Teammates:
+              </div>
             </div>
 
             <div align="right" style="margin-right: 40px;">
@@ -174,7 +179,7 @@
 import {getProjectListBySch, getProjStdList, postAddStdIntoProj} from '@/api/std_manage'
 import AutoForming from '@/views/main/project/team/AutoForming'
 import {getTeamDetail, getTeammatesByRoleId} from '@/api/team'
-import {getAllRecord, getRecordInst, postNewGrade} from '@/api/grade'
+import {getAllRecord, getRecordInst, getRecordInstStudent, postNewGrade} from '@/api/grade'
 import {getDatetimeStr} from '@/utils/parse-day-time'
 
 export default {
@@ -254,7 +259,7 @@ export default {
         {value: 'F', label: 'F'},
       ],
       expandRowList: [],
-      scoringTeamId: '',
+      scoringStdRoleId: '',
       recordInstList: [],
       loading: true,
       recordList: [],
@@ -426,6 +431,7 @@ export default {
     startScoring (std) {
       this.drawerTitle = 'Scoring ' + std.stdName
       this.scoringDrawerVisible = true
+      this.scoringStdRoleId = std.roleId
 
       getAllRecord(this.$store.state.proj.projId).then(resp => {
         if (resp.data.code !== 200) {
@@ -462,8 +468,8 @@ export default {
 
         postNewGrade(recordInstUpdateParamVO).then(resp => {
           if (resp.data.code === 200) {
-            getRecordInst(
-              this.scoringTeamId, row.record.rcdId
+            getRecordInstStudent(
+              row.record.rcdId, this.scoringStdRoleId
             ).then(resp => {
               if (resp.data.code !== 200) {
                 this.$message.error(resp.data.code + '\n' + resp.data.message)
@@ -524,8 +530,8 @@ export default {
         this.expandRowList.splice(0, this.expandRowList.length)
         this.expandRowList.push(row.record.rcdId)
 
-        getRecordInst(
-          this.scoringTeamId, row.record.rcdId
+        getRecordInstStudent(
+          row.record.rcdId, this.scoringStdRoleId
         ).then(resp => {
           if (resp.data.code !== 200) {
             this.$message.error(resp.data.code + '\n' + resp.data.message)
