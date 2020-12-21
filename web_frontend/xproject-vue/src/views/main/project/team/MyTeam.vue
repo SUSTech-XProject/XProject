@@ -20,10 +20,12 @@
         </div>
 
         <div v-for="member in teamMemberList" :key="member.stdId"
-             @click.native:="openDrawer(member.roleId)">
+             @click.native:="openDrawer(member.roleId)"
+             style="margin-top: 15px;">
           <el-avatar :fit="'fill'" :src="member.iconUrl"
-                     style="margin-top: 15px; margin-right: 10px; cursor: pointer"
+                     style="cursor: pointer; vertical-align: middle;"
           ></el-avatar>
+          <span style="vertical-align: middle;">{{ member.stdName }}</span>
         </div>
 
         <div v-if="status==='Raw'" style="margin-top: 15px; align-items: center">
@@ -59,7 +61,7 @@
             <el-card class="box-card" shadow="never"
                      :class="notice.type"
                      style="width: 90%; margin-top: 20px;">
-              <el-col :span="17">
+              <el-col :span="15">
                 <div>
                   <span @click.native:="openDrawer(notice.creatorRoleId)">
                     <el-avatar :src="notice.crtIconUrl"
@@ -67,6 +69,7 @@
                                style="vertical-align:middle; cursor: pointer"
                     ></el-avatar>
                   </span>
+                  <span style="vertical-align:middle;">{{ notice.crtUsername }}</span>
 
                   <span style="margin-left: 5px; font-size: 16px;vertical-align:middle;">
                     {{ notice.title }}
@@ -88,12 +91,13 @@
                                :fit="'fill'"
                                style="vertical-align:middle; margin-left: 8px; cursor: pointer"></el-avatar>
                   </span>
+                  <span style="vertical-align:middle;">{{ notice.hdlUsername }}</span>
                 </div>
 
-                <!--                <div v-if="notice.type==='Apply'"-->
-                <!--                     style="margin-top: 20px; margin-left: 10px; font-size: 13px">-->
-                <!--                  ApplyInfo: {{ notice.applyInfo }}-->
-                <!--                </div>-->
+                <div v-if="notice.type==='Apply'"
+                     style="margin-top: 20px; margin-left: 10px; font-size: 13px">
+                  ApplyInfo: {{ notice.content }}
+                </div>
 
                 <div style="margin-top: 20px; margin-left: 10px; font-size: 13px">
                   Date: {{ notice.createdTime }}
@@ -102,7 +106,7 @@
                 <div style="margin-bottom: 20px"></div>
               </el-col>
 
-              <el-col :span="7">
+              <el-col :span="9">
                 <div v-if="notice.type==='Apply'">
 
                   <div v-if="!notice.decided" style="margin-top: 20px">
@@ -122,7 +126,7 @@
                   </div>
 
                   <div v-else
-                       style="margin-top: 30px; margin-left: 49px">
+                       style="margin-top: 40px; margin-left: 49px">
                     <div>{{ notice.result }}</div>
                   </div>
                 </div>
@@ -391,12 +395,12 @@ export default {
 
             this.projInstId = infoDict.projInstId
 
-            this.noticeList.splice(this.noticeList.length)
-
             if (this.projInstId != null) {
               getTeamMessage(this.projInstId).then(resp => {
                 if (resp.data.code === 200) {
                   let infoDict = resp.data.data
+
+                  console.log(infoDict)
 
                   for (let i = 0; i < infoDict.length; ++i) {
                     infoDict[i].createdTime = getDatetimeStr(infoDict[i].createdTime)
@@ -413,32 +417,32 @@ export default {
                 this.$message.error(failResp.message)
               })
             }
-
-            getPersonalMessage(this.$store.state.proj.projId).then(resp => {
-              if (resp.data.code === 200) {
-                let infoDict = resp.data.data
-                console.log(infoDict)
-
-                for (let i = 0; i < infoDict.length; ++i) {
-                  infoDict[i].createdTime = getDatetimeStr(infoDict[i].createdTime)
-                  this.noticeList.push(infoDict[i])
-                }
-
-                this.noticeList.sort(function (a, b) {
-                  return Date.parse(b.createdTime) - Date.parse(a.createdTime)
-                })
-              } else if (resp.data.code === 400) {
-                this.$message.error(resp.data.message)
-              }
-            }).catch(failResp => {
-              this.$message.error(failResp.message)
-            })
           }
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
           if (resp.data.message !== 'No team') {
             this.$message.error(resp.data.message)
           }
+        }
+      }).catch(failResp => {
+        this.$message.error(failResp.message)
+      })
+
+      getPersonalMessage(this.$store.state.proj.projId).then(resp => {
+        if (resp.data.code === 200) {
+          let infoDict = resp.data.data
+          console.log(infoDict)
+
+          for (let i = 0; i < infoDict.length; ++i) {
+            infoDict[i].createdTime = getDatetimeStr(infoDict[i].createdTime)
+            this.noticeList.push(infoDict[i])
+          }
+
+          this.noticeList.sort(function (a, b) {
+            return Date.parse(b.createdTime) - Date.parse(a.createdTime)
+          })
+        } else if (resp.data.code === 400) {
+          this.$message.error(resp.data.message)
         }
       }).catch(failResp => {
         this.$message.error(failResp.message)
@@ -479,18 +483,21 @@ export default {
         confirmButtonText: 'confirm',
         cancelButtonText: 'cancel',
         type: 'warning'
-      }).then(()=>{
+      }).then(() => {
         let applyReplyParamVO = {
           'accepted': true,
           'message': null,
           'msgId': notice.msgId
         }
 
+        this.noticeList.splice(0, this.noticeList.length)
+
         postReplyApplication(applyReplyParamVO).then(resp => {
           console.log('get response : ' + resp)
           if (resp.data.code === 200) {
             // notice.decided = true
             // notice.result = 'accepted'
+            this.noticeList.splice(this.noticeList.length)
             this.init()
             this.$message.success(resp.data.message)
           } else if (resp.data.code === 400) {
@@ -508,18 +515,20 @@ export default {
         confirmButtonText: 'confirm',
         cancelButtonText: 'cancel',
         type: 'warning'
-      }).then(()=>{
+      }).then(() => {
         let applyReplyParamVO = {
           'accepted': false,
           'message': this.rejectReason,
           'msgId': notice.msgId
         }
+        this.noticeList.splice(0, this.noticeList.length)
 
         postReplyApplication(applyReplyParamVO).then(resp => {
           console.log('get response : ' + resp)
           if (resp.data.code === 200) {
             // notice.decided = true
             // notice.result = 'rejected'
+            this.noticeList.splice(this.noticeList.length)
             this.init()
             this.$message.success(resp.data.message)
           } else if (resp.data.code === 400) {
@@ -588,8 +597,8 @@ export default {
         postQuitTeam(this.$store.state.proj.projId).then(resp => {
           console.log('get response : ' + resp)
           if (resp.data.code === 200) {
-            this.haveTeam = false
-            this.status = ''
+            this.noticeList.splice(0, this.noticeList.length)
+            this.init()
 
             this.$message.success('Quit success')
           } else if (resp.data.code === 400) {
