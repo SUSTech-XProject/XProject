@@ -19,7 +19,7 @@
             <el-table-column prop="name" label="Team Name" sortable show-overflow-tooltip></el-table-column>
             <el-table-column prop="topic" label="Topic" sortable show-overflow-tooltip :filters="topicFilter" :filter-method="filtTopic"></el-table-column>
             <el-table-column prop ="curMem" label="Current" width="150px" sortable></el-table-column>
-            <el-table-column prop ="targetMem" label="Size" width="150px" sortable></el-table-column>
+            <el-table-column prop ="targetMemNum" label="Size" width="150px" sortable></el-table-column>
             <el-table-column prop = "status" label="Team Status" width="150px" sortable :filters="teamStatus" :filter-method="teamStatusFMethod"></el-table-column>
           </el-table>
         </el-card>
@@ -68,7 +68,7 @@
           </el-option>
 
         </el-select>
-        <el-switch style="margin-left: 40px" v-model="form.autoSubmit" active-text="Auto Submit">
+        <el-switch style="margin-left: 40px" v-model="form.autoConfirm" active-text="Auto Submit">
         </el-switch>
 
       </el-form-item>
@@ -82,7 +82,7 @@
     <footer>
       <div style="margin-left: 80px">
         <el-button @click="closeManaging">Cancel</el-button>
-        <el-button type="primary" @click="submit">Create</el-button>
+        <el-button type="primary" @click="submit">Execute</el-button>
       </div>
     </footer>
 
@@ -121,10 +121,10 @@ name: "AutoForming",
       topicFilter:[],
       options:['Random','Team First','Size Balance'],
       form:{
-        teamSelection: [],
-        stuSelection:[],
+        teamList: [],
+        stdRoleIdList:[],
         strategy:'',
-        autoSubmit:false
+        autoConfirm:false
       },
       formLabelWidth: '145px'
     }
@@ -159,7 +159,7 @@ name: "AutoForming",
             index:team.projInstId,
             name: team.teamName,
             topic: team.topic,
-            targetMem:team.targetMemNum,
+            targetMemNum:team.targetMemNum,
             status:team.status,
             curMem:team.curMemNum
           })
@@ -223,20 +223,26 @@ name: "AutoForming",
       this.$emit('closeManaging','msg')
     },
     submit(){
-      console.log(this.form)
       //this.closeManaging()
-      if(this.form.teamSelection.length===0){
+      if(this.form.teamList.length===0){
         this.$message.error('No team selected yet')
-      }else if(this.form.stuSelection.length===0){
+      }else if(this.form.stdRoleIdList.length===0){
         this.$message.error('No student selected yet')
       }else if(this.form.strategy===''){
         this.$message.error('No strategy selected yet')
-      } else{
+      }else{
         this.$confirm('Execute auto forming?', 'Warning', {
           confirmButtonText: 'Confirm',
           cancelButtonText: 'Cancel',
           type: 'info'
         }).then(()=>{
+          let stuList= []
+          for (let i = 0; i <this.form.stdRoleIdList.length ; i++) {
+            console.log(this.form.stdRoleIdList[i].roleId)
+            stuList.push(parseInt(this.form.stdRoleIdList[i].roleId))
+          }
+          this.form.stdRoleIdList = stuList
+          console.log(this.form)
           postAutoForming(this.form).then(resp=>{
             if (resp.data.code === 200) {
               let num = resp.data.data
@@ -262,17 +268,17 @@ name: "AutoForming",
       }
     },
     clearForm(){
-      this.form.teamSelection=[]
-      this.form.stuSelection=[]
+      this.form.teamList=[]
+      this.form.stdRoleIdList=[]
       this.form.strategy=''
     },
 
     //选择
     teamChange(val) {
-      this.form.teamSelection = val;
+      this.form.teamList = val;
     },
     stuChange(val){
-      this.form.stuSelection = val;
+      this.form.stdRoleIdList = val;
     },
 
     //筛选
