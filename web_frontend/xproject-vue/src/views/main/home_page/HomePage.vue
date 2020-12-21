@@ -2,7 +2,7 @@
   <el-card class="base-card">
     <el-col :span="5" :offset="2">
       <el-avatar :src="avatar"
-                 :size="290" :fit="'fill'" style="margin-top: 20px"></el-avatar>
+                 :size="250" :fit="'fill'" style="margin-top: 20px"></el-avatar>
 
       <div style="font-size: 25px; font-weight:bold; margin-top: 10px;">
         {{ this.$store.state.role.username }}
@@ -297,7 +297,7 @@ export default {
 
 .base-card {
   margin: 15px 10px;
-  min-height: 95.7%;
+  min-height: 95.2%;
 }
 
 .handle-overflow {

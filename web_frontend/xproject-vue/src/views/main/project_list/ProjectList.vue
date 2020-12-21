@@ -502,7 +502,7 @@ html, body {
 
 .base-card {
   margin: 15px 10px;
-  min-height: 95.7%;
+  min-height: 95.2%;
 }
 
 #title-text {

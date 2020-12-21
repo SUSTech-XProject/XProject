@@ -330,7 +330,7 @@ export default {
 /*avatar uploader*/
 .avatar-uploader >>> .el-upload {
   border: 1px dashed #d9d9d9;
-  border-radius: 290px;
+  border-radius: 270px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -343,15 +343,15 @@ export default {
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
-  width: 290px;
-  height: 290px;
+  width: 270px;
+  height: 270px;
   line-height: 178px;
   text-align: center;
 }
 
 .avatar {
-  width: 290px;
-  height: 290px;
+  width: 270px;
+  height: 270px;
   display: block;
 }
 
@@ -374,7 +374,7 @@ export default {
 
 .base-card {
   margin: 15px 10px;
-  min-height: 95.7%;
+  min-height: 95.2%;
 }
 </style>
 

@@ -4,7 +4,7 @@
 
     <div v-if="isStudent()">
       <el-col style="width: 48.5%; margin-left: 0.75%; margin-top: 10px" class="el-tabs_item">
-        <el-card style="height: 670px">
+        <el-card style="height: 570px">
           <div slot="header" class="clearfix" style="font-weight: bold">Project Information</div>
           {{ this.siteInfo }}
         </el-card>
@@ -26,7 +26,7 @@
                :tab-position="tabPosition" style="height: 100%">
         <el-tab-pane label="Overview" name="info" style="height: 100%">
           <el-col style="width: 48.5%; margin-left: 0.75%" class="el-tabs_item">
-            <el-card style="height: 670px">
+            <el-card style="height: 570px">
               <div slot="header" class="clearfix" style="font-weight: bold">Project Information</div>
               {{ this.siteInfo }}
             </el-card>
@@ -401,7 +401,7 @@ export default {
 <style scoped>
 .base-card {
   margin: 15px 10px;
-  min-height: 95.7%;
+  min-height: 95.2%;
 }
 
 .settingTitle {
@@ -411,7 +411,7 @@ export default {
 
 /*tab*/
 .el-tabs_item {
-  height: 680px;
+  height: 590px;
 }
 
 .form-content-style {

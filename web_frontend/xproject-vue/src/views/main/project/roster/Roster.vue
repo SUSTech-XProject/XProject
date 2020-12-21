@@ -1,8 +1,8 @@
 <template>
   <el-card id="base-card">
-    <div slot="header" class="">
-      <span id="title-text">Student Roster</span>
-    </div>
+<!--    <div slot="header" class="">-->
+<!--      <span id="title-text">Student Roster</span>-->
+<!--    </div>-->
 
     <div class="table-btm-group">
       <el-button type="primary" plain @click="createDialogVisible = true">Create</el-button>
@@ -314,6 +314,7 @@ export default {
 
 #base-card {
   margin: 15px 10px;
+  min-height: 95.2%;
 }
 
 #title-text {

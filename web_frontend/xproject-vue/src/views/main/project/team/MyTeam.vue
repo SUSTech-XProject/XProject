@@ -4,7 +4,7 @@
       <div v-if="isStudent() && haveTeam"
            style="margin-top: 10px">
         <el-avatar :src="team_avatar"
-                   :size="250" :fit="'fill'"></el-avatar>
+                   :size="205" :fit="'fill'"></el-avatar>
 
         <div style="font-size: 25px; font-weight:bold; margin-top: 20px">
           {{ teamName }}
@@ -15,7 +15,7 @@
           {{ tag }}
         </el-tag>
 
-        <div style="width: 100%; margin-top: 20px" align="left">
+        <div style="width: 100%; margin-top: 20px" align="left" class="handle-overflow">
           {{ description }}
         </div>
 
@@ -37,7 +37,7 @@
       <div v-if="isStudent() && !haveTeam"
            style="margin-top: 10px;font-size: 30px;">
         <el-avatar src="https://github.com/Carl-Rabbit/my_sync_repo/blob/master/fig_bed/default_team.png?raw=true"
-                   :size="250" :fit="'fill'"></el-avatar>
+                   :size="205" :fit="'fill'"></el-avatar>
 
         <div style="font-size: 25px; font-weight:bold; margin-top: 20px">
           no team yet
@@ -237,7 +237,7 @@
             </el-form-item>
           </el-form>
 
-          <div class="personalInfoTitle" style="margin-bottom: 20px; margin-top: 20px;">
+          <div class="personalInfoTitle" style="margin-top: 20px;">
             Team Tags
           </div>
           <div>
@@ -714,7 +714,7 @@ export default {
 <style scoped>
 .base-card {
   margin: 15px 10px;
-  min-height: 95.7%;
+  min-height: 95.2%;
 }
 
 .Quit {
@@ -767,6 +767,13 @@ export default {
   padding-bottom: 0;
   vertical-align: bottom;
   margin-bottom: 20px;
+}
+
+.handle-overflow {
+  overflow: hidden;
+  white-space: nowrap;
+  /*text-overflow: ellipsis;*/
+  width: 100%;
 }
 </style>
 
