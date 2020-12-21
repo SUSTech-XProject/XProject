@@ -192,8 +192,10 @@ export default {
       })
     },
     openDrawer(val){
-      console.log("open stu drawer")
-      this.drawerId = val.roleId
+      // console.log("open stu drawer")
+      // console.log(val)
+      this.memID = val.roleId
+      console.log(this.memID)
       this.memDrawer = true
     },
     closeDrawerStu(){
