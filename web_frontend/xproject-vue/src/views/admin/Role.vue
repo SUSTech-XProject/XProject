@@ -25,7 +25,7 @@
           <span style="margin-left: 0px">{{scope.row.registerTime}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Status" prop="status" sortable>
+      <el-table-column label="Enable" prop="enable" sortable>
         <template slot-scope="scope">
 <!--          <span style="margin-left: 0px">{{scope.row.status}}</span>-->
           <el-switch
@@ -33,8 +33,6 @@
             v-model="scope.row.statusSwitch"
             active-color="#13ce66"
             inactive-color="#ff4949"
-            active-text="Enable"
-            inactive-text="Disable"
             @change="setStatus(scope.row.index)">
           </el-switch>
         </template>
@@ -86,34 +84,36 @@ export default {
   // },
   methods: {
     dateTimeFormatter (row, col) {
-      return getDatetimeStr(row.modifiedTime)
+      return getDatetimeStr(row.registerTime)
     },
     init () {
       this.roleList.splice(0, this.roleList.length) // remove all
 
-      // getRoletList().then(resp => {
-      //   if (resp.data.code !== 200) {
-      //     this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
-      //       confirmButtonText: 'OK'
-      //     })
-      //     return false
-      //   }
-      //   this.rolelist.splice(0, this.rolelist.length) // remove all
-      //   for (let i = 0; i < resp.data.data.length; i++) {
-      //     let newRow = {
-      //       index: i + 1,
-      //       roleId: resp.data.data[i].roleId,
-      //       username: resp.data.data[i].username,
-      //       registerTime: getDatetimeStr(resp.data.data[i].registerTime),
-      //       status: resp.data.data[i].status
-      //     }
-      //     console.log(newRow)
-      //     this.rolelist.push(newRow)
-      //   }
-      //   console.log(this.announcementlist)
-      // }).catch(failResp => {
-      //   console.log('fail in getAnnouncementList. message=' + failResp.message)
-      // })
+      getRoletList().then(resp => {
+        if (resp.data.code !== 200) {
+          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+          return false
+        }
+        this.roleList.splice(0, this.roleList.length) // remove all
+        for (let i = 0; i < resp.data.data.length; i++) {
+          let newRow = {
+            index: i + 1,
+            roleId: resp.data.data[i].roleId,
+            username: resp.data.data[i].username,
+            roleType: resp.data.data[i].roleType,
+            registerTime: getDatetimeStr(resp.data.data[i].registerTime),
+            status: resp.data.data[i].status,
+            statusSwitch: resp.data.data[i].status === 'Enable'
+          }
+          console.log(newRow)
+          this.roleList.push(newRow)
+        }
+        console.log(this.roleList)
+      }).catch(failResp => {
+        console.log('fail in getRoletList. message=' + failResp.message)
+      })
     },
     setStatus (index) {
       // alert(index)
@@ -127,7 +127,6 @@ export default {
               this.roleList[index - 1].status = this.roleList[index - 1].statusSwitch ? 'Enable' : 'Disable'
               this.$alert('Change successfully!', 'Tip')
             } else if (resp.data.code === 400) {
-              // this.announcementlist.splice(index - 1, 1)
               console.log(resp.data.message)
               this.$alert(resp.data.message, 'Tip', {
                 confirmButtonText: 'OK'
@@ -138,8 +137,10 @@ export default {
               confirmButtonText: 'OK'
             })
           })
-        }).catch(_ => {})
-      this.statusSwitch = !this.statusSwitch
+        }).catch(_ => {
+          this.roleList[index - 1].statusSwitch = !this.roleList[index - 1].statusSwitch
+        })
+      // this.statusSwitch = !this.statusSwitch
     }
   }
 }
