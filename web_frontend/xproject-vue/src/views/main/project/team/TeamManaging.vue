@@ -90,14 +90,14 @@
             </template>
           </el-table-column>
         </el-table>
-<!--        <footer>-->
-<!--          <div class="block" style="text-align: center">-->
-<!--            <el-pagination-->
-<!--              layout="prev, pager, next"-->
-<!--              :total="tableData.length">-->
-<!--            </el-pagination>-->
-<!--          </div>-->
-<!--        </footer>-->
+        <!--        <footer>-->
+        <!--          <div class="block" style="text-align: center">-->
+        <!--            <el-pagination-->
+        <!--              layout="prev, pager, next"-->
+        <!--              :total="tableData.length">-->
+        <!--            </el-pagination>-->
+        <!--          </div>-->
+        <!--        </footer>-->
       </el-card>
     </div>
 
@@ -123,55 +123,63 @@
       </div>
 
       <el-table
-        :data="gradeList"
+        :data="recordList"
         empty-text="No Data Found"
+        row-key="record.rcdId"
+        :expand-row-keys="expandRowList"
         :default-sort="{prop: 'index', order: 'increasing'}"
-        style="width: 100%; margin-top: 20px;">
+        style="width: 100%; margin-top: 20px;"
+        @expand-change="recordExpandChange">
         <el-table-column type="expand">
           <template slot-scope="props">
-            <div v-for="member in teamMemberList" :key="member.stdId">
-              <el-avatar :fit="'fill'" :src="member.iconUrl"
-                         style="vertical-align:middle; margin-right: 10px; cursor: pointer"
+            <div v-for="inst in recordInstList" :key="inst.stdId" style="margin-bottom: 15px">
+              <el-avatar :fit="'fill'" :src="inst.iconUrl"
+                         style="vertical-align:middle; margin-right: 10px;"
               ></el-avatar>
-              <span style="vertical-align:middle;">{{ member.stdNo }}</span>
-              <span style="vertical-align:middle; margin-left: 3px;">{{ member.stdName }}</span>
+              <span style="vertical-align:middle;">{{ inst.stdNo }}</span>
+              <span style="vertical-align:middle; margin-left: 3px;">{{ inst.stdName }}</span>
 
-              <span v-if="props.row.type==='Point'">
-                <el-input v-model="props.row.content"
+              <span v-if="inst.type==='Point'">
+                <el-input v-model="inst.content"
                           style="width: 50px; margin-left: 20px;">
                 </el-input>
-                / {{ props.row.baseContent }}
+                / {{ inst.baseContent }}
               </span>
 
-              <span v-else-if="props.row.type==='Grade'||props.row.type==='PF'">
-                <el-select v-model="props.row.content" placeholder=""
+              <span v-else-if="inst.type==='Grade'||inst.type==='PF'">
+                <el-select v-model="inst.content" placeholder=""
                            style="width: 60px; margin-left: 20px;">
-                  <el-option v-for="grade in gradeSelector" :key="grade.value"
-                             :label="grade.label" :value="grade.value">
+                 <el-option v-for="grade in gradeSelector" :key="grade.value"
+                            :label="grade.label" :value="grade.value">
                   </el-option>
                 </el-select>
               </span>
 
-              <el-input v-model="props.row.comment"
+              <el-input v-model="inst.comments"
                         placeholder="Comment here..."
                         style="width: 250px; margin-left: 20px;">
               </el-input>
+
+              <div style="margin-top: 10px; margin-left: 20px;">
+                Last Modified: {{ inst.modifiedTime }}, {{ inst.tchName }}, {{ inst.email }}
+              </div>
             </div>
 
             <div align="right" style="margin-right: 40px;">
               <el-button type="primary"
-                         @click="updateScore(props.row)">Scoring</el-button>
+                         @click="updateScore(props.row)">Scoring
+              </el-button>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="" prop="index" width="50px" sortable/>
-        <el-table-column label="Name" prop="rcdName" sortable/>
-        <el-table-column label="Type" prop="type" sortable/>
-        <el-table-column label="Creator: " prop="tchName" sortable/>
-        <el-table-column label="Modified time" prop="modifiedTime"
+
+        <el-table-column label="" type="index" width="50px"/>
+        <el-table-column label="Name" prop="record.rcdName" sortable/>
+        <el-table-column label="Type" prop="record.type"/>
+        <el-table-column label="Creator" prop="creator.tchName"/>
+        <el-table-column label="Created time" prop="record.createdTime"
                          :formatter="dateTimeFormatter" sortable/>
       </el-table>
-
     </el-drawer>
   </el-card>
 </template>
@@ -184,7 +192,7 @@ import {postTeamDeletion} from '@/api/team'
 import {postTeamConfirmation} from '@/api/team'
 import AutoForming from '@/views/main/project/team/AutoForming'
 import {getDatetimeStr} from '@/utils/parse-day-time'
-import {getGradeList, postNewGrade} from '@/api/grade'
+import {getAllRecord, getGradeList, getRecordInst, postDeleteRecord, postNewGrade} from '@/api/grade'
 
 export default {
   name: 'TeamManaging',
@@ -210,39 +218,9 @@ export default {
       multipleSelection: [],
       scoringDrawerVisible: false,
       drawerTitle: '',
-      scoringTeamMateList: [],
-      gradeList: [
-        {
-          index: 1,
-          rcdName: 'assignment1',
-          modifiedTime: '12/01/2020 14:00',
-          tchName: 'Dehua Liu',
-          type: 'Point',
-          content: '',
-          baseContent: 100,
-          comment: '1.2 no pic -2; 1.4 no text -2'
-        },
-        {
-          index: 2,
-          rcdName: 'assignment2',
-          modifiedTime: '12/01/2020 14:00',
-          tchName: 'Dehua Liu',
-          type: 'Grade',
-          content: '',
-          baseContent: '',
-          comment: ''
-        },
-        {
-          index: 3,
-          rcdName: 'assignment3',
-          modifiedTime: '12/01/2020 14:00',
-          tchName: 'Dehua Liu',
-          type: 'Comment',
-          content: '',
-          baseContent: '',
-          comment: ''
-        },
-      ],
+
+      //
+      recordList: [],
       teamMemberList: [],
       gradeSelector: [
         {value: 'A', label: 'A'},
@@ -251,7 +229,11 @@ export default {
         {value: 'D', label: 'D'},
         {value: 'E', label: 'E'},
         {value: 'F', label: 'F'},
-      ]
+      ],
+      expandRowList: [],
+      scoringTeamId: '',
+      recordInstList: [],
+      loading: true
     }
   },
   mounted () {
@@ -307,8 +289,7 @@ export default {
       return finalResult
     },
     dateTimeFormatter (row, col) {
-      // return getDatetimeStr(row.modifiedTime)
-      return row.modifiedTime
+      return getDatetimeStr(row.record.createdTime)
     },
 
     openDrawer (val) {
@@ -336,7 +317,6 @@ export default {
       setTimeout(() => {
         this.tableLoading = false
       }, 1000)
-
     },
 
     addTeam () {
@@ -421,8 +401,9 @@ export default {
               let num = resp.data.data
               this.$message({
                 type: 'success',
-                message: 'Confirm ' + num + ' teams successfully'
+                message: num + ' teams successfully'
               })
+              this.reLoad()
             } else {
               this.$message.error(resp.data.message)
             }
@@ -441,75 +422,80 @@ export default {
     startScoring (team) {
       this.drawerTitle = 'Scoring ' + team.name
       this.scoringDrawerVisible = true
+      this.scoringTeamId = team.index
 
-      getTeamDetail(team.index).then(resp => {
+      getAllRecord(this.$store.state.proj.projId).then(resp => {
         if (resp.data.code !== 200) {
-          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
+          this.$message.error(resp.data.code + '\n' + resp.data.message)
           return false
         }
-        let team = resp.data.data
 
-        // this.teamIntro = team.descriptions
-        // this.teamTags = JSON.parse(team.tags)
-        // this.teamName = team.teamName
-        this.teamMemberList = team.teamMemberList
-        console.log(this.teamMemberList)
-        // this.teamSta = this.teamMembers.length + '/' + team.targetMemNum
-        // this.teamTopic = team.topic
-        // this.teamURL = team.iconUrl
+        this.recordList.splice(0, this.recordList.length)   // remove all
+        this.recordList = resp.data.data
+        console.log(this.recordList)
       }).catch(failResp => {
-        this.$message.error(failResp.message)
+        console.log('fail in getGradeList. message=' + failResp.message)
       })
-
-      // getGradeList(this.$store.state.proj.projId).then(resp => {
-      //   if (resp.data.code !== 200) {
-      //     this.$message.error(resp.data.code + '\n' + resp.data.message)
-      //     return false
-      //   }
-      //   this.gradeList.splice(0, this.gradeList.length)   // remove all
-      //   for (let i = 0; i < resp.data.data.length; i++) {
-      //     let record = resp.data.data[i]
-      //     record['listIdx'] = i
-      //     this.gradeList.push(record)
-      //   }
-      //   console.log(this.gradeList)
-      // }).catch(failResp => {
-      //   console.log('fail in getGradeList. message=' + failResp.message)
-      // })
     },
     updateScore (row) {
-      // postNewGrade().then(resp => {
-      //   if (resp.data.code === 200) {
-      //     // getGradeList(this.$store.state.proj.projId).then(resp => {
-      //     //   if (resp.data.code !== 200) {
-      //     //     this.$message.error(resp.data.code + '\n' + resp.data.message)
-      //     //     return false
-      //     //   }
-      //     //   this.gradeList.splice(0, this.gradeList.length)   // remove all
-      //     //   for (let i = 0; i < resp.data.data.length; i++) {
-      //     //     let record = resp.data.data[i]
-      //     //     record['listIdx'] = i
-      //     //     this.gradeList.push(record)
-      //     //   }
-      //     //   console.log(this.gradeList)
-      //     // }).catch(failResp => {
-      //     //   console.log('fail in getGradeList. message=' + failResp.message)
-      //     // })
-      //
-      //     this.$message.success('Add success')
-      //   } else if (resp.data.code === 400) {
-      //     this.$message.error(resp.data.message)
-      //   }
-      // }).catch(failResp => {
-      //   this.$message.error(failResp.message)
-      // })
+      this.$confirm('Confirm to Scoring?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(() => {
+        let recordInstUpdateParamVO = {
+          'gradeList': [],
+          'rcdId': row.record.rcdId
+        }
+
+        for (let i = 0; i < this.recordInstList.length; ++i) {
+          let grade = {
+            'comments': this.recordInstList[i].comments,
+            'content': this.recordInstList[i].content,
+            'roleId': this.recordInstList[i].roleId
+          }
+          recordInstUpdateParamVO.gradeList.push(grade)
+        }
+
+        postNewGrade(recordInstUpdateParamVO).then(resp => {
+          if (resp.data.code === 200) {
+            getRecordInst(
+              this.scoringTeamId, row.record.rcdId
+            ).then(resp => {
+              if (resp.data.code !== 200) {
+                this.$message.error(resp.data.code + '\n' + resp.data.message)
+                return false
+              }
+
+              this.recordInstList = resp.data.data
+              for (let i = 0; i < this.recordInstList.length; ++i) {
+                if (this.recordInstList[i].modifiedTime != null) {
+                  this.recordInstList[i].modifiedTime
+                    = getDatetimeStr(this.recordInstList[i].modifiedTime)
+                }
+              }
+              this.loading = false
+              console.log(this.recordInstList)
+            }).catch(failResp => {
+              console.log('fail in getGradeList. message=' + failResp.message)
+            })
+
+            this.$message.success('Scoring success')
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
+        })
+      }).catch(() => {
+        this.$message.info('Scoring canceled')
+      })
     },
     cancelScoring () {
       this.$confirm('Cancel scoring？')
         .then(_ => {
           this.scoringDrawerVisible = false
+          this.expandRowList.splice(0, this.expandRowList.length)
           // getGradeList(this.$store.state.proj.projId).then(resp => {
           //   if (resp.data.code !== 200) {
           //     this.$message.error(resp.data.code + '\n' + resp.data.message)
@@ -527,7 +513,36 @@ export default {
           // })
           this.$message.info('Scoring canceled')
         })
-    }
+    },
+    recordExpandChange (row, expandedRows) {
+      if (expandedRows.length > 0) {
+        // this.loading = true
+        this.recordInstList.splice(0, this.recordInstList.length)
+        this.expandRowList.splice(0, this.expandRowList.length)
+        this.expandRowList.push(row.record.rcdId)
+
+        getRecordInst(
+          this.scoringTeamId, row.record.rcdId
+        ).then(resp => {
+          if (resp.data.code !== 200) {
+            this.$message.error(resp.data.code + '\n' + resp.data.message)
+            return false
+          }
+
+          this.recordInstList = resp.data.data
+          for (let i = 0; i < this.recordInstList.length; ++i) {
+            if (this.recordInstList[i].modifiedTime != null) {
+              this.recordInstList[i].modifiedTime
+                = getDatetimeStr(this.recordInstList[i].modifiedTime)
+            }
+          }
+          this.loading = false
+          console.log(this.recordInstList)
+        }).catch(failResp => {
+          console.log('fail in getGradeList. message=' + failResp.message)
+        })
+      }
+    },
   }
 }
 </script>

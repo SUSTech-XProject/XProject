@@ -35,9 +35,7 @@ export function getProjectListBySch () {
 }
 
 export function postAddStdIntoProj (pasVO) {
-  return Vue.prototype.$axios.post('/teacher/project/add/std', {
-    pasVO: pasVO
-  })
+  return Vue.prototype.$axios.post('/teacher/project/add/std', pasVO)
 }
 
 export function getProjStdList (projId) {

@@ -179,10 +179,16 @@ export default {
   watch:{
     drawer(val){
       this.stuDrawer = val
-      if(this.stuDrawer===true){
-        this.initStu(this.id)
-      }
+      console.log("change stuinfo drawer state")
+      console.log(this.id)
+      // if(this.stuDrawer===true){
+      this.initStu(this.id)
+      // }
     },
+    id(val){
+      console.log(val)
+      this.initStu(val)
+    }
   },
   props:{
     drawer:{type:Boolean,default:false},

@@ -95,7 +95,8 @@ export default {
             status:team.targetMemNum,
             tags: JSON.parse(team.tags),
             intro:team.descriptions,
-            color_ind:this.getColorIndex(team.topic)
+            color_ind:this.getColorIndex(team.topic),
+            curMem:team.curMemNum
           })
 
 
@@ -119,7 +120,6 @@ export default {
     getColorIndex(topic){
       for (let i = 0; i <this.op_topic.length ; i++) {
         if(this.op_topic[i]==topic){
-          console.log(i)
           return i;}
       }
       return -1;

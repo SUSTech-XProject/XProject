@@ -14,9 +14,11 @@
         <div>ID: {{teamID}}</div>
         <div>Topic:  {{teamTopic}}</div>
         <div>Target Members: {{teamSta}}</div>
+        <div>Current Members: {{teamNum}}</div>
+
       </div>
 
-      <div style="text-align: center">{{teamIntro}}</div>
+      <div style="text-align: center;padding-top: 5px">{{teamIntro}}</div>
 
     </el-card>
   </div>
@@ -34,6 +36,7 @@ export default {
       teamTag:this.tags,
       teamName:this.name,
       teamIntro:this.intro,
+      teamNum:this.curMem,
       tagType:['',"success","warning","danger"]
     }
   },
@@ -44,7 +47,8 @@ export default {
     tags:{type:Array, default:()=>['tag1','tag2','tag3']},
     name:{type:String,default:'default name'},
     intro:{type:String,default:'details'},
-    color_ind:{type:Number,default:-1}
+    color_ind:{type:Number,default:-1},
+    curMem:{type:Number,default:0},
   },
   computed:{
     cardStyle:function (){
