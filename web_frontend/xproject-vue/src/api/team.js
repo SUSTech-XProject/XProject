@@ -84,7 +84,7 @@ export function postInviteStudents (roleIdList, projId) {
 
 export function postQuitTeam (projId) {
   return Vue.prototype.$axios.post('/student/team/quit', {
-    params: {projId: projId}
+    projId: projId
   })
 }
 
