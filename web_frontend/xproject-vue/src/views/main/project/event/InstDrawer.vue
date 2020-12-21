@@ -92,10 +92,13 @@
           <el-button type="primary" @click="createInst">Confirm</el-button>
         </div>
       </el-dialog>
-      <managing :visible.sync="ManageVisible"
-                :event-in="multipleSelection"
-                :event-id="taskId"
-                @closeManaging="closeManaging"></managing>
+      <div v-if="this.$store.state.role.roleType==='Teacher'">
+        <managing :visible.sync="ManageVisible"
+                  :event-in="multipleSelection"
+                  :event-id="taskId"
+                  @closeManaging="closeManaging"></managing>
+      </div>
+
 
     </el-card>
 
@@ -153,13 +156,17 @@ name: "StuEvents",
     init(){
       console.log(this.taskId)
       let projId = this.$store.state.proj.projId
-      getMyTeamDetail(projId).then(resp=>{
-        if(resp.data.code===200){
-          if(resp.data.data!==null){
-            this.myTeamId = resp.data.data.projInstId
+      if(this.$store.state.role.roleType==='Student'){
+        getMyTeamDetail(projId).then(resp=>{
+          if(resp.data.code===200){
+            if(resp.data.data!==null){
+              this.myTeamId = resp.data.data.projInstId
+            }
           }
-        }
-      })
+        })
+      }
+
+
       getEventTaskList(this.taskId).then(resp=>{
         if (resp.data.code !== 200) {
           this.$message.error(resp.data.code + '\n' + resp.data.message)

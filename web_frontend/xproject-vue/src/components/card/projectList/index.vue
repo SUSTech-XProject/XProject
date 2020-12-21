@@ -31,21 +31,17 @@ export default {
       iconData: this.proj.star===true?'el-icon-star-on':'el-icon-star-off'
     }
   },
-  // use list for props
-  // props: [
-  //   'proj',
-  //   'index',
-  // ],
-  // or an object
+
   props: {
     proj: Object,
     index: Number
   },
   methods:{
     favour:function (val) {
+      console.log(this.index+"star changing")
       this.proj.isStar= !this.proj.isStar;
       this.iconData = this.proj.isStar===true?'el-icon-star-on':'el-icon-star-off';
-      this.$emit('getStarChange',val)
+      this.$emit('getStarChange',this.index)
     }
   }
 }

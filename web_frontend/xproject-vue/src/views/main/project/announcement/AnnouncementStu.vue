@@ -63,7 +63,6 @@
       </el-table-column>
     </el-table>
 
-
   </el-card>
 
 </template>
@@ -71,24 +70,21 @@
 <script>
 import LeftBar from '@/components/sidebar/index'
 import Header from '@/components/header/index'
-import Card   from '@/components/card/announceList/index'
+import Card from '@/components/card/announceList/index'
 import Selector from '@/components/selector/single'
 import Drawer from '@/components/drawer/announcement/index'
 import {getDatetimeStr} from '@/utils/parse-day-time'
-import {postModifyAnnouncement} from '@/api/announcement'
-import {getAnnouncementList} from '@/api/announcement'
-import {postAddAnnouncement} from '@/api/announcement'
-import {getDeleteAnnouncement} from '@/api/announcement'
+import {postModifyAnnouncement, getAnnouncementList, postAddAnnouncement, getDeleteAnnouncement} from '@/api/announcement'
 
 export default{
-  name:'AnnouncementStu',
-  components:{
-    LeftBar,Header,card:Card,sele:Selector,drawer:Drawer
+  name: 'AnnouncementStu',
+  components: {
+    LeftBar, Header, card: Card, sele: Selector, drawer: Drawer
   },
-  data(){
-    return{
+  data () {
+    return {
       add_drawer: false,
-      modify_drawer:false,
+      modify_drawer: false,
       mod_id: 0,
       mod_message: '',
       mod_title: '',
@@ -116,11 +112,11 @@ export default{
   mounted () {
     this.init()
   },
-  methods:{
+  methods: {
     dateTimeFormatter (row, col) {
       return getDatetimeStr(row.modifiedTime)
     },
-    opendrawer(annId, title, message, index){
+    opendrawer (annId, title, message, index) {
       // alert(annId)
       this.mod_annId = annId
       this.modify_drawer = true
@@ -128,7 +124,7 @@ export default{
       this.mod_title = title
       this.mod_id = index - 1
     },
-    commit_modify(){
+    commit_modify () {
       console.log('send modified data')
       postModifyAnnouncement(
         this.mod_annId,
@@ -139,7 +135,7 @@ export default{
         if (resp.data.code === 200) {
           this.announcementlist[this.mod_id].message = this.mod_message
           this.announcementlist[this.mod_id].title = this.mod_title
-          this.$alert('Modify successfully!','Tip')
+          this.$alert('Modify successfully!', 'Tip')
           this.init()
           this.modify_drawer = false
         } else if (resp.data.code === 400) {
@@ -152,9 +148,9 @@ export default{
         this.$alert('Error ' + failResp.message, 'Tips', {
           confirmButtonText: 'OK'
         })
-      });
+      })
     },
-    commit_add(){
+    commit_add () {
       console.log('send created data')
       postAddAnnouncement(
         this.$store.state.proj.projId,
@@ -168,9 +164,8 @@ export default{
           this.new_title = ''
           this.new_message = ''
           this.new_name = ''
-          this.$alert('Add successfully!','Tip')
+          this.$alert('Add successfully!', 'Tip')
         } else if (resp.data.code === 400) {
-
           console.log(resp.data.message)
           this.$alert(resp.data.message, 'Tip', {
             confirmButtonText: 'OK'
@@ -180,9 +175,9 @@ export default{
         this.$alert('Error ' + failResp.message, 'Tips', {
           confirmButtonText: 'OK'
         })
-      });
+      })
     },
-    deleterow(index, annId){
+    deleterow (index, annId) {
       // this.announcementlist.splice(index - 1, 1)
 
       this.$confirm('Are you sure to delete?')
@@ -196,7 +191,7 @@ export default{
             console.log('get response : ' + resp)
             if (resp.data.code === 200) {
               this.announcementlist.splice(index - 1, 1)
-              this.$alert('Delete successfully!','Tip')
+              this.$alert('Delete successfully!', 'Tip')
             } else if (resp.data.code === 400) {
               // this.announcementlist.splice(index - 1, 1)
               console.log(resp.data.message)
@@ -208,12 +203,12 @@ export default{
             this.$alert('Error ' + failResp.message, 'Tips', {
               confirmButtonText: 'OK'
             })
-          });
+          })
         })
-        .catch(_ => {});
+        .catch(_ => {})
     },
     init () {
-      this.announcementlist.splice(0, this.announcementlist.length)   // remove all
+      this.announcementlist.splice(0, this.announcementlist.length) // remove all
       let projId = this.$store.state.proj.projId
 
       getAnnouncementList(projId).then(resp => {
@@ -223,10 +218,11 @@ export default{
           })
           return false
         }
-        this.announcementlist.splice(0, this.announcementlist.length)   // remove all
+        this.announcementlist.splice(0, this.announcementlist.length) // remove all
         for (let i = 0; i < resp.data.data.length; i++) {
+          // eslint-disable-next-line camelcase
           let new_row = {
-            index: i+1,
+            index: i + 1,
             annId: resp.data.data[i].annId,
             projId: resp.data.data[i].projId,
             creatorId: resp.data.data[i].creatorId,
@@ -275,6 +271,9 @@ html,body{
   margin-right: 0;
   margin-bottom: 0;
   width: 50%;
+}
+.el-drawer{
+  overflow: scroll;
 }
 .clearfix:before,
 .clearfix:after {

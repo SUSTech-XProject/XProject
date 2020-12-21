@@ -6,14 +6,14 @@
 
     <div v-if="isStudent()">
       <el-row style="display: flex; margin: 0 0 20px 0; justify-content: flex-end">
-        <el-button type="primary" plain icon="el-icon-search" @click="joinDialogVisible = true">Join</el-button>
+        <el-button type="primary" plain icon="el-icon-search" @click="joinDialogVisible = true">Manage</el-button>
         <el-button type="primary" plain style="margin-right: 20%"
                    :icon="icn" @click="selectStar">Only star
         </el-button>
       </el-row>
 
       <div v-for="(list, index) in listArr">
-        <div v-if="list.star||!star" class="proj">
+        <div v-if="list.isStar||!star" class="proj">
           <card v-bind:proj="list"
                 v-bind:index="index"
                 @getStarChange="getStarChange"
@@ -38,12 +38,23 @@
           <el-table-column label="Description" prop="description"/>
           <el-table-column label="Operation" width="300px">
             <template slot-scope="scope">
-              <el-button
-                size="mini"
-                type="primary" plain
-                icon="el-icon-plus"
-                @click="openConfirmDialog(scope.row.projId, scope.row.projName)">Join
+              <span v-if="checkInProj(scope.row.projId)">
+                <el-button
+                  size="mini"
+                  type="danger" plain
+                  icon="el-icon-minus"
+                  @click="openQuitDialog(scope.row.projId, scope.row.projName)">Quit
               </el-button>
+              </span>
+              <span v-else>
+                <el-button
+                  size="mini"
+                  type="primary" plain
+                  icon="el-icon-plus"
+                  @click="openConfirmDialog(scope.row.projId, scope.row.projName)">Join
+              </el-button>
+              </span>
+
             </template>
           </el-table-column>
         </el-table>
@@ -74,7 +85,7 @@
       </el-row>
 
       <div v-for="(list, index) in listArr">
-        <div v-if="list.star||!star" class="proj">
+        <div v-if="list.isStar||!star" class="proj">
           <card v-bind:proj="list"
                 v-bind:index="index"
                 @getStarChange="getStarChange"
@@ -120,7 +131,7 @@
 <script>
 import Card from '@/components/card/projectList/index'
 import Selector from '@/components/selector/single'
-import {getJoinProj, getProjList, getProjListBySch} from '@/api/home_page'
+import {getJoinProj, getProjList, getProjListBySch, postProjQuit} from '@/api/home_page'
 import {isStudent, isTeacher} from '@/utils/role'
 import {postProjectOverview} from '@/api/proj_overview'
 
@@ -162,6 +173,45 @@ export default {
     this.initProjList()
   },
   methods: {
+    //adding
+    //join/quit proj
+    checkInProj(val){
+      console.log(val)
+      for (let i = 0; i <this.listArr.length ; i++) {
+        if(this.listArr[i].id===val){
+          return true
+        }
+      }
+      return false
+    },
+    //todo: quit proj dialog
+    openQuitDialog(id,name){
+      console.log(id,name)
+      this.$confirm('Are you sure to quit '+name+' ?','Warning',{
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(()=>{
+        postProjQuit(id).then(resp=>{
+          if (resp.data.code === 200) {
+            this.$message({
+              type: 'success',
+              message: 'Quit successfully'
+            });
+            this.initProjList()
+          } else {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error('Back-end no response')
+        })
+      }).catch(()=>{
+        this.$message({
+          type: 'info',
+          message: 'Canceled'
+        });
+      })
+    },
     openJoinDialog () {
       this.projTableLoading = true
       this.confirmDialogVisible = false
@@ -174,6 +224,8 @@ export default {
             return false
           }
           this.dialogProjList = resp.data.data
+          console.log("+++++++")
+          console.log(this.dialogProjList)
         }).catch(failResp => {
           console.log('fail in getProjListBySch, %o', failResp)
           this.joinDialogVisible = false
@@ -199,8 +251,14 @@ export default {
             confirmButtonText: 'OK'
           })
           return false
+        }else{
+          this.$message({
+            type: 'success',
+            message: 'Join successfully'
+          });
+          this.initProjList()
         }
-        this.dialogProjList = resp.data.data
+        //this.dialogProjList = resp.data.data
       }).catch(failResp => {
         console.log('fail in getProjListBySch, %o', failResp)
         this.$alert('Fail to join', 'Tip', {
@@ -222,6 +280,7 @@ export default {
         }
       }
       console.log('testing')
+      console.log(this.listArr)
     },
 
     gotoProjOverview (projId, projName) {
@@ -233,6 +292,9 @@ export default {
     },
 
     selectStar () {
+      for (let i = 0; i <this.listArr.length ; i++) {
+        console.log(this.listArr[i].isStar)
+      }
       let temp = this.star
       this.star = !temp
       this.icn = !temp ? 'el-icon-star-on' : 'el-icon-star-off'
@@ -255,7 +317,8 @@ export default {
             name: proj.projName,
             course: proj.courseName,
             description: proj.description,
-            star: false
+            star: false,
+            isStar:false
           })
         }
         console.log(this.listArr)

@@ -22,7 +22,7 @@
 
       <el-card style="margin: 15px 0;height: 100%">
         <el-table
-          height="380"
+          height="415"
           ref="multipleTable"
           v-loading="tableLoading"
           :data="tableData"
@@ -90,14 +90,14 @@
             </template>
           </el-table-column>
         </el-table>
-        <footer>
-          <div class="block" style="text-align: center">
-            <el-pagination
-              layout="prev, pager, next"
-              :total="tableData.length">
-            </el-pagination>
-          </div>
-        </footer>
+<!--        <footer>-->
+<!--          <div class="block" style="text-align: center">-->
+<!--            <el-pagination-->
+<!--              layout="prev, pager, next"-->
+<!--              :total="tableData.length">-->
+<!--            </el-pagination>-->
+<!--          </div>-->
+<!--        </footer>-->
       </el-card>
     </div>
 

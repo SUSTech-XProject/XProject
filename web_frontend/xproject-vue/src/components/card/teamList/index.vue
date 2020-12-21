@@ -1,6 +1,6 @@
 <template>
   <div class="blank">
-    <el-card  class="proj-card" shadow="hover">
+    <el-card  :class="cardStyle" shadow="hover">
       <div class="clearfix" >
         {{teamName}}
       </div>
@@ -43,8 +43,25 @@ export default {
     status:{type:Number, default: 1},
     tags:{type:Array, default:()=>['tag1','tag2','tag3']},
     name:{type:String,default:'default name'},
-    intro:{type:String,default:'details'}
+    intro:{type:String,default:'details'},
+    color_ind:{type:Number,default:-1}
   },
+  computed:{
+    cardStyle:function (){
+      console.log(this.color_ind)
+      if(this.color_ind%5===0){
+        return 'proj-card0'
+      }else if(this.color_ind%5===1){
+        return 'proj-card1'
+      }else if(this.color_ind%5===2){
+        return 'proj-card2'
+      }else if(this.color_ind%5===3){
+        return 'proj-card3'
+      }else{
+        return 'proj-card4'
+      }
+    }
+  }
 
 }
 </script>
@@ -74,9 +91,39 @@ export default {
 
 
 }
-.proj-card {
+.proj-card0 {
   width: 300px;
   height: 240px;
   text-align: left;
+  color: #6d7178;
+  background-color: #f7fbff;
+}
+.proj-card1 {
+  width: 300px;
+  height: 240px;
+  text-align: left;
+  color: #6d7178;
+  background-color: #f8fff7;
+}
+.proj-card2 {
+  width: 300px;
+  height: 240px;
+  text-align: left;
+  color: #6d7178;
+  background-color: #fffbf7;
+}
+.proj-card3 {
+  width: 300px;
+  height: 240px;
+  text-align: left;
+  color: #6d7178;
+  background-color: #fff8f7;
+}
+.proj-card4 {
+  width: 300px;
+  height: 240px;
+  text-align: left;
+  color: #6d7178;
+  background-color: #fef7ff;
 }
 </style>

@@ -1,82 +1,63 @@
 <template>
-  <el-dialog title="Auto Forming"
+  <el-drawer title="Auto Forming"
              :before-close="closeManaging"
              :visible.sync="dialogFormVisible"
-             width="70%"
+             size="70%"
              class="autoForming">
-    <div class="title">Teams</div>
-    <el-table
-      height="205"
-      ref="multipleTable"
-      :data="teamList"
-      empty-text="No Data Found"
-      tooltip-effect="dark"
-      style="width: 100%"
-      @selection-change="teamChange">
-      <el-table-column
-        type="selection"
-        width="55">
-      </el-table-column>
+    <el-tabs v-model="activeName" style="width: 90%;padding-left: 40px">
+      <el-tab-pane label="Teams" name="team">
+        <el-card class="base-card">
+          <el-table
+            height="380px"
+            ref="multipleTable"
+            :data="teamList"
+            empty-text="No Data Found"
+            tooltip-effect="dark"
+            style="width: 100%"
+            @selection-change="teamChange">
+            <el-table-column type="selection" width="55"></el-table-column>
+            <el-table-column prop="name" label="Team Name" sortable show-overflow-tooltip></el-table-column>
+            <el-table-column prop="topic" label="Topic" sortable show-overflow-tooltip :filters="topicFilter" :filter-method="filtTopic"></el-table-column>
+            <el-table-column prop ="curMem" label="Current" width="150px" sortable></el-table-column>
+            <el-table-column prop ="targetMem" label="Size" width="150px" sortable></el-table-column>
+            <el-table-column prop = "status" label="Team Status" width="150px" sortable :filters="teamStatus" :filter-method="teamStatusFMethod"></el-table-column>
+          </el-table>
+        </el-card>
+      </el-tab-pane>
+      <el-tab-pane label="Students" name="student">
+        <el-card class="base-card">
+          <el-table
+            height="380px"
+            ref="stdTable"
+            :data="stdList"
+            empty-text="No Data Found"
+            :default-sort = "{prop: 'index', order: 'increasing'}"
+            style="width: 100%"
+            @selection-change="stuChange">
+            <el-table-column type="selection"/>
+            <el-table-column label="" type="index" width="50px" sortable/>
+            <el-table-column label="Student Name" prop="stdName" sortable/>
+            <el-table-column label="SID" prop="stdNo" sortable/>
+            <el-table-column label="Group Mark" prop="groupMark" sortable/>
+            <el-table-column label="Team Index" prop="projInstId" sortable
+                             :filters="teamIndexFList"
+                             :filter-method="teamIndexFMethod"/>
+            <el-table-column label="Topic" prop="topicStr" sortable/>
+            <el-table-column label="Team Status" prop="status" sortable
+                             :filters="teamStatusFList"
+                             :filter-method="teamStatusFMethod"/>
+          </el-table>
+        </el-card>
+      </el-tab-pane>
+    </el-tabs>
 
-      <el-table-column
-        prop="name"
-        label="Team Name"
-        sortable
-        show-overflow-tooltip>
-      </el-table-column>
-      <el-table-column
-        prop="topic"
-        label="Topic"
-        sortable
-        show-overflow-tooltip
-        :filters="topicFilter"
-        :filter-method="filtTopic">
-      </el-table-column>
-      <el-table-column
-        prop ="curMem"
-        label="Current"
-        width="150px"
-        sortable>
-      </el-table-column>
-      <el-table-column
-        prop ="targetMem"
-        label="Size"
-        width="150px"
-        sortable>
-      </el-table-column>
-      <el-table-column
-        prop = "status"
-        label="Team Status"
-        width="150px"
-        sortable
-        :filters="teamStatus"
-        :filter-method="teamStatusFMethod">
-      </el-table-column>
+<!--    <div class="title">Teams</div>-->
 
-    </el-table>
-    <el-divider></el-divider>
-    <div class="title">Students</div>
-    <el-table
-      height="205"
-      ref="stdTable"
-      :data="stdList"
-      empty-text="No Data Found"
-      :default-sort = "{prop: 'index', order: 'increasing'}"
-      style="width: 100%"
-      @selection-change="stuChange">
-      <el-table-column type="selection"/>
-      <el-table-column label="" type="index" width="50px" sortable/>
-      <el-table-column label="Student Name" prop="stdName" sortable/>
-      <el-table-column label="SID" prop="stdNo" sortable/>
-      <el-table-column label="Group Mark" prop="groupMark" sortable/>
-      <el-table-column label="Team Index" prop="projInstId" sortable
-                       :filters="teamIndexFList"
-                       :filter-method="teamIndexFMethod"/>
-      <el-table-column label="Topic" prop="topicStr" sortable/>
-      <el-table-column label="Team Status" prop="status" sortable
-                       :filters="teamStatusFList"
-                       :filter-method="teamStatusFMethod"/>
-    </el-table>
+
+
+<!--    <el-divider></el-divider>-->
+<!--    <div class="title">Students</div>-->
+
 
     <el-form :model="form" style="padding-top: 20px">
       <el-form-item label="Strategy" :label-width="formLabelWidth">
@@ -87,21 +68,25 @@
           </el-option>
 
         </el-select>
+        <el-switch style="margin-left: 40px" v-model="form.autoSubmit" active-text="Auto Submit">
+        </el-switch>
 
       </el-form-item>
-      <el-form-item label="Auto Submit" :label-width="formLabelWidth">
-        <el-checkbox v-model="form.autoSubmit" style="margin-left: 20px"></el-checkbox>
-      </el-form-item>
+<!--      <el-form-item label="Auto Submit" :label-width="formLabelWidth">-->
+<!--        -->
+<!--      </el-form-item>-->
 
     </el-form>
 
 
+    <footer>
+      <div style="margin-left: 80px">
+        <el-button @click="closeManaging">Cancel</el-button>
+        <el-button type="primary" @click="submit">Create</el-button>
+      </div>
+    </footer>
 
-    <div slot="footer" class="dialog-footer">
-      <el-button @click="closeManaging">Cancel</el-button>
-      <el-button type="primary" @click="submit">Create</el-button>
-    </div>
-  </el-dialog>
+  </el-drawer>
 
 </template>
 
@@ -114,6 +99,7 @@ export default {
 name: "AutoForming",
   data(){
     return{
+      activeName:'team',
       dialogFormVisible: this.visible,
       teamList: [],
       teamStatus: [
@@ -140,7 +126,7 @@ name: "AutoForming",
         strategy:'',
         autoSubmit:false
       },
-      formLabelWidth: '120px'
+      formLabelWidth: '145px'
     }
   },
   mounted () {
@@ -243,7 +229,9 @@ name: "AutoForming",
         this.$message.error('No team selected yet')
       }else if(this.form.stuSelection.length===0){
         this.$message.error('No student selected yet')
-      }else{
+      }else if(this.form.strategy===''){
+        this.$message.error('No strategy selected yet')
+      } else{
         this.$confirm('Execute auto forming?', 'Warning', {
           confirmButtonText: 'Confirm',
           cancelButtonText: 'Cancel',
@@ -256,6 +244,7 @@ name: "AutoForming",
                 type: 'success',
                 message: 'Success'
               });
+              this.clearForm()
               this.closeManaging()
             } else {
               this.$message.error(resp.data.message)
@@ -272,7 +261,11 @@ name: "AutoForming",
         });
       }
     },
-    clearForm(){},
+    clearForm(){
+      this.form.teamSelection=[]
+      this.form.stuSelection=[]
+      this.form.strategy=''
+    },
 
     //选择
     teamChange(val) {
@@ -310,7 +303,11 @@ name: "AutoForming",
       }
     },
     stuIn(val){
-      this.stuList = val
+      if(val.length===0){
+        this.initStdManage()
+      }else{
+        this.stuList = val
+      }
     }
 
   },
@@ -323,6 +320,13 @@ name: "AutoForming",
 </script>
 
 <style scoped>
+/deep/ :focus {
+  outline: 0;
+}
+.base-card{
+  margin: 15px 10px;
+  /*height: 90%;*/
+}
 .title{
   padding-left: 10px;
   padding-top: 2px;
