@@ -8,11 +8,11 @@
       <el-table
         :data="gradeList"
         empty-text="No Data Found"
-        :default-sort="{prop: 'index', order: 'increasing'}"
+        :default-sort = "{prop: 'index', order: 'increasing'}"
         style="width: 100%">
         <el-table-column type="expand">
           <template slot-scope="props">
-            <el-form label-position="left" inline class="demo-table-expand">
+            <el-form label-position="left" class="demo-table-expand">
               <el-form-item label="Creator: ">
                 <span>{{ props.row.tchName }}</span>
                 <span style="margin-left: 10px">{{ props.row.email }}</span>
@@ -33,8 +33,7 @@
         </el-table-column>
         <el-table-column label="" type="index" width="50px" sortable/>
         <el-table-column label="Name" prop="rcdName" sortable/>
-        <el-table-column label="Modified time" prop="modifiedTime" :formatter="dateTimeFormatter" sortable
-                         :sort-method="gradeSorter"/>
+        <el-table-column label="Modified time" prop="modifiedTime" sortable :sort-method="gradeSorter"/>
         <el-table-column label="Grade" sortable :sort-method="gradeSorter">
           <template slot-scope="scope">
             <span style="margin-left: 10px">{{ scope.row.content }}</span>
@@ -203,8 +202,8 @@ export default {
     dateTimeFormatter (row, col) {
       return getDatetimeStr(row.record.createdTime)
     },
-    getTime (str) {
-      return 'abc'
+    gradeSorter (row, col) {
+      return row.content
     },
     initGradebook () {
       let projId = this.$store.state.proj.projId
@@ -216,12 +215,13 @@ export default {
             return false
           }
           this.gradeList.splice(0, this.gradeList.length)   // remove all
-          // for (let i = 0; i < resp.data.data.length; i++) {
-          //   let record = resp.data.data[i]
-          //   record['listIdx'] = i
-          //   this.gradeList.push(record)
-          // }
-          this.gradeList = resp.data.data
+          for (let i = 0; i < resp.data.data.length; i++) {
+            let record = resp.data.data[i]
+            record.modifiedTime=getDatetimeStr(record.modifiedTime)
+            record['listIdx'] = i
+            this.gradeList.push(record)
+          }
+          // this.gradeList = resp.data.data
           console.log(this.gradeList)
         }).catch(failResp => {
           console.log('fail in getGradeList. message=' + failResp.message)
@@ -362,7 +362,8 @@ export default {
 }
 
 #base-card {
-  margin: 15px 10px
+  margin: 15px 10px;
+  min-height: 95.2%;
 }
 
 #title-text {

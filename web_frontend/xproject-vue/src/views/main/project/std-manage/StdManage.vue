@@ -12,7 +12,7 @@
       <el-button type="warning" plain icon="el-icon-edit" @click="manageTeam">Manage</el-button>
     </div>
 
-    <el-card style="height: 610px">
+    <el-card style="height: 510px">
       <el-table
         ref="stdTable"
         :data="stdList"
@@ -574,7 +574,7 @@ export default {
 
 .base-card {
   margin: 15px 10px;
-  min-height: 95.7%;
+  min-height: 95.2%;
 }
 
 #title-text {
