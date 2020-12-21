@@ -20,8 +20,8 @@
       </el-form-item>
       <el-form-item label="Role">
         <el-radio-group v-model="registerForm.roleType">
-          <el-radio border label="S">student</el-radio>
-          <el-radio border label="T">teacher</el-radio>
+          <el-radio border label="Student">student</el-radio>
+          <el-radio border label="Teacher">teacher</el-radio>
         </el-radio-group>
       </el-form-item>
       <div style="width: 100%; display: flex; align-content: center; justify-content: center;">
@@ -84,7 +84,7 @@ export default {
         username: '',
         password: '',
         passwordRepeat: '',
-        roleType: 'S'
+        roleType: 'Student'
       },
       rules: {
         username: [
