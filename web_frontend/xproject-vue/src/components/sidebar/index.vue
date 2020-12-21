@@ -64,7 +64,7 @@
             <i class="el-icon-date"></i>
             <span slot="title">Events</span>
           </el-menu-item>
-          <el-menu-item index="@5">
+          <el-menu-item index="ResourcesStu">
             <i class="el-icon-folder-opened"></i>
             <span slot="title">Resources</span>
           </el-menu-item>
@@ -101,7 +101,7 @@
             <i class="el-icon-date"></i>
             <span slot="title">Events</span>
           </el-menu-item>
-          <el-menu-item index="@5">
+          <el-menu-item index="ResourcesTch">
             <i class="el-icon-folder-opened"></i>
             <span slot="title">Resources</span>
           </el-menu-item>

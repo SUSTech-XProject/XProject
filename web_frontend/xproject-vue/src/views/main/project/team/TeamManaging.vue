@@ -56,7 +56,7 @@
             sortable>
           </el-table-column>
           <el-table-column
-            prop="targetMem"
+            prop="targetMemNum"
             label="Size"
             width="150px"
             sortable>
@@ -261,7 +261,7 @@ export default {
             index: team.projInstId,
             name: team.teamName,
             topic: team.topic,
-            targetMem: team.targetMemNum,
+            targetMemNum: team.targetMemNum,
             status: team.status,
             curMem: team.curMemNum
           })
@@ -401,8 +401,9 @@ export default {
               let num = resp.data.data
               this.$message({
                 type: 'success',
-                message: 'Confirm ' + num + ' teams successfully'
+                message: num + ' teams successfully'
               })
+              this.reLoad()
             } else {
               this.$message.error(resp.data.message)
             }

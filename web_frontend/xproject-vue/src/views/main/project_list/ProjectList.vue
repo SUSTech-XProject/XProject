@@ -21,7 +21,7 @@
         </div>
       </div>
 
-      <el-dialog title="Join a project"
+      <el-dialog title="Manage project"
                  width="80%"
                  @open="openJoinDialog"
                  :visible.sync="joinDialogVisible">
@@ -67,6 +67,7 @@
                    append-to-body
                    :visible.sync="confirmDialogVisible">
           <div>Join project <span style="font-weight: bold">{{ this.confirmProjName }}</span> ?</div>
+          <div style="padding-top: 20px">Group mark:<el-input v-model="groupMark" style="width: 50%;padding-left: 20px" placeholder="input your group mark.."></el-input></div>
           <span slot="footer" class="dialog-footer">
           <el-button @click="confirmDialogVisible = false">Cancel</el-button>
           <el-button type="primary" @click="confirmDialogVisible = false; joinProj()">Join</el-button>
@@ -78,7 +79,8 @@
 
     <div v-if="isTeacher()">
       <el-row style="display: flex; margin: 0 0 20px 0; justify-content: flex-end">
-        <el-button type="primary" icon="el-icon-plus" @click="joinDialogVisible = true">Add</el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="addDialogVisible = true">Add</el-button>
+        <el-button type="primary"plain icon="el-icon-edit" @click="joinDialogVisible = true">Manage</el-button>
         <el-button plain style="margin-right: 20%"
                    :icon="icn" @click="selectStar">Only star
         </el-button>
@@ -92,11 +94,67 @@
                 @click.native="gotoProjOverview(list.id, list.name)"></card>
         </div>
       </div>
-
-      <el-dialog title="Add a project"
-                 width="30%"
+      <el-dialog title="Manage project"
+                 width="80%"
                  @open="openJoinDialog"
                  :visible.sync="joinDialogVisible">
+        <el-table
+          ref="projTable"
+          v-loading="projTableLoading"
+          :data="dialogProjList"
+          empty-text="No Other Project Found"
+          :default-sort="{prop: 'index', order: 'increasing'}"
+          style="width: 100%">
+          <el-table-column label="" type="index" width="50px" sortable/>
+          <el-table-column label="Name" prop="projName" width="350px" sortable/>
+          <el-table-column label="Course" prop="courseName" width="300px" sortable/>
+          <el-table-column label="Description" prop="description"/>
+          <el-table-column label="Operation" width="300px">
+            <template slot-scope="scope">
+              <span v-if="checkInProj(scope.row.projId)">
+                <el-button
+                  size="mini"
+                  type="info" plain
+                  icon="el-icon-minus"
+                  @click="openQuitDialog(scope.row.projId, scope.row.projName)">Quit
+                </el-button>
+                <el-button
+                  size="mini"
+                  type="danger" plain
+                  icon="el-icon-delete">Delete
+              </el-button>
+              </span>
+              <span v-else>
+                <el-button
+                  size="mini"
+                  type="primary" plain
+                  icon="el-icon-plus"
+                  @click="openConfirmDialog(scope.row.projId, scope.row.projName)">Join
+              </el-button>
+              </span>
+
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <span slot="footer" class="dialog-footer">
+        <el-button @click="joinDialogVisible = false">Cancel</el-button>
+      </span>
+
+        <el-dialog title="Tip"
+                   append-to-body
+                   :visible.sync="confirmDialogVisible">
+          <div>Join project <span style="font-weight: bold">{{ this.confirmProjName }}</span> ?</div>
+          <span slot="footer" class="dialog-footer">
+          <el-button @click="confirmDialogVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="confirmDialogVisible = false; joinProj()">Join</el-button>
+        </span>
+        </el-dialog>
+
+      </el-dialog>
+      <el-dialog title="Add a project"
+                 width="30%"
+                 :visible.sync="addDialogVisible">
 
         <el-form :model="newProj" label-width="auto" style="width: 90%; margin-left: 5%;">
           <!--          todo: 判空-->
@@ -120,7 +178,7 @@
 
         <div align="right">
           <el-button type="primary" @click="handleAddProj()">Add</el-button>
-          <el-button @click="joinDialogVisible = false">Cancel</el-button>
+          <el-button @click="addDialogVisible = false">Cancel</el-button>
         </div>
       </el-dialog>
     </div>
@@ -131,7 +189,7 @@
 <script>
 import Card from '@/components/card/projectList/index'
 import Selector from '@/components/selector/single'
-import {getJoinProj, getProjList, getProjListBySch} from '@/api/home_page'
+import {postJoinProj, getProjList, getProjListBySch, postProjQuit} from '@/api/home_page'
 import {isStudent, isTeacher} from '@/utils/role'
 import {postProjectOverview} from '@/api/proj_overview'
 
@@ -150,9 +208,11 @@ export default {
       ],
       star: false,
       icn: 'el-icon-star-off',
+      groupMark:'',
 
       projTableLoading: true,
       joinDialogVisible: false,
+      addDialogVisible: false,
       confirmDialogVisible: false,
       dialogProjList: [],
       confirmProjName: '',
@@ -187,8 +247,62 @@ export default {
     //todo: quit proj dialog
     openQuitDialog(id,name){
       console.log(id,name)
+      this.$confirm('Are you sure to quit '+name+' ?','Warning',{
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(()=>{
+        postProjQuit(id).then(resp=>{
+          if (resp.data.code === 200) {
+            this.$message({
+              type: 'success',
+              message: 'Quit successfully'
+            });
+            this.initProjList()
+          } else {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error('Back-end no response')
+        })
+      }).catch(()=>{
+        this.$message({
+          type: 'info',
+          message: 'Canceled'
+        });
+      })
     },
     openJoinDialog () {
+      this.projTableLoading = true
+      this.confirmDialogVisible = false
+
+        getProjListBySch().then(resp => {
+          if (resp.data.code !== 200) {
+            this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
+              confirmButtonText: 'OK'
+            })
+            return false
+          }
+          this.dialogProjList = resp.data.data
+          console.log("+++++++")
+          console.log(this.dialogProjList)
+        }).catch(failResp => {
+          console.log('fail in getProjListBySch, %o', failResp)
+          this.joinDialogVisible = false
+          this.$alert('Fail to load', 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        })
+
+
+      this.projTableLoading = false
+    },
+    openConfirmDialog (projId, projName) {
+      this.confirmProjId = projId
+      this.confirmProjName = projName
+      this.confirmDialogVisible = true
+    },
+    openManageDialog () {
       this.projTableLoading = true
       this.confirmDialogVisible = false
       if (isStudent()) {
@@ -213,22 +327,23 @@ export default {
 
       this.projTableLoading = false
     },
-    openConfirmDialog (projId, projName) {
-      this.confirmProjId = projId
-      this.confirmProjName = projName
-      this.confirmDialogVisible = true
-    },
     joinProj () {
-      getJoinProj(
-        this.confirmProjId
+      postJoinProj(
+        this.confirmProjId,this.groupMark
       ).then(resp => {
         if (resp.data.code !== 200) {
           this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
             confirmButtonText: 'OK'
           })
           return false
+        }else{
+          this.$message({
+            type: 'success',
+            message: 'Join successfully'
+          });
+          this.initProjList()
         }
-        this.dialogProjList = resp.data.data
+        //this.dialogProjList = resp.data.data
       }).catch(failResp => {
         console.log('fail in getProjListBySch, %o', failResp)
         this.$alert('Fail to join', 'Tip', {
@@ -328,6 +443,7 @@ export default {
 
           this.joinDialogVisible = false
           this.confirmDialogVisible = false
+          this.addDialogVisible = false
           this.newProj = {
             projName: '',
             courseName: '',
