@@ -2,9 +2,9 @@
   <el-row type="flex" id="top-row" justify="space-between" align="middle" onselectstart="return false">
     <el-col :span="6" class="container">
       <div>
-        <el-image class="img" :src="logo"></el-image>
+        <el-image class="img" :src="logo" style="cursor:pointer" @click="gotoWel()"></el-image>
       </div>
-      <div class="title">XProject</div>
+      <div class="title" style="cursor:pointer" @click="gotoWel()">XProject</div>
     </el-col>
     <el-col :span="6" :offset="6" class="btm-group">
       <el-button plain @click="gotoLogin">Login</el-button>
@@ -23,6 +23,9 @@ export default {
     }
   },
   methods: {
+    gotoWel() {
+      this.$router.push({name: 'Welcome'})
+    },
     gotoLogin () {
       this.$router.push({name: 'Login'})
     },
