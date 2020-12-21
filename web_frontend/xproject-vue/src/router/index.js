@@ -26,6 +26,8 @@ import SubmissionStu from "@/views/main/project/submission/SubmissionStu";
 import SubmissionTch from "@/views/main/project/submission/SubmissionTch";
 import ResourcesStu from "@/views/main/project/resources/ResourcesStu";
 import ResourcesTch from "@/views/main/project/resources/ResourcesTch";
+import Page404 from "@/views/other/NotFound";
+import PageError from "@/views/other/PageError";
 
 Vue.use(Router)
 
@@ -227,6 +229,15 @@ const routes = [
   {
     path: '/',
     redirect: '/welcome'
+  },
+  {
+    path: '/404',
+    name: '404',
+    component: PageError
+  },
+  {
+    path: '*',
+    redirect: '/404'
   },
   // YZX: 有用的放到这个上面，临时的放到下面
   {
