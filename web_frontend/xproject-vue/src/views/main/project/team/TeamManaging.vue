@@ -421,8 +421,9 @@ export default {
               let num = resp.data.data
               this.$message({
                 type: 'success',
-                message: 'Confirm ' + num + ' teams successfully'
+                message: num + ' teams successfully'
               })
+              this.reLoad()
             } else {
               this.$message.error(resp.data.message)
             }

@@ -80,7 +80,7 @@
     <div v-if="isTeacher()">
       <el-row style="display: flex; margin: 0 0 20px 0; justify-content: flex-end">
         <el-button type="primary" icon="el-icon-plus" @click="addDialogVisible = true">Add</el-button>
-        <el-button type="primary" icon="el-icon-plus" @click="joinDialogVisible = true">Manage</el-button>
+        <el-button type="primary"plain icon="el-icon-edit" @click="joinDialogVisible = true">Manage</el-button>
         <el-button plain style="margin-right: 20%"
                    :icon="icn" @click="selectStar">Only star
         </el-button>
