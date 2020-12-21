@@ -24,6 +24,8 @@ import StuEvent from "@/views/main/project/event/StuEvent";
 import TchEvent from "@/views/main/project/event/TchEvent";
 import SubmissionStu from "@/views/main/project/submission/SubmissionStu";
 import SubmissionTch from "@/views/main/project/submission/SubmissionTch";
+import ResourcesStu from "@/views/main/project/resources/ResourcesStu";
+import ResourcesTch from "@/views/main/project/resources/ResourcesTch";
 
 Vue.use(Router)
 
@@ -163,6 +165,23 @@ const routes = [
             path: 'submission-tch',
             name: 'SubmissionTch',
             component: SubmissionTch,
+            meta: {
+              requireAuth: true,
+              roleType: 'Teacher'
+            },
+          },
+          {
+            path: 'resources',
+            name: 'ResourcesStu',
+            component: ResourcesStu,
+            meta: {
+              requireAuth: true
+            },
+          },
+          {
+            path: 'resources-tch',
+            name: 'ResourcesTch',
+            component: ResourcesTch,
             meta: {
               requireAuth: true,
               roleType: 'Teacher'

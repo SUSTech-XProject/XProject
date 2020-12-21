@@ -86,7 +86,7 @@ import Drawer from '@/components/drawer/announcement/index'
 import {getDatetimeStr} from '@/utils/parse-day-time'
 
 export default {
-  name: 'ResoucesTch',
+  name: 'ResourcesTch',
   components: {
     LeftBar, Header, card: Card, sele: Selector, drawer: Drawer
   },
