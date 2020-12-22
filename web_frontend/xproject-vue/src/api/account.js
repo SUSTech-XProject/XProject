@@ -7,3 +7,7 @@ export function getAccountInfo () {
 export function postSelfIntroduction (acInfoStdUpdateVO) {
   return Vue.prototype.$axios.post('/student/self-intro', acInfoStdUpdateVO)
 }
+
+export function postChangePassword(changePwdVO){
+  return Vue.prototype.$axios.post('/all/change/password', changePwdVO)
+}

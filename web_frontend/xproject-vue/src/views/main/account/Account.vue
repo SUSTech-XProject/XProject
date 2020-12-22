@@ -25,6 +25,28 @@
           </div>
 
           <div class="personalInfoTypesetting personalInfoTitle">
+            Password
+          </div>
+          <div class="personalInfoTypesetting" style="width:90%; margin-top: 20px;">
+            <el-input v-model="editPassword.oldPassword"
+                      placeholder="Input old password..." show-password>
+            </el-input>
+            <el-input v-model="editPassword.newPassword"
+                      placeholder="Input new password..."
+                      style="margin-top: 10px;" show-password>
+            </el-input>
+            <el-input v-model="editPassword.confirmNewPassword"
+                      placeholder="Input new password again..."
+                      style="margin-top: 10px;" show-password>
+            </el-input>
+          </div>
+
+          <div class="personalInfoTypesetting" style="margin-bottom: 40px; margin-top: 30px">
+            <el-button type="primary" @click="handleUpdatePassword">update</el-button>
+          </div>
+
+          <div class="personalInfoTypesetting personalInfoTitle"
+               style="margin-top: 20px;">
             Email
           </div>
           <div class="personalInfoTypesetting" style="width:90%; margin-top: 20px;">
@@ -101,7 +123,7 @@
 
 <script>
 import {getUserHomeInfo} from '@/api/home_page'
-import {getAccountInfo, postSelfIntroduction} from '@/api/account'
+import {getAccountInfo, postChangePassword, postSelfIntroduction} from '@/api/account'
 import {isStudent, isTeacher} from '@/utils/role'
 
 export default {
@@ -144,6 +166,12 @@ export default {
 
       //textarea
       bio: '',
+
+      editPassword: {
+        oldPassword: '',
+        newPassword: '',
+        confirmNewPassword: '',
+      }
     }
   },
   methods: {
@@ -297,15 +325,36 @@ export default {
           this.$message.error(failResp.message)
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: 'Update canceled'
-        })
+        this.$message.info('Update canceled')
       })
     },
 
     isTeacher () {
       return isTeacher
+    },
+    handleUpdatePassword () {
+      this.$confirm('Confirm to update?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(() => {
+        postChangePassword(this.editPassword).then(resp => {
+          if (resp.data.code === 200) {
+            this.editPassword = {
+              oldPassword: '',
+              newPassword: '',
+              confirmNewPassword: '',
+            }
+            this.$message.success('Update success')
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
+        })
+      }).catch(() => {
+        this.$message.info('Update canceled')
+      })
     }
   }
 }
