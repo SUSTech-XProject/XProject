@@ -1,16 +1,17 @@
 <template>
   <el-card id="base-card">
     <div slot="header" class="">
-      <span id="title-text">Resources</span>
+      <span id="title-text">School</span>
     </div>
 
-    <el-button @click="add_drawer = true" type="success" style="margin-left: 75%;">
+    <el-button @click="addDrawer = true" type="success" style="margin-left: 75%;">
       Add
     </el-button>
 
     <el-drawer
       title="Add New School"
-      :visible.sync="add_drawer">
+      :visible.sync="addDrawer"
+      :size="addSize">
       <div>
         <el-card id="add_card">
           Input New School Name:
@@ -61,10 +62,6 @@
           <el-button @click="edit(scope.row.index, scope.row.schId)" type="primary" style="margin-left: 10px;">
             Edit
           </el-button>
-        </template>
-      </el-table-column>
-      <el-table-column>
-        <template slot-scope="scope">
           <el-button @click="del(scope.row.index, scope.row.schId)" type="danger" style="margin-left: 10px;">
             Delete
           </el-button>
@@ -93,7 +90,7 @@
             type="textarea"
             :autosize="{ minRows: 1, maxRows: 3}"
             placeholder="Please input"
-            v-model="editSchoolName">
+            v-model="editSchoolLocation">
           </el-input>
           <br>
         </el-card>
@@ -113,7 +110,7 @@ import Card from '@/components/card/announceList/index'
 import Selector from '@/components/selector/single'
 import Drawer from '@/components/drawer/announcement/index'
 // import {getDeleteResources, getResourcesList, postAddResources, postDownload} from '../../api/resources'
-import {getDeleteSchool, getSchoolList, postAddSchool} from '../../api/admin'
+import {getDeleteSchool, getSchoolList, postAddSchool, postEditSchool} from '../../api/admin'
 
 export default {
   name: 'School',
@@ -128,6 +125,8 @@ export default {
       editSchoolName: '',
       editSchoolLocation: '',
       currentSchId: null,
+      addDrawer: false,
+      addSize: '40%',
       schoolList: [
         {
           index: 1,
@@ -138,9 +137,9 @@ export default {
       ]
     }
   },
-  // mounted () {
-  //   this.init()
-  // },
+  mounted () {
+    this.init()
+  },
   methods: {
     commitAdd (param) {
       console.log('send created data')
@@ -150,7 +149,10 @@ export default {
       ).then(resp => {
         console.log('get response : ' + resp)
         if (resp.data.code === 200) {
+          this.newSchoolName = ''
+          this.newSchoolLocation = ''
           this.init()
+          this.addDrawer = false
           this.$alert('Add successfully!', 'Tip')
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
@@ -173,17 +175,19 @@ export default {
     commitEdit () {
       console.log('send edited data')
       postEditSchool(
+        this.currentSchId,
         this.editSchoolName,
-        this.editSchoolLocation,
-        this.currentSchId
+        this.editSchoolLocation
       ).then(resp => {
         console.log('get response : ' + resp)
         if (resp.data.code === 200) {
-          this.schoolList[this.mod_id].message = this.mod_message
-          this.schoolList[this.mod_id].title = this.mod_title
+          this.schoolList[this.currentSchId].schName = this.editSchoolName
+          this.schoolList[this.currentSchId].location = this.editSchoolLocation
+          this.editSchoolName = ''
+          this.editSchoolLocation = ''
           this.$alert('Modify successfully!', 'Tip')
           this.init()
-          this.modify_drawer = false
+          this.modifyDrawer = false
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
           this.$alert(resp.data.message, 'Tip', {
