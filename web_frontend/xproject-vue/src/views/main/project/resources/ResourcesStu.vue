@@ -42,6 +42,7 @@ import Card from '@/components/card/announceList/index'
 import Selector from '@/components/selector/single'
 import Drawer from '@/components/drawer/announcement/index'
 import {getDatetimeStr} from '@/utils/parse-day-time'
+import {getResourcesList, postDownload} from '../../../../api/resources'
 
 export default {
   name: 'ResourcesStu',
@@ -69,9 +70,9 @@ export default {
     },
     init () {
       this.resourceslist.splice(0, this.resourceslist.length) // remove all
-      let projId = this.$store.state.proj.projId
+      // let projId = this.$store.state.proj.projId
 
-      getResourcesList(projId).then(resp => {
+      getResourcesList().then(resp => {
         if (resp.data.code !== 200) {
           this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
             confirmButtonText: 'OK'
@@ -98,11 +99,10 @@ export default {
     download (index, resoucesId) {
       let projId = this.$store.state.proj.projId
       postDownload(projId, resoucesId).then(resp => {
-        console.log("success")
+        console.log('success')
       }).catch(failResp => {
         console.log('fail in download. message=' + failResp.message)
       })
-      // todo
     }
   }
 }

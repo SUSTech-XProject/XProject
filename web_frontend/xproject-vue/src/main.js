@@ -40,6 +40,9 @@ router.beforeEach((to, from, next) => {
           // console.log(resp)
           // console.log('>>> resp.data.data: ')
           // console.log(role) // i.e. resp.data.data
+          if (to.name === "HomePage" && role.roleType === "Admin") {
+            next({name: "Role"})
+          }
           console.log(to)
           if (to.fullPath.indexOf('/project/') !== -1) {
             if (to.params.proj_id == null) {
@@ -79,10 +82,17 @@ router.beforeEach((to, from, next) => {
       }
     } else {
       if (store.state.role.username) {
-        store.commit('removeProj')
-        next({
-          name: 'HomePage'
-        })
+        if (store.state.role.roleType === "Admin") {
+          store.commit('removeProj')
+          next({
+            name: 'Role'
+          })
+        } else {
+          store.commit('removeProj')
+          next({
+            name: 'HomePage'
+          })
+        }
       }
       next()
     }

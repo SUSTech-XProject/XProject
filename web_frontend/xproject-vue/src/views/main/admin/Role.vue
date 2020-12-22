@@ -89,7 +89,7 @@ export default {
     init () {
       this.roleList.splice(0, this.roleList.length) // remove all
 
-      getRoletList().then(resp => {
+      getRoleList().then(resp => {
         if (resp.data.code !== 200) {
           this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
             confirmButtonText: 'OK'

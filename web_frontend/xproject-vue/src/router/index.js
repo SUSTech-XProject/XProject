@@ -28,6 +28,7 @@ import ResourcesStu from "@/views/main/project/resources/ResourcesStu";
 import ResourcesTch from "@/views/main/project/resources/ResourcesTch";
 import Page404 from "@/views/other/NotFound";
 import PageError from "@/views/other/PageError";
+import Role from "@/views/main/admin/Role";
 
 Vue.use(Router)
 
@@ -82,6 +83,15 @@ const routes = [
         component: Account,
         meta: {
           requireAuth: true
+        },
+      },
+      {
+        path: 'admin/role',
+        name: 'Role',
+        component: Role,
+        meta: {
+          requireAuth: true,
+          roleType: "Admin"
         },
       },
       {

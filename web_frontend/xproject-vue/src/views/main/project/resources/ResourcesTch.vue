@@ -9,20 +9,11 @@
     </el-button>
 
     <el-drawer
-      title="Add new resources"
+      title="Add New Resources"
       :visible.sync="add_drawer">
       <div>
         <el-card id="add_card">
-          Input title:
-          <el-input
-            type="textarea"
-            :autosize="{ minRows: 2, maxRows: 5}"
-            placeholder="Please input"
-            v-model="newTitle">
-          </el-input>
-          <br>
-          <br>
-          Upload resources:
+          Upload New Resources:
           <el-upload
             class="upload"
             ref="uploadfiles"
@@ -31,17 +22,17 @@
             :auto-upload="false"
             :multiple="false">
             <el-button slot="trigger"  type="primary">Choose</el-button>
-            <el-button style="margin-left: 10px;" type="success" @click="submitUpload">Submit</el-button>
-            <div slot="tip" class="el-upload__tip">Click Choose to select files which you want to submit.</div>
-            <div slot="tip" class="el-upload__tip">Click Submit to submit chosen files.</div>
+            <el-button style="margin-left: 10px;" type="success" @click="commit_add">Submit</el-button>
+            <div slot="tip" class="el-upload__tip">Click Choose to select resources which you want to upload.</div>
+            <div slot="tip" class="el-upload__tip">Click Submit to upload chosen resources.</div>
           </el-upload>
           <br>
         </el-card>
       </div>
       <br>
-      <el-button @click="commitAdd" type="primary" style="margin-left: 50px;">
-        Add
-      </el-button>
+<!--      <el-button @click="commitAdd" type="primary" style="margin-left: 50px;">-->
+<!--        Add-->
+<!--      </el-button>-->
     </el-drawer>
 
     <el-table
@@ -50,9 +41,9 @@
       :default-sort = "{prop: 'index', order: 'increasing'}"
       style="width: 100%">
       <el-table-column label="" type="index" width="50px"/>
-      <el-table-column label="Title" prop="rcdName" sortable>
+      <el-table-column label="File Name" prop="title" sortable>
         <template slot-scope="scope">
-          <span style="margin-left: 0px">{{scope.row.title}}</span>
+          <span style="margin-left: 0px">{{scope.row.fileName}}</span>
         </template>
       </el-table-column>
       <el-table-column label="Created time" prop="createdTime" :formatter="dateTimeFormatter" sortable>
@@ -63,6 +54,13 @@
       <el-table-column label="Size">
         <template slot-scope="scope">
           <span style="margin-left: 0px">{{scope.row.size}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column>
+        <template slot-scope="scope">
+          <el-button @click="download(scope.row.index, scope.row.resourcesId)" type="primary" style="margin-left: 10px;">
+            Download
+          </el-button>
         </template>
       </el-table-column>
       <el-table-column>
@@ -84,6 +82,7 @@ import Card from '@/components/card/announceList/index'
 import Selector from '@/components/selector/single'
 import Drawer from '@/components/drawer/announcement/index'
 import {getDatetimeStr} from '@/utils/parse-day-time'
+import {getDeleteResources, getResourcesList, postAddResources, postDownload} from '../../../../api/resources'
 
 export default {
   name: 'ResourcesTch',
@@ -98,7 +97,7 @@ export default {
         {
           index: 1,
           resourcesId: 0,
-          title: 'No-back-end-test',
+          fileName: 'No-back-end-test',
           createdTime: '12/04/2020 12:24',
           size: '10kb'
         }
@@ -112,19 +111,12 @@ export default {
     dateTimeFormatter (row, col) {
       return getDatetimeStr(row.modifiedTime)
     },
-    commit_add () {
+    commit_add (param) {
       console.log('send created data')
-      postAddResources(
-        this.$store.state.proj.projId,
-        this.newTitle
-      ).then(resp => {
+      postAddResources(param.file).then(resp => {
         console.log('get response : ' + resp)
         if (resp.data.code === 200) {
           this.init()
-          this.add_drawer = false
-          this.new_title = ''
-          this.new_message = ''
-          this.new_name = ''
           this.$alert('Add successfully!', 'Tip')
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
@@ -183,8 +175,8 @@ export default {
         for (let i = 0; i < resp.data.data.length; i++) {
           let newRow = {
             index: i + 1,
-            resourcesId: resp.data.data[i].resourcesId,
-            title: resp.data.data[i].title,
+            resourcesId: resp.data.data[i].srcId,
+            fileName: resp.data.data[i].fileName,
             createdTime: resp.data.data[i].createdTime,
             size: resp.data.data[i].size
           }
@@ -196,23 +188,30 @@ export default {
         console.log('fail in getAnnouncementList. message=' + failResp.message)
       })
     },
-    uploadFiles (file) {
-      let formData = new window.FormData()
-      // for (let i = 0; i < this.fileList.length; i++) {
-      //   formData.append('file', file)
-      // }
-      console.log(this.sbmObj)
-
-      formData.append('files', file)
-      formData.append('sbmId', 1)
-      formData.append('projId', 1)
-      postUpload(formData).then(resp => {
-        // console.log('In uploadExcel: %o', resp)
-        console.log('???')
+    // uploadFiles (file) {
+    //   let formData = new window.FormData()
+    //   // for (let i = 0; i < this.fileList.length; i++) {
+    //   //   formData.append('file', file)
+    //   // }
+    //   console.log(this.sbmObj)
+    //
+    //   formData.append('files', file)
+    //   formData.append('sbmId', 1)
+    //   formData.append('projId', 1)
+    //   postUpload(formData).then(resp => {
+    //     // console.log('In uploadExcel: %o', resp)
+    //     console.log('???')
+    //   }).catch(failResp => {
+    //     console.log('fail in uploadExcel: %o', failResp)
+    //   })
+    //   this.submitDrawer = false
+    // },
+    download (index, resourcesId) {
+      postDownload(resourcesId).then(resp => {
+        console.log('success')
       }).catch(failResp => {
-        console.log('fail in uploadExcel: %o', failResp)
+        console.log('fail in download. message=' + failResp.message)
       })
-      this.submitDrawer = false
     },
     submitUpload () {
       this.$refs.uploadfiles.submit()
