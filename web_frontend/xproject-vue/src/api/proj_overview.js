@@ -9,3 +9,8 @@ export function getProjOverview (projId) {
 export function postProjectOverview (projectVO) {
   return Vue.prototype.$axios.post('/teacher/update-overview', projectVO)
 }
+
+export function postAddProj(projectVO){
+  return Vue.prototype.$axios.post('/teacher/project/add', projectVO)
+
+}

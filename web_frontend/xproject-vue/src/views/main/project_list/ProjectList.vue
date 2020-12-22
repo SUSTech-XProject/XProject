@@ -67,7 +67,10 @@
                    append-to-body
                    :visible.sync="confirmDialogVisible">
           <div>Join project <span style="font-weight: bold">{{ this.confirmProjName }}</span> ?</div>
-          <div style="padding-top: 20px">Group mark:<el-input v-model="groupMark" style="width: 50%;padding-left: 20px" placeholder="input your group mark.."></el-input></div>
+          <div style="padding-top: 20px">Group mark:
+            <el-input v-model="groupMark" style="width: 50%;padding-left: 20px"
+                      placeholder="input your group mark.."></el-input>
+          </div>
           <span slot="footer" class="dialog-footer">
           <el-button @click="confirmDialogVisible = false">Cancel</el-button>
           <el-button type="primary" @click="confirmDialogVisible = false; joinProj()">Join</el-button>
@@ -80,7 +83,7 @@
     <div v-if="isTeacher()">
       <el-row style="display: flex; margin: 0 0 20px 0; justify-content: flex-end">
         <el-button type="primary" icon="el-icon-plus" @click="addDialogVisible = true">Add</el-button>
-        <el-button type="primary"plain icon="el-icon-edit" @click="joinDialogVisible = true">Manage</el-button>
+        <el-button type="primary" plain icon="el-icon-edit" @click="joinDialogVisible = true">Manage</el-button>
         <el-button plain style="margin-right: 20%"
                    :icon="icn" @click="selectStar">Only star
         </el-button>
@@ -191,7 +194,7 @@ import Card from '@/components/card/projectList/index'
 import Selector from '@/components/selector/single'
 import {postJoinProj, getProjList, getProjListBySch, postProjQuit} from '@/api/home_page'
 import {isStudent, isTeacher} from '@/utils/role'
-import {postProjectOverview} from '@/api/proj_overview'
+import {postAddProj, postProjectOverview} from '@/api/proj_overview'
 
 export default {
   name: 'ProjectList',
@@ -208,7 +211,7 @@ export default {
       ],
       star: false,
       icn: 'el-icon-star-off',
-      groupMark:'',
+      groupMark: '',
 
       projTableLoading: true,
       joinDialogVisible: false,
@@ -235,29 +238,29 @@ export default {
   methods: {
     //adding
     //join/quit proj
-    checkInProj(val){
+    checkInProj (val) {
       console.log(val)
-      for (let i = 0; i <this.listArr.length ; i++) {
-        if(this.listArr[i].id===val){
+      for (let i = 0; i < this.listArr.length; i++) {
+        if (this.listArr[i].id === val) {
           return true
         }
       }
       return false
     },
     //todo: quit proj dialog
-    openQuitDialog(id,name){
-      console.log(id,name)
-      this.$confirm('Are you sure to quit '+name+' ?','Warning',{
+    openQuitDialog (id, name) {
+      console.log(id, name)
+      this.$confirm('Are you sure to quit ' + name + ' ?', 'Warning', {
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Cancel',
         type: 'warning'
-      }).then(()=>{
-        postProjQuit(id).then(resp=>{
+      }).then(() => {
+        postProjQuit(id).then(resp => {
           if (resp.data.code === 200) {
             this.$message({
               type: 'success',
               message: 'Quit successfully'
-            });
+            })
             this.initProjList()
           } else {
             this.$message.error(resp.data.message)
@@ -265,35 +268,34 @@ export default {
         }).catch(failResp => {
           this.$message.error('Back-end no response')
         })
-      }).catch(()=>{
+      }).catch(() => {
         this.$message({
           type: 'info',
           message: 'Canceled'
-        });
+        })
       })
     },
     openJoinDialog () {
       this.projTableLoading = true
       this.confirmDialogVisible = false
 
-        getProjListBySch().then(resp => {
-          if (resp.data.code !== 200) {
-            this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
-              confirmButtonText: 'OK'
-            })
-            return false
-          }
-          this.dialogProjList = resp.data.data
-          console.log("+++++++")
-          console.log(this.dialogProjList)
-        }).catch(failResp => {
-          console.log('fail in getProjListBySch, %o', failResp)
-          this.joinDialogVisible = false
-          this.$alert('Fail to load', 'Tip', {
+      getProjListBySch().then(resp => {
+        if (resp.data.code !== 200) {
+          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
             confirmButtonText: 'OK'
           })
+          return false
+        }
+        this.dialogProjList = resp.data.data
+        console.log('+++++++')
+        console.log(this.dialogProjList)
+      }).catch(failResp => {
+        console.log('fail in getProjListBySch, %o', failResp)
+        this.joinDialogVisible = false
+        this.$alert('Fail to load', 'Tip', {
+          confirmButtonText: 'OK'
         })
-
+      })
 
       this.projTableLoading = false
     },
@@ -314,7 +316,7 @@ export default {
             return false
           }
           this.dialogProjList = resp.data.data
-          console.log("+++++++")
+          console.log('+++++++')
           console.log(this.dialogProjList)
         }).catch(failResp => {
           console.log('fail in getProjListBySch, %o', failResp)
@@ -329,18 +331,18 @@ export default {
     },
     joinProj () {
       postJoinProj(
-        this.confirmProjId,this.groupMark
+        this.confirmProjId, this.groupMark
       ).then(resp => {
         if (resp.data.code !== 200) {
           this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
             confirmButtonText: 'OK'
           })
           return false
-        }else{
+        } else {
           this.$message({
             type: 'success',
             message: 'Join successfully'
-          });
+          })
           this.initProjList()
         }
         //this.dialogProjList = resp.data.data
@@ -377,7 +379,7 @@ export default {
     },
 
     selectStar () {
-      for (let i = 0; i <this.listArr.length ; i++) {
+      for (let i = 0; i < this.listArr.length; i++) {
         console.log(this.listArr[i].isStar)
       }
       let temp = this.star
@@ -403,7 +405,7 @@ export default {
             course: proj.courseName,
             description: proj.description,
             star: false,
-            isStar:false
+            isStar: false
           })
         }
         console.log(this.listArr)
@@ -434,7 +436,7 @@ export default {
           'topics': null
         }
 
-        postProjectOverview(projectVO).then(resp => {
+        postAddProj(projectVO).then(resp => {
           if (resp.data.code !== 200) {
             this.$message.error(resp.data.code)
             return false
@@ -453,21 +455,13 @@ export default {
             year: '',
             description: ''
           }
+          this.$message.success('Add success')
         }).catch(failResp => {
-          console.log('fail in getProjListBySch, %o', failResp)
-          this.$alert('Fail to join', 'Tip', {
-            confirmButtonText: 'OK'
-          })
-        })
-        this.$message({
-          type: 'success',
-          message: 'Add success'
+          this.$message.error(failResp.message)
+          console.log(projectVO)
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: 'Add canceled'
-        })
+        this.$message.info('Add canceled')
       })
     }
   }
