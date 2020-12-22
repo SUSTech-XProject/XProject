@@ -187,50 +187,55 @@ export default {
     init () {
       console.log('init proj overview page')
       getProjOverview(this.$store.state.proj.projId).then(resp => {
-        if (resp.data.code === 200) {
-          let infoDict = resp.data.data
-          console.log(infoDict)
-
-          this.initSiteInfo = infoDict.description
-          this.siteInfo = this.initSiteInfo
-
-          let term = infoDict.term
-          this.year = term.substring(0, 4)
-          this.semester = term.substring(4)
-          this.newYear = this.year
-          this.newSemester = this.semester
-
-          let settings = JSON.parse(infoDict.projSettings)
-          this.initForm.use_recruit = settings.use_recruit
-          this.initForm.min_size = parseInt(settings.min_size)
-          this.initForm.max_size = parseInt(settings.max_size)
-          this.initForm.due_time = settings.due_time
-          this.initForm.allow_cross_mark = settings.allow_cross_mark
-
-          this.form.use_recruit = settings.use_recruit
-          this.form.min_size = parseInt(settings.min_size)
-          this.form.max_size = parseInt(settings.max_size)
-          this.form.due_time = settings.due_time
-          this.form.allow_cross_mark = settings.allow_cross_mark
-
-          this.topicBO = JSON.parse(infoDict.topics)
-          console.log(this.topicBO)
-          for (let i = 0; i < this.topicBO.length; ++i) {
-            if (parseInt(this.topicBO[i].max_team_size) === -1) {
-              this.topicBO[i].max_team_size = ''
-            }
-          }
-          this.initTopicBo = JSON.parse(infoDict.topics)
-          for (let i = 0; i < this.initTopicBo.length; ++i) {
-            if (parseInt(this.initTopicBo[i].max_team_size) === -1) {
-              this.initTopicBo[i].max_team_size = ''
-            }
-          }
-        } else if (resp.data.code === 400) {
+        console.log(resp)
+        if (resp.data.code !== 200) {
           this.$message.error(resp.data.message)
+          return false
         }
+
+        let infoDict = resp.data.data
+        console.log(infoDict)
+
+        this.initSiteInfo = infoDict.description
+        this.siteInfo = this.initSiteInfo
+
+        let term = infoDict.term
+        this.year = term.substring(0, 4)
+        this.semester = term.substring(4)
+        this.newYear = this.year
+        this.newSemester = this.semester
+
+
+
+        let settings = JSON.parse(infoDict.projSettings)
+        this.initForm.use_recruit = settings.use_recruit
+        this.initForm.min_size = parseInt(settings.min_size)
+        this.initForm.max_size = parseInt(settings.max_size)
+        this.initForm.due_time = settings.due_time
+        this.initForm.allow_cross_mark = settings.allow_cross_mark
+        this.form.use_recruit = settings.use_recruit
+        this.form.min_size = parseInt(settings.min_size)
+        this.form.max_size = parseInt(settings.max_size)
+        this.form.due_time = settings.due_time
+        this.form.allow_cross_mark = settings.allow_cross_mark
+
+        this.topicBO = JSON.parse(infoDict.topics)
+        console.log(this.topicBO)
+        for (let i = 0; i < this.topicBO.length; ++i) {
+          if (parseInt(this.topicBO[i].max_team_size) === -1) {
+            this.topicBO[i].max_team_size = ''
+          }
+        }
+        this.initTopicBo = JSON.parse(infoDict.topics)
+        for (let i = 0; i < this.initTopicBo.length; ++i) {
+          if (parseInt(this.initTopicBo[i].max_team_size) === -1) {
+            this.initTopicBo[i].max_team_size = ''
+          }
+        }
+
       }).catch(failResp => {
         this.$message.error(failResp.message)
+        console.log(failResp)
       })
     },
     isStudent () {

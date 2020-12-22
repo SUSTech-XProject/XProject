@@ -42,7 +42,7 @@
                    :size="205" :fit="'fill'"></el-avatar>
 
         <div style="font-size: 25px; font-weight:bold; margin-top: 20px">
-          no team yet
+          No team
         </div>
 
         <el-button @click="createMyTeam()"
@@ -241,7 +241,7 @@
             </el-form-item>
           </el-form>
 
-          <div class="personalInfoTitle" style="margin-top: 20px;">
+          <div class="personalInfoTitle" style="margin-top: 20px; margin-bottom: 20px;">
             Team Tags
           </div>
           <div>
@@ -257,7 +257,7 @@
             <el-button v-else class="input-new-tag" size="small" @click="showTagInput">+ New Tag</el-button>
           </div>
 
-          <div style="margin-top: 20px;">
+          <div style="margin-top: 10px;">
             <el-button type="primary" @click="handleEdit()">Update</el-button>
             <el-button @click="handleCancel()">Cancel</el-button>
           </div>
@@ -451,6 +451,8 @@ export default {
       getUngroupedStudents(this.$store.state.proj.projId).then(resp => {
         if (resp.data.code === 200) {
           this.ungroupList = resp.data.data
+          console.log('ungroup')
+          console.log(this.ungroupList)
           this.avaStatus = new Array(this.ungroupList.length).fill(true)
         } else if (resp.data.code === 400) {
           this.$message.error(resp.data.message)
@@ -598,9 +600,8 @@ export default {
           console.log('get response : ' + resp)
           if (resp.data.code === 200) {
             this.noticeList.splice(0, this.noticeList.length)
-            this.init()
-
             this.$message.success('Quit success')
+            location.reload()
           } else if (resp.data.code === 400) {
             this.$message.error(resp.data.message)
           }
@@ -644,10 +645,7 @@ export default {
           this.$message.error(failResp.message)
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: 'Invite canceled'
-        })
+        this.$message.info('Invite canceled')
       })
     },
     handleCancelInvite () {
@@ -665,12 +663,8 @@ export default {
       this.creatingTeam = true
     },
     closeAddDialog () {
-      this.$confirm('Cancel update？')
-        .then(_ => {
-          this.creatingTeam = false
-        })
-        .catch(_ => {
-        })
+      this.creatingTeam = false
+      location.reload()
     },
 
     //impression tag list
@@ -698,7 +692,11 @@ export default {
         cancelButtonText: 'cancel',
         type: 'warning'
       }).then(() => {
-        postTeamConfirmation([]).then(resp => {
+        let teamConfirmParamVO = {
+          'force': true,
+          'projInstIdList': [this.projInstId]
+        }
+        postTeamConfirmation(teamConfirmParamVO).then(resp => {
           console.log('get response : ' + resp)
           if (resp.data.code === 200) {
             this.$message.success('Confirm success')

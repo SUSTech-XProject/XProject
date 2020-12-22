@@ -12,6 +12,14 @@ export function postAddSchool (schName, location) {
   })
 }
 
+export function postEditSchool (schId, schName, location) {
+  return Vue.prototype.$axios.post('/admin/school/add', {
+    schId: schId,
+    schName: schName,
+    location: location
+  })
+}
+
 export function getDeleteSchool (schId) {
   return Vue.prototype.$axios.get('/admin/school/delete', {
     params: {

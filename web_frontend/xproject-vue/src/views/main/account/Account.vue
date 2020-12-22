@@ -41,7 +41,7 @@
             </el-input>
           </div>
 
-          <div class="personalInfoTypesetting" style="margin-bottom: 40px; margin-top: 30px">
+          <div class="personalInfoTypesetting" style="margin-bottom: 20px; margin-top: 30px">
             <el-button type="primary" @click="handleUpdatePassword">update</el-button>
           </div>
 
@@ -49,12 +49,13 @@
                style="margin-top: 20px;">
             Email
           </div>
-          <div class="personalInfoTypesetting" style="width:90%; margin-top: 20px;">
+          <div class="personalInfoTypesetting"
+               style="width:90%; margin-top: 20px; margin-bottom: 20px">
             <el-input v-model="newEmail"></el-input>
           </div>
 
           <div v-if="this.roleType==='Student'">
-            <div class="personalInfoTitle" style="margin-left: 20px; margin-bottom: 20px; margin-top: 20px;">
+            <div class="personalInfoTitle" style="margin-left: 20px; margin-bottom: 20px;">
               Impression Tags
             </div>
             <div class="personalInfoTypesetting">
@@ -87,8 +88,6 @@
               <el-button v-else class="input-new-tag" size="small" @click="showSkillTagInput">+ New Tag</el-button>
             </div>
           </div>
-
-          <div v-if="isTeacher" style="margin-top: 20px;"></div>
 
           <div class="personalInfoTypesetting personalInfoTitle">
             Bio
