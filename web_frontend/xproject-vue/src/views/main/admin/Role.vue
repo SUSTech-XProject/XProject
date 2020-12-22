@@ -25,7 +25,7 @@
           <span style="margin-left: 0px">{{scope.row.registerTime}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Enable" prop="enable" sortable>
+      <el-table-column label="Enabled" prop="enable" sortable>
         <template slot-scope="scope">
 <!--          <span style="margin-left: 0px">{{scope.row.status}}</span>-->
           <el-switch
@@ -48,6 +48,7 @@ import Card from '@/components/card/announceList/index'
 import Selector from '@/components/selector/single'
 import Drawer from '@/components/drawer/announcement/index'
 import {getDatetimeStr} from '@/utils/parse-day-time'
+import {getRoleList, postChangeStatus} from '../../../api/role'
 
 export default {
   name: 'Role',
@@ -64,7 +65,7 @@ export default {
           username: 'test',
           roleType: 'Teacher',
           registerTime: '12/11/2020 1:05:02',
-          status: 'Enable',
+          status: 'Enabled',
           statusSwitch: true
         },
         {
@@ -73,15 +74,15 @@ export default {
           username: 'test1',
           roleType: 'Student',
           registerTime: '12/11/2020 1:05:12',
-          status: 'Disable',
+          status: 'Disabled',
           statusSwitch: false
         }
       ]
     }
   },
-  // mounted () {
-  //   this.init()
-  // },
+  mounted () {
+    this.init()
+  },
   methods: {
     dateTimeFormatter (row, col) {
       return getDatetimeStr(row.registerTime)
@@ -105,17 +106,19 @@ export default {
             roleType: resp.data.data[i].roleType,
             registerTime: getDatetimeStr(resp.data.data[i].registerTime),
             status: resp.data.data[i].status,
-            statusSwitch: resp.data.data[i].status === 'Enable'
+            statusSwitch: resp.data.data[i].status === 'Enabled'
           }
+          // alert(newRow.status)
           console.log(newRow)
           this.roleList.push(newRow)
         }
         console.log(this.roleList)
       }).catch(failResp => {
-        console.log('fail in getRoletList. message=' + failResp.message)
+        console.log('fail in getRoleList. message=' + failResp.message)
       })
     },
     setStatus (index) {
+      alert(this.roleList[index - 1].roleId)
       // alert(index)
       this.$confirm('Are you sure to change status?')
         .then(_ => {
@@ -123,19 +126,20 @@ export default {
           postChangeStatus(this.roleList[index - 1].roleId).then(resp => {
             console.log('get response : ' + resp)
             if (resp.data.code === 200) {
-              this.roleList[index - 1].statusSwitch = !this.roleList[index - 1].statusSwitch
-              this.roleList[index - 1].status = this.roleList[index - 1].statusSwitch ? 'Enable' : 'Disable'
+              this.init()
               this.$alert('Change successfully!', 'Tip')
             } else if (resp.data.code === 400) {
               console.log(resp.data.message)
               this.$alert(resp.data.message, 'Tip', {
                 confirmButtonText: 'OK'
               })
+              this.roleList[index - 1].statusSwitch = !this.roleList[index - 1].statusSwitch
             }
           }).catch(failResp => {
             this.$alert('Error ' + failResp.message, 'Tips', {
               confirmButtonText: 'OK'
             })
+            this.roleList[index - 1].statusSwitch = !this.roleList[index - 1].statusSwitch
           })
         }).catch(_ => {
           this.roleList[index - 1].statusSwitch = !this.roleList[index - 1].statusSwitch
