@@ -8,7 +8,7 @@
       <el-table
         :data="gradeList"
         empty-text="No Data Found"
-        :default-sort = "{prop: 'index', order: 'increasing'}"
+        :default-sort="{prop: 'index', order: 'increasing'}"
         style="width: 100%">
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -50,6 +50,10 @@
                    @click="addDialogVisible=true">
           Add
         </el-button>
+        <el-button type="primary" icon="el-icon-plus"
+                   @click="handleOpenCombineDialog">
+          Add by exist
+        </el-button>
         <el-button icon="el-icon-minus"
                    @click="deleteRecord">
           Delete
@@ -81,7 +85,27 @@
           <el-button type="primary" icon="el-icon-plus"
                      @click="addRecord">Add
           </el-button>
-          <el-button @click="addDialogVisible = false">Cancel</el-button>
+          <el-button @click="handleCancelAdd">Cancel</el-button>
+        </div>
+      </el-dialog>
+
+      <el-dialog title="Produce new record"
+                 width="60%"
+                 :visible.sync="combineDialogVisible">
+        <el-form label-width="auto" style="width: 90%; margin-left: 5%;">
+          <el-row>
+            <el-col :span="12" v-for="record in combineList" :key="record.name">
+              <el-form-item :label="record.name" label-width="auto">
+                <el-input v-model="record.proportion" style="width: 200px"></el-input>
+                %
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+
+        <div align="right" style="margin-top: 40px;">
+          <el-button type="primary" @click="combineRecord">Produce</el-button>
+          <el-button @click="handleCancelCombine">Cancel</el-button>
         </div>
       </el-dialog>
 
@@ -114,7 +138,7 @@
 </template>
 
 <script>
-import {getAllRecord, getGradeList, postDeleteRecord, postNewRecord} from '@/api/grade'
+import {getAllRecord, getGradeList, postCombineRecordInst, postDeleteRecord, postNewRecord} from '@/api/grade'
 import {getDatetimeStr} from '@/utils/parse-day-time'
 import {isStudent, isTeacher} from '@/utils/role'
 
@@ -123,63 +147,7 @@ export default {
   components: {},
   data () {
     return {
-      gradeList: [
-        {
-          index: 1,
-          name: 'assignment1',
-          createdTime: '12/01/2020 14:00',
-          creatorStr: 'Dehua Liu',
-          type: 'Point',
-          content: 96,
-          baseContent: 100,
-          derived: '',
-          comment: '1.2 no pic -2; 1.4 no text -2'
-        },
-        {
-          index: 2,
-          name: 'assignment2',
-          createdTime: '12/02/2020 14:00',
-          creatorStr: 'Dehua Liu',
-          type: 'Point',
-          content: 90,
-          baseContent: 100,
-          derived: '',
-          comment: 'None'
-        },
-        {
-          index: 3,
-          name: 'assignment3',
-          createdTime: '12/03/2020 14:00',
-          creatorStr: 'Dehua Liu',
-          type: 'Point',
-          content: 87,
-          baseContent: 100,
-          derived: '',
-          comment: 'None'
-        },
-        {
-          index: 4,
-          name: 'report',
-          createdTime: '12/06/2020 14:00',
-          creatorStr: 'Dehua Liu',
-          type: 'Grade',
-          content: 'A',
-          baseContent: null,
-          derived: '',
-          comment: 'report grade'
-        },
-        {
-          index: 5,
-          name: 'assignment total',
-          createdTime: '12/08/2020 14:00',
-          creatorStr: 'Dehua Liu',
-          type: 'Point',
-          content: 91.0,
-          baseContent: 100,
-          derived: 'assignment1 assignment2 assignment3',
-          comment: 'assignment avg score'
-        },
-      ],
+      gradeList: [],
       addDialogVisible: false,
       newRecord: {
         name: '',
@@ -193,6 +161,8 @@ export default {
         {value: 'Point', label: 'Point'}
       ],
       recordList: [],
+      combineDialogVisible: false,
+      combineList: []
     }
   },
   mounted () {
@@ -217,7 +187,7 @@ export default {
           this.gradeList.splice(0, this.gradeList.length)   // remove all
           for (let i = 0; i < resp.data.data.length; i++) {
             let record = resp.data.data[i]
-            record.modifiedTime=getDatetimeStr(record.modifiedTime)
+            record.modifiedTime = getDatetimeStr(record.modifiedTime)
             record['listIdx'] = i
             this.gradeList.push(record)
           }
@@ -329,11 +299,69 @@ export default {
           this.$message.error(failResp.message)
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: 'Delete canceled'
-        })
+        this.$message.info('Delete canceled')
       })
+    },
+    handleOpenCombineDialog () {
+      let selectedRecord = this.$refs.recordTable.selection
+      if (selectedRecord.length > 0) {
+        this.combineDialogVisible = true
+        this.combineList.splice(0, this.combineList.length)
+
+        for (let i = 0; i < selectedRecord.length; ++i) {
+          this.combineList.push({
+            name: selectedRecord[i].record.rcdName,
+            proportion: '',
+            rcdId: selectedRecord[i].record.rcdId,
+          })
+        }
+      } else {
+        this.$message.info('No record selected')
+      }
+    },
+    combineRecord () {
+      this.$confirm('Confirm to produce?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(() => {
+        // postCombineRecordInst().then(resp => {
+        //   if (resp.data.code === 200) {
+        //     getAllRecord(this.$store.state.proj.projId).then(resp => {
+        //       if (resp.data.code !== 200) {
+        //         this.$message.error(resp.data.code + '\n' + resp.data.message)
+        //         return false
+        //       }
+        //
+        //       this.recordList.splice(0, this.recordList.length)   // remove all
+        //       this.recordList = resp.data.data
+        //       console.log(this.recordList)
+        //     }).catch(failResp => {
+        //       console.log('fail in getGradeList. message=' + failResp.message)
+        //     })
+        //
+        //     this.combineDialogVisible = false
+        //     this.$message.success('Produce success')
+        //   } else if (resp.data.code === 400) {
+        //     this.$message.error(resp.data.message)
+        //   }
+        // }).catch(failResp => {
+        //   this.$message.error(failResp.message)
+        // })
+      }).catch(() => {
+        this.$message.info('Produce canceled')
+      })
+    },
+    handleCancelAdd () {
+      this.addDialogVisible = false
+      this.newRecord = {
+        name: '',
+        type: 'Point',
+        baseContent: '',
+      }
+    },
+    handleCancelCombine () {
+      this.combineDialogVisible = false
     }
   }
 }
@@ -375,3 +403,59 @@ export default {
 <!--            <el-radio v-model="newRecord.type" label="P/F">PF</el-radio>-->
 <!--            <el-radio v-model="newRecord.type" label="Grade">Grade</el-radio>-->
 <!--            <el-radio v-model="newRecord.type" label="Comment">Comment</el-radio>-->
+
+<!--{-->
+<!--index: 1,-->
+<!--name: 'assignment1',-->
+<!--createdTime: '12/01/2020 14:00',-->
+<!--creatorStr: 'Dehua Liu',-->
+<!--type: 'Point',-->
+<!--content: 96,-->
+<!--baseContent: 100,-->
+<!--derived: '',-->
+<!--comment: '1.2 no pic -2; 1.4 no text -2'-->
+<!--},-->
+<!--{-->
+<!--index: 2,-->
+<!--name: 'assignment2',-->
+<!--createdTime: '12/02/2020 14:00',-->
+<!--creatorStr: 'Dehua Liu',-->
+<!--type: 'Point',-->
+<!--content: 90,-->
+<!--baseContent: 100,-->
+<!--derived: '',-->
+<!--comment: 'None'-->
+<!--},-->
+<!--{-->
+<!--index: 3,-->
+<!--name: 'assignment3',-->
+<!--createdTime: '12/03/2020 14:00',-->
+<!--creatorStr: 'Dehua Liu',-->
+<!--type: 'Point',-->
+<!--content: 87,-->
+<!--baseContent: 100,-->
+<!--derived: '',-->
+<!--comment: 'None'-->
+<!--},-->
+<!--{-->
+<!--index: 4,-->
+<!--name: 'report',-->
+<!--createdTime: '12/06/2020 14:00',-->
+<!--creatorStr: 'Dehua Liu',-->
+<!--type: 'Grade',-->
+<!--content: 'A',-->
+<!--baseContent: null,-->
+<!--derived: '',-->
+<!--comment: 'report grade'-->
+<!--},-->
+<!--{-->
+<!--index: 5,-->
+<!--name: 'assignment total',-->
+<!--createdTime: '12/08/2020 14:00',-->
+<!--creatorStr: 'Dehua Liu',-->
+<!--type: 'Point',-->
+<!--content: 91.0,-->
+<!--baseContent: 100,-->
+<!--derived: 'assignment1 assignment2 assignment3',-->
+<!--comment: 'assignment avg score'-->
+<!--},-->
