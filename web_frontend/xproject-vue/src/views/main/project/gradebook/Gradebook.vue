@@ -52,11 +52,15 @@
         </el-button>
         <el-button type="primary" icon="el-icon-plus"
                    @click="handleOpenCombineDialog">
-          Add by exist
+          Generate
         </el-button>
         <el-button icon="el-icon-minus"
                    @click="deleteRecord">
           Delete
+        </el-button>
+        <el-button icon="el-icon-download"
+                   @click="downloadGradeBook">
+          Download
         </el-button>
       </div>
 
@@ -103,7 +107,7 @@
           </el-row>
         </el-form>
 
-        <div align="right" style="margin-top: 40px;">
+        <div align="right">
           <el-button type="primary" @click="combineRecord">Produce</el-button>
           <el-button @click="handleCancelCombine">Cancel</el-button>
         </div>
@@ -309,11 +313,13 @@ export default {
         this.combineList.splice(0, this.combineList.length)
 
         for (let i = 0; i < selectedRecord.length; ++i) {
-          this.combineList.push({
-            name: selectedRecord[i].record.rcdName,
-            proportion: '',
-            rcdId: selectedRecord[i].record.rcdId,
-          })
+          if(selectedRecord[i].record.type ==='Point'){
+            this.combineList.push({
+              name: selectedRecord[i].record.rcdName,
+              proportion: '',
+              rcdId: selectedRecord[i].record.rcdId,
+            })
+          }
         }
       } else {
         this.$message.info('No record selected')
@@ -351,6 +357,10 @@ export default {
       }).catch(() => {
         this.$message.info('Produce canceled')
       })
+    },
+
+    downloadGradeBook () {
+      window.open('http://localhost:8443/api/teacher/records/export?projId=' + this.$store.state.proj.projId)
     },
     handleCancelAdd () {
       this.addDialogVisible = false

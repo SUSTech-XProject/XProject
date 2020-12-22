@@ -188,19 +188,7 @@ export default {
     //   this.submitDrawer = false
     // },
     download (row) {
-      window.open("http://localhost:8443/api/all/resource/download?srcId="+row.resource.srcId)
-      // getDownload(row.resource.srcId).then(resp => {
-      //   console.log(resp)
-      //   if (resp.code !== 200) {
-      //     this.$message.error(resp.data.message)
-      //     return false
-      //   }
-      //
-      //   this.$message.success('Download success')
-      // }).catch(failResp => {
-      //   this.$message.error(failResp.message)
-      //   console.log(failResp)
-      // })
+      window.open('http://localhost:8443/api/all/resource/download?srcId=' + row.resource.srcId)
     },
     submitUpload () {
       this.$refs.uploadfiles.submit()
@@ -223,3 +211,16 @@ export default {
   overflow: scroll;
 }
 </style>
+
+<!--// getDownload(row.resource.srcId).then(resp => {-->
+<!--//   console.log(resp)-->
+<!--//   if (resp.code !== 200) {-->
+<!--//     this.$message.error(resp.data.message)-->
+<!--//     return false-->
+<!--//   }-->
+<!--//-->
+<!--//   this.$message.success('Download success')-->
+<!--// }).catch(failResp => {-->
+<!--//   this.$message.error(failResp.message)-->
+<!--//   console.log(failResp)-->
+<!--// })-->
