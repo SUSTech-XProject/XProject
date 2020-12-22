@@ -122,3 +122,11 @@ export function getTeammatesByRoleId (projId, roleId) {
     }
   })
 }
+
+export function getTeamExcel (projId) {
+  return Vue.prototype.$axios.get('api/teacher/team/excel', {
+    params: {
+      projId: projId
+    }
+  })
+}

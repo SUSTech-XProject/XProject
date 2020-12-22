@@ -43,3 +43,9 @@ export function getProjStdList (projId) {
     params: {projId: projId},
   })
 }
+
+export function postClearStdTeam (projId, stdRoleIdList) {
+  return Vue.prototype.$axios.post('/teacher/project/add/std', {
+
+  })
+}

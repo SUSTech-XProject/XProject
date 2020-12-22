@@ -87,11 +87,11 @@
 
           <el-menu-item index="StdManage" >
             <i class="el-icon-s-order"></i>
-            <span slot="title">Students</span>
+            <span slot="title">Student View</span>
           </el-menu-item>
           <el-menu-item index="TeamManaging" >
             <i class="el-icon-connection"></i>
-            <span slot="title">Team Managing</span>
+            <span slot="title">Team View</span>
           </el-menu-item>
           <el-menu-item index="AnnouncementTch" >
             <i class="el-icon-bell"></i>

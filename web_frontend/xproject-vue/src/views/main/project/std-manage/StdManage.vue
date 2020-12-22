@@ -1,5 +1,9 @@
 <template>
   <el-card type="box-card" class="base-card">
+    <div slot="header" class="">
+      <span id="title-text">Student View</span>
+    </div>
+
     <div class="table-btm-group">
       <el-button @click="clearFilter" style="margin-right: auto">Clear all filters</el-button>
       <!--      <el-radio-group v-model="teamRadioModel" @change="handleTeamRadioChange" id="teamRadio">-->
@@ -8,7 +12,8 @@
       <!--        <el-radio-button label="noTeam">No team</el-radio-button>-->
       <!--      </el-radio-group>-->
       <el-button type="primary" plain icon="el-icon-plus" @click="initAddDrawer()">Add</el-button>
-      <el-button type="primary" plain @click="releaseStd">Release</el-button>
+      <el-button type="primary" plain @click="exportStd">Export</el-button>
+      <el-button type="primary" plain @click="clearStdTeam">Clear</el-button>
       <el-button type="warning" plain icon="el-icon-edit" @click="manageTeam">Manage</el-button>
     </div>
 
@@ -176,9 +181,9 @@
 </template>
 
 <script>
-import {getProjectListBySch, getProjStdList, postAddStdIntoProj} from '@/api/std_manage'
+  import {getProjectListBySch, getProjStdList, postAddStdIntoProj, postClearStdTeam} from '@/api/std_manage'
 import AutoForming from '@/views/main/project/team/AutoForming'
-import {getTeamDetail, getTeammatesByRoleId} from '@/api/team'
+import {getTeamDetail, getTeamExcel, getTeammatesByRoleId} from '@/api/team'
 import {getAllRecord, getRecordInst, getRecordInstStudent, postNewGrade} from '@/api/grade'
 import {getDatetimeStr} from '@/utils/parse-day-time'
 
@@ -269,6 +274,21 @@ export default {
     this.initStdManage()
   },
   methods: {
+    exportStd () {
+      let projId = this.$store.state.proj.projId;
+      // TODO
+      getTeamExcel(projId).then(resp => {
+        if (resp.data.code !== 200) {
+          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+          return false
+        }
+        console.log("start download team excel")
+      }).catch(failResp => {
+        console.log('fail in getGradeList. message=' + failResp.message)
+      })
+    },
     dateTimeFormatter (row, col) {
       return getDatetimeStr(row.record.createdTime)
     },
@@ -341,8 +361,29 @@ export default {
         this.reLoad()
       }
     },
-    releaseStd () {
+    clearStdTeam () {
+      // TODO
       let stdList = this.$refs.stdTable.selection
+      if (stdList.length === 0) {
+        this.$confirm('Clear selected students from teams?', 'Warning', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel',
+          type: 'info'
+        }.then(()=>{
+          let projId = this.$store.state.proj.projId;
+          let stdRoleIdList = []
+          for (let i = 0; i < stdList.length; ++i) {
+            stdRoleIdList.push(stdList[i].roleId);
+          }
+          postClearStdTeam(projId, stdRoleIdList).then(resp => {
+
+          }).catch(failResp => {
+
+          });
+        }).catch(failResp => {
+          this.$message.error('Back-end no response')
+        }));
+      }
     },
     reLoad () {
       this.tableLoading = true
@@ -603,7 +644,11 @@ export default {
   text-align: center;
 }
 
-> > .el-drawer :focus {
+#title-text {
+  font-size: 20px;
+}
+
+>> .el-drawer :focus {
   outline: 0;
 }
 </style>
