@@ -109,7 +109,7 @@
               <el-col :span="9">
                 <div v-if="notice.type==='Apply'">
 
-                  <div v-if="!notice.decided" style="margin-top: 20px">
+                  <div v-if="!notice.decided" style="margin-top: 35px">
                     <el-popover
                       placement="bottom"
                       width="340">

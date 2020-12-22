@@ -12,6 +12,7 @@
       <!--        <el-radio-button label="noTeam">No team</el-radio-button>-->
       <!--      </el-radio-group>-->
       <el-button type="primary" plain icon="el-icon-plus" @click="initAddDrawer()">Add</el-button>
+      <el-button type="primary" plain icon="el-icon-minus" @click="delStd()">Delete</el-button>
       <el-button type="primary" plain @click="exportStd">Export</el-button>
       <el-button type="primary" plain @click="clearStdTeam">Clear</el-button>
       <el-button type="warning" plain icon="el-icon-edit" @click="manageTeam">Manage</el-button>
@@ -185,11 +186,17 @@
 </template>
 
 <script>
-  import {getProjectListBySch, getProjStdList, postAddStdIntoProj, postClearStdTeam} from '@/api/std_manage'
+import {
+  getProjectListBySch,
+  getProjStdList,
+  postAddStdIntoProj,
+  postClearStdTeam,
+} from '@/api/std_manage'
 import AutoForming from '@/views/main/project/team/AutoForming'
 import {getTeamDetail, getTeamExcel, getTeammatesByRoleId} from '@/api/team'
 import {getAllRecord, getRecordInst, getRecordInstStudent, postNewGrade} from '@/api/grade'
 import {getDatetimeStr} from '@/utils/parse-day-time'
+import {postDelStdIntoProj} from '@/api/home_page'
 
 export default {
   name: 'StdManage',
@@ -224,38 +231,7 @@ export default {
       scoringDrawerVisible: false,
       drawerTitle: '',
       scoringTeamMateList: [],
-      gradeList: [
-        {
-          index: 1,
-          rcdName: 'assignment1',
-          modifiedTime: '12/01/2020 14:00',
-          tchName: 'Dehua Liu',
-          type: 'Point',
-          content: '',
-          baseContent: 100,
-          comment: '1.2 no pic -2; 1.4 no text -2'
-        },
-        {
-          index: 2,
-          rcdName: 'assignment2',
-          modifiedTime: '12/01/2020 14:00',
-          tchName: 'Dehua Liu',
-          type: 'Grade',
-          content: '',
-          baseContent: '',
-          comment: ''
-        },
-        {
-          index: 3,
-          rcdName: 'assignment3',
-          modifiedTime: '12/01/2020 14:00',
-          tchName: 'Dehua Liu',
-          type: 'Comment',
-          content: '',
-          baseContent: '',
-          comment: ''
-        },
-      ],
+      gradeList: [],
       haveTeam: false,
 
       teamMemberList: [],
@@ -279,7 +255,7 @@ export default {
   },
   methods: {
     exportStd () {
-      let projId = this.$store.state.proj.projId;
+      let projId = this.$store.state.proj.projId
       // TODO
       getTeamExcel(projId).then(resp => {
         if (resp.data.code !== 200) {
@@ -288,7 +264,7 @@ export default {
           })
           return false
         }
-        console.log("start download team excel")
+        console.log('start download team excel')
       }).catch(failResp => {
         console.log('fail in getGradeList. message=' + failResp.message)
       })
@@ -366,27 +342,40 @@ export default {
       }
     },
     clearStdTeam () {
-      // TODO
-      let stdList = this.$refs.stdTable.selection
       if (stdList.length === 0) {
         this.$confirm('Clear selected students from teams?', 'Warning', {
           confirmButtonText: 'Confirm',
           cancelButtonText: 'Cancel',
           type: 'info'
-        }.then(()=>{
-          let projId = this.$store.state.proj.projId;
+        }.then(() => {
+          let stdList = this.$refs.stdTable.selection
           let stdRoleIdList = []
+
           for (let i = 0; i < stdList.length; ++i) {
-            stdRoleIdList.push(stdList[i].roleId);
+            stdRoleIdList.push(stdList[i].roleId)
           }
-          postClearStdTeam(projId, stdRoleIdList).then(resp => {
 
+          let obj = {
+            projId: this.$store.state.proj.projId,
+            stdRoleIdList: stdRoleIdList
+          }
+
+          postClearStdTeam(obj).then(resp => {
+            if (resp.data.code === 200) {
+              this.initStdManage()
+
+              this.$message.success('Clear success')
+            } else if (resp.data.code === 400) {
+              this.$message.error(resp.data.message)
+            }
           }).catch(failResp => {
-
-          });
+            this.$message.error(failResp.message)
+          })
         }).catch(failResp => {
-          this.$message.error('Back-end no response')
-        }));
+          this.$message.error(failResp.message)
+        })).catch(() => {
+          this.$message.info('Clear canceled')
+        })
       }
     },
     reLoad () {
@@ -472,6 +461,39 @@ export default {
         this.$message.info('Add canceled')
       })
     },
+    delStd () {
+      this.$confirm('Confirm to delete selected students?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(() => {
+        let chosenList = this.$refs.stdTable.selection
+        let roleIdList = []
+
+        for (let i = 0; i < chosenList.length; ++i) {
+          roleIdList.push(chosenList[i].roleId)
+        }
+
+        let quitProjParamVO = {
+          'projId': this.$store.state.proj.projId,
+          'roleIdList': roleIdList
+        }
+
+        postDelStdIntoProj(quitProjParamVO).then(resp => {
+          if (resp.data.code === 200) {
+            this.initStdManage()
+
+            this.$message.success('Delete success')
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
+        })
+      }).catch(() => {
+        this.$message.info('Delete canceled')
+      })
+    },
 
     startScoring (std) {
       this.drawerTitle = 'Scoring ' + std.stdName
@@ -550,21 +572,6 @@ export default {
         .then(_ => {
           this.scoringDrawerVisible = false
           this.expandRowList.splice(0, this.expandRowList.length)
-          // getGradeList(this.$store.state.proj.projId).then(resp => {
-          //   if (resp.data.code !== 200) {
-          //     this.$message.error(resp.data.code + '\n' + resp.data.message)
-          //     return false
-          //   }
-          //   this.gradeList.splice(0, this.gradeList.length)   // remove all
-          //   for (let i = 0; i < resp.data.data.length; i++) {
-          //     let record = resp.data.data[i]
-          //     record['listIdx'] = i
-          //     this.gradeList.push(record)
-          //   }
-          //   console.log(this.gradeList)
-          // }).catch(failResp => {
-          //   console.log('fail in getGradeList. message=' + failResp.message)
-          // })
           this.$message.info('Scoring canceled')
         })
     },
@@ -652,7 +659,7 @@ export default {
   font-size: 20px;
 }
 
->> .el-drawer :focus {
+> > .el-drawer :focus {
   outline: 0;
 }
 </style>
@@ -668,3 +675,34 @@ export default {
 <!--          :total="page.total">-->
 <!--        </el-pagination>-->
 <!--      </div>-->
+
+<!--{-->
+<!--index: 1,-->
+<!--rcdName: 'assignment1',-->
+<!--modifiedTime: '12/01/2020 14:00',-->
+<!--tchName: 'Dehua Liu',-->
+<!--type: 'Point',-->
+<!--content: '',-->
+<!--baseContent: 100,-->
+<!--comment: '1.2 no pic -2; 1.4 no text -2'-->
+<!--},-->
+<!--{-->
+<!--index: 2,-->
+<!--rcdName: 'assignment2',-->
+<!--modifiedTime: '12/01/2020 14:00',-->
+<!--tchName: 'Dehua Liu',-->
+<!--type: 'Grade',-->
+<!--content: '',-->
+<!--baseContent: '',-->
+<!--comment: ''-->
+<!--},-->
+<!--{-->
+<!--index: 3,-->
+<!--rcdName: 'assignment3',-->
+<!--modifiedTime: '12/01/2020 14:00',-->
+<!--tchName: 'Dehua Liu',-->
+<!--type: 'Comment',-->
+<!--content: '',-->
+<!--baseContent: '',-->
+<!--comment: ''-->
+<!--},-->
