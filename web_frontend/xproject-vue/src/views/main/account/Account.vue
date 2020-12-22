@@ -28,7 +28,7 @@
             Email
           </div>
           <div class="personalInfoTypesetting" style="width:90%; margin-top: 20px;">
-            <el-input v-model="newEmail" :placeholder="formInfoList[3].value"></el-input>
+            <el-input v-model="newEmail"></el-input>
           </div>
 
           <div v-if="this.roleType==='Student'">
@@ -170,6 +170,7 @@ export default {
             this.formInfoList[1].value = name[0]
             this.formInfoList[2].value = name[1]
             this.formInfoList[3].value = infoDict.email
+            this.newEmail = infoDict.email
 
             if (infoDict.flags != null) {
               this.impressionTagList = JSON.parse(infoDict.flags)
@@ -187,6 +188,7 @@ export default {
             this.formInfoList[1].value = name[0]
             this.formInfoList[2].value = name[1]
             this.formInfoList[3].value = infoDict.email
+            this.newEmail = infoDict.email
           }
           this.imageUrl = resp.data.data.role.iconUrl
         } else if (resp.data.code === 400) {
@@ -275,14 +277,17 @@ export default {
           acInfoStdUpdateVO.email = this.newEmail
         }
 
+        console.log(acInfoStdUpdateVO)
+
         //TODO: Update avatar
         postSelfIntroduction(
           acInfoStdUpdateVO
         ).then(resp => {
           console.log('get response : ' + resp)
           if (resp.data.code === 200) {
-            this.formInfoList[3].value = this.newEmail
-            this.newEmail = ''
+            // this.formInfoList[3].value = this.newEmail
+            // this.newEmail = ''
+            this.init()
 
             this.$message.success('Update success')
           } else if (resp.data.code === 400) {
