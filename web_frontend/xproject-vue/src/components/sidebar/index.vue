@@ -3,13 +3,37 @@
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu :default-active="this.$route.name"
                class="el-menu-vertical-demo"
+               id="left-bar-admin"
+               @open="handleOpen" @close="handleClose"
+               @select="handleSelect"
+               background-color="#304156"
+               text-color="#bfcbd9"
+               active-text-color="#4392f9"
+               :collapse="isCollapse" style="height: 100%"
+               v-if="this.isAdmin()">
+        <el-menu-item id="title-admin" index="Welcome">
+          <i style="margin-top: -10px">
+            <img :src="logo" alt="logo" style="width: 35px; margin-left: -5px; padding-bottom: 6px"/>
+          </i>
+          <span slot="default" style="margin-left: 5px; font-size: 22px">XProject</span>
+        </el-menu-item>
+
+        <el-menu-item index="Role">
+          <i class="el-icon-s-custom"></i>
+          <span slot="title">Role</span>
+        </el-menu-item>
+
+      </el-menu>
+      <el-menu :default-active="this.$route.name"
+               class="el-menu-vertical-demo"
                id="left-bar"
                @open="handleOpen" @close="handleClose"
                @select="handleSelect"
                background-color="#304156"
                text-color="#bfcbd9"
                active-text-color="#4392f9"
-               :collapse="isCollapse" style="height: 100%">
+               :collapse="isCollapse" style="height: 100%"
+               v-else>
         <el-menu-item id="title" index="Welcome">
           <i style="margin-top: -10px">
             <img :src="logo" alt="logo" style="width: 35px; margin-left: -5px; padding-bottom: 6px"/>
@@ -118,12 +142,6 @@
 
 
       </el-menu>
-      <!--    <el-radio-button :label="false">Open</el-radio-button>-->
-      <!--    <el-radio-button :label="true">Close</el-radio-button>-->
-      <!--  <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">-->
-      <!--      <el-radio-button :label="false">展开</el-radio-button>-->
-      <!--      <el-radio-button :label="true">收起</el-radio-button>-->
-
 
       <el-radio-group v-model="isCollapse">
         <el-button circle v-show="!isCollapse" class="el-icon-s-fold" @click="isCollapse=true"></el-button>
@@ -146,6 +164,9 @@
       }
     },
     methods: {
+      isAdmin () {
+        return !isTeacher() && !isStudent();
+      },
       showRoster () {
         return isTeacher()
       },
@@ -178,7 +199,7 @@
   #left-bar-div {
     height: 100%;
   }
-#left-bar{
+#left-bar #left-bar-admin {
   text-align: left;
   /*background: blueviolet;*/
   height: 100%;
@@ -204,7 +225,7 @@
   padding: 0;
   text-align: left;
 }
-#title{
+#title #title-admin {
   background-color: #303f55;
   color: white;
   font-size: 20px;
