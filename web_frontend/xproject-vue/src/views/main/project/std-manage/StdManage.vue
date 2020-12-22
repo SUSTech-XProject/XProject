@@ -342,41 +342,37 @@ export default {
       }
     },
     clearStdTeam () {
-      if (stdList.length === 0) {
-        this.$confirm('Clear selected students from teams?', 'Warning', {
-          confirmButtonText: 'Confirm',
-          cancelButtonText: 'Cancel',
-          type: 'info'
-        }.then(() => {
-          let stdList = this.$refs.stdTable.selection
-          let stdRoleIdList = []
+      this.$confirm('Confirm to clear team information of selected students?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(() => {
+        let chosenList = this.$refs.stdTable.selection
+        let roleIdList = []
 
-          for (let i = 0; i < stdList.length; ++i) {
-            stdRoleIdList.push(stdList[i].roleId)
+        for (let i = 0; i < chosenList.length; ++i) {
+          roleIdList.push(chosenList[i].roleId)
+        }
+
+        let quitProjParamVO = {
+          'projId': this.$store.state.proj.projId,
+          'roleIdList': roleIdList
+        }
+
+        postClearStdTeam(quitProjParamVO).then(resp => {
+          if (resp.data.code === 200) {
+            this.initStdManage()
+
+            this.$message.success('Clear success')
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
           }
-
-          let obj = {
-            projId: this.$store.state.proj.projId,
-            stdRoleIdList: stdRoleIdList
-          }
-
-          postClearStdTeam(obj).then(resp => {
-            if (resp.data.code === 200) {
-              this.initStdManage()
-
-              this.$message.success('Clear success')
-            } else if (resp.data.code === 400) {
-              this.$message.error(resp.data.message)
-            }
-          }).catch(failResp => {
-            this.$message.error(failResp.message)
-          })
         }).catch(failResp => {
           this.$message.error(failResp.message)
-        })).catch(() => {
-          this.$message.info('Clear canceled')
         })
-      }
+      }).catch(() => {
+        this.$message.info('Clear canceled')
+      })
     },
     reLoad () {
       this.tableLoading = true
