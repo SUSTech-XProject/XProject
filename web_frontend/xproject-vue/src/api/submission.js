@@ -48,7 +48,7 @@ export function getDeleteSubmission (sbmId) {
   })
 }
 
-export function getLeftSubmissionTime (projId,submId) {
+export function getLeftSubmissionTime (projId, submId) {
   return Vue.prototype.$axios.get('/student/project/sub/sbm-left', {
     params: {
       projId: projId,
