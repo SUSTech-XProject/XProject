@@ -53,7 +53,8 @@
             Maximum Submission Time:
             <el-checkbox v-model="unlimited">Unlimited</el-checkbox>
             Or
-            <el-input-number v-model="submissionTimes" :disabled="unlimited" @change="handleChange" :min="1" :max="2147483646" label="maxSbm"></el-input-number>
+            <el-input-number v-model="submissionTimes" :disabled="unlimited" @change="handleChange" :min="1"
+                             :max="2147483646" label="maxSbm"></el-input-number>
             <br>
             <br>
             Status:
@@ -81,7 +82,6 @@
       :data="submissionList"
       style="width: 100%">
 
-<!--      expand part-->
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="demo-table-expand">
@@ -95,10 +95,10 @@
               <span>{{ props.row.createdTime }}</span>
             </el-form-item>
             <el-form-item label="Final Time">
-            <span>{{ props.row.finalTime }}</span>
-          </el-form-item>
+              <span>{{ props.row.finalTime }}</span>
+            </el-form-item>
             <el-form-item label="Due Time">
-            <span>{{ props.row.dueTime }}</span>
+              <span>{{ props.row.dueTime }}</span>
             </el-form-item>
             <el-form-item label="Creator">
               <span>{{ props.row.creator }}</span>
@@ -106,44 +106,46 @@
           </el-form>
         </template>
       </el-table-column>
-<!--      expand part-->
       <el-table-column label="" type="index" width="50px"/>
       <el-table-column min-width="160%" label="Title" prop="title">
         <template slot-scope="scope">
-          <span style="margin-left: 0px">{{scope.row.title}}</span>
+          <span style="margin-left: 0px">{{ scope.row.title }}</span>
         </template>
       </el-table-column>
-      <el-table-column min-width="90%" label="Modified Time" prop="modifiedTime" :formatter="dateTimeFormatter" sortable>
+      <el-table-column min-width="90%" label="Modified Time" prop="modifiedTime" :formatter="dateTimeFormatter"
+                       sortable>
         <template slot-scope="scope">
-          <span style="margin-left: 0px">{{scope.row.modifiedTime}}</span>
+          <span style="margin-left: 0px">{{ scope.row.modifiedTime }}</span>
         </template>
       </el-table-column>
       <el-table-column min-width="45%" label="Status" prop="status">
         <template slot-scope="scope">
-          <span style="margin-left: 0px">{{scope.row.status}}</span>
+          <span style="margin-left: 0px">{{ scope.row.status }}</span>
         </template>
       </el-table-column>
       <el-table-column min-width="170%">
         <template slot-scope="scope" style="margin-left: 10%">
           <el-button-group>
-          <el-button
-            style="margin-left: 10px;"
-            size="mini"
-            type="primary" plain
-            icon="el-icon-info"
-            @click="viewDetail(scope.row.index, scope.row.submId)">Detail</el-button>
-          <el-button
-            type="success" plain
-            size="mini"
-            icon="el-icon-edit"
-            @click="modifySubmission(scope.row.index)">Modify</el-button>
-          <el-button
-            size="mini"
-            @click="deleterow(scope.row.index, scope.row.submId)"
-            type="danger"
-            icon="el-icon-delete">
-            Delete
-          </el-button>
+            <el-button
+              style="margin-left: 10px;"
+              size="mini"
+              type="primary" plain
+              icon="el-icon-info"
+              @click="viewDetail(scope.row.index, scope.row.submId)">Detail
+            </el-button>
+            <el-button
+              type="success" plain
+              size="mini"
+              icon="el-icon-edit"
+              @click="modifySubmission(scope.row.index)">Modify
+            </el-button>
+            <el-button
+              size="mini"
+              @click="deleterow(scope.row.index, scope.row.submId)"
+              type="danger"
+              icon="el-icon-delete">
+              Delete
+            </el-button>
           </el-button-group>
         </template>
       </el-table-column>
@@ -196,7 +198,8 @@
           Maximum Submission Time:
           <el-checkbox v-model="modUnlimited">Unlimited</el-checkbox>
           Or
-          <el-input-number v-model="modSubmissionTimes" :disabled="modUnlimited" @change="handleChange" :min="1" :max="2147483646" label="maxSbm"></el-input-number>
+          <el-input-number v-model="modSubmissionTimes" :disabled="modUnlimited" @change="handleChange" :min="1"
+                           :max="2147483646" label="maxSbm"></el-input-number>
           <br>
           <br>
           Status:
@@ -224,45 +227,26 @@
       title="Submission"
       :visible.sync="detailDrawer"
       :size="detailSize">
-      <div>
-        <el-card id="detailCard">
-          <div slot="header">
-            <span id="detail title">Submission List : {{currentTitle}}</span>
-          </div>
 
-          <el-table :data="submissionInstanceList">
-            <el-table-column label="" type="index" width="50px"/>
-            <el-table-column label="Submitter" prop="submitter" sortable>
-              <template slot-scope="scope">
-                <span style="margin-left: 0px">{{scope.row.submitter}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="Submit Time" prop="submit time" :formatter="dateTimeFormatter" sortable>
-              <template slot-scope="scope">
-                <span style="margin-left: 0px">{{scope.row.submitTime}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="Submissions Left" prop="submission left" sortable>
-              <template slot-scope="scope">
-                <span style="margin-left: 0px">{{scope.row.submissionLeft}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="Attachment" prop="attachment">
-              <template slot-scope="scope">
-                <span style="margin-left: 0px">{{scope.row.attachments}}</span>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-card>
-      </div>
-<!--      <br>-->
-<!--      <el-button @click="commit_modify()" type="primary" style="margin-left: 50px;">-->
-<!--        Update-->
-<!--      </el-button>-->
+      <el-card id="detailCard">
+        <div slot="header">
+          <span id="detail title">Submission List : {{ currentTitle }}</span>
+          <el-button @click="handleDownloadSbmInst"
+                     style="float: right; padding: 3px 0"
+                     type="text">
+            Download
+          </el-button>
+        </div>
+
+        <el-table :data="submissionInstanceList">
+          <el-table-column label="" type="index" width="50px"/>
+          <el-table-column label="Submitter" prop="submitter.stdName" sortable/>
+          <el-table-column label="Submit Time" prop="submissionInst.submitTime" sortable/>
+          <el-table-column label="Submissions Left" prop="submissionInst.sbmLeft" sortable/>
+          <el-table-column label="Attachment" prop="submissionInst.attachments"/>
+        </el-table>
+      </el-card>
     </el-drawer>
-<!--    <drawer :drawer.sync="drawerCtrl"-->
-<!--            :ID="eventId"-->
-<!--            @closeEvent = "closeEvent"></drawer>-->
   </el-card>
 
 </template>
@@ -270,7 +254,13 @@
 <script>
 import {getDatetimeStr} from '@/utils/parse-day-time'
 // import timeDrawer from '@/views/main/project/event/timeDrawer'
-import {getDeleteSubmission, getSubmissionList, postAddSubmission, postModifySubmission, getSbmInsList} from '@/api/submission'
+import {
+  getDeleteSubmission,
+  getSubmissionList,
+  postAddSubmission,
+  postModifySubmission,
+  getSbmInsList
+} from '@/api/submission'
 
 export default {
   name: 'SubmissionTch',
@@ -354,7 +344,9 @@ export default {
       modFinalTime: '',
       modSubmissionTimes: 1,
       modUnlimited: false,
-      modifyDrawer: false
+      modifyDrawer: false,
+
+      viewingSbmId: ''
     }
   },
   mounted () {
@@ -426,47 +418,30 @@ export default {
       })
     },
     initAllSubmissionList (sbmId) {
-      this.submissionInstanceList.splice(0, this.submissionInstanceList.length) // remove all
       let projId = this.$store.state.proj.projId
-      // alert(sbmId)
 
       getSbmInsList(sbmId, projId).then(resp => {
         if (resp.data.code !== 200) {
-          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
+          this.$message.error(resp.data.message)
           return false
         }
-        this.submissionInstanceList.splice(0, this.submissionInstanceList.length) // remove all
 
-        for (let i = 0; i < resp.data.data.length; i++) {
-          // eslint-disable-next-line camelcase
-          let new_row = {
-            index: i + 1,
-            submissionInsId: resp.data.data[i].sbmInstId,
-            submissionId: resp.data.data[i].sbmId,
-            projInsId: resp.data.data[i].projInstId,
-            submitTime: getDatetimeStr(resp.data.data[i].submitTime),
-            submitter: resp.data.data[i].submitter,
-            submissionLeft: resp.data.data[i].sbmLeft,
-            attachments: resp.data.data[i].attachments
-          }
-          console.log(new_row)
-          this.submissionInstanceList.push(new_row)
+        this.submissionInstanceList.splice(0, this.submissionInstanceList.length)
+        this.submissionInstanceList = resp.data.data
+
+        for (let i = 0; i < this.submissionInstanceList.length; i++) {
+          this.submissionInstanceList[i].submissionInst.submitTime
+            = getDatetimeStr(this.submissionInstanceList[i].submissionInst.submitTime)
         }
-        console.log(this.submissionInstanceList)
       }).catch(failResp => {
-        console.log('fail in getSubmissionInstanceList. message=' + failResp.message)
+        this.$message.error(failResp.message)
       })
     },
-    viewDetail (index, submId) {
-      // alert(index)
+    viewDetail (index, sbmId) {
       this.detailDrawer = true
       this.currentTitle = this.submissionList[index - 1].title
-      this.initAllSubmissionList(submId)
-      // alert(this.currentTitle)
-      // this.initAllSubmissionList(submId)
-      // test without init
+      this.viewingSbmId = sbmId
+      this.initAllSubmissionList(sbmId)
     },
     modifySubmission (index) {
       this.modifyDrawer = true
@@ -559,7 +534,7 @@ export default {
         })
       })
     },
-    deleterow (index, submId) {
+    deleterow (index, sbmId) {
       // this.announcementlist.splice(index - 1, 1)
 
       this.$confirm('Are you sure to delete?')
@@ -567,7 +542,7 @@ export default {
           console.log('deleting data')
           // alert(annId)
           getDeleteSubmission(
-            submId
+            sbmId
             // annId
           ).then(resp => {
             console.log('get response : ' + resp)
@@ -587,7 +562,8 @@ export default {
             })
           })
         })
-        .catch(_ => {})
+        .catch(_ => {
+        })
     },
     handleChange (value) {
       console.log(value)
@@ -599,6 +575,9 @@ export default {
     },
     closeEvent () {
       this.drawerCtrl = false
+    },
+    handleDownloadSbmInst () {
+      window.open('http://localhost:8443/api/teacher/submission/download?sbmId=' + this.viewingSbmId)
     }
   }
 
@@ -607,13 +586,15 @@ export default {
 
 <style scoped>
 
-#base-card{
+#base-card {
   margin: 15px 10px;
 }
+
 #title-text {
   font-size: 20px;
 }
-#add_card, #modify_card, #detailCard{
+
+#add_card, #modify_card, #detailCard {
   margin-left: 20px;
   margin-right: 20px;
 }
@@ -622,17 +603,20 @@ export default {
 .demo-table-expand {
   font-size: 0;
 }
+
 .demo-table-expand label {
   width: 120px;
   color: #99a9bf;
   padding-right: 20px;
 }
+
 .demo-table-expand .el-form-item {
   margin-right: 0;
   margin-bottom: 0;
   width: 50%;
 }
-.el-drawer{
+
+.el-drawer {
   overflow: scroll;
 }
 
@@ -640,3 +624,31 @@ export default {
   outline: 0;
 }
 </style>
+
+
+<!--// for (let i = 0; i < resp.data.data.length; i++) {-->
+<!--//   // eslint-disable-next-line camelcase-->
+<!--//-->
+<!--//   let new_row = {-->
+<!--//     index: i + 1,-->
+<!--//     submissionInsId: resp.data.data[i].sbmInstId,-->
+<!--//     submissionId: resp.data.data[i].sbmId,-->
+<!--//     projInsId: resp.data.data[i].projInstId,-->
+<!--//     submitTime: getDatetimeStr(resp.data.data[i].submitTime),-->
+<!--//     submitter: resp.data.data[i].submitter,-->
+<!--//     submissionLeft: resp.data.data[i].sbmLeft,-->
+<!--//     attachments: resp.data.data[i].attachments-->
+<!--//   }-->
+<!--//   console.log(new_row)-->
+<!--//   this.submissionInstanceList.push(new_row)-->
+<!--// }-->
+<!--// console.log(this.submissionInstanceList)-->
+
+<!--      <br>-->
+<!--      <el-button @click="commit_modify()" type="primary" style="margin-left: 50px;">-->
+<!--        Update-->
+<!--      </el-button>-->
+
+<!--    <drawer :drawer.sync="drawerCtrl"-->
+<!--            :ID="eventId"-->
+<!--            @closeEvent = "closeEvent"></drawer>-->

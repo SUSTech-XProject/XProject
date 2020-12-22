@@ -21,7 +21,7 @@
             :before-upload="uploadFiles"
             :auto-upload="false"
             :multiple="false">
-            <el-button slot="trigger"  type="primary">Choose</el-button>
+            <el-button slot="trigger" type="primary">Choose</el-button>
             <el-button style="margin-left: 10px;" type="success" @click="commit_add">Submit</el-button>
             <div slot="tip" class="el-upload__tip">Click Choose to select resources which you want to upload.</div>
             <div slot="tip" class="el-upload__tip">Click Submit to upload chosen resources.</div>
@@ -30,42 +30,29 @@
         </el-card>
       </div>
       <br>
-<!--      <el-button @click="commitAdd" type="primary" style="margin-left: 50px;">-->
-<!--        Add-->
-<!--      </el-button>-->
+      <!--      <el-button @click="commitAdd" type="primary" style="margin-left: 50px;">-->
+      <!--        Add-->
+      <!--      </el-button>-->
     </el-drawer>
 
     <el-table
       :data="resourceslist"
       empty-text="No Data Found"
-      :default-sort = "{prop: 'index', order: 'increasing'}"
+      :default-sort="{prop: 'index', order: 'increasing'}"
       style="width: 100%">
       <el-table-column label="" type="index" width="50px"/>
-      <el-table-column label="File Name" prop="title" sortable>
+      <el-table-column label="File Name" prop="resource.fileName" sortable/>
+      <el-table-column label="Created time" prop="resource.createdTime" sortable/>
+      <el-table-column label="Size" prop="resource.size"/>
+      <el-table-column>
         <template slot-scope="scope">
-          <span style="margin-left: 0px">{{scope.row.fileName}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Created time" prop="createdTime" :formatter="dateTimeFormatter" sortable>
-        <template slot-scope="scope">
-          <span style="margin-left: 0px">{{scope.row.createdTime}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Size">
-        <template slot-scope="scope">
-          <span style="margin-left: 0px">{{scope.row.size}}</span>
+          <el-button @click="download(scope.row)" type="primary">Download</el-button>
         </template>
       </el-table-column>
       <el-table-column>
         <template slot-scope="scope">
-          <el-button @click="download(scope.row.index, scope.row.resourcesId)" type="primary" style="margin-left: 10px;">
-            Download
-          </el-button>
-        </template>
-      </el-table-column>
-      <el-table-column>
-        <template slot-scope="scope">
-          <el-button @click="deleterow(scope.row.index, scope.row.resourcesId)" type="danger" style="margin-left: 10px;">
+          <el-button @click="deleterow(scope.row.index, scope.row.resourcesId)" type="danger"
+                     style="margin-left: 10px;">
             Delete
           </el-button>
         </template>
@@ -82,7 +69,7 @@ import Card from '@/components/card/announceList/index'
 import Selector from '@/components/selector/single'
 import Drawer from '@/components/drawer/announcement/index'
 import {getDatetimeStr} from '@/utils/parse-day-time'
-import {getDeleteResources, getResourcesList, postAddResources, postDownload} from '../../../../api/resources'
+import {getDeleteResources, getResourcesList, postAddResources, getDownload} from '../../../../api/resources'
 
 export default {
   name: 'ResourcesTch',
@@ -104,9 +91,9 @@ export default {
       ]
     }
   },
-  // mounted () {
-  //   this.init()
-  // },
+  mounted () {
+    this.init()
+  },
   methods: {
     dateTimeFormatter (row, col) {
       return getDatetimeStr(row.modifiedTime)
@@ -158,7 +145,8 @@ export default {
             })
           })
         })
-        .catch(_ => {})
+        .catch(_ => {
+        })
     },
     init () {
       this.resourceslist.splice(0, this.resourceslist.length) // remove all
@@ -172,18 +160,11 @@ export default {
           return false
         }
         this.resourceslist.splice(0, this.resourceslist.length) // remove all
-        for (let i = 0; i < resp.data.data.length; i++) {
-          let newRow = {
-            index: i + 1,
-            resourcesId: resp.data.data[i].srcId,
-            fileName: resp.data.data[i].fileName,
-            createdTime: resp.data.data[i].createdTime,
-            size: resp.data.data[i].size
-          }
-          console.log(newRow)
-          this.resourceslist.push(newRow)
+        this.resourceslist = resp.data.data
+
+        for (let i = 0; i < this.resourceslist.length; ++i) {
+          this.resourceslist[i].resource.createdTime = getDatetimeStr(this.resourceslist[i].resource.createdTime)
         }
-        console.log(this.resourceslist)
       }).catch(failResp => {
         console.log('fail in getAnnouncementList. message=' + failResp.message)
       })
@@ -206,12 +187,20 @@ export default {
     //   })
     //   this.submitDrawer = false
     // },
-    download (index, resourcesId) {
-      postDownload(resourcesId).then(resp => {
-        console.log('success')
-      }).catch(failResp => {
-        console.log('fail in download. message=' + failResp.message)
-      })
+    download (row) {
+      window.open("http://localhost:8443/api/all/resource/download?srcId="+row.resource.srcId)
+      // getDownload(row.resource.srcId).then(resp => {
+      //   console.log(resp)
+      //   if (resp.code !== 200) {
+      //     this.$message.error(resp.data.message)
+      //     return false
+      //   }
+      //
+      //   this.$message.success('Download success')
+      // }).catch(failResp => {
+      //   this.$message.error(failResp.message)
+      //   console.log(failResp)
+      // })
     },
     submitUpload () {
       this.$refs.uploadfiles.submit()
@@ -224,11 +213,13 @@ export default {
 #base-card {
   margin: 15px 10px
 }
-#add_card{
+
+#add_card {
   margin-left: 20px;
   margin-right: 20px;
 }
-.el-drawer{
+
+.el-drawer {
   overflow: scroll;
 }
 </style>

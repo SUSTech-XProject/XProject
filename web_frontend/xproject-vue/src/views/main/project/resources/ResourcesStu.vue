@@ -42,7 +42,7 @@ import Card from '@/components/card/announceList/index'
 import Selector from '@/components/selector/single'
 import Drawer from '@/components/drawer/announcement/index'
 import {getDatetimeStr} from '@/utils/parse-day-time'
-import {getResourcesList, postDownload} from '../../../../api/resources'
+import {getResourcesList, getDownload} from '../../../../api/resources'
 
 export default {
   name: 'ResourcesStu',
@@ -98,7 +98,7 @@ export default {
     },
     download (index, resoucesId) {
       let projId = this.$store.state.proj.projId
-      postDownload(projId, resoucesId).then(resp => {
+      getDownload(projId, resoucesId).then(resp => {
         console.log('success')
       }).catch(failResp => {
         console.log('fail in download. message=' + failResp.message)

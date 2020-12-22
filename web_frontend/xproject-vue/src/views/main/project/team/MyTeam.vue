@@ -645,10 +645,7 @@ export default {
           this.$message.error(failResp.message)
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: 'Invite canceled'
-        })
+        this.$message.info('Invite canceled')
       })
     },
     handleCancelInvite () {
