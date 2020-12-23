@@ -41,3 +41,15 @@ export function postRecordUnitImportFromExcel(formData){
   }
   return Vue.prototype.$axios(options)
 }
+
+export function postProjStdExcel(formData){
+  let options = {
+    url: '/teacher/project/student/excel',
+    data: formData,
+    method: 'post',
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }
+  return Vue.prototype.$axios(options)
+}
