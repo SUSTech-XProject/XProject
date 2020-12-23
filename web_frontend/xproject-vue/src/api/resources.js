@@ -30,17 +30,14 @@ export function getDownload (srcId) {
   })
 }
 
-// export function postUpload (files) {
-//   return Vue.prototype.$axios.post('/all/project/resource/download', {
-//     files: fki
-//   })
-// }
-
-// teacher
-// postAddResources
-// getDeleteResources
-// getResourcesList
-// postUpload
-//
-// student
-// postDownload
+export function postRecordUnitImportFromExcel(formData){
+  let options = {
+    url: '/teacher/records/excel',
+    data: formData,
+    method: 'post',
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }
+  return Vue.prototype.$axios(options)
+}

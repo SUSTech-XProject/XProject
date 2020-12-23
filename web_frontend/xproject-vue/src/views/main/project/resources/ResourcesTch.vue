@@ -32,7 +32,6 @@
           <div slot="tip" class="el-upload__tip">Click Submit to upload chosen resources.</div>
         </el-upload>
       </el-card>
-
     </el-drawer>
 
     <el-table
@@ -76,15 +75,7 @@ export default {
     return {
       add_drawer: false,
       newTitle: '',
-      resourcesList: [
-        {
-          index: 1,
-          resourcesId: 0,
-          fileName: 'No-back-end-test',
-          createdTime: '12/04/2020 12:24',
-          size: '10kb'
-        }
-      ],
+      resourcesList: [],
 
       fileList: [],
     }
@@ -221,3 +212,11 @@ export default {
 <!--//     this.$message.error(failResp.message)-->
 <!--//   })-->
 <!--// },-->
+
+
+<!--index: 1,-->
+<!--resourcesId: 0,-->
+<!--fileName: 'No-back-end-test',-->
+<!--createdTime: '12/04/2020 12:24',-->
+<!--size: '10kb'-->
+<!--}-->
