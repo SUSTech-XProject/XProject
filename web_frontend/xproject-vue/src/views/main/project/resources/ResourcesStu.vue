@@ -98,6 +98,9 @@ export default {
 .el-drawer {
   overflow: scroll;
 }
+>> .el-drawer :focus {
+  outline: 0;
+}
 </style>
 
 <!--download (index, resoucesId) {-->

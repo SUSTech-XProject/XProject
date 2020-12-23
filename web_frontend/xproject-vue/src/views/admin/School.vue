@@ -57,6 +57,28 @@
           <span style="margin-left: 0px">{{scope.row.location}}</span>
         </template>
       </el-table-column>
+      <el-table-column label="Allow Register Teacher" prop="enable" sortable>
+        <template slot-scope="scope">
+          <el-switch
+            style="display: block"
+            v-model="scope.row.tchSwitch"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="setTchStatus(scope.row.schId)">
+          </el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column label="Allow Register Student" prop="enable" sortable>
+        <template slot-scope="scope">
+          <el-switch
+            style="display: block"
+            v-model="scope.row.stuSwitch"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="setStuStatus(scope.row.schId)">
+          </el-switch>
+        </template>
+      </el-table-column>
       <el-table-column>
         <template slot-scope="scope">
           <el-button @click="edit(scope.row.index, scope.row.schId)" type="primary" style="margin-left: 10px;">
@@ -110,7 +132,14 @@ import Card from '@/components/card/announceList/index'
 import Selector from '@/components/selector/single'
 import Drawer from '@/components/drawer/announcement/index'
 // import {getDeleteResources, getResourcesList, postAddResources, postDownload} from '../../api/resources'
-import {getDeleteSchool, getSchoolList, postAddSchool, postEditSchool} from '../../api/admin'
+import {
+  getDeleteSchool,
+  getSchoolList,
+  postAddSchool,
+  postAllowStu,
+  postAllowTch,
+  postEditSchool
+} from '../../api/admin'
 
 export default {
   name: 'School',
@@ -132,17 +161,29 @@ export default {
           index: 1,
           schId: 1,
           schName: 'SUSTech',
-          location: 'Guangdong, Shenzhen'
+          location: 'Guangdong, Shenzhen',
+          allowTch: 'Allow',
+          tchSwitch: true,
+          allowStu: 'Allow',
+          stuSwitch: true
         }
       ]
     }
   },
-  mounted () {
-    this.init()
-  },
+  // mounted () {
+  //   this.init()
+  // },
   methods: {
     commitAdd (param) {
       console.log('send created data')
+      if (this.newSchoolName === '') {
+        this.$alert('School name can not be null', 'Warning')
+        return false
+      }
+      if (this.newSchoolLocation === '') {
+        this.$alert('Location can not be null', 'Warning')
+        return false
+      }
       postAddSchool(
         this.newSchoolName,
         this.newSchoolLocation
@@ -244,7 +285,11 @@ export default {
             index: i + 1,
             schId: resp.data.data[i].schId,
             schName: resp.data.data[i].schName,
-            location: resp.data.data[i].location
+            location: resp.data.data[i].location,
+            allowTch: resp.data.data[i].allowTch,
+            tchSwitch: resp.data.data[i].allowTch === 'Allow',
+            allowStu: resp.data.data[i].allowStu,
+            stuSwitch: resp.data.data[i].allowStu === 'Allow'
           }
           console.log(newRow)
           this.schoolList.push(newRow)
@@ -253,6 +298,50 @@ export default {
       }).catch(failResp => {
         console.log('fail in getSchoolList. message=' + failResp.message)
       })
+    },
+    setTchStatus (schId) {
+      this.$confirm('Are you sure to change status?')
+        .then(_ => {
+          postAllowTch(schId).then(resp => {
+            if (resp.data.code !== 200) {
+              this.init()
+              this.$alert('Change successfully!', 'Tip')
+            } else if (resp.data.code === 400) {
+              console.log(resp.data.message)
+              this.$alert(resp.data.message, 'Tip', {
+                confirmButtonText: 'OK'
+              })
+              this.init()
+            }
+            console.log(this.schoolList)
+          }).catch(failResp => {
+            console.log('fail in setTeacherStatus. message=' + failResp.message)
+          })
+        }).catch(_ => {
+          this.init()
+        })
+    },
+    setStuStatus (schId) {
+      this.$confirm('Are you sure to change status?')
+        .then(_ => {
+          postAllowStu(schId).then(resp => {
+            if (resp.data.code !== 200) {
+              this.init()
+              this.$alert('Change successfully!', 'Tip')
+            } else if (resp.data.code === 400) {
+              console.log(resp.data.message)
+              this.$alert(resp.data.message, 'Tip', {
+                confirmButtonText: 'OK'
+              })
+              this.init()
+            }
+            console.log(this.schoolList)
+          }).catch(failResp => {
+            console.log('fail in setStudentStatus. message=' + failResp.message)
+          })
+        }).catch(_ => {
+          this.init()
+        })
     }
   }
 }
@@ -304,6 +393,9 @@ html,body{
   font-size: 20px;
 }
 /deep/ :focus {
+  outline: 0;
+}
+>> .el-drawer :focus {
   outline: 0;
 }
 </style>

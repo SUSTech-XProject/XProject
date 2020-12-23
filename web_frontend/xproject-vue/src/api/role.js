@@ -8,12 +8,12 @@ export function postLogin (username, password, rememberMe) {
   })
 }
 
-export function postRegister (password, schId,type, username) {
+export function postRegister (password, schId, type, username) {
   return Vue.prototype.$axios.post('/visitor/register', {
     type: type,
     username: username,
     password: password,
-    schId:schId
+    schId: schId
   })
 }
 
@@ -35,5 +35,14 @@ export function postChangeStatus (roleId) {
     params: {
       roleId: roleId
     }
+  })
+}
+
+export function postAddRole (username, password, status, roleType) {
+  return Vue.prototype.$axios.post('/admin/role/add', {
+    username: username,
+    password: password,
+    status: status,
+    roleType: roleType
   })
 }

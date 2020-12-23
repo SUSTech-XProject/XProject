@@ -463,15 +463,15 @@ export default {
       // console.log(this.dueTime)
       // alert("duetime:"+this.dueTime)
       // alert("fianltime:"+this.finalTime)
-      alert(this.finalTime)
+      // alert(this.finalTime)
       if ((this.dueTime !== '' && this.dueTime < this.dateFormat(new Date())) || (this.finalTime !== '' && this.finalTime < this.dateFormat(new Date()))) {
         this.$alert('Due time or Final time can not before now!', 'Warning')
-        // return false
+        return false
       }
       if (this.dueTime !== '' && this.finalTime !== '') {
         if (this.dueTime > this.finalTime) {
           this.$alert('Final time should not be earlier than due time!', 'Warning')
-          // return false
+          return false
         }
       }
       console.log('send new submission item')
@@ -621,6 +621,9 @@ export default {
 }
 
 /deep/ :focus {
+  outline: 0;
+}
+>> .el-drawer :focus {
   outline: 0;
 }
 </style>

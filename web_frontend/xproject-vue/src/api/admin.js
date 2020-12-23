@@ -27,3 +27,19 @@ export function getDeleteSchool (schId) {
     }
   })
 }
+
+export function postAllowTch (roleId) {
+  return Vue.prototype.$axios.post('/admin/school/allow-tch', null, {
+    params: {
+      roleId: roleId
+    }
+  })
+}
+
+export function postAllowStu (roleId) {
+  return Vue.prototype.$axios.post('/admin/school/allow-stu', null, {
+    params: {
+      roleId: roleId
+    }
+  })
+}
