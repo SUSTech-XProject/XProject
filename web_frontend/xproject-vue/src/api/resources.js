@@ -6,10 +6,16 @@ export function getResourcesList (projId) {
   })
 }
 
-export function postAddResources (files) {
-  return Vue.prototype.$axios.post('/teacher/project/resource/add', {
-    files: files
-  })
+export function postAddResources (formData) {
+  let options = {
+    url: '/teacher/resource/upload',
+    data: formData,
+    method: 'post',
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }
+  return Vue.prototype.$axios(options)
 }
 
 export function getDeleteResources (srcId) {

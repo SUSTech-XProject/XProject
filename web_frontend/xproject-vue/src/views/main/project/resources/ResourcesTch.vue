@@ -4,39 +4,36 @@
       <span id="title-text">Resources</span>
     </div>
 
-    <el-button @click="add_drawer = true" type="success" style="margin-left: 75%;">
+    <el-button @click="add_drawer = true"
+               type="success" style="margin-left: 75%;">
       Add
     </el-button>
 
     <el-drawer
       title="Add New Resources"
-      :visible.sync="add_drawer">
-      <div>
-        <el-card id="add_card">
-          Upload New Resources:
-          <el-upload
-            class="upload"
-            ref="uploadfiles"
-            :action="null"
-            :before-upload="uploadFiles"
-            :auto-upload="false"
-            :multiple="false">
-            <el-button slot="trigger" type="primary">Choose</el-button>
-            <el-button style="margin-left: 10px;" type="success" @click="commit_add">Submit</el-button>
-            <div slot="tip" class="el-upload__tip">Click Choose to select resources which you want to upload.</div>
-            <div slot="tip" class="el-upload__tip">Click Submit to upload chosen resources.</div>
-          </el-upload>
-          <br>
-        </el-card>
-      </div>
-      <br>
-      <!--      <el-button @click="commitAdd" type="primary" style="margin-left: 50px;">-->
-      <!--        Add-->
-      <!--      </el-button>-->
+      :visible.sync="add_drawer"
+      size="60%">
+
+      <el-card id="add-card">
+        Upload New Resources:
+        <el-upload
+          class="upload"
+          ref="uploadDrawer"
+          :action="'not-matter'"
+          multiple
+          :http-request="uploadResource"
+          :auto-upload="false">
+          <el-button slot="trigger" type="primary">Choose</el-button>
+          <el-button style="margin-left: 10px;" type="success" @click="upload">Submit</el-button>
+          <div slot="tip" class="el-upload__tip">Click Choose to select resources which you want to upload.</div>
+          <div slot="tip" class="el-upload__tip">Click Submit to upload chosen resources.</div>
+        </el-upload>
+      </el-card>
+
     </el-drawer>
 
     <el-table
-      :data="resourceslist"
+      :data="resourcesList"
       empty-text="No Data Found"
       :default-sort="{prop: 'index', order: 'increasing'}"
       style="width: 100%">
@@ -51,7 +48,7 @@
       </el-table-column>
       <el-table-column>
         <template slot-scope="scope">
-          <el-button @click="deleterow(scope.row.index, scope.row.resourcesId)" type="danger"
+          <el-button @click="deleteResource(scope.row)" type="danger"
                      style="margin-left: 10px;">
             Delete
           </el-button>
@@ -70,6 +67,7 @@ import Selector from '@/components/selector/single'
 import Drawer from '@/components/drawer/announcement/index'
 import {getDatetimeStr} from '@/utils/parse-day-time'
 import {getDeleteResources, getResourcesList, postAddResources, getDownload} from '../../../../api/resources'
+import {postImportFromExcel} from '@/api/std_manage'
 
 export default {
   name: 'ResourcesTch',
@@ -80,7 +78,7 @@ export default {
     return {
       add_drawer: false,
       newTitle: '',
-      resourceslist: [
+      resourcesList: [
         {
           index: 1,
           resourcesId: 0,
@@ -88,56 +86,44 @@ export default {
           createdTime: '12/04/2020 12:24',
           size: '10kb'
         }
-      ]
+      ],
+
+      fileList: ''
     }
   },
   mounted () {
     this.init()
   },
   methods: {
-    dateTimeFormatter (row, col) {
-      return getDatetimeStr(row.modifiedTime)
-    },
-    commit_add (param) {
-      console.log('send created data')
-      postAddResources(param.file).then(resp => {
-        console.log('get response : ' + resp)
-        if (resp.data.code === 200) {
-          this.init()
-          this.$alert('Add successfully!', 'Tip')
-        } else if (resp.data.code === 400) {
-          console.log(resp.data.message)
-          this.$alert(resp.data.message, 'Tip', {
+    init () {
+      getResourcesList(this.$store.state.proj.projId).then(resp => {
+        if (resp.data.code !== 200) {
+          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
             confirmButtonText: 'OK'
           })
+          return false
+        }
+        this.resourcesList.splice(0, this.resourcesList.length)
+        this.resourcesList = resp.data.data
+
+        for (let i = 0; i < this.resourcesList.length; ++i) {
+          this.resourcesList[i].resource.createdTime = getDatetimeStr(this.resourcesList[i].resource.createdTime)
         }
       }).catch(failResp => {
-        this.$alert('Error ' + failResp.message, 'Tips', {
-          confirmButtonText: 'OK'
-        })
+        console.log('fail in getAnnouncementList. message=' + failResp.message)
       })
     },
-    deleterow (index, resourcesId) {
-      // this.announcementlist.splice(index - 1, 1)
-
+    deleteResource (row) {
       this.$confirm('Are you sure to delete?')
         .then(_ => {
-          console.log('deleting data')
-          // alert(annId)
-          getDeleteResources(
-            JSON.stringify(resourcesId)
-            // annId
-          ).then(resp => {
+          getDeleteResources(row.resource.srcId).then(resp => {
             console.log('get response : ' + resp)
             if (resp.data.code === 200) {
-              this.announcementlist.splice(index - 1, 1)
-              this.$alert('Delete successfully!', 'Tip')
+              this.init()
+              this.$message.success('Delete success')
             } else if (resp.data.code === 400) {
-              // this.announcementlist.splice(index - 1, 1)
               console.log(resp.data.message)
-              this.$alert(resp.data.message, 'Tip', {
-                confirmButtonText: 'OK'
-              })
+              this.$message.error(resp.data.message)
             }
           }).catch(failResp => {
             this.$alert('Error ' + failResp.message, 'Tips', {
@@ -146,53 +132,35 @@ export default {
           })
         })
         .catch(_ => {
+          this.$message.info('Delete canceled')
         })
     },
-    init () {
-      this.resourceslist.splice(0, this.resourceslist.length) // remove all
-      let projId = this.$store.state.proj.projId
-
-      getResourcesList(projId).then(resp => {
-        if (resp.data.code !== 200) {
-          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
-          return false
-        }
-        this.resourceslist.splice(0, this.resourceslist.length) // remove all
-        this.resourceslist = resp.data.data
-
-        for (let i = 0; i < this.resourceslist.length; ++i) {
-          this.resourceslist[i].resource.createdTime = getDatetimeStr(this.resourceslist[i].resource.createdTime)
-        }
-      }).catch(failResp => {
-        console.log('fail in getAnnouncementList. message=' + failResp.message)
-      })
-    },
-    // uploadFiles (file) {
-    //   let formData = new window.FormData()
-    //   // for (let i = 0; i < this.fileList.length; i++) {
-    //   //   formData.append('file', file)
-    //   // }
-    //   console.log(this.sbmObj)
-    //
-    //   formData.append('files', file)
-    //   formData.append('sbmId', 1)
-    //   formData.append('projId', 1)
-    //   postUpload(formData).then(resp => {
-    //     // console.log('In uploadExcel: %o', resp)
-    //     console.log('???')
-    //   }).catch(failResp => {
-    //     console.log('fail in uploadExcel: %o', failResp)
-    //   })
-    //   this.submitDrawer = false
-    // },
     download (row) {
       window.open('http://localhost:8443/api/all/resource/download?srcId=' + row.resource.srcId)
     },
-    submitUpload () {
-      this.$refs.uploadfiles.submit()
-    }
+
+    // handleFileChange (file, fileList) {
+    //   this.fileList = fileList
+    // },
+    upload () {
+      this.$refs.uploadDrawer.submit()
+    },
+    uploadResource (param) {
+      let file = param.file
+      let formData = new window.FormData()
+      formData.append('files', file)
+      formData.append('projId', this.$store.state.proj.projId)
+      postAddResources(formData).then(resp => {
+        if (resp.data.code === 200) {
+          this.init()
+          this.$message.success('Add successfully!')
+        } else if (resp.data.code === 400) {
+          this.$message.error(resp.data.message)
+        }
+      }).catch(failResp => {
+        this.$message.error(failResp.message)
+      })
+    },
   }
 }
 </script>
@@ -202,7 +170,7 @@ export default {
   margin: 15px 10px
 }
 
-#add_card {
+#add-card {
   margin-left: 20px;
   margin-right: 20px;
 }
