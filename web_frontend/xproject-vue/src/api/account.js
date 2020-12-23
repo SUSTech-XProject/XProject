@@ -15,3 +15,7 @@ export function postTchPersonalInfo (acInfoStdUpdateVO) {
 export function postChangePassword(changePwdVO){
   return Vue.prototype.$axios.post('/all/change/password', changePwdVO)
 }
+
+export function postReviewToTeammates(obj){
+  return Vue.prototype.$axios.post('/student/review/teammates', obj)
+}

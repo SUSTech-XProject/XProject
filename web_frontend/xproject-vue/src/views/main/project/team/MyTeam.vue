@@ -262,6 +262,25 @@
             <el-button @click="handleCancel()">Cancel</el-button>
           </div>
         </el-tab-pane>
+
+        <el-tab-pane label="Mutual evaluation" name="eval" v-if="haveTeam && status==='Confirm'">
+          <div v-for="(member,index) in teamMemberList" :key="index"
+               @click.native:="openDrawer(member.roleId)"
+               style="margin-top: 15px;">
+            <el-avatar :fit="'fill'" :src="member.iconUrl"
+                       style="cursor: pointer; vertical-align: middle;"
+            ></el-avatar>
+            <span style="vertical-align: middle;">{{ member.stdNo }}</span>
+            <span style="vertical-align: middle;">{{ member.stdName }}</span>
+            <el-input v-model="commentsToTeammates[index]"
+                      style="width: 300px; margin-left: 10px;">
+            </el-input>
+          </div>
+          <el-button @click="handleComment" type="primary"
+                     style="margin-top: 20px; margin-left: 20px;">
+            Comment
+          </el-button>
+        </el-tab-pane>
       </el-tabs>
       <!--      <div style="font-size: 30px; font-weight:bold; margin-top: 10px">-->
       <!--        Notices-->
@@ -293,6 +312,7 @@ import {
 import stuInfoDrawer from '@/views/main/project/team/stuInfoDrawer'
 import {getDatetimeStr} from '@/utils/parse-day-time'
 import CreateTeam from '@/views/main/project/team/CreateTeam'
+import {postReviewToTeammates} from '@/api/account'
 
 export default {
   name: 'MyTeam',
@@ -350,6 +370,8 @@ export default {
         withRank: false,
       },
       formLabelWidth: '120px',
+
+      commentsToTeammates: []
     }
   },
   mounted () {
@@ -383,7 +405,12 @@ export default {
             this.teamName = infoDict.teamName
             this.description = infoDict.descriptions
             this.tagList = JSON.parse(infoDict.tags)
+
             this.teamMemberList = infoDict.teamMemberList
+            for (let i = 0; i < this.teamMemberList.length; ++i) {
+              this.commentsToTeammates.push('')
+            }
+
             this.targetMemNum = infoDict.targetMemNum
             this.topic = infoDict.topic
 
@@ -713,6 +740,18 @@ export default {
         })
       })
 
+    },
+
+    handleComment () {
+      // todo
+      // postReviewToTeammates().then(resp=>{
+      //   if(resp.data.message!==200){
+      //     this.$message.error(resp.data.message)
+      //     return false
+      //   }
+      // }).catch(failResp=>{
+      //   this.$message.error(failResp.message)
+      // })
     }
   }
 }
