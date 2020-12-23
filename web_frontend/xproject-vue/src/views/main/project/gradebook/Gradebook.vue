@@ -97,6 +97,9 @@
                  width="60%"
                  :visible.sync="combineDialogVisible">
         <el-form label-width="auto" style="width: 90%; margin-left: 5%;">
+          <el-form-item label="Record name">
+            <el-input v-model="combineRecordName" style="width: 80%"></el-input>
+          </el-form-item>
           <el-row>
             <el-col :span="12" v-for="record in combineList" :key="record.name">
               <el-form-item :label="record.name" label-width="auto">
@@ -124,8 +127,8 @@
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
-              <el-form-item label="Email of creator: ">
-                <span>{{ props.row.creator.email }}</span>
+              <el-form-item label="Email of creator: " label-width="auto">
+                {{ props.row.creator.email }}
               </el-form-item>
             </el-form>
           </template>
@@ -166,7 +169,8 @@ export default {
       ],
       recordList: [],
       combineDialogVisible: false,
-      combineList: []
+      combineList: [],
+      combineRecordName: ''
     }
   },
   mounted () {
@@ -309,17 +313,28 @@ export default {
     handleOpenCombineDialog () {
       let selectedRecord = this.$refs.recordTable.selection
       if (selectedRecord.length > 0) {
-        this.combineDialogVisible = true
         this.combineList.splice(0, this.combineList.length)
 
+        let notPointNum = 0
         for (let i = 0; i < selectedRecord.length; ++i) {
-          if(selectedRecord[i].record.type ==='Point'){
+          if (selectedRecord[i].record.type === 'Point') {
             this.combineList.push({
               name: selectedRecord[i].record.rcdName,
               proportion: '',
               rcdId: selectedRecord[i].record.rcdId,
             })
+          } else {
+            notPointNum++
           }
+        }
+        if (this.combineList.length > 0) {
+          this.combineDialogVisible = true
+
+          if (notPointNum > 0) {
+            this.$message.info(notPointNum + ' records are removed, which type is not Point')
+          }
+        } else {
+          this.$message.error('No Point type record selected')
         }
       } else {
         this.$message.info('No record selected')
@@ -331,29 +346,41 @@ export default {
         cancelButtonText: 'cancel',
         type: 'warning'
       }).then(() => {
-        // postCombineRecordInst().then(resp => {
-        //   if (resp.data.code === 200) {
-        //     getAllRecord(this.$store.state.proj.projId).then(resp => {
-        //       if (resp.data.code !== 200) {
-        //         this.$message.error(resp.data.code + '\n' + resp.data.message)
-        //         return false
-        //       }
-        //
-        //       this.recordList.splice(0, this.recordList.length)   // remove all
-        //       this.recordList = resp.data.data
-        //       console.log(this.recordList)
-        //     }).catch(failResp => {
-        //       console.log('fail in getGradeList. message=' + failResp.message)
-        //     })
-        //
-        //     this.combineDialogVisible = false
-        //     this.$message.success('Produce success')
-        //   } else if (resp.data.code === 400) {
-        //     this.$message.error(resp.data.message)
-        //   }
-        // }).catch(failResp => {
-        //   this.$message.error(failResp.message)
-        // })
+        let combineRcdInstParamVO = {
+          'coeList': [],
+          'rcdIdList': [],
+          'recordName': this.combineRecordName
+        }
+
+        for (let i = 0; i < this.combineList.length; ++i) {
+          combineRcdInstParamVO.coeList.push(this.combineList[i].proportion)
+          combineRcdInstParamVO.rcdIdList.push(this.combineList[i].rcdId)
+        }
+        console.log(combineRcdInstParamVO)
+
+        postCombineRecordInst(combineRcdInstParamVO).then(resp => {
+          if (resp.data.code === 200) {
+            getAllRecord(this.$store.state.proj.projId).then(resp => {
+              if (resp.data.code !== 200) {
+                this.$message.error(resp.data.code + '\n' + resp.data.message)
+                return false
+              }
+
+              this.recordList.splice(0, this.recordList.length)   // remove all
+              this.recordList = resp.data.data
+              console.log(this.recordList)
+            }).catch(failResp => {
+              console.log('fail in getGradeList. message=' + failResp.message)
+            })
+            this.combineRecordName = ''
+            this.combineDialogVisible = false
+            this.$message.success('Produce success')
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
+        })
       }).catch(() => {
         this.$message.info('Produce canceled')
       })
@@ -372,6 +399,7 @@ export default {
     },
     handleCancelCombine () {
       this.combineDialogVisible = false
+      this.combineRecordName = ''
     }
   }
 }

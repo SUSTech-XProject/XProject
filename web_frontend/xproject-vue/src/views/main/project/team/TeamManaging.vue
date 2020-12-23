@@ -80,10 +80,6 @@
                 icon="el-icon-search"
                 @click="openDrawer(scope.row.index)">Detail
               </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column>
-            <template slot-scope="scope">
               <el-button
                 size="mini"
                 type="primary" plain
@@ -144,7 +140,7 @@
 
               <span v-if="inst.type==='Point'">
                 <el-input v-model="inst.content"
-                          style="width: 50px; margin-left: 20px;">
+                          style="width: 100px; margin-left: 20px;">
                 </el-input>
                 / {{ inst.baseContent }}
               </span>
@@ -565,3 +561,14 @@ export default {
 <!--// }).catch(failResp => {-->
 <!--//   this.$message.error(failResp.message)-->
 <!--// })-->
+
+<!--<el-table-column>-->
+<!--<template slot-scope="scope">-->
+<!--  <el-button-->
+<!--    size="mini"-->
+<!--    type="primary" plain-->
+<!--    icon="el-icon-document-checked"-->
+<!--    @click="startScoring(scope.row)">Scoring-->
+<!--  </el-button>-->
+<!--</template>-->
+<!--</el-table-column>-->

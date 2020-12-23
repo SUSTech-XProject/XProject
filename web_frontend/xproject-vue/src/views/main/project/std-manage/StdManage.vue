@@ -131,7 +131,7 @@
 
               <span v-if="inst.type==='Point'">
                 <el-input v-model="inst.content"
-                          style="width: 50px; margin-left: 20px;">
+                          style="width: 100px; margin-left: 20px;">
                 </el-input>
                 / {{ inst.baseContent }}
               </span>
