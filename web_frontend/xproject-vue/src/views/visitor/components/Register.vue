@@ -18,12 +18,28 @@
                   prefix-icon="el-icon-lock" auto-complete="off"
                   placeholder="Please input password again" show-password></el-input>
       </el-form-item>
+      <el-form-item label="School" style="margin-bottom: 40px">
+        <el-select v-model="registerForm.schId" placeholder="selecting...">
+          <el-option
+
+            v-for="item in schoolList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+            <span style="float: left">{{ item.label }}</span>
+            <span style="float: right; color: #8492a6; font-size: 8px">{{ item.location }}</span>
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="Role">
         <el-radio-group v-model="registerForm.roleType">
           <el-radio border label="Student">student</el-radio>
           <el-radio border label="Teacher">teacher</el-radio>
         </el-radio-group>
       </el-form-item>
+
+<!--      add school info return school id -->
+
       <div style="width: 100%; display: flex; align-content: center; justify-content: center;">
         <el-button class='reg-btm' type="primary" v-on:click="register" ref="reg-btm">Create</el-button>
       </div>
@@ -32,8 +48,9 @@
   </div>
 </template>
 <script>
-  import {postRegister} from '@/api/role'
+import {postRegister} from '@/api/role'
 import {validPassword, validUsername} from "@/utils/validate";
+import {getSchoolList} from '@/api/admin'
 
 export default {
   name: 'Register',
@@ -80,11 +97,14 @@ export default {
     };
 
     return {
+      schoolList: [],
+
       registerForm: {
         username: '',
         password: '',
         passwordRepeat: '',
-        roleType: 'Student'
+        roleType: 'Student',
+        schId:''
       },
       rules: {
         username: [
@@ -100,6 +120,32 @@ export default {
     }
   },
   methods: {
+    initSchool(){
+
+      getSchoolList().then(resp=>{
+          if(resp.data.code!=200){
+            this.$message.error(resp.data.code + '\n' + resp.data.message)
+            return false
+          }
+        this.schoolList.splice(0,this.schoolList.length)
+        let schools = resp.data.data
+        console.log(schools)
+        for (let i = 0; i <schools.length ; i++) {
+          let school = schools[i];
+          this.schoolList.push({
+            value:school.schId,
+            label:school.schName,
+            location:school.location,
+          })
+        }
+
+
+        }
+
+      ).catch(failResp=>{
+        console.log('fail in getSchoolList. message=' + failResp.message)
+      })
+    },
     register () {
       const _this = this
       this.$refs['reg-btm'].loading = true
@@ -113,10 +159,15 @@ export default {
         }
 
         console.log('send account data')
+        console.log(this.registerForm)
         postRegister(
+          this.registerForm.password,
+          parseInt(this.registerForm.schId),
           this.registerForm.roleType,
-          this.registerForm.username,
-          this.registerForm.password
+          this.registerForm.username
+
+
+
         ).then(resp => {
           if (resp.data.code === 200) {
             this.$alert('Register successfully', 'Tip', {
@@ -140,6 +191,9 @@ export default {
         })
       });
     }
+  },
+  mounted () {
+    this.initSchool()
   }
 }
 </script>
@@ -156,7 +210,8 @@ export default {
   }
 
   .reg-title {
-    margin: 50px auto 40px auto;
+    margin-top: 35px ;
+    margin-bottom: 30px;
     text-align: center;
     color: #505458;
     font-size: 30px;

@@ -8,7 +8,9 @@
 <!--        <el-button style="margin: auto 20px auto 50px" class="header-btm"-->
 <!--                   icon="el-icon-message-solid">-->
 <!--        </el-button>-->
-
+    <div style="font-size: medium">
+      {{ this.$store.state.role.username }}
+    </div>
     <el-dropdown @command="handleCommand" trigger="click">
       <el-button class="header-btm" type="text" icon="el-icon-user-solid">
       </el-button>
@@ -26,7 +28,6 @@ import {getLogout} from "@/api/role";
 
 export default {
   name: 'index',
-
   data () {
     return {
       isFolded: false,
