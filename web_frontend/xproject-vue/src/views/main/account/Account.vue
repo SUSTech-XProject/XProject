@@ -54,6 +54,15 @@
             <el-input v-model="newEmail"></el-input>
           </div>
 
+          <div class="personalInfoTypesetting personalInfoTitle"
+               style="margin-top: 20px;">
+            Avatar
+          </div>
+          <div class="personalInfoTypesetting"
+               style="width:90%; margin-top: 20px; margin-bottom: 20px">
+            <el-input v-model="newImageUrl"></el-input>
+          </div>
+
           <div v-if="this.roleType==='Student'">
             <div class="personalInfoTitle" style="margin-left: 20px; margin-bottom: 20px;">
               Impression Tags
@@ -87,14 +96,14 @@
               </el-input>
               <el-button v-else class="input-new-tag" size="small" @click="showSkillTagInput">+ New Tag</el-button>
             </div>
-          </div>
 
-          <div class="personalInfoTypesetting personalInfoTitle">
-            Bio
+            <div class="personalInfoTypesetting personalInfoTitle">
+              Bio
+            </div>
+            <el-input type="textarea" :rows="4" placeholder="" v-model="bio"
+                      style="margin-left: 20px; margin-top: 20px; width: 90%">
+            </el-input>
           </div>
-          <el-input type="textarea" :rows="4" placeholder="" v-model="bio"
-                    style="margin-left: 20px; margin-top: 20px; width: 90%">
-          </el-input>
 
           <div class="personalInfoTypesetting" style="margin-bottom: 40px; margin-top: 30px">
             <el-button type="primary" @click="handleUpdate">update</el-button>
@@ -122,7 +131,7 @@
 
 <script>
 import {getUserHomeInfo} from '@/api/home_page'
-import {getAccountInfo, postChangePassword, postSelfIntroduction} from '@/api/account'
+import {getAccountInfo, postChangePassword, postStdPersonalInfo, postTchPersonalInfo} from '@/api/account'
 import {isStudent, isTeacher} from '@/utils/role'
 
 export default {
@@ -152,6 +161,7 @@ export default {
 
       //avatar uploader
       imageUrl: '',
+      newImageUrl: '',
 
       //impression tag list
       impressionTagList: [],
@@ -208,6 +218,8 @@ export default {
           } else if (isTeacher()) {
             let infoDict = resp.data.data.teacher
 
+            console.log(resp.data.data)
+
             this.bio = infoDict.bio
 
             this.formInfoList[0].value = infoDict.tchNo
@@ -217,7 +229,9 @@ export default {
             this.formInfoList[3].value = infoDict.email
             this.newEmail = infoDict.email
           }
+
           this.imageUrl = resp.data.data.role.iconUrl
+          this.newImageUrl = resp.data.data.role.iconUrl
         } else if (resp.data.code === 400) {
           this.$message.error(resp.data.message)
         }
@@ -287,42 +301,51 @@ export default {
         cancelButtonText: 'cancel',
         type: 'warning'
       }).then(() => {
-        let acInfoStdUpdateVO = {
-          'bio': '',
-          'flags': null,
-          'skills': null,
-          'email': ''
-        }
 
         if (isTeacher()) {
-          acInfoStdUpdateVO.bio = this.bio
-          acInfoStdUpdateVO.email = this.newEmail
-        } else if (isStudent()) {
-          acInfoStdUpdateVO.impTagList = this.impressionTagList
-          acInfoStdUpdateVO.skillTagList = this.skillTagList
-          acInfoStdUpdateVO.bio = this.bio
-          acInfoStdUpdateVO.email = this.newEmail
-        }
-
-        console.log(acInfoStdUpdateVO)
-
-        //TODO: Update avatar
-        postSelfIntroduction(
-          acInfoStdUpdateVO
-        ).then(resp => {
-          console.log('get response : ' + resp)
-          if (resp.data.code === 200) {
-            // this.formInfoList[3].value = this.newEmail
-            // this.newEmail = ''
-            this.init()
-
-            this.$message.success('Update success')
-          } else if (resp.data.code === 400) {
-            this.$message.error(resp.data.message)
+          let acInfoStdUpdateVO = {
+            'email': this.newEmail,
+            'iconUrl': this.newImageUrl
           }
-        }).catch(failResp => {
-          this.$message.error(failResp.message)
-        })
+
+          postTchPersonalInfo(
+            acInfoStdUpdateVO
+          ).then(resp => {
+            console.log('get response : ' + resp)
+            if (resp.data.code === 200) {
+              this.init()
+
+              this.$message.success('Update success')
+            } else if (resp.data.code === 400) {
+              this.$message.error(resp.data.message)
+            }
+          }).catch(failResp => {
+            this.$message.error(failResp.message)
+          })
+        } else if (isStudent()) {
+          let acInfoStdUpdateVO = {
+            'bio': this.bio,
+            'flags': this.impressionTagList,
+            'skills': this.skillTagList,
+            'email': this.newEmail,
+            'iconUrl': this.newImageUrl,
+          }
+
+          postStdPersonalInfo(
+            acInfoStdUpdateVO
+          ).then(resp => {
+            console.log('get response : ' + resp)
+            if (resp.data.code === 200) {
+              this.init()
+
+              this.$message.success('Update success')
+            } else if (resp.data.code === 400) {
+              this.$message.error(resp.data.message)
+            }
+          }).catch(failResp => {
+            this.$message.error(failResp.message)
+          })
+        }
       }).catch(() => {
         this.$message.info('Update canceled')
       })
@@ -430,25 +453,3 @@ export default {
   min-height: 95.2%;
 }
 </style>
-
-
-<!--          <div class="personalInfoTypesetting personalInfoTitle">-->
-<!--            Email-->
-<!--          </div>-->
-<!--          <div class="personalInfoTypesetting" style="width:90%">-->
-<!--            <el-input v-model="email" placeholder=""></el-input>-->
-<!--          </div>-->
-
-<!--          <div class="personalInfoTypesetting personalInfoTitle">-->
-<!--            College-->
-<!--          </div>-->
-<!--          <div class="personalInfoTypesetting" style="width:90%">-->
-<!--            <el-input v-model="college" placeholder=""></el-input>-->
-<!--          </div>-->
-
-<!--          <div class="personalInfoTypesetting personalInfoTitle">-->
-<!--            Location-->
-<!--          </div>-->
-<!--          <div class="personalInfoTypesetting" style="width:90%">-->
-<!--            <el-input v-model="location" placeholder=""></el-input>-->
-<!--          </div>-->
