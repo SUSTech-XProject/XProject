@@ -15,6 +15,12 @@ export function getSbmInsList (sbmId, projId) {
   })
 }
 
+export function getSbmInstStd (sbmId) {
+  return Vue.prototype.$axios.get('/student/project/submission/inst', {
+    params: {sbmId: sbmId}
+  })
+}
+
 export function postAddSubmission (projId, title, description, dueTime, finalTime, maxSubmission, status) {
   return Vue.prototype.$axios.post('/teacher/project/sub/add', {
     projId: projId,
@@ -57,15 +63,7 @@ export function getLeftSubmissionTime (projId, submId) {
   })
 }
 
-// export function postUploadSubmission(files, sbmId, projInsId){
-//   return Vue.prototype.$axios.post('/student/submission/upload', {
-//     files: files,
-//     sbmId: sbmId,
-//     projInsId: projInsId
-//   })
-// }
 export function postUploadSubmission (formData) {
-  // eslint-disable-next-line no-unused-vars
   let options = {
     url: '/student/submission/upload',
     data: formData,
