@@ -42,6 +42,6 @@ export function postNewGrade (recordInstUpdateParamVO) {
   return Vue.prototype.$axios.post('/teacher/grade/new/grade', recordInstUpdateParamVO)
 }
 
-export function postCombineRecordInst (obj) {
-  return Vue.prototype.$axios.post('/teacher/combine/record/inst', obj)
+export function postCombineRecordInst (combineRcdInstParamVO) {
+  return Vue.prototype.$axios.post('/teacher/combine/record/inst', combineRcdInstParamVO)
 }

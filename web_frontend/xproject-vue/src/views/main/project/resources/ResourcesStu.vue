@@ -3,15 +3,16 @@
     <div slot="header" class="">
       <span id="title-text">Resources</span>
     </div>
+
     <el-table
-      :data="resourceslist"
+      :data="resourcesList"
       empty-text="No Data Found"
       :default-sort="{prop: 'index', order: 'increasing'}"
       style="width: 100%">
       <el-table-column label="" type="index" width="50px"/>
       <el-table-column label="File Name" prop="resource.fileName" sortable/>
       <el-table-column label="Created time" prop="resource.createdTime" sortable/>
-      <el-table-column label="Size" prop="resource.size"/>
+      <el-table-column label="Size" prop="resource.size" sortable/>
       <el-table-column>
         <template slot-scope="scope">
           <el-button @click="download(scope.row)" type="primary">Download</el-button>
@@ -39,7 +40,7 @@ export default {
     return {
       add_drawer: false,
       newTitle: '',
-      resourceslist: [
+      resourcesList: [
         {
           index: 1,
           resourcesId: 0,
@@ -58,7 +59,6 @@ export default {
       return getDatetimeStr(row.modifiedTime)
     },
     init () {
-      this.resourceslist.splice(0, this.resourceslist.length) // remove all
       let projId = this.$store.state.proj.projId
 
       getResourcesList(projId).then(resp => {
@@ -68,11 +68,11 @@ export default {
           })
           return false
         }
-        this.resourceslist.splice(0, this.resourceslist.length) // remove all
-        this.resourceslist = resp.data.data
+        this.resourcesList.splice(0, this.resourcesList.length)
+        this.resourcesList = resp.data.data
 
-        for (let i = 0; i < this.resourceslist.length; ++i) {
-          this.resourceslist[i].resource.createdTime = getDatetimeStr(this.resourceslist[i].resource.createdTime)
+        for (let i = 0; i < this.resourcesList.length; ++i) {
+          this.resourcesList[i].resource.createdTime = getDatetimeStr(this.resourcesList[i].resource.createdTime)
         }
       }).catch(failResp => {
         console.log('fail in getAnnouncementList. message=' + failResp.message)

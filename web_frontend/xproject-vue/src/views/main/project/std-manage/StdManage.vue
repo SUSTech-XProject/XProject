@@ -131,7 +131,7 @@
 
               <span v-if="inst.type==='Point'">
                 <el-input v-model="inst.content"
-                          style="width: 50px; margin-left: 20px;">
+                          style="width: 100px; margin-left: 20px;">
                 </el-input>
                 / {{ inst.baseContent }}
               </span>
@@ -152,10 +152,10 @@
 
               <div style="margin-top: 10px; margin-left: 20px;"
                    v-if="inst.modifiedTime==='' || inst.tchName==='' || inst.email===''">
-                Last Modified: {{ inst.modifiedTime }}, {{ inst.tchName }}, {{ inst.email }}
+                Last Modified: no record
               </div>
               <div style="margin-top: 10px; margin-left: 20px;" v-else>
-                Last Modified: no record
+                Last Modified: {{ inst.modifiedTime }}, {{ inst.tchName }}, {{ inst.email }}
               </div>
 
               <div v-if="inst.roleId===scoringStdRoleId && recordInstList.length > 1"

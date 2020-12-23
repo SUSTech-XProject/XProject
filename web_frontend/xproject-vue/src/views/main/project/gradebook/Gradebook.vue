@@ -58,6 +58,10 @@
                    @click="deleteRecord">
           Delete
         </el-button>
+        <el-button icon="el-icon-upload2"
+                   @click="uploadDrawer=true">
+          Upload
+        </el-button>
         <el-button icon="el-icon-download"
                    @click="downloadGradeBook">
           Download
@@ -97,6 +101,9 @@
                  width="60%"
                  :visible.sync="combineDialogVisible">
         <el-form label-width="auto" style="width: 90%; margin-left: 5%;">
+          <el-form-item label="Record name">
+            <el-input v-model="combineRecordName" style="width: 80%"></el-input>
+          </el-form-item>
           <el-row>
             <el-col :span="12" v-for="record in combineList" :key="record.name">
               <el-form-item :label="record.name" label-width="auto">
@@ -124,8 +131,8 @@
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
-              <el-form-item label="Email of creator: ">
-                <span>{{ props.row.creator.email }}</span>
+              <el-form-item label="Email of creator: " label-width="auto">
+                {{ props.row.creator.email }}
               </el-form-item>
             </el-form>
           </template>
@@ -137,6 +144,33 @@
         <el-table-column label="Created time" prop="record.createdTime"
                          :formatter="dateTimeFormatter" sortable/>
       </el-table>
+
+      <el-drawer
+        title="Add New Resources"
+        :visible.sync="uploadDrawer"
+        size="60%">
+
+        <el-card id="add-card">
+          Upload New Resources:
+          <el-upload
+            class="upload"
+            ref="uploadDrawer"
+            :action="'not-matter'"
+            multiple
+            :auto-upload="false"
+            :limit="1"
+            :on-exceed="handleExceed"
+            :on-change="batchImportChange"
+            :file-list="fileList">
+
+            <el-button slot="trigger" type="primary">Choose</el-button>
+            <el-button style="margin-left: 10px;" type="success" @click="upload">Submit</el-button>
+            <div slot="tip" class="el-upload__tip">Click Choose to select resources which you want to upload.</div>
+            <div slot="tip" class="el-upload__tip">Click Submit to upload chosen resources.</div>
+          </el-upload>
+        </el-card>
+
+      </el-drawer>
     </div>
   </el-card>
 </template>
@@ -145,6 +179,7 @@
 import {getAllRecord, getGradeList, postCombineRecordInst, postDeleteRecord, postNewRecord} from '@/api/grade'
 import {getDatetimeStr} from '@/utils/parse-day-time'
 import {isStudent, isTeacher} from '@/utils/role'
+import {postRecordUnitImportFromExcel} from '@/api/resources'
 
 export default {
   name: 'Gradebook',
@@ -166,7 +201,11 @@ export default {
       ],
       recordList: [],
       combineDialogVisible: false,
-      combineList: []
+      combineList: [],
+      combineRecordName: '',
+
+      uploadDrawer: false,
+      fileList: []
     }
   },
   mounted () {
@@ -309,17 +348,28 @@ export default {
     handleOpenCombineDialog () {
       let selectedRecord = this.$refs.recordTable.selection
       if (selectedRecord.length > 0) {
-        this.combineDialogVisible = true
         this.combineList.splice(0, this.combineList.length)
 
+        let notPointNum = 0
         for (let i = 0; i < selectedRecord.length; ++i) {
-          if(selectedRecord[i].record.type ==='Point'){
+          if (selectedRecord[i].record.type === 'Point') {
             this.combineList.push({
               name: selectedRecord[i].record.rcdName,
               proportion: '',
               rcdId: selectedRecord[i].record.rcdId,
             })
+          } else {
+            notPointNum++
           }
+        }
+        if (this.combineList.length > 0) {
+          this.combineDialogVisible = true
+
+          if (notPointNum > 0) {
+            this.$message.info(notPointNum + ' records are removed, which type is not Point')
+          }
+        } else {
+          this.$message.error('No Point type record selected')
         }
       } else {
         this.$message.info('No record selected')
@@ -331,29 +381,41 @@ export default {
         cancelButtonText: 'cancel',
         type: 'warning'
       }).then(() => {
-        // postCombineRecordInst().then(resp => {
-        //   if (resp.data.code === 200) {
-        //     getAllRecord(this.$store.state.proj.projId).then(resp => {
-        //       if (resp.data.code !== 200) {
-        //         this.$message.error(resp.data.code + '\n' + resp.data.message)
-        //         return false
-        //       }
-        //
-        //       this.recordList.splice(0, this.recordList.length)   // remove all
-        //       this.recordList = resp.data.data
-        //       console.log(this.recordList)
-        //     }).catch(failResp => {
-        //       console.log('fail in getGradeList. message=' + failResp.message)
-        //     })
-        //
-        //     this.combineDialogVisible = false
-        //     this.$message.success('Produce success')
-        //   } else if (resp.data.code === 400) {
-        //     this.$message.error(resp.data.message)
-        //   }
-        // }).catch(failResp => {
-        //   this.$message.error(failResp.message)
-        // })
+        let combineRcdInstParamVO = {
+          'coeList': [],
+          'rcdIdList': [],
+          'recordName': this.combineRecordName
+        }
+
+        for (let i = 0; i < this.combineList.length; ++i) {
+          combineRcdInstParamVO.coeList.push(this.combineList[i].proportion)
+          combineRcdInstParamVO.rcdIdList.push(this.combineList[i].rcdId)
+        }
+        console.log(combineRcdInstParamVO)
+
+        postCombineRecordInst(combineRcdInstParamVO).then(resp => {
+          if (resp.data.code === 200) {
+            getAllRecord(this.$store.state.proj.projId).then(resp => {
+              if (resp.data.code !== 200) {
+                this.$message.error(resp.data.code + '\n' + resp.data.message)
+                return false
+              }
+
+              this.recordList.splice(0, this.recordList.length)   // remove all
+              this.recordList = resp.data.data
+              console.log(this.recordList)
+            }).catch(failResp => {
+              console.log('fail in getGradeList. message=' + failResp.message)
+            })
+            this.combineRecordName = ''
+            this.combineDialogVisible = false
+            this.$message.success('Produce success')
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
+        })
       }).catch(() => {
         this.$message.info('Produce canceled')
       })
@@ -372,6 +434,42 @@ export default {
     },
     handleCancelCombine () {
       this.combineDialogVisible = false
+      this.combineRecordName = ''
+    },
+
+    upload () {
+      let formData = new window.FormData()
+      this.fileList.forEach(file => {
+        formData.append('files', file.raw)
+      })
+      formData.append('projId', this.$store.state.proj.projId)
+
+      postRecordUnitImportFromExcel(formData).then(resp => {
+        if (resp.data.code !== 200) {
+          this.$message.error(resp.data.message)
+          return false
+        }
+
+        this.initGradebook()
+        this.uploadDrawer = false
+        this.fileList.splice(0, this.fileList.length)
+        this.$message.success(resp.data.data + 'records changed')
+      }).catch(failResp => {
+        this.$message.error(failResp.message)
+      })
+    },
+    batchImportChange (file, fileList) {
+      this.fileList = fileList
+
+      this.fileList.forEach(file => {
+        if (file.name.substring(file.name.lastIndexOf('.') + 1) !== 'xlsx') {
+          this.$message.error('Can only upload .xlsx')
+          this.fileList.splice(0, this.fileList.length)
+        }
+      })
+    },
+    handleExceed () {
+      this.$message.info('Can only upload one excel every time')
     }
   }
 }

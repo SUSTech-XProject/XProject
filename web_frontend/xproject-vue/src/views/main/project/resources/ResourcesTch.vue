@@ -5,6 +5,7 @@
     </div>
 
     <el-button @click="add_drawer = true"
+               icon="el-icon-plus"
                type="success" style="margin-left: 75%;">
       Add
     </el-button>
@@ -21,15 +22,16 @@
           ref="uploadDrawer"
           :action="'not-matter'"
           multiple
-          :http-request="uploadResource"
-          :auto-upload="false">
+          :auto-upload="false"
+          :on-change="batchImportChange"
+          :file-list="fileList">
+
           <el-button slot="trigger" type="primary">Choose</el-button>
           <el-button style="margin-left: 10px;" type="success" @click="upload">Submit</el-button>
           <div slot="tip" class="el-upload__tip">Click Choose to select resources which you want to upload.</div>
           <div slot="tip" class="el-upload__tip">Click Submit to upload chosen resources.</div>
         </el-upload>
       </el-card>
-
     </el-drawer>
 
     <el-table
@@ -40,14 +42,10 @@
       <el-table-column label="" type="index" width="50px"/>
       <el-table-column label="File Name" prop="resource.fileName" sortable/>
       <el-table-column label="Created time" prop="resource.createdTime" sortable/>
-      <el-table-column label="Size" prop="resource.size"/>
+      <el-table-column label="Size" prop="resource.size" sortable/>
       <el-table-column>
         <template slot-scope="scope">
           <el-button @click="download(scope.row)" type="primary">Download</el-button>
-        </template>
-      </el-table-column>
-      <el-table-column>
-        <template slot-scope="scope">
           <el-button @click="deleteResource(scope.row)" type="danger"
                      style="margin-left: 10px;">
             Delete
@@ -66,8 +64,7 @@ import Card from '@/components/card/announceList/index'
 import Selector from '@/components/selector/single'
 import Drawer from '@/components/drawer/announcement/index'
 import {getDatetimeStr} from '@/utils/parse-day-time'
-import {getDeleteResources, getResourcesList, postAddResources, getDownload} from '../../../../api/resources'
-import {postImportFromExcel} from '@/api/std_manage'
+import {getDeleteResources, getResourcesList, postAddResources, getDownload} from '@/api/resources'
 
 export default {
   name: 'ResourcesTch',
@@ -78,17 +75,9 @@ export default {
     return {
       add_drawer: false,
       newTitle: '',
-      resourcesList: [
-        {
-          index: 1,
-          resourcesId: 0,
-          fileName: 'No-back-end-test',
-          createdTime: '12/04/2020 12:24',
-          size: '10kb'
-        }
-      ],
+      resourcesList: [],
 
-      fileList: ''
+      fileList: [],
     }
   },
   mounted () {
@@ -139,17 +128,16 @@ export default {
       window.open('http://localhost:8443/api/all/resource/download?srcId=' + row.resource.srcId)
     },
 
-    // handleFileChange (file, fileList) {
-    //   this.fileList = fileList
-    // },
-    upload () {
-      this.$refs.uploadDrawer.submit()
+    batchImportChange (file, fileList) {
+      this.fileList = fileList
     },
-    uploadResource (param) {
-      let file = param.file
+    upload () {
       let formData = new window.FormData()
-      formData.append('files', file)
+      this.fileList.forEach(file=>{
+        formData.append('files', file.raw)
+      })
       formData.append('projId', this.$store.state.proj.projId)
+
       postAddResources(formData).then(resp => {
         if (resp.data.code === 200) {
           this.init()
@@ -160,7 +148,7 @@ export default {
       }).catch(failResp => {
         this.$message.error(failResp.message)
       })
-    },
+    }
   }
 }
 </script>
@@ -195,3 +183,43 @@ export default {
 <!--//   this.$message.error(failResp.message)-->
 <!--//   console.log(failResp)-->
 <!--// })-->
+
+<!--      <el-table-column>-->
+<!--        <template slot-scope="scope">-->
+<!--          <el-button @click="deleteResource(scope.row)" type="danger"-->
+<!--                     style="margin-left: 10px;">-->
+<!--            Delete-->
+<!--          </el-button>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+
+<!--:http-request="uploadResource"-->
+<!--// this.$refs.uploadDrawer.submit()-->
+<!--// uploadResource (param) {-->
+<!--//   let file = param.file-->
+<!--//   let formData = new window.FormData()-->
+<!--//   this.fileList.forEach(file=>{-->
+<!--//     formData.append('files', file.raw)-->
+<!--//   })-->
+<!--//   console.log(formData)-->
+<!--//   // formData.append('files', file)-->
+<!--//   formData.append('projId', this.$store.state.proj.projId)-->
+<!--//   postAddResources(formData).then(resp => {-->
+<!--//     if (resp.data.code === 200) {-->
+<!--//       this.init()-->
+<!--//       this.$message.success('Add successfully!')-->
+<!--//     } else if (resp.data.code === 400) {-->
+<!--//       this.$message.error(resp.data.message)-->
+<!--//     }-->
+<!--//   }).catch(failResp => {-->
+<!--//     this.$message.error(failResp.message)-->
+<!--//   })-->
+<!--// },-->
+
+
+<!--index: 1,-->
+<!--resourcesId: 0,-->
+<!--fileName: 'No-back-end-test',-->
+<!--createdTime: '12/04/2020 12:24',-->
+<!--size: '10kb'-->
+<!--}-->
