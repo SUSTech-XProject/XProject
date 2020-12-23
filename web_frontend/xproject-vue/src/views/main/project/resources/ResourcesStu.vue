@@ -6,29 +6,15 @@
     <el-table
       :data="resourceslist"
       empty-text="No Data Found"
-      :default-sort = "{prop: 'index', order: 'increasing'}"
+      :default-sort="{prop: 'index', order: 'increasing'}"
       style="width: 100%">
       <el-table-column label="" type="index" width="50px"/>
-      <el-table-column label="Title" prop="rcdName" sortable>
-        <template slot-scope="scope">
-          <span style="margin-left: 0px">{{scope.row.title}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Created time" prop="createdTime" :formatter="dateTimeFormatter" sortable>
-        <template slot-scope="scope">
-          <span style="margin-left: 0px">{{scope.row.createdTime}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Size">
-        <template slot-scope="scope">
-          <span style="margin-left: 0px">{{scope.row.size}}</span>
-        </template>
-      </el-table-column>
+      <el-table-column label="File Name" prop="resource.fileName" sortable/>
+      <el-table-column label="Created time" prop="resource.createdTime" sortable/>
+      <el-table-column label="Size" prop="resource.size"/>
       <el-table-column>
         <template slot-scope="scope">
-          <el-button @click="download(scope.row.index, scope.row.resourcesId)" type="primary" style="margin-left: 10px;">
-            Download
-          </el-button>
+          <el-button @click="download(scope.row)" type="primary">Download</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -42,7 +28,7 @@ import Card from '@/components/card/announceList/index'
 import Selector from '@/components/selector/single'
 import Drawer from '@/components/drawer/announcement/index'
 import {getDatetimeStr} from '@/utils/parse-day-time'
-import {getResourcesList, postDownload} from '../../../../api/resources'
+import {getResourcesList, getDownload} from '../../../../api/resources'
 
 export default {
   name: 'ResourcesStu',
@@ -64,15 +50,18 @@ export default {
       ]
     }
   },
+  mounted () {
+    this.init()
+  },
   methods: {
     dateTimeFormatter (row, col) {
       return getDatetimeStr(row.modifiedTime)
     },
     init () {
       this.resourceslist.splice(0, this.resourceslist.length) // remove all
-      // let projId = this.$store.state.proj.projId
+      let projId = this.$store.state.proj.projId
 
-      getResourcesList().then(resp => {
+      getResourcesList(projId).then(resp => {
         if (resp.data.code !== 200) {
           this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
             confirmButtonText: 'OK'
@@ -80,30 +69,18 @@ export default {
           return false
         }
         this.resourceslist.splice(0, this.resourceslist.length) // remove all
-        for (let i = 0; i < resp.data.data.length; i++) {
-          let newRow = {
-            index: i + 1,
-            resourcesId: resp.data.data[i].resourcesId,
-            title: resp.data.data[i].title,
-            createdTime: resp.data.data[i].createdTime,
-            size: resp.data.data[i].size
-          }
-          console.log(newRow)
-          this.resourceslist.push(newRow)
+        this.resourceslist = resp.data.data
+
+        for (let i = 0; i < this.resourceslist.length; ++i) {
+          this.resourceslist[i].resource.createdTime = getDatetimeStr(this.resourceslist[i].resource.createdTime)
         }
-        console.log(this.resourceslist)
       }).catch(failResp => {
-        console.log('fail in resoucesList. message=' + failResp.message)
+        console.log('fail in getAnnouncementList. message=' + failResp.message)
       })
     },
-    download (index, resoucesId) {
-      let projId = this.$store.state.proj.projId
-      postDownload(projId, resoucesId).then(resp => {
-        console.log('success')
-      }).catch(failResp => {
-        console.log('fail in download. message=' + failResp.message)
-      })
-    }
+    download (row) {
+      window.open('http://localhost:8443/api/all/resource/download?srcId=' + row.resource.srcId)
+    },
   }
 }
 </script>
@@ -112,11 +89,22 @@ export default {
 #base-card {
   margin: 15px 10px
 }
-#add_card{
+
+#add_card {
   margin-left: 20px;
   margin-right: 20px;
 }
-.el-drawer{
+
+.el-drawer {
   overflow: scroll;
 }
 </style>
+
+<!--download (index, resoucesId) {-->
+<!--let projId = this.$store.state.proj.projId-->
+<!--getDownload(projId, resoucesId).then(resp => {-->
+<!--console.log('success')-->
+<!--}).catch(failResp => {-->
+<!--console.log('fail in download. message=' + failResp.message)-->
+<!--})-->
+<!--}-->

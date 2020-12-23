@@ -18,6 +18,9 @@
         <el-button type="warning" plain
                    icon="el-icon-edit" @click="manageTeam">Manage
         </el-button>
+        <el-button type="primary" plain
+                   icon="el-icon-download" @click="exportStd">Export
+        </el-button>
       </div>
 
       <el-card style="margin: 15px 0;height: 100%">
@@ -190,7 +193,7 @@
 
 <script>
 import teamdrawer from '@/views/main/project/team/teamdrawer'
-import {getTeamInfoList} from '@/api/team'
+import {getTeamExcel, getTeamInfoList} from '@/api/team'
 import CreateTeam from '@/views/main/project/team/CreateTeam'
 import {postTeamDeletion} from '@/api/team'
 import {postTeamConfirmation} from '@/api/team'
@@ -532,6 +535,10 @@ export default {
         })
       }
     },
+
+    exportStd () {
+      window.open('http://localhost:8443/api/teacher/team/excel?projId=' + this.$store.state.proj.projId)
+    },
   }
 }
 </script>
@@ -549,3 +556,12 @@ export default {
 
 }
 </style>
+
+<!--// getTeamExcel(projId).then(resp => {-->
+<!--//   if (resp.data.code !== 200) {-->
+<!--//     this.$message.error(resp.data.message)-->
+<!--//     return false-->
+<!--//   }-->
+<!--// }).catch(failResp => {-->
+<!--//   this.$message.error(failResp.message)-->
+<!--// })-->

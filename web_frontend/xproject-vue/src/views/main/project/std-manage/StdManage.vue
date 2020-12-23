@@ -13,7 +13,6 @@
       <!--      </el-radio-group>-->
       <el-button type="primary" plain icon="el-icon-plus" @click="initAddDrawer()">Add</el-button>
       <el-button type="primary" plain icon="el-icon-minus" @click="delStd()">Delete</el-button>
-      <el-button type="primary" plain @click="exportStd">Export</el-button>
       <el-button type="primary" plain @click="clearStdTeam">Clear</el-button>
       <el-button type="warning" plain icon="el-icon-edit" @click="manageTeam">Manage</el-button>
     </div>
@@ -254,21 +253,7 @@ export default {
     this.initStdManage()
   },
   methods: {
-    exportStd () {
-      let projId = this.$store.state.proj.projId
-      // TODO
-      getTeamExcel(projId).then(resp => {
-        if (resp.data.code !== 200) {
-          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
-          return false
-        }
-        console.log('start download team excel')
-      }).catch(failResp => {
-        console.log('fail in getGradeList. message=' + failResp.message)
-      })
-    },
+
     dateTimeFormatter (row, col) {
       return getDatetimeStr(row.record.createdTime)
     },
