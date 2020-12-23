@@ -10,6 +10,9 @@
     <el-breadcrumb-item v-if="this.$route.name === 'Account'">
       <span class="bc-text">Account</span>
     </el-breadcrumb-item>
+    <el-breadcrumb-item v-if="this.$route.name === 'Roster'">
+      <span class="bc-text">Roster</span>
+    </el-breadcrumb-item>
 
     <el-breadcrumb-item v-if="this.$route.path.indexOf('/project/') !== -1"
                         :to="{name: 'ProjectList'}">
@@ -35,16 +38,24 @@ export default {
     return {
       bcDict: {
         'StdManage': 'Students',
+        'TeamManaging': 'Teams',
         'MyTeam': 'My Team',
         'Forming': 'Forming',
-        'Announcements': 'Announcements',
-        'Events': 'Events',
-        'Resources': 'Resources',
-        'Submissions': 'Submissions',
+        'AnnouncementStu': 'Announcements',
+        'AnnouncementTch': 'Announcements',
+        'StuEvent': 'Events',
+        'TchEvent': 'Events',
+        'ResourcesStu': 'Resources',
+        'ResourcesTch': 'Resources',
+        'SubmissionStu': 'Submission',
+        'SubmissionTch': 'Submission',
         'Gradebook': 'Gradebook'
       }
     }
   }
+  // mounted () {
+  //   alert(this.$route.name)
+  // }
 }
 </script>
 
