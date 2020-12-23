@@ -13,10 +13,15 @@
       <el-col style="width: 48.5%; margin-left: 1.5%; margin-top: 10px;">
         <el-card style="height: 450px">
           <div slot="header" class="clearfix" style="font-weight: bold">Recent Announcements</div>
-          <!--              TODO: Recent Announcements-->
-          <div v-if="this.firstThreeAnnoList.length===0">No Recent Announcements</div>
-          <div v-else v-for="(anno,index) in this.firstThreeAnnoList" :key="index" style="margin-bottom: 20px">
-          </div>
+          <el-table
+            :data="annList"
+            empty-text="No Data Found"
+            :default-sort="{prop: 'index', order: 'increasing'}"
+            style="width: 100%">
+            <el-table-column label="Title" prop="title"/>
+            <el-table-column label="Modified time" prop="modifiedTime"/>
+            <el-table-column label="Creator" prop="tchName"/>
+          </el-table>
         </el-card>
       </el-col>
     </div>
@@ -35,10 +40,15 @@
           <el-col style="width: 48.5%; margin-left: 1.5%; margin-right: 0.65%">
             <el-card style="height: 450px">
               <div slot="header" class="clearfix" style="font-weight: bold">Recent Announcements</div>
-              <!--              TODO: Recent Announcements-->
-              <div v-if="this.firstThreeAnnoList.length===0">No Recent Announcements</div>
-              <div v-else v-for="(anno,index) in this.firstThreeAnnoList" :key="index" style="margin-bottom: 20px">
-              </div>
+              <el-table
+                :data="annList"
+                empty-text="No Data Found"
+                :default-sort="{prop: 'index', order: 'increasing'}"
+                style="width: 100%">
+                <el-table-column label="Title" prop="title"/>
+                <el-table-column label="Modified time" prop="modifiedTime"/>
+                <el-table-column label="Creator" prop="tchName"/>
+              </el-table>
             </el-card>
           </el-col>
         </el-tab-pane>
@@ -140,6 +150,8 @@ import {getUserHomeInfo} from '@/api/home_page'
 import {isStudent, isTeacher} from '@/utils/role'
 import {getAccountInfo} from '@/api/account'
 import {getProjOverview, postProjectOverview} from '@/api/proj_overview'
+import {getAnnouncementList} from '@/api/announcement'
+import {getDatetimeStr} from '@/utils/parse-day-time'
 
 export default {
   name: 'ProjOverview',
@@ -178,6 +190,8 @@ export default {
       semester: '',
       newYear: '',
       newSemester: '',
+
+      annList: []
     }
   },
   mounted () {
@@ -204,8 +218,6 @@ export default {
         this.semester = term.substring(4)
         this.newYear = this.year
         this.newSemester = this.semester
-
-
 
         let settings = JSON.parse(infoDict.projSettings)
         this.initForm.use_recruit = settings.use_recruit
@@ -236,6 +248,28 @@ export default {
       }).catch(failResp => {
         this.$message.error(failResp.message)
         console.log(failResp)
+      })
+
+      getAnnouncementList(this.$store.state.proj.projId).then(resp => {
+        if (resp.data.code !== 200) {
+          this.$message(resp.data.message)
+          return false
+        }
+
+        let cnt = resp.data.data.length > 3 ? 3 : resp.data.data.length
+
+        resp.data.data.sort(function (a, b) {
+          return Date.parse(b.modifiedTime) - Date.parse(a.modifiedTime)
+        })
+
+        this.annList.splice(0, this.annList.length)
+        for (let i = 0; i < cnt; ++i) {
+          resp.data.data[i].modifiedTime = getDatetimeStr(resp.data.data[i].modifiedTime)
+          resp.data.data[i].createdTime = getDatetimeStr(resp.data.data[i].createdTime)
+          this.annList.push(resp.data.data[i])
+        }
+      }).catch(failResp => {
+        console.log('fail in getAnnouncementList. message=' + failResp.message)
       })
     },
     isStudent () {
