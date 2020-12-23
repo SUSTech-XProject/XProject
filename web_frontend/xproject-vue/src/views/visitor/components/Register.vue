@@ -161,10 +161,12 @@ export default {
         console.log('send account data')
         console.log(this.registerForm)
         postRegister(
-          this.registerForm.roleType,
-          this.registerForm.username,
           this.registerForm.password,
-          this.registerForm.schId
+          parseInt(this.registerForm.schId),
+          this.registerForm.roleType,
+          this.registerForm.username
+
+
 
         ).then(resp => {
           if (resp.data.code === 200) {

@@ -8,11 +8,12 @@ export function postLogin (username, password, rememberMe) {
   })
 }
 
-export function postRegister (type, username, password) {
+export function postRegister (password, schId,type, username) {
   return Vue.prototype.$axios.post('/visitor/register', {
     type: type,
     username: username,
-    password: password
+    password: password,
+    schId:schId
   })
 }
 
