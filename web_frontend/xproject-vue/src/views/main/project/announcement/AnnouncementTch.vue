@@ -190,6 +190,14 @@ export default{
     },
     commit_add () {
       console.log('send created data')
+      if (this.new_title === '') {
+        this.$alert('Title can not be null', 'Warning')
+        return false
+      }
+      if (this.new_message === '') {
+        this.$alert('Message can not be null', 'Warning')
+        return false
+      }
       postAddAnnouncement(
         this.$store.state.proj.projId,
         this.new_title,
@@ -330,4 +338,7 @@ html,body{
   /deep/ :focus {
     outline: 0;
   }
+>> .el-drawer :focus {
+  outline: 0;
+}
 </style>

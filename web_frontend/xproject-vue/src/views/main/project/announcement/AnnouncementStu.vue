@@ -293,4 +293,7 @@ html,body{
 /deep/ :focus {
   outline: 0;
 }
+>> .el-drawer :focus {
+  outline: 0;
+}
 </style>

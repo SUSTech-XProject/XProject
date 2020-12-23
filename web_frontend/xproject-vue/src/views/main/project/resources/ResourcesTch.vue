@@ -178,6 +178,9 @@ export default {
 .el-drawer {
   overflow: scroll;
 }
+>> .el-drawer :focus {
+  outline: 0;
+}
 </style>
 
 <!--// getDownload(row.resource.srcId).then(resp => {-->

@@ -4,6 +4,63 @@
       <span id="title-text">Role</span>
     </div>
 
+    <el-button @click="addDrawer = true" type="success" style="margin-left: 75%;">
+      Add
+    </el-button>
+
+    <el-drawer
+      title="Add New Role"
+      :visible.sync="addDrawer"
+      :size="addSize">
+      <div>
+        <el-card id="add_card">
+          Input New Role Name:
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 1, maxRows: 3}"
+            placeholder="Please input"
+            v-model="newRoleName">
+          </el-input>
+          <br>
+          <br>
+          Input Predetermined Password:
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 1, maxRows: 3}"
+            placeholder="Please input"
+            v-model="newPassword">
+          </el-input>
+          <br>
+          <br>
+          Choose role's type:
+          <el-select v-model="roleType" clearable placeholder="Choose Role Type:">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <br>
+          <br>
+          Choose role's status:
+          <el-select v-model="roleStatus" clearable placeholder="Choose Role Type:">
+            <el-option
+              v-for="item in statusList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <br>
+        </el-card>
+      </div>
+      <br>
+      <el-button @click="commitAdd" type="primary" style="margin-left: 50px;">
+        Add
+      </el-button>
+    </el-drawer>
+
     <el-table
       :data="roleList"
       empty-text="No Data Found"
@@ -48,7 +105,8 @@ import Card from '@/components/card/announceList/index'
 import Selector from '@/components/selector/single'
 import Drawer from '@/components/drawer/announcement/index'
 import {getDatetimeStr} from '@/utils/parse-day-time'
-import {getRoleList, postChangeStatus} from '../../../api/role'
+import {getRoleList, postAddRole, postChangeStatus} from '../../../api/role'
+import {postAddSchool} from '../../../api/admin'
 
 export default {
   name: 'Role',
@@ -58,6 +116,10 @@ export default {
   data () {
     return {
       statusSwitch: true,
+      addSize: '40%',
+      addDrawer: false,
+      newRoleName: '',
+      newPassword: '',
       roleList: [
         {
           index: 1,
@@ -77,7 +139,24 @@ export default {
           status: 'Disabled',
           statusSwitch: false
         }
-      ]
+      ],
+      options: [{
+        value: '0',
+        label: 'Teacher'
+      }, {
+        value: '1',
+        label: 'Admin'
+      }],
+      statusList: [
+        {
+          value: '0',
+          label: 'Enable'
+        }, {
+          value: '1',
+          label: 'Disable'
+        }],
+      roleType: '',
+      roleStatus: ''
     }
   },
   mounted () {
@@ -86,6 +165,47 @@ export default {
   methods: {
     dateTimeFormatter (row, col) {
       return getDatetimeStr(row.registerTime)
+    },
+    commitAdd () {
+      console.log('send created data')
+      if (this.roleType === '' || this.roleStatus === '') {
+        this.$alert('Role Type or Status can not be null!', 'Warning')
+        return false
+      }
+      if (this.newRoleName === '') {
+        this.$alert('Role name can not be null', 'Warning')
+        return false
+      }
+      if (this.newPassword === '') {
+        this.$alert('Password can not be null', 'Warning')
+        return false
+      }
+      postAddRole(
+        this.newRoleName,
+        this.newPassword,
+        this.roleStatus,
+        this.roleType
+      ).then(resp => {
+        console.log('get response : ' + resp)
+        if (resp.data.code === 200) {
+          this.newRoleName = ''
+          this.newPassword = ''
+          this.roleStatus = ''
+          this.roleType = ''
+          this.init()
+          this.addDrawer = false
+          this.$alert('Add successfully!', 'Tip')
+        } else if (resp.data.code === 400) {
+          console.log(resp.data.message)
+          this.$alert(resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        }
+      }).catch(failResp => {
+        this.$alert('Error ' + failResp.message, 'Tips', {
+          confirmButtonText: 'OK'
+        })
+      })
     },
     init () {
       this.roleList.splice(0, this.roleList.length) // remove all
@@ -118,7 +238,7 @@ export default {
       })
     },
     setStatus (index) {
-      alert(this.roleList[index - 1].roleId)
+      // alert(this.roleList[index - 1].roleId)
       // alert(index)
       this.$confirm('Are you sure to change status?')
         .then(_ => {
@@ -185,6 +305,13 @@ html,body{
 .el-drawer{
   overflow: scroll;
 }
+#add_card, #modify_card{
+  margin-left: 20px;
+  margin-right: 20px;
+}
+.el-drawer{
+  overflow: scroll;
+}
 #base-card {
   margin: 15px 10px
 }
@@ -192,6 +319,9 @@ html,body{
   font-size: 20px;
 }
 /deep/ :focus {
+  outline: 0;
+}
+>> .el-drawer :focus {
   outline: 0;
 }
 </style>
