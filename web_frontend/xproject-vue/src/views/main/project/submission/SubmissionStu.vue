@@ -114,8 +114,7 @@ import {postUploadSubmission} from '@/api/submission'
 
 export default {
   name: 'SubmissionStu',
-  components: {
-  },
+  components: {},
   data () {
     return {
       sbmObj: null,
@@ -236,7 +235,7 @@ export default {
 
       postUploadSubmission(formData).then(resp => {
         console.log(resp)
-        if(resp.data.message!==200){
+        if (resp.data.code !== 200) {
           this.$message.error(resp.data.message)
           return false
         }

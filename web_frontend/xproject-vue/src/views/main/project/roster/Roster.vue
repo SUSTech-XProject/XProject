@@ -6,7 +6,7 @@
 
     <div class="table-btm-group">
       <el-button type="primary" plain @click="createDialogVisible = true">Create</el-button>
-      <el-button type="primary" plain @click="uploadDrawer=true">Import</el-button>
+      <el-button type="primary" plain @click="importDialogVisible = true">Import</el-button>
       <el-button type="danger" plain @click="deleteDialogVisible = true">Delete</el-button>
     </div>
 
@@ -140,34 +140,6 @@
 
     </el-card>
 
-
-    <el-drawer
-      title="Add New Resources"
-      :visible.sync="uploadDrawer"
-      size="60%">
-
-      <el-card id="add-card">
-        Upload New Resources:
-        <el-upload
-          class="upload"
-          ref="uploadDrawer"
-          :action="'not-matter'"
-          multiple
-          :auto-upload="false"
-          :limit="1"
-          :on-exceed="handleExceed"
-          :on-change="batchImportChange"
-          :file-list="fileList">
-
-          <el-button slot="trigger" type="primary">Choose</el-button>
-          <el-button style="margin-left: 10px;" type="success" @click="upload">Submit</el-button>
-          <div slot="tip" class="el-upload__tip">Click Choose to select resources which you want to upload.</div>
-          <div slot="tip" class="el-upload__tip">Click Submit to upload chosen resources.</div>
-        </el-upload>
-      </el-card>
-
-    </el-drawer>
-
   </el-card>
 </template>
 
@@ -228,9 +200,6 @@ export default {
         size: 100,
         total: 400,
       },
-
-      uploadDrawer: false,
-      fileList: []
     }
   },
   mounted () {
@@ -317,41 +286,6 @@ export default {
     },
     handleCurrentChange (val) {
       console.log(`当前页: ${val}`)
-    },
-
-    upload () {
-      let formData = new window.FormData()
-      this.fileList.forEach(file => {
-        formData.append('files', file.raw)
-      })
-      formData.append('projId', this.$store.state.proj.projId)
-
-      postProjStdExcel(formData).then(resp => {
-        if (resp.data.code !== 200) {
-          this.$message.error(resp.data.message)
-          return false
-        }
-
-        this.initStdManage()
-        this.uploadDrawer = false
-        this.fileList.splice(0, this.fileList.length)
-        this.$message.success(resp.data.data + 'records changed')
-      }).catch(failResp => {
-        this.$message.error(failResp.message)
-      })
-    },
-    batchImportChange (file, fileList) {
-      this.fileList = fileList
-
-      this.fileList.forEach(file => {
-        if (file.name.substring(file.name.lastIndexOf('.') + 1) !== 'xlsx') {
-          this.$message.error('Can only upload .xlsx')
-          this.fileList.splice(0, this.fileList.length)
-        }
-      })
-    },
-    handleExceed () {
-      this.$message.info('Can only upload one excel every time')
     }
   }
 }

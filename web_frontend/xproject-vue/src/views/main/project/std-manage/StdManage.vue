@@ -14,6 +14,7 @@
       <el-button type="primary" plain icon="el-icon-plus" @click="initAddDrawer()">Add</el-button>
       <el-button type="primary" plain icon="el-icon-minus" @click="delStd()">Delete</el-button>
       <el-button type="primary" plain @click="clearStdTeam">Clear</el-button>
+      <el-button icon="el-icon-upload2" @click="uploadDrawer = true">Upload</el-button>
       <el-button type="warning" plain icon="el-icon-edit" @click="manageTeam">Manage</el-button>
     </div>
 
@@ -181,6 +182,33 @@
       </el-table>
     </el-drawer>
 
+    <el-drawer
+      title="Add New Resources"
+      :visible.sync="uploadDrawer"
+      size="60%">
+
+      <el-card id="add-card">
+        Upload New Resources:
+        <el-upload
+          class="upload"
+          ref="uploadDrawer"
+          :action="'not-matter'"
+          multiple
+          :auto-upload="false"
+          :limit="1"
+          :on-exceed="handleExceed"
+          :on-change="batchImportChange"
+          :file-list="fileList">
+
+          <el-button slot="trigger" type="primary">Choose</el-button>
+          <el-button style="margin-left: 10px;" type="success" @click="upload">Submit</el-button>
+          <div slot="tip" class="el-upload__tip">Click Choose to select resources which you want to upload.</div>
+          <div slot="tip" class="el-upload__tip">Click Submit to upload chosen resources.</div>
+        </el-upload>
+      </el-card>
+
+    </el-drawer>
+
   </el-card>
 </template>
 
@@ -192,10 +220,10 @@ import {
   postClearStdTeam,
 } from '@/api/std_manage'
 import AutoForming from '@/views/main/project/team/AutoForming'
-import {getTeamDetail, getTeamExcel, getTeammatesByRoleId} from '@/api/team'
-import {getAllRecord, getRecordInst, getRecordInstStudent, postNewGrade} from '@/api/grade'
+import {getAllRecord, getRecordInstStudent, postNewGrade} from '@/api/grade'
 import {getDatetimeStr} from '@/utils/parse-day-time'
 import {postDelStdIntoProj} from '@/api/home_page'
+import {postProjStdExcel} from '@/api/resources'
 
 export default {
   name: 'StdManage',
@@ -247,6 +275,9 @@ export default {
       recordInstList: [],
       loading: true,
       recordList: [],
+
+      uploadDrawer: false,
+      fileList: []
     }
   },
   mounted () {
@@ -585,6 +616,42 @@ export default {
         })
       }
     },
+
+    upload () {
+      let formData = new window.FormData()
+      this.fileList.forEach(file => {
+        formData.append('files', file.raw)
+      })
+      formData.append('projId', this.$store.state.proj.projId)
+
+      postProjStdExcel(formData).then(resp => {
+        console.log(resp)
+        if (resp.data.code !== 200) {
+          this.$message.error(resp.data.message+'aaa')
+          return false
+        }
+
+        this.initStdManage()
+        this.uploadDrawer = false
+        this.fileList.splice(0, this.fileList.length)
+        this.$message.success(resp.data.data + 'records changed')
+      }).catch(failResp => {
+        this.$message.error(failResp.message)
+      })
+    },
+    batchImportChange (file, fileList) {
+      this.fileList = fileList
+
+      this.fileList.forEach(file => {
+        if (file.name.substring(file.name.lastIndexOf('.') + 1) !== 'xlsx') {
+          this.$message.error('Can only upload .xlsx')
+          this.fileList.splice(0, this.fileList.length)
+        }
+      })
+    },
+    handleExceed () {
+      this.$message.info('Can only upload one excel every time')
+    }
   }
 }
 </script>
