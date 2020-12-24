@@ -427,9 +427,11 @@ export default {
           ).then(resp => {
             if (resp.data.code === 200) {
               let num = resp.data.data
+
               this.$message({
                 type: 'success',
-                message: num
+                message: num,
+                dangerouslyUseHTMLString: true,
               })
               this.reLoad()
               this.dialogVisible = false
