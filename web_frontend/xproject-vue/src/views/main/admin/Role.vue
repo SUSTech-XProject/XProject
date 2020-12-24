@@ -63,7 +63,7 @@
 
     <el-table
       :data="roleList"
-      height="600"
+      height="480"
       empty-text="No Data Found"
       :default-sort = "{prop: 'index', order: 'increasing'}"
       style="width: 100%">
