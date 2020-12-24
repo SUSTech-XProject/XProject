@@ -154,11 +154,11 @@
                         style="width: 250px; margin-left: 20px;">
               </el-input>
 
-              <div style="margin-top: 10px; margin-left: 20px;"
-                   v-if="inst.modifiedTime==='' || inst.tchName==='' || inst.email===''">
+              <div style="margin-top: 10px; margin-left: 55px;"
+                   v-if="inst.modifiedTime==null || inst.tchName==null || inst.email==null">
                 Last Modified: no record
               </div>
-              <div style="margin-top: 10px; margin-left: 20px;" v-else>
+              <div style="margin-top: 10px; margin-left: 55px;" v-else>
                 Last Modified: {{ inst.modifiedTime }}, {{ inst.tchName }}, {{ inst.email }}
               </div>
 
