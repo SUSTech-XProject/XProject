@@ -101,8 +101,10 @@
                   <el-input v-model="form.max_size" class="form-content-style"></el-input>
                 </el-form-item>
                 <el-form-item label="Due time">
-                  <el-date-picker type="date" placeholder="Choose one date" v-model="form.due_time"
-                                  class="form-content-style"></el-date-picker>
+<!--                  <el-date-picker type="date" placeholder="Choose one date" v-model="form.due_time"-->
+<!--                                  class="form-content-style"></el-date-picker>-->
+                  <el-date-picker v-model="form.due_time" type="datetime"
+                                  placeholder="Choose..." class="form-content-style"></el-date-picker>
                 </el-form-item>
                 <el-form-item label="Allow cross-shift teaming">
                   <el-switch v-model="form.allow_cross_mark" class="form-content-style"></el-switch>
@@ -536,7 +538,7 @@ export default {
 
 .form-content-style {
   margin-left: 10px;
-  width: 80%;
+  width: 100%;
 }
 </style>
 
