@@ -13,8 +13,9 @@
       <div class="text item" slot="default">
         <div>ID: {{teamID}}</div>
         <div>Topic:  {{teamTopic}}</div>
-        <div>Target Members: {{teamSta}}</div>
-        <div>Current Members: {{teamNum}}</div>
+        <div>Status: {{teamStatus}}</div>
+        <div>Member Status: {{teamNum}}/{{ teamMemSta }}</div>
+
 
       </div>
 
@@ -30,9 +31,10 @@
 export default {
   data() {
     return {
+      teamStatus:this.status,
       teamID:this.id,
       teamTopic:this.topic,
-      teamSta:this.status,
+      teamMemSta:this.tarMem,
       teamTag:this.tags,
       teamName:this.name,
       teamIntro:this.intro,
@@ -43,12 +45,13 @@ export default {
   props: {
     id:{type:Number, default:-1},
     topic:{type:String, default:'Topic 1'},
-    status:{type:Number, default: 1},
+    tarMem:{type:Number, default: 1},
     tags:{type:Array, default:()=>['tag1','tag2','tag3']},
     name:{type:String,default:'default name'},
     intro:{type:String,default:'details'},
     color_ind:{type:Number,default:-1},
     curMem:{type:Number,default:0},
+    status:{type:String,default:''}
   },
   computed:{
     cardStyle:function (){
