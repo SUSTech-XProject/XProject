@@ -5,6 +5,7 @@
     </div>
     <el-table
       :data="events"
+      v-loading="tableLoading"
       style="width: 100%">
       <el-table-column type="expand">
         <template slot-scope="props">
@@ -76,27 +77,10 @@ name: "StuEvent",
   },
   data(){
     return{
-      events:[
-        {
-        id:1,
-        creator:'Teacher 1',
-        title:'Midterm presentation',
-        description:'desc1',
-        mode:'?',
-        createdTime:'2020-12-32',
-        modifiedTime:'2021-01-00'
-      },
-        {
-        id:2,
-        creator:'Teacher 2',
-        title:'Final presentation',
-        description:'desc2',
-        mode:'?',
-        createdTime:'2020-12-32',
-        modifiedTime:'2021-01-00'
-      }],
+      events:[],
       drawerCtrl:false,
       eventId:0,
+      tableLoading:false,
     }
 
   },
@@ -105,6 +89,7 @@ name: "StuEvent",
   },
   methods:{
     init(){
+      this.tableLoading = true
       let id = this.$store.state.proj.projId
       getEATaskList(parseInt(id)).then(resp => {
         if (resp.data.code !== 200) {
@@ -133,6 +118,9 @@ name: "StuEvent",
       }).catch(failResp=>{
         console.log('fail in getEAlist. message=' + failResp.message)
       })
+      setTimeout(()=>{
+        this.tableLoading = false
+      },1000)
     },
     openEvent(val){
       this.drawerCtrl = true

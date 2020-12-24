@@ -300,6 +300,16 @@ name: "AutoForming",
   watch:{
     visible(val){
       this.dialogFormVisible = val
+      if(this.stuIn.length===0){
+        this.initStdManage()
+      }
+
+      if(this.teamIn.length===0){
+        this.initTeams()
+      }
+
+
+
     },
     teamIn(val){
       if(val.length===0){
