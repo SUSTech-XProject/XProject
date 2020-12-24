@@ -13,7 +13,9 @@
       <el-col style="width: 48.5%; margin-left: 1.5%; margin-top: 10px;">
         <el-card style="height: 450px">
           <div slot="header" class="clearfix" style="font-weight: bold">Recent Announcements</div>
+          <div v-if="this.annList.length===0">No Recent Announcements</div>
           <el-table
+            v-else
             :data="annList"
             empty-text="No Data Found"
             :default-sort="{prop: 'index', order: 'increasing'}"
@@ -40,7 +42,9 @@
           <el-col style="width: 48.5%; margin-left: 1.5%; margin-right: 0.65%">
             <el-card style="height: 450px">
               <div slot="header" class="clearfix" style="font-weight: bold">Recent Announcements</div>
+              <div v-if="this.annList.length===0">No Recent Announcements</div>
               <el-table
+                v-else
                 :data="annList"
                 empty-text="No Data Found"
                 :default-sort="{prop: 'index', order: 'increasing'}"

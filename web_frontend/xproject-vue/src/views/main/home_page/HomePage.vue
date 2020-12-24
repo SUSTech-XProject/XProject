@@ -36,9 +36,10 @@
                style="height: 100%; margin-top: 10px">
         <el-tab-pane label="Overview" name="overview">
           <div style="margin-top: 10px">Recent project</div>
+
           <el-row>
             <el-col :span="12" v-for="proj in firstThreeProjList" :key="proj.projName">
-              <el-card class="box-card" style="width: 90%; margin-top: 20px" shadow="never">
+              <el-card class="box-card" style="width: 95%; margin-top: 15px" shadow="never">
                 <div class="title">{{ proj.projName }}</div>
                 <p></p>
                 <div class="text">{{ proj.courseName }} {{ proj.createTime }}</div>
@@ -274,7 +275,7 @@ export default {
 }
 
 .title {
-  font-size: 20px
+  font-size: 18px
 }
 
 .small-text {

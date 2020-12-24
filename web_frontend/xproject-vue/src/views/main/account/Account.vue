@@ -150,8 +150,7 @@ export default {
       //el-form
       formInfoList: [
         {label: 'ID', value: ''},
-        {label: 'First name', value: ''},
-        {label: 'Last name', value: ''},
+        {label: 'Name', value: ''},
         {label: 'Email', value: ''},
         {label: 'Type', value: ''},
         {label: 'Status', value: ''},
@@ -193,9 +192,9 @@ export default {
         if (resp.data.code === 200) {
           let roleDict = resp.data.data.role
 
-          this.formInfoList[4].value = roleDict.roleType
-          this.formInfoList[5].value = roleDict.status
-          this.formInfoList[6].value = roleDict.registerTime.substring(0, roleDict.registerTime.indexOf('T'))
+          this.formInfoList[3].value = roleDict.roleType
+          this.formInfoList[4].value = roleDict.status
+          this.formInfoList[5].value = roleDict.registerTime.substring(0, roleDict.registerTime.indexOf('T'))
 
           if (isStudent()) {
             let infoDict = resp.data.data.student
@@ -203,10 +202,8 @@ export default {
             this.bio = infoDict.bio
 
             this.formInfoList[0].value = infoDict.stdNo
-            let name = infoDict.stdName.split(' ')
-            this.formInfoList[1].value = name[0]
-            this.formInfoList[2].value = name[1]
-            this.formInfoList[3].value = infoDict.email
+            this.formInfoList[1].value = infoDict.stdName
+            this.formInfoList[2].value = infoDict.email
             this.newEmail = infoDict.email
 
             if (infoDict.flags != null) {
@@ -223,10 +220,8 @@ export default {
             this.bio = infoDict.bio
 
             this.formInfoList[0].value = infoDict.tchNo
-            let name = infoDict.tchName.split(' ')
-            this.formInfoList[1].value = name[0]
-            this.formInfoList[2].value = name[1]
-            this.formInfoList[3].value = infoDict.email
+            this.formInfoList[1].value = infoDict.tchName
+            this.formInfoList[2].value = infoDict.email
             this.newEmail = infoDict.email
           }
 
