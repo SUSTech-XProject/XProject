@@ -119,7 +119,6 @@
             <div class="settingTitle" style="width: 85%">
               Project Topics
             </div>
-
             <el-form ref="topicDict" label-width="auto" class="demo-dynamic">
               <el-form-item
                 v-for="(topic, index) in topicBO"
@@ -141,6 +140,24 @@
                 <el-button @click="resetForm()">Reset</el-button>
               </el-form-item>
             </el-form>
+
+            <div class="settingTitle" style="width: 85%">
+              Access
+            </div>
+            <el-form style="margin-left: 20px; margin-top: 20px;"
+                     label-width="auto">
+              <el-form-item label="Student access">
+                <el-switch v-model="stuAccess"></el-switch>
+              </el-form-item>
+              <el-form-item label="Teacher access">
+                <el-switch v-model="tchAccess"></el-switch>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="updateAccess">Update</el-button>
+                <el-button @click="resetAccess">Reset</el-button>
+              </el-form-item>
+            </el-form>
+
           </el-col>
         </el-tab-pane>
 
@@ -162,6 +179,14 @@ export default {
   components: {},
   data () {
     return {
+      //adding
+      originAcc:{
+        stuAccess:true,
+        tchAccess:true,
+      },
+      stuAccess:true,
+      tchAccess:true,
+
       //tab pane
       activeName: 'info',
       tabPosition: 'left',
@@ -202,6 +227,47 @@ export default {
     this.init()
   },
   methods: {
+    //adding
+    resetAccess(){
+      this.stuAccess = this.originAcc.stuAccess
+      this.tchAccess = this.originAcc.tchAccess
+    },
+    updateAccess(){
+      this.$confirm('Confirm to update?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(() => {
+        let projectVO = {
+          'courseName': null,
+          'description': null,
+          'projId': this.$store.state.proj.projId,
+          'projName': null,
+          'projSettings': null,
+          'term': null,
+          'topics': null,
+          'stdJoin':this.stuAccess,
+          'tchJoin':this.tchAccess,
+        }
+
+        postProjectOverview(projectVO).then(resp => {
+          console.log('get response : ' + resp)
+          if (resp.data.code === 200) {
+            this.originAcc.stuAccess = this.stuAccess
+            this.originAcc.tchAccess = this.tchAccess
+
+            this.$message.success('Update success')
+          } else if (resp.data.code === 400) {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
+        })
+      }).catch(() => {
+        this.$message.info('Update canceled')
+      })
+    },
+
     init () {
       console.log('init proj overview page')
       getProjOverview(this.$store.state.proj.projId).then(resp => {
@@ -213,6 +279,11 @@ export default {
 
         let infoDict = resp.data.data
         console.log(infoDict)
+
+        this.originAcc.stuAccess = infoDict.stdJoin
+        this.stuAccess = infoDict.stdJoin
+        this.originAcc.tchAccess = infoDict.tchJoin
+        this.tchAccess = infoDict.tchJoin
 
         this.initSiteInfo = infoDict.description
         this.siteInfo = this.initSiteInfo
@@ -299,7 +370,9 @@ export default {
           'projName': null,
           'projSettings': JSON.stringify(this.form),
           'term': null,
-          'topics': null
+          'topics': null,
+          'stdJoin':null,
+          'tchJoin':null
         }
 
         postProjectOverview(projectVO).then(resp => {
@@ -339,7 +412,9 @@ export default {
           'projName': null,
           'projSettings': null,
           'term': this.newYear + this.newSemester,
-          'topics': null
+          'topics': null,
+          'stdJoin':null,
+          'tchJoin':null
         }
 
         postProjectOverview(projectVO).then(resp => {
@@ -392,7 +467,9 @@ export default {
           'projName': null,
           'projSettings': null,
           'term': null,
-          'topics': JSON.stringify(this.topicBO)
+          'topics': JSON.stringify(this.topicBO),
+          'stdJoin':null,
+          'tchJoin':null
         }
 
         postProjectOverview(projectVO).then(resp => {
