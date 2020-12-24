@@ -429,7 +429,7 @@ export default {
               let num = resp.data.data
               this.$message({
                 type: 'success',
-                message: num + ' teams successfully'
+                message: num
               })
               this.reLoad()
               this.dialogVisible = false

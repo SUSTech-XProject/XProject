@@ -77,22 +77,21 @@
                 {{ skill }}
               </el-tag>
             </div>
-            <div v-else style="margin-top: 20px;">
-              <el-button class="button-new-tag" size="small">No tag</el-button>
+            <div v-else>
+              <el-button class="el-tag" size="small">No tag</el-button>
             </div>
 
             <div style="margin-top: 20px">
               Comment List
             </div>
-            <div v-if="commentList.length!==0">
+            <div v-if="commentList != null">
               <el-tag v-for="comments in commentList" :key="comments"
                       effect="plain" class="el-tag">
                 {{ comments }}
               </el-tag>
             </div>
-            <div v-else
-                 style="margin-top: 20px;">
-              <el-button class="button-new-tag" size="small">No comment</el-button>
+            <div v-else>
+              <el-button class="el-tag" size="small">No comment</el-button>
             </div>
           </div>
 
@@ -178,7 +177,7 @@ export default {
       courseList: [{value: 0, label: 'All'}],
       valueCourse: 0,
 
-      commentList: []
+      commentList: null
     }
   },
   mounted () {
@@ -262,13 +261,13 @@ export default {
       })
 
       getComments().then(resp => {
+        console.log(resp.data.data)
         if (resp.data.code !== 200) {
           this.$message.error(resp.data.message)
           return false
         }
-
-        if (resp.data.data != null) {
-          this.commentList = resp.data.data
+        if (resp.data.data !== 'null') {
+          this.commentList = JSON.parse(resp.data.data)
         }
         console.log(resp.data.data)
       }).catch(failResp => {
