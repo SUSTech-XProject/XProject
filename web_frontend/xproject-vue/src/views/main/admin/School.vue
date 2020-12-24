@@ -15,6 +15,7 @@
       <div>
         <el-card id="add_card">
           Input New School Name:
+          <br>
           <el-input
             type="textarea"
             :autosize="{ minRows: 1, maxRows: 3}"
@@ -25,7 +26,6 @@
           <br>
           Input New School's Location:
           <br>
-          (In form of "Province, City")
           <el-input
             type="textarea"
             :autosize="{ minRows: 1, maxRows: 3}"
@@ -43,6 +43,7 @@
 
     <el-table
       :data="schoolList"
+      height="600"
       empty-text="No Data Found"
       :default-sort = "{prop: 'index', order: 'increasing'}"
       style="width: 100%">
@@ -107,7 +108,6 @@
           <br>
           Edit School Location:
           <br>
-          (In form of "Province, City")
           <el-input
             type="textarea"
             :autosize="{ minRows: 1, maxRows: 3}"
@@ -137,7 +137,7 @@ import {
   getSchoolList,
   postAddSchool,
   postEditSchool
-} from '../../api/admin'
+} from '../../../api/admin'
 
 export default {
   name: 'School',
@@ -185,7 +185,7 @@ export default {
         this.newSchoolName,
         this.newSchoolLocation
       ).then(resp => {
-        console.log('get response : ' + resp)
+        console.log('get response : %o', resp)
         if (resp.data.code === 200) {
           this.newSchoolName = ''
           this.newSchoolLocation = ''
@@ -213,7 +213,7 @@ export default {
     },
     commitEdit () {
       console.log('send edited data')
-      alert(this.editSchoolName)
+      // alert(this.editSchoolName)
       postEditSchool(
         this.currentSchId,
         this.editSchoolName,
@@ -223,10 +223,12 @@ export default {
       ).then(resp => {
         console.log('get response : ' + resp)
         if (resp.data.code === 200) {
-          this.schoolList[this.currentSchId].schName = this.editSchoolName
-          this.schoolList[this.currentSchId].location = this.editSchoolLocation
+          this.schoolList[this.currentIndex - 1].schName = this.editSchoolName
+          this.schoolList[this.currentIndex - 1].location = this.editSchoolLocation
           this.editSchoolName = ''
           this.editSchoolLocation = ''
+          this.currentIndex = null
+          this.currentSchId = null
           this.$alert('Modify successfully!', 'Tip')
           this.init()
           this.modifyDrawer = false
@@ -299,6 +301,9 @@ export default {
       })
     },
     setTchStatus (index) {
+      // alert(this.schoolList[index - 1].allowTch)
+      // alert(!this.schoolList[index - 1].allowTch)
+      // alert(~this.schoolList[index - 1].allowTch)
       this.$confirm('Are you sure to change status?')
         .then(_ => {
           postEditSchool(
@@ -306,7 +311,7 @@ export default {
             this.schoolList[index - 1].schName,
             this.schoolList[index - 1].location,
             this.schoolList[index - 1].allowStu,
-            !this.schoolList[index - 1].allowTch
+            this.schoolList[index - 1].allowTch
           ).then(resp => {
             if (resp.data.code !== 200) {
               this.init()
@@ -333,7 +338,7 @@ export default {
             this.schoolList[index - 1].schId,
             this.schoolList[index - 1].schName,
             this.schoolList[index - 1].location,
-            !this.schoolList[index - 1].allowStu,
+            this.schoolList[index - 1].allowStu,
             this.schoolList[index - 1].allowTch
           ).then(resp => {
             if (resp.data.code !== 200) {

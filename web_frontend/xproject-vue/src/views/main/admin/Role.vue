@@ -63,6 +63,7 @@
 
     <el-table
       :data="roleList"
+      height="600"
       empty-text="No Data Found"
       :default-sort = "{prop: 'index', order: 'increasing'}"
       style="width: 100%">
@@ -246,7 +247,7 @@ export default {
           postChangeStatus(this.roleList[index - 1].roleId).then(resp => {
             console.log('get response : ' + resp)
             if (resp.data.code === 200) {
-              this.init()
+              this.roleList[index - 1].status = this.roleList[index - 1].statusSwitch ? 'Enabled' : 'Disabled'
               this.$alert('Change successfully!', 'Tip')
             } else if (resp.data.code === 400) {
               console.log(resp.data.message)

@@ -23,6 +23,11 @@
           <span slot="title">Role</span>
         </el-menu-item>
 
+        <el-menu-item index="School">
+          <i class="el-icon-s-home"></i>
+          <span slot="title">School</span>
+        </el-menu-item>
+
       </el-menu>
       <el-menu :default-active="this.$route.name"
                class="el-menu-vertical-demo"

@@ -5,16 +5,20 @@
     </div>
 
     <div id="card-body">
-      <div style="text-align: right;padding-right: 30px">
+      <div style="display: flex; justify-content: flex-start; align-items: center;">
         <el-button type="primary" plain
                    icon="el-icon-circle-plus-outline" @click="addTeam">Create
         </el-button>
-        <el-button type="danger" plain
+        <el-button type="danger" plain style="margin-right: auto"
                    icon="el-icon-delete" @click="deleteTeam">Delete
         </el-button>
         <el-button type="success" plain
-                   icon="el-icon-circle-check" @click="confirmTeam">Confirm
+                   icon="el-icon-circle-check" @click="dialogVisible=true">Confirm
         </el-button>
+        <el-button type="info" plain
+                   icon="el-icon-refresh-right" @click="cancelTeam">Cancel
+        </el-button>
+
         <el-button type="warning" plain
                    icon="el-icon-edit" @click="manageTeam">Manage
         </el-button>
@@ -110,6 +114,23 @@
              :team-in="multipleSelection"
              @closeManaging="closeManaging"></forming>
 
+    <el-dialog
+      title="Alert"
+      :visible.sync="dialogVisible"
+      width="25%"
+      >
+      <div style="margin-bottom: 20px">Please select confirm mode:</div>
+      <el-switch
+        v-model="forceConfirm"
+        active-text="Force"
+        inactive-text="Ordinary">
+      </el-switch>
+      <span slot="footer" class="dialog-footer">
+      <el-button @click="dialogVisible = false">Cancel</el-button>
+      <el-button type="primary" @click="confirmTeam">Confirm</el-button>
+    </span>
+    </el-dialog>
+
     <el-drawer
       :title="drawerTitle"
       :visible.sync="scoringDrawerVisible"
@@ -189,7 +210,7 @@
 
 <script>
 import teamdrawer from '@/views/main/project/team/teamdrawer'
-import {getTeamExcel, getTeamInfoList} from '@/api/team'
+import {getTeamExcel, getTeamInfoList, postTeamCancel} from '@/api/team'
 import CreateTeam from '@/views/main/project/team/CreateTeam'
 import {postTeamDeletion} from '@/api/team'
 import {postTeamConfirmation} from '@/api/team'
@@ -206,6 +227,9 @@ export default {
   },
   data () {
     return {
+      dialogVisible:false,
+      forceConfirm:false,
+
       drawerCtrl: false,
       drawerId: 1,
       tableData: [],
@@ -398,6 +422,7 @@ export default {
           }
           console.log(list)
           postTeamConfirmation(
+            this.forceConfirm,
             list
           ).then(resp => {
             if (resp.data.code === 200) {
@@ -405,6 +430,46 @@ export default {
               this.$message({
                 type: 'success',
                 message: num + ' teams successfully'
+              })
+              this.reLoad()
+              this.dialogVisible = false
+            } else {
+              this.$message.error(resp.data.message)
+            }
+          }).catch(failResp => {
+            this.$message.error('Back-end no response')
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Canceled'
+          })
+        })
+      }
+    },
+    cancelTeam () {
+      console.log(this.multipleSelection)
+      if (this.multipleSelection.length === 0) {
+        this.$message.error('No team selected yet')
+      } else {
+        this.$confirm('Cancel selected teams?', 'Alert', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel',
+          type: 'info'
+        }).then(() => {
+          const list = []
+          for (let i = 0; i < this.multipleSelection.length; i++) {
+            list.push(parseInt(this.multipleSelection[i].index))
+          }
+          console.log(list)
+          postTeamCancel(
+            list
+          ).then(resp => {
+            if (resp.data.code === 200) {
+              let num = resp.data.data
+              this.$message({
+                type: 'success',
+                message: num
               })
               this.reLoad()
             } else {
