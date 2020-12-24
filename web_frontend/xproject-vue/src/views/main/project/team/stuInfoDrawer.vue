@@ -69,12 +69,33 @@
           </div>
 
           <div>
-            <div style="margin-top: 40px">Skill List</div>
-            <el-tag v-for="skill in skillList" :key="skill"
-                    effect="plain" class="el-tag">
-              {{ skill }}
-            </el-tag>
+            <div style="margin-top: 20px">Skill List</div>
+            <div v-if="skillList.length!==0">
+              <el-tag v-for="skill in skillList" :key="skill"
+                      effect="plain" class="el-tag">
+                {{ skill }}
+              </el-tag>
+            </div>
+            <div v-else style="margin-top: 20px;">
+              <el-button class="button-new-tag" size="small">No tag</el-button>
+            </div>
+
+            <div style="margin-top: 20px">
+              Comment List
+            </div>
+            <div v-if="commentList.length!==0">
+              <el-tag v-for="comments in commentList" :key="comments"
+                      effect="plain" class="el-tag">
+                {{ comments }}
+              </el-tag>
+            </div>
+            <div v-else
+                 style="margin-top: 20px;">
+              <el-button class="button-new-tag" size="small">No comment</el-button>
+            </div>
           </div>
+
+
 
 <!--          <div style="margin-top: 40px">Statistic</div>-->
         </el-tab-pane>
@@ -91,6 +112,7 @@
 <script>
 import {getStuInfo} from '@/api/team'
 import {getStuProj} from '@/api/team'
+import {getComments, getProjList} from '@/api/home_page'
 
 export default {
   name: "stuInfoDrawer",
@@ -128,6 +150,8 @@ export default {
       //course filter
       courseList: [{value: 0, label: 'All'}],
       valueCourse: 0,
+
+      commentList: []
     }
   },
   methods:{
@@ -189,6 +213,19 @@ export default {
         this.$alert('Error: ' + failResp.message, 'Tips', {
           confirmButtonText: 'OK'
         })
+      })
+      getComments().then(resp => {
+        if (resp.data.code !== 200) {
+          this.$message.error(resp.data.message)
+          return false
+        }
+
+        if (resp.data.data != null) {
+          this.commentList = resp.data.data
+        }
+        console.log(resp.data.data)
+      }).catch(failResp => {
+        this.$message.error(failResp.message)
       })
     }
   },
