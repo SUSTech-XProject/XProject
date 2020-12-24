@@ -13,20 +13,20 @@
       :visible.sync="add_drawer">
       <div>
         <el-card id="add_card">
-          Input announcement title:
+          Title:
           <el-input
             type="textarea"
             :autosize="{ minRows: 2, maxRows: 5}"
-            placeholder="Please input"
+            placeholder="Please input title"
             v-model="new_title">
           </el-input>
           <br>
           <br>
-          Input detail message:
+          Message:
           <el-input
             type="textarea"
             :autosize="{ minRows: 7, maxRows: 10}"
-            placeholder="Please input"
+            placeholder="Please input message"
             v-model="new_message">
           </el-input>
           <br>
@@ -82,7 +82,7 @@
           <el-input
             type="textarea"
             :autosize="{ minRows: 2, maxRows: 5}"
-            placeholder="Please input"
+            placeholder="Please input title"
             v-model="mod_title">
           </el-input>
         <br>
@@ -91,7 +91,7 @@
           <el-input
             type="textarea"
             :autosize="{ minRows: 7, maxRows: 10}"
-            placeholder="Please input"
+            placeholder="Please input message"
             v-model="mod_message">
           </el-input>
         <br>
