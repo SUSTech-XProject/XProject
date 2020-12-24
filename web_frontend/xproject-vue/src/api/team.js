@@ -37,8 +37,17 @@ export function postTeamDeletion (teams) {
   })
 }
 
-export function postTeamConfirmation (teamConfirmParamVO) {
-  return Vue.prototype.$axios.post('/all/team/confirm', teamConfirmParamVO)
+export function postTeamConfirmation (force,teamList) {
+  return Vue.prototype.$axios.post('/all/team/confirm', {
+    force:force,
+    projInstIdList:teamList
+  })
+}
+export function postTeamCancel(teams) {
+  return Vue.prototype.$axios.post('/teacher/team/cancel', {
+    projInstIdList:teams,
+    force:true
+  })
 }
 
 export function getProjectTopics (projId) {
