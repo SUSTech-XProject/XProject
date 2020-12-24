@@ -12,6 +12,13 @@
         </el-button>
       </el-row>
 
+      <div v-if="this.listArr.length===0" align="center">
+        <el-card class="proj-card" shadow="never"
+                 :body-style="{ paddingTop: '10px'}">
+          <div style="font-size: 20px; color: #585858; margin-top: 28px">No data</div>
+        </el-card>
+      </div>
+
       <div v-for="(list, index) in listArr">
         <div v-if="list.isStar||!star" class="proj">
           <card v-bind:proj="list"
@@ -88,6 +95,13 @@
                    :icon="icn" @click="selectStar">Only star
         </el-button>
       </el-row>
+
+      <div v-if="this.listArr.length===0" align="center">
+        <el-card class="proj-card" shadow="never"
+                 :body-style="{ paddingTop: '10px'}">
+          <div style="font-size: 20px; color: #585858; margin-top: 28px">No data</div>
+        </el-card>
+      </div>
 
       <div v-for="(list, index) in listArr">
         <div v-if="list.isStar||!star" class="proj">
@@ -503,4 +517,8 @@ html, body {
   font-size: 20px;
 }
 
+.proj-card {
+  width: 80%;
+  height: 100px;
+}
 </style>
