@@ -538,6 +538,7 @@ export default {
       console.log('send modified data')
       let projId = this.$store.state.proj.projId
       let maxSbmTime = this.modUnlimited ? 0 : this.modSubmissionTimes
+      // alert(maxSbmTime)
       postModifySubmission(
         this.submissionList[this.currentIndex - 1].submId,
         projId,
@@ -550,7 +551,7 @@ export default {
       ).then(resp => {
         console.log('get response : ' + resp)
         if (resp.data.code === 200) {
-          alert('?')
+          // alert('?')
           this.$alert('Modify successfully!', 'Tip')
           this.initSubmissionList()
           this.modifyDrawer = false
