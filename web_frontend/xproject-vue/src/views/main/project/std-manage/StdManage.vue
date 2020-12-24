@@ -18,12 +18,13 @@
       <el-button type="warning" plain icon="el-icon-edit" @click="manageTeam">Manage</el-button>
     </div>
 
-    <el-card style="height: 440px">
+    <el-card>
       <el-table
         ref="stdTable"
         :data="stdList"
         v-loading="tableLoading"
         empty-text="No Data Found"
+        :height="416"
         :default-sort="{prop: 'index', order: 'increasing'}"
         style="width: 100%">
         <el-table-column type="selection"/>
