@@ -453,7 +453,7 @@ export default {
         this.initGradebook()
         this.uploadDrawer = false
         this.fileList.splice(0, this.fileList.length)
-        this.$message.success(resp.data.data + 'records changed')
+        this.$message.success('Upload success')
       }).catch(failResp => {
         this.$message.error(failResp.message)
       })

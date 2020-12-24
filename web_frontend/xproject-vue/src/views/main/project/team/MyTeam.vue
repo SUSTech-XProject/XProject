@@ -790,17 +790,29 @@ export default {
           console.log('get response : ' + resp)
           if (resp.data.code === 200) {
             if (resp.data.data === 0) {
-              this.$message.error(resp.data.message)
+              this.$message.error({
+                message: resp.data.message,
+                dangerouslyUseHTMLString: true,
+              })
             } else {
               this.noticeList.splice(0, this.noticeList)
               this.init()
-              this.$message.success(resp.data.message)
+              this.$message.success({
+                message: resp.data.message,
+                dangerouslyUseHTMLString: true,
+              })
             }
           } else if (resp.data.code === 400) {
-            this.$message.error(resp.data.message)
+            this.$message.error({
+              message: resp.data.message,
+              dangerouslyUseHTMLString: true,
+            })
           }
         }).catch(failResp => {
-          this.$message.error(failResp.message)
+          this.$message.error({
+            message: failResp.message,
+            dangerouslyUseHTMLString: true,
+          })
         })
       }).catch(() => {
         this.$message({
