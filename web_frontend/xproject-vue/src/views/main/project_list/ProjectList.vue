@@ -33,10 +33,10 @@
           :default-sort="{prop: 'index', order: 'increasing'}"
           style="width: 100%">
           <el-table-column label="" type="index" width="50px" sortable/>
-          <el-table-column label="Name" prop="projName" width="350px" sortable/>
-          <el-table-column label="Course" prop="courseName" width="300px" sortable/>
+          <el-table-column label="Name" prop="projName" width="300px" sortable/>
+          <el-table-column label="Course" prop="courseName" width="160px" sortable/>
           <el-table-column label="Description" prop="description"/>
-          <el-table-column label="Operation" width="300px">
+          <el-table-column label="Operation" width="280px">
             <template slot-scope="scope">
               <span v-if="checkInProj(scope.row.projId)">
                 <el-button
@@ -109,10 +109,10 @@
           :default-sort="{prop: 'index', order: 'increasing'}"
           style="width: 100%">
           <el-table-column label="" type="index" width="50px" sortable/>
-          <el-table-column label="Name" prop="projName" width="350px" sortable/>
-          <el-table-column label="Course" prop="courseName" width="300px" sortable/>
+          <el-table-column label="Name" prop="projName" width="300px" sortable/>
+          <el-table-column label="Course" prop="courseName" width="160px" sortable/>
           <el-table-column label="Description" prop="description"/>
-          <el-table-column label="Operation" width="300px">
+          <el-table-column label="Operation" width="280px">
             <template slot-scope="scope">
               <span v-if="checkInProj(scope.row.projId)">
                 <el-button
