@@ -149,13 +149,13 @@ export default {
       this.$prompt('Please input application information:','Alert',{
         confirmButtonText:'Submit',
         cancelButtonText:'Cancel'
-      }).then(({msg})=>{
+      }).then((msg)=>{
         this.$confirm('Apply for this team?', 'Alert', {
           confirmButtonText: 'confirm',
           cancelButtonText: 'cancel',
           type: 'info'
         }).then(() => {
-          postApply(msg, this.teamID
+          postApply(msg.value, this.teamID
           ).then(resp =>{
             if(resp.data.code===200){
               this.$message({

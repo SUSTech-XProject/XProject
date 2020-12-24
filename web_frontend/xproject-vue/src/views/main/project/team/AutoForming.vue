@@ -344,14 +344,15 @@ name: "AutoForming",
             this.stdList.push(val[i])
           }
         }
+
       }
     }
 
   },
   props:{
     visible:{type: Boolean,default:false},
-    teamIn:{type:Array},
-    stuIn:{type:Array}
+    teamIn:{type:Array,default:()=>[]},
+    stuIn:{type:Array,default:()=>[]}
   }
 }
 </script>

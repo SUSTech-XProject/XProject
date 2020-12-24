@@ -65,7 +65,74 @@
             <el-card class="box-card" shadow="never"
                      :class="notice.type"
                      style="width: 90%; margin-top: 20px;">
-              <el-col :span="15">
+              <div v-if="notice.type==='Apply'|| notice.type==='Invite'">
+                <el-col :span="15">
+                  <div>
+                  <span @click.native:="openDrawer(notice.creatorRoleId)">
+                    <el-avatar :src="notice.crtIconUrl"
+                               :fit="'fill'"
+                               style="vertical-align:middle; cursor: pointer"
+                    ></el-avatar>
+                  </span>
+                    <span style="vertical-align:middle;">{{ notice.crtUsername }}</span>
+
+                    <span style="margin-left: 5px; font-size: 16px;vertical-align:middle;">
+                    {{ notice.title }}
+                  </span>
+                  </div>
+                  <div v-if="notice.type==='Apply'"
+                       style="margin-top: 20px; margin-left: 10px; font-size: 13px">
+                    ApplyInfo: {{ notice.content }}
+                  </div>
+
+                  <div style="margin-top: 20px; margin-left: 10px; font-size: 13px">
+                    Date: {{ notice.createdTime }}
+                  </div>
+
+                  <div style="margin-bottom: 20px"></div>
+                </el-col>
+
+                <el-col :span="9">
+                  <div v-if="notice.type==='Apply'">
+
+                    <div v-if="!notice.decided" style="margin-top: 35px">
+                      <el-popover
+                        placement="bottom"
+                        width="340">
+                        <div>
+                          Reason:
+                          <el-input v-model="rejectReason" placeholder="Reason here..."
+                                    style="width: 200px;"></el-input>
+                          <el-button @click="handleReject(notice)">Reply</el-button>
+                        </div>
+                        <el-button slot="reference">Reject</el-button>
+                      </el-popover>
+
+                      <el-button type="primary" @click="handleAccept(notice)">Accept</el-button>
+                    </div>
+
+                    <div v-else
+                         style="margin-top: 40px; margin-left: 49px">
+                      <div>{{ notice.result }}</div>
+                    </div>
+                  </div>
+
+                  <div v-else-if="notice.type==='Invite'">
+
+                    <div v-if="!notice.decided" style="margin-top: 25px">
+                      <el-button @click="handleRejectInvite(notice)">Reject</el-button>
+                      <el-button type="primary" @click="handleAcceptInvite(notice)">Accept</el-button>
+                    </div>
+
+                    <div v-else
+                         style="margin-top: 30px; margin-left: 49px">
+                      <div>{{ notice.result }}</div>
+                    </div>
+                  </div>
+                </el-col>
+              </div>
+
+              <div v-else>
                 <div>
                   <span @click.native:="openDrawer(notice.creatorRoleId)">
                     <el-avatar :src="notice.crtIconUrl"
@@ -94,82 +161,10 @@
                   </span>
                 </div>
 
-                <div v-if="notice.type==='Apply'"
-                     style="margin-top: 20px; margin-left: 10px; font-size: 13px">
-                  ApplyInfo: {{ notice.content }}
-                </div>
-
                 <div style="margin-top: 20px; margin-left: 10px; font-size: 13px">
                   Date: {{ notice.createdTime }}
                 </div>
-
-                <div style="margin-bottom: 20px"></div>
-              </el-col>
-
-              <el-col :span="9">
-                <div v-if="notice.type==='Apply'">
-
-                  <div v-if="!notice.decided" style="margin-top: 35px">
-                    <el-popover
-                      placement="bottom"
-                      width="340">
-                      <div>
-                        Reason:
-                        <el-input v-model="rejectReason" placeholder="Reason here..."
-                                  style="width: 200px;"></el-input>
-                        <el-button @click="handleReject(notice)">Reply</el-button>
-                      </div>
-                      <el-button slot="reference">Reject</el-button>
-                    </el-popover>
-
-                    <el-button type="primary" @click="handleAccept(notice)">Accept</el-button>
-                  </div>
-
-                  <div v-else
-                       style="margin-top: 40px; margin-left: 49px">
-                    <div>{{ notice.result }}</div>
-                  </div>
-                </div>
-
-                <div v-else-if="notice.type==='Invite'">
-
-                  <div v-if="!notice.decided" style="margin-top: 25px">
-                    <el-button @click="handleRejectInvite(notice)">Reject</el-button>
-                    <el-button type="primary" @click="handleAcceptInvite(notice)">Accept</el-button>
-                  </div>
-
-                  <div v-else
-                       style="margin-top: 30px; margin-left: 49px">
-                    <div>{{ notice.result }}</div>
-                  </div>
-                </div>
-
-                <!--                <div v-else-if="notice.type==='Quit'">-->
-                <!--                  <el-button @click="handleMessageConfirm(notice)"-->
-                <!--                             v-if="!notice.confirmed"-->
-                <!--                             style="margin-top: 20px;  margin-left: 30px">-->
-                <!--                    I know that-->
-                <!--                  </el-button>-->
-
-                <!--                  <div v-else-->
-                <!--                       style="margin-top: 30px; margin-left: 20px">-->
-                <!--                    Already confirmed-->
-                <!--                  </div>-->
-                <!--                </div>-->
-
-                <!--                <div v-else>-->
-                <!--                  <el-button @click="handleMessageConfirm(notice)"-->
-                <!--                             v-if="!notice.confirmed"-->
-                <!--                             style="margin-top: 40px; margin-left: 30px">-->
-                <!--                    I know that-->
-                <!--                  </el-button>-->
-
-                <!--                  <div v-else-->
-                <!--                       style="margin-top: 50px; margin-left: 20px">-->
-                <!--                    Already confirmed-->
-                <!--                  </div>-->
-                <!--                </div>-->
-              </el-col>
+              </div>
             </el-card>
           </div>
         </el-tab-pane>
@@ -451,6 +446,8 @@ export default {
                   this.noticeList.sort(function (a, b) {
                     return Date.parse(b.createdTime) - Date.parse(a.createdTime)
                   })
+
+                  console.log(this.noticeList)
                 } else if (resp.data.code === 400) {
                   this.$message.error(resp.data.message)
                 }
@@ -789,11 +786,7 @@ export default {
         cancelButtonText: 'cancel',
         type: 'warning'
       }).then(() => {
-        let teamConfirmParamVO = {
-          'force': true,
-          'projInstIdList': [this.projInstId]
-        }
-        postTeamConfirmation(teamConfirmParamVO).then(resp => {
+        postTeamConfirmation(false, [this.projInstId]).then(resp => {
           console.log('get response : ' + resp)
           if (resp.data.code === 200) {
             if (resp.data.data === 0) {
@@ -1076,3 +1069,30 @@ export default {
 <!--<el-input type="textarea" :rows="4" :placeholder="description" v-model="newDescription"-->
 <!--          style="margin-top: 20px; width: 70%">-->
 <!--</el-input>-->
+
+
+<!--                <div v-else-if="notice.type==='Quit'">-->
+<!--                  <el-button @click="handleMessageConfirm(notice)"-->
+<!--                             v-if="!notice.confirmed"-->
+<!--                             style="margin-top: 20px;  margin-left: 30px">-->
+<!--                    I know that-->
+<!--                  </el-button>-->
+
+<!--                  <div v-else-->
+<!--                       style="margin-top: 30px; margin-left: 20px">-->
+<!--                    Already confirmed-->
+<!--                  </div>-->
+<!--                </div>-->
+
+<!--                <div v-else>-->
+<!--                  <el-button @click="handleMessageConfirm(notice)"-->
+<!--                             v-if="!notice.confirmed"-->
+<!--                             style="margin-top: 40px; margin-left: 30px">-->
+<!--                    I know that-->
+<!--                  </el-button>-->
+
+<!--                  <div v-else-->
+<!--                       style="margin-top: 50px; margin-left: 20px">-->
+<!--                    Already confirmed-->
+<!--                  </div>-->
+<!--                </div>-->
