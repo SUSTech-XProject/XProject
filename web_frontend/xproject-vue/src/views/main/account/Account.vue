@@ -220,7 +220,7 @@ export default {
             this.bio = infoDict.bio
 
             this.formInfoList[0].value = infoDict.tchNo
-            this.formInfoList[1].value = infoDict.stdName
+            this.formInfoList[1].value = infoDict.tchName
             this.formInfoList[2].value = infoDict.email
             this.newEmail = infoDict.email
           }
