@@ -100,8 +100,8 @@ export function postReplyApplication (applyReplyParamVO) {
 }
 
 
-export function postReplyInvite (obj) {
-  return Vue.prototype.$axios.post('/student/team/reply/invite', obj)
+export function postReplyInvite (applyReplyParamVO) {
+  return Vue.prototype.$axios.post('/student/team/reply/invite', applyReplyParamVO)
 }
 
 export function getTeamMessage (projInstId) {
