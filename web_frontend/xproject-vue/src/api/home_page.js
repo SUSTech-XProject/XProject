@@ -30,3 +30,7 @@ export function postProjQuit (projId) {
 export function postDelStdIntoProj (quitProjParamVO) {
   return Vue.prototype.$axios.post('/teacher/project/delete/std', quitProjParamVO)
 }
+
+export function getComments(){
+  return Vue.prototype.$axios.get('/student/comments')
+}

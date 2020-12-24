@@ -68,19 +68,31 @@
           </div>
 
           <div v-if="isStudent()">
-            <div style="margin-top: 40px">
+            <div style="margin-top: 20px">
               Skill List
             </div>
-            <div v-if="skillList.length!==0"
-                 style="margin-top: 20px">
+            <div v-if="skillList.length!==0">
               <el-tag v-for="skill in skillList" :key="skill"
                       effect="plain" class="el-tag">
                 {{ skill }}
               </el-tag>
             </div>
+            <div v-else style="margin-top: 20px;">
+              <el-button class="button-new-tag" size="small">No tag</el-button>
+            </div>
+
+            <div style="margin-top: 20px">
+              Comment List
+            </div>
+            <div v-if="commentList.length!==0">
+              <el-tag v-for="comments in commentList" :key="comments"
+                      effect="plain" class="el-tag">
+                {{ comments }}
+              </el-tag>
+            </div>
             <div v-else
                  style="margin-top: 20px;">
-              <el-button class="button-new-tag">No tag</el-button>
+              <el-button class="button-new-tag" size="small">No comment</el-button>
             </div>
           </div>
 
@@ -126,7 +138,7 @@
 </template>
 
 <script>
-import {getProjList} from '@/api/home_page'
+import {getComments, getProjList} from '@/api/home_page'
 import {isStudent, isTeacher} from '@/utils/role'
 import {getAccountInfo} from '@/api/account'
 
@@ -165,6 +177,8 @@ export default {
       //course filter
       courseList: [{value: 0, label: 'All'}],
       valueCourse: 0,
+
+      commentList: []
     }
   },
   mounted () {
@@ -247,6 +261,19 @@ export default {
         this.$message.error(failResp.message)
       })
 
+      getComments().then(resp => {
+        if (resp.data.code !== 200) {
+          this.$message.error(resp.data.message)
+          return false
+        }
+
+        if (resp.data.data != null) {
+          this.commentList = resp.data.data
+        }
+        console.log(resp.data.data)
+      }).catch(failResp => {
+        this.$message.error(failResp.message)
+      })
     },
     inYearList (year) {
       for (let i = 0; i < this.yearList.length; ++i) {

@@ -90,6 +90,11 @@ export function postReplyApplication (applyReplyParamVO) {
   return Vue.prototype.$axios.post('/student/team/reply/application', applyReplyParamVO)
 }
 
+
+export function postReplyInvite (obj) {
+  return Vue.prototype.$axios.post('/student/team/reply/invite', obj)
+}
+
 export function getTeamMessage (projInstId) {
   return Vue.prototype.$axios.get('/all/team/message', {
     params: {projInstId: projInstId}

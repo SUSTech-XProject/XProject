@@ -25,7 +25,7 @@
           <el-avatar :fit="'fill'" :src="member.iconUrl"
                      style="cursor: pointer; vertical-align: middle;"
           ></el-avatar>
-          <span style="vertical-align: middle;">{{ member.stdName }}</span>
+          <span style="vertical-align: middle;">{{ member.username }}</span>
         </div>
 
         <div v-if="status==='Raw'" style="margin-top: 15px; align-items: center">
@@ -53,6 +53,10 @@
     </el-col>
 
     <el-col :span="13" :offset="1">
+      <!--      <div style="font-size: 30px; font-weight:bold; margin-top: 10px">-->
+      <!--        Notices-->
+      <!--        <el-divider></el-divider>-->
+      <!--      </div>-->
       <el-tabs :tab-position="tabPosition"
                type="card" v-model="activeName"
                style="margin-top: 20px;">
@@ -76,9 +80,10 @@
                   </span>
                 </div>
 
-                <div v-if="notice.type==='JoinSuccess'|| notice.type==='JoinFail'|| notice.type==='Invite'"
+                <div v-if="notice.type==='JoinSuccess'|| notice.type==='JoinFail'
+                           || notice.type==='Invite' || notice.type==='ConfirmInvite'"
                      style="margin-top: 10px; margin-left: 10px;">
-                  <span v-if="notice.type==='Invite'"
+                  <span v-if="notice.type==='Invite' || notice.type==='ConfirmInvite'"
                         style="vertical-align:middle; font-size: 13px">
                     Inviter:
                   </span>
@@ -131,6 +136,19 @@
                   </div>
                 </div>
 
+                <div v-else-if="notice.type==='ConfirmInvite'">
+
+                  <div v-if="!notice.decided" style="margin-top: 25px">
+                    <el-button @click="handleRejectInvite(notice)">Reject</el-button>
+                    <el-button type="primary" @click="handleAcceptInvite(notice)">Accept</el-button>
+                  </div>
+
+                  <div v-else
+                       style="margin-top: 30px; margin-left: 49px">
+                    <div>{{ notice.result }}</div>
+                  </div>
+                </div>
+
                 <div v-else-if="notice.type==='Quit'">
                   <el-button @click="handleMessageConfirm(notice)"
                              v-if="!notice.confirmed"
@@ -144,18 +162,18 @@
                   </div>
                 </div>
 
-                <div v-else>
-                  <el-button @click="handleMessageConfirm(notice)"
-                             v-if="!notice.confirmed"
-                             style="margin-top: 40px; margin-left: 30px">
-                    I know that
-                  </el-button>
+                <!--                <div v-else>-->
+                <!--                  <el-button @click="handleMessageConfirm(notice)"-->
+                <!--                             v-if="!notice.confirmed"-->
+                <!--                             style="margin-top: 40px; margin-left: 30px">-->
+                <!--                    I know that-->
+                <!--                  </el-button>-->
 
-                  <div v-else
-                       style="margin-top: 50px; margin-left: 20px">
-                    Already confirmed
-                  </div>
-                </div>
+                <!--                  <div v-else-->
+                <!--                       style="margin-top: 50px; margin-left: 20px">-->
+                <!--                    Already confirmed-->
+                <!--                  </div>-->
+                <!--                </div>-->
               </el-col>
             </el-card>
           </div>
@@ -169,13 +187,13 @@
             </div>
 
             <el-row>
-              <el-col :span="6" v-for="(std, index) in ungroupList" :key="index">
+              <el-col :span="8" v-for="(std, index) in ungroupList" :key="index">
                 <div @click="handleInvite(index)" style="margin-top: 15px;">
                   <el-avatar :fit="'fill'"
                              :src="std.iconUrl"
                              style="margin-right: 10px; cursor: pointer; vertical-align: middle;"
                   ></el-avatar>
-                  <span style="vertical-align: middle">{{ std.stdName }}</span>
+                  <span style="vertical-align: middle">{{ std.username }}</span>
                 </div>
               </el-col>
             </el-row>
@@ -194,7 +212,7 @@
                              :src="std.iconUrl"
                              style="margin-right: 10px; cursor: pointer; vertical-align:middle;"
                   ></el-avatar>
-                  <span style="vertical-align: middle">{{ std.stdName }}</span>
+                  <span style="vertical-align: middle">{{ std.username }}</span>
                 </div>
               </el-col>
             </el-row>
@@ -263,15 +281,15 @@
           </div>
         </el-tab-pane>
 
-        <el-tab-pane label="Mutual evaluation" name="eval" v-if="haveTeam && status==='Confirm'">
-          <div v-for="(member,index) in teamMemberList" :key="index"
-               @click.native:="openDrawer(member.roleId)"
+        <el-tab-pane label="Mutual evaluation" name="eval" v-if="haveTeam ">
+          && status==='Confirm'
+          <div v-for="(member,index) in teamMemberExceptMe" :key="index"
                style="margin-top: 15px;">
             <el-avatar :fit="'fill'" :src="member.iconUrl"
                        style="cursor: pointer; vertical-align: middle;"
             ></el-avatar>
             <span style="vertical-align: middle;">{{ member.stdNo }}</span>
-            <span style="vertical-align: middle;">{{ member.stdName }}</span>
+            <span style="vertical-align: middle;">{{ member.username }}</span>
             <el-input v-model="commentsToTeammates[index]"
                       style="width: 300px; margin-left: 10px;">
             </el-input>
@@ -282,10 +300,6 @@
           </el-button>
         </el-tab-pane>
       </el-tabs>
-      <!--      <div style="font-size: 30px; font-weight:bold; margin-top: 10px">-->
-      <!--        Notices-->
-      <!--        <el-divider></el-divider>-->
-      <!--      </div>-->
       <div style="margin-bottom: 40px"></div>
     </el-col>
 
@@ -307,7 +321,7 @@ import {
   getUngroupedStudents, postInviteStudents,
   postQuitTeam,
   postReplyApplication,
-  postEditedTeamInfo, postTeamConfirmation
+  postEditedTeamInfo, postTeamConfirmation, postReplyInvite
 } from '@/api/team'
 import stuInfoDrawer from '@/views/main/project/team/stuInfoDrawer'
 import {getDatetimeStr} from '@/utils/parse-day-time'
@@ -371,7 +385,8 @@ export default {
       },
       formLabelWidth: '120px',
 
-      commentsToTeammates: []
+      commentsToTeammates: [],
+      teamMemberExceptMe: []
     }
   },
   mounted () {
@@ -407,8 +422,13 @@ export default {
             this.tagList = JSON.parse(infoDict.tags)
 
             this.teamMemberList = infoDict.teamMemberList
+            this.commentsToTeammates.splice(0, this.commentsToTeammates.length)
+            this.teamMemberExceptMe.splice(0, this.teamMemberExceptMe.length)
             for (let i = 0; i < this.teamMemberList.length; ++i) {
-              this.commentsToTeammates.push('')
+              if (this.teamMemberList[i].username !== this.$store.state.role.username) {
+                this.commentsToTeammates.push('')
+                this.teamMemberExceptMe.push(this.teamMemberList[i])
+              }
             }
 
             this.targetMemNum = infoDict.targetMemNum
@@ -526,6 +546,7 @@ export default {
           if (resp.data.code === 200) {
             // notice.decided = true
             // notice.result = 'accepted'
+
             this.noticeList.splice(this.noticeList.length)
             this.init()
             this.$message.success(resp.data.message)
@@ -568,6 +589,60 @@ export default {
         })
       }).catch(() => {
         this.$message.info('Reject canceled')
+      })
+    },
+    handleRejectInvite (notice) {
+      this.$confirm('Confirm to reject?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(() => {
+        let applyReplyParamVO = {
+          'accepted': false,
+          'message': this.rejectReason,
+          'msgId': notice.msgId
+        }
+
+        // postReplyInvite().then(resp => {
+        //   if (resp.data.code !== 200) {
+        //     this.$message.error(resp.data.message)
+        //     return false
+        //   }
+        //   this.noticeList.splice(0, this.noticeList.length)
+        //   this.init()
+        //   this.$message.success('Reject success')
+        // }).catch(failResp => {
+        //   this.$message.error(failResp.message)
+        // })
+      }).catch(() => {
+        this.$message.info('Reject canceled')
+      })
+    },
+    handleAcceptInvite (notice) {
+      this.$confirm('Confirm to accept?', 'Tip', {
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        type: 'warning'
+      }).then(() => {
+        let applyReplyParamVO = {
+          'accepted': true,
+          'message': null,
+          'msgId': notice.msgId
+        }
+
+        // postReplyInvite().then(resp => {
+        //   if (resp.data.code !== 200) {
+        //     this.$message.error(resp.data.message)
+        //     return false
+        //   }
+        //   this.noticeList.splice(0, this.noticeList.length)
+        //   this.init()
+        //   this.$message.success('Accept success')
+        // }).catch(failResp => {
+        //   this.$message.error(failResp.message)
+        // })
+      }).catch(() => {
+        this.$message.info('Accept canceled')
       })
     },
     handleMessageConfirm (notice) {
@@ -726,7 +801,13 @@ export default {
         postTeamConfirmation(teamConfirmParamVO).then(resp => {
           console.log('get response : ' + resp)
           if (resp.data.code === 200) {
-            this.$message.success('Confirm success')
+            if (resp.data.data === 0) {
+              this.$message.error(resp.data.message)
+            } else {
+              this.noticeList.splice(0, this.noticeList)
+              this.init()
+              this.$message.success(resp.data.message)
+            }
           } else if (resp.data.code === 400) {
             this.$message.error(resp.data.message)
           }
@@ -743,15 +824,25 @@ export default {
     },
 
     handleComment () {
-      // todo
-      // postReviewToTeammates().then(resp=>{
-      //   if(resp.data.message!==200){
-      //     this.$message.error(resp.data.message)
-      //     return false
-      //   }
-      // }).catch(failResp=>{
-      //   this.$message.error(failResp.message)
-      // })
+      let stdCommentsVOS = {
+        'comments': this.commentsToTeammates,
+        'tarRoleIds': []
+      }
+      for (let i = 0; i < this.teamMemberExceptMe.length; ++i) {
+        stdCommentsVOS.tarRoleIds.push(this.teamMemberExceptMe[i].roleId)
+      }
+
+      postReviewToTeammates(stdCommentsVOS).then(resp => {
+        if (resp.data.code !== 200) {
+          this.$message.error(resp.data.message)
+          return false
+        }
+
+        location.reload()
+        this.$message.success('Review success')
+      }).catch(failResp => {
+        this.$message.error(failResp.message)
+      })
     }
   }
 }
@@ -784,6 +875,11 @@ export default {
 }
 
 .Invite {
+  /*blue*/
+  background: #ecf5ff;
+}
+
+.ConfirmInvite {
   /*blue*/
   background: #ecf5ff;
 }
