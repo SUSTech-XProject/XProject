@@ -39,15 +39,34 @@
       <el-tabs :tab-position="tabPosition" type="card" style="height: 100%; margin-top: 20px" v-model="activeName">
         <el-tab-pane label="Overview" name="overview">
           <div style="margin-top: 10px">Recent project</div>
-          <el-row>
-            <el-col :span="12" v-for="proj in firstThreeProjList" :key="proj.projName">
-              <el-card class="box-card" style="width: 90%; margin-top: 20px" shadow="never">
-                <div class="title">{{ proj.projName }}</div>
-                <p></p>
-                <div class="text">{{ proj.courseName }} </div>
-              </el-card>
-            </el-col>
-          </el-row>
+
+          <div v-if="firstThreeProjList.length===0"
+               style="margin-top: 15px;">
+            <div style="margin-top: 10px;">
+              <el-row>
+                <el-col :span="12">
+                  <el-card class="box-card" shadow="never" align="center"
+                           style="width: 95%; margin-top: 15px; min-height: 100px;">
+                    <p></p>
+                    <div style="font-size: 18px; color: #585858;">No data</div>
+                    <p></p>
+                  </el-card>
+                </el-col>
+              </el-row>
+            </div>
+          </div>
+
+          <div v-else>
+            <el-row>
+              <el-col :span="12" v-for="proj in firstThreeProjList" :key="proj.projName">
+                <el-card class="box-card" style="width: 95%; margin-top: 15px" shadow="never">
+                  <div class="title">{{ proj.projName }}</div>
+                  <p></p>
+                  <div class="text">{{ proj.courseName }} {{ proj.createTime }}</div>
+                </el-card>
+              </el-col>
+            </el-row>
+          </div>
 
           <div>
             <div style="margin-top: 40px">Skill List</div>
@@ -57,7 +76,7 @@
             </el-tag>
           </div>
 
-          <div style="margin-top: 40px">Statistic</div>
+<!--          <div style="margin-top: 40px">Statistic</div>-->
         </el-tab-pane>
 
       </el-tabs>
