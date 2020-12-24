@@ -28,12 +28,12 @@ export function postAddSubmission (projId, title, description, dueTime, finalTim
     description: description,
     dueTime: dueTime,
     finalTime: finalTime,
-    maxSubmission: maxSubmission,
+    maxSbm: maxSubmission,
     status: status
   })
 }
 
-export function postModifySubmission (sbmId, projId, title, description, dueTime, finalTime, maxSubmission, status, resources) {
+export function postModifySubmission (sbmId, projId, title, description, dueTime, finalTime, maxSbm, status) {
   return Vue.prototype.$axios.post('/teacher/project/sub/modify', {
     sbmId: sbmId,
     projId: projId,
@@ -41,7 +41,7 @@ export function postModifySubmission (sbmId, projId, title, description, dueTime
     description: description,
     dueTime: dueTime,
     finalTime: finalTime,
-    maxSubmission: maxSubmission,
+    maxSbm: maxSbm,
     status: status
   })
 }

@@ -453,14 +453,14 @@ export default {
       this.modDueTime = this.submissionList[index - 1].dueTime
       this.modFinalTime = this.submissionList[index - 1].finalTime
       this.modSubmissionTimes = this.submissionList[index - 1].maxSubmissionTime
-      alert(index)
-      alert(this.submissionList[index - 1].maxSubmissionTime)
+      // alert(index)
+      // alert(this.submissionList[index - 1].maxSubmissionTime)
       this.modUnlimited = this.submissionList[index - 1].maxSubmissionTime === 0
       this.status = this.submissionList[index - 1].status
       this.modResource = this.submissionList[index - 1].resources
     },
     commitAdd () {
-      alert(this.unlimited)
+      // alert(this.unlimited)
       // alert(this.dueTime <= this.finalTime)
       // alert(getDatetimeStr(new Date()) >= this.dueTime)
       // alert(this.dateFormat(new Date()) <= this.dueTime)
@@ -521,9 +521,23 @@ export default {
       })
     },
     commitModify () {
+      if ((this.modDueTime !== '' && this.modDueTime < this.dateFormat(new Date())) || (this.modFinalTime !== '' && this.modFinalTime < this.dateFormat(new Date()))) {
+        this.$alert('Due time or Final time can not before now!', 'Warning')
+        return false
+      }
+      if (this.modDueTime !== '' && this.modFinalTime !== '') {
+        if (this.modDueTime > this.modFinalTime) {
+          this.$alert('Final time should not be earlier than due time!', 'Warning')
+          return false
+        }
+      }
+      if (this.status === '') {
+        this.$alert('Status is not set!')
+        return false
+      }
       console.log('send modified data')
       let projId = this.$store.state.proj.projId
-      let maxSbmTime = this.modUnlimited ? null : this.modSubmissionTimes
+      let maxSbmTime = this.modUnlimited ? 0 : this.modSubmissionTimes
       postModifySubmission(
         this.submissionList[this.currentIndex - 1].submId,
         projId,
@@ -532,11 +546,11 @@ export default {
         this.modDueTime,
         this.modFinalTime,
         maxSbmTime,
-        this.status,
-        this.modResource
+        this.status
       ).then(resp => {
         console.log('get response : ' + resp)
         if (resp.data.code === 200) {
+          alert('?')
           this.$alert('Modify successfully!', 'Tip')
           this.initSubmissionList()
           this.modifyDrawer = false
