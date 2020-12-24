@@ -19,7 +19,7 @@
                   placeholder="Please input password again" show-password></el-input>
       </el-form-item>
       <el-form-item label="School" style="margin-bottom: 40px">
-        <el-select v-model="registerForm.schId" placeholder="selecting...">
+        <el-select v-model="registerForm.schId" placeholder="selecting..." style="width: 100%">
           <el-option
 
             v-for="item in schoolList"
@@ -165,9 +165,6 @@ export default {
           parseInt(this.registerForm.schId),
           this.registerForm.roleType,
           this.registerForm.username
-
-
-
         ).then(resp => {
           if (resp.data.code === 200) {
             this.$alert('Register successfully', 'Tip', {

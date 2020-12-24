@@ -30,10 +30,30 @@
         </el-row>
 
         <div style="margin-top: 40px; margin-left:40px">
-          <el-tabs value="intro" type="card">
+          <el-tabs value="intro" type="card" >
             <el-tab-pane label="Introduction" name="intro">
               <div class="tab-box">
-                {{teamIntro}}
+                <el-row style="margin-bottom: 15px">
+                  <el-col :span="4"><strong>Team Name:</strong></el-col>
+                  <el-col :span="18">{{teamName}}</el-col>
+                </el-row>
+                <el-row style="margin-bottom: 15px">
+                  <el-col :span="4"><strong>Team Topic:</strong></el-col>
+                  <el-col :span="18">{{teamTopic}}</el-col>
+                </el-row>
+                <el-row v-if="teamTags.length!=0" style="margin-bottom: 25px">
+                  <el-col :span="4"><strong>Team Tags:</strong></el-col>
+                  <el-col :span="18">
+                    <span v-for="i in Math.min(teamTags.length,5)" style="margin-right: 0.5rem">
+                      <el-tag :type="tagType[teamTags[i-1].length%4]">{{teamTags[i-1]}}</el-tag>
+                    </span>
+                  </el-col>
+                </el-row>
+                <el-row style="margin-bottom: 15px">
+                  <el-col :span="4"><strong>Introduction:</strong></el-col>
+                  <el-col :span="18">{{teamIntro}}</el-col>
+                </el-row>
+
               </div>
 
             </el-tab-pane>
@@ -228,7 +248,7 @@ export default {
 
 <style scoped>
 .tab-box{
-  font-size: 15px;
+  font-size: 18px;
   padding:0;
   text-align:left;
   margin-top: 15px;

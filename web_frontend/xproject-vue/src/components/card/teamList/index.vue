@@ -73,8 +73,8 @@ export default {
 <style scoped>
 .blank{
   display: block;
-  width: 320px;
-  height: 260px;
+  width: 360px;
+  height: 280px;
 }
 .text {
   font-size: 14px;
@@ -100,21 +100,21 @@ export default {
   height: 240px;
   text-align: left;
   color: #6d7178;
-  background-color: #f7fbff;
+  background-color: #f9fafc;
 }
 .proj-card1 {
   width: 300px;
   height: 240px;
   text-align: left;
   color: #6d7178;
-  background-color: #f8fff7;
+  background-color: #e5e9f2;
 }
 .proj-card2 {
   width: 300px;
   height: 240px;
   text-align: left;
   color: #6d7178;
-  background-color: #fffbf7;
+  background-color: #d3dce6;
 }
 .proj-card3 {
   width: 300px;

@@ -155,14 +155,16 @@ name: "AutoForming",
         this.topicFilter.splice(0,this.topicFilter.length)
         for (let i = 0; i < teamList.length; i++) {
           let team = teamList[i]
-          this.teamList.push({
-            index:team.projInstId,
-            name: team.teamName,
-            topic: team.topic,
-            targetMemNum:team.targetMemNum,
-            status:team.status,
-            curMem:team.curMemNum
-          })
+          if(team.status!=='Confirm') {
+            this.teamList.push({
+              index: team.projInstId,
+              name: team.teamName,
+              topic: team.topic,
+              targetMemNum: team.targetMemNum,
+              status: team.status,
+              curMem: team.curMemNum
+            })
+          }
           this.topicFilter.push({
             text:team.topic,
             value:team.topic
@@ -204,7 +206,7 @@ name: "AutoForming",
           record['listIdx'] = i
           console.log(record)
           this.stdList.push(record)
-
+          //todo: remove student already in team
           let teamIndex = record.projInstId;
           this.teamIndexFList.push({text:teamIndex, value:teamIndex})
           // let status = record.status;
@@ -304,7 +306,13 @@ name: "AutoForming",
         this.initTeams()
         //this.form.teamSelection = []
       }else{
-        this.teamList = val
+        this.teamList.splice(0,this.teamList.length)
+        for (let i = 0; i < val.length; i++) {
+          if(val[i].status!=='Confirm'){
+            this.teamList.push(val[i])
+          }
+        }
+        //this.teamList = val
         //this.form.teamSelection = val
       }
     },
