@@ -451,6 +451,8 @@ export default {
                   this.noticeList.sort(function (a, b) {
                     return Date.parse(b.createdTime) - Date.parse(a.createdTime)
                   })
+
+                  console.log(this.noticeList)
                 } else if (resp.data.code === 400) {
                   this.$message.error(resp.data.message)
                 }
