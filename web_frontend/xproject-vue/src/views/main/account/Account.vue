@@ -27,22 +27,31 @@
           <div class="personalInfoTypesetting personalInfoTitle">
             Password
           </div>
-          <div class="personalInfoTypesetting" style="width:90%; margin-top: 20px;">
-            <el-input v-model="editPassword.oldPassword"
-                      placeholder="Input old password..." show-password>
-            </el-input>
-            <el-input v-model="editPassword.newPassword"
-                      placeholder="Input new password..."
-                      style="margin-top: 10px;" show-password>
-            </el-input>
-            <el-input v-model="editPassword.confirmNewPassword"
-                      placeholder="Input new password again..."
-                      style="margin-top: 10px;" show-password>
-            </el-input>
-          </div>
-
+          <el-dialog
+            title="Change Password"
+            :visible.sync="changeDialog"
+            width="50%"
+            :before-close="handleClose">
+            <div class="personalInfoTypesetting" style="width:90%; margin-top: 20px;">
+              <el-input v-model="editPassword.oldPassword"
+                        placeholder="Input old password..." show-password>
+              </el-input>
+              <el-input v-model="editPassword.newPassword"
+                        placeholder="Input new password..."
+                        style="margin-top: 10px;" show-password>
+              </el-input>
+              <el-input v-model="editPassword.confirmNewPassword"
+                        placeholder="Input new password again..."
+                        style="margin-top: 10px;" show-password>
+              </el-input>
+            </div>
+            <span slot="footer" class="dialog-footer">
+            <el-button @click="changeDialog = false">Cancel</el-button>
+            <el-button type="primary" @click="handleUpdatePassword">Confirm</el-button>
+            </span>
+          </el-dialog>
           <div class="personalInfoTypesetting" style="margin-bottom: 20px; margin-top: 30px">
-            <el-button type="primary" @click="handleUpdatePassword">update</el-button>
+            <el-button type="primary" @click="changeDialog = true" plain>Change Password</el-button>
           </div>
 
           <div class="personalInfoTypesetting personalInfoTitle"
@@ -133,6 +142,7 @@
 import {getUserHomeInfo} from '@/api/home_page'
 import {getAccountInfo, postChangePassword, postStdPersonalInfo, postTchPersonalInfo} from '@/api/account'
 import {isStudent, isTeacher} from '@/utils/role'
+import {validPassword} from '@/utils/validate'
 
 export default {
   name: 'Account',
@@ -141,13 +151,13 @@ export default {
   },
   data () {
     return {
-      //tab
+      // tab
       tabPosition: 'left',
       activeName: 'accountInfo',
 
       roleType: '',
 
-      //el-form
+      // el-form
       formInfoList: [
         {label: 'ID', value: ''},
         {label: 'Name', value: ''},
@@ -157,28 +167,29 @@ export default {
         {label: 'Register Time', value: ''}
       ],
       newEmail: '',
+      changeDialog: false,
 
-      //avatar uploader
+      // avatar uploader
       imageUrl: '',
       newImageUrl: '',
 
-      //impression tag list
+      // impression tag list
       impressionTagList: [],
       impTagInputVisible: false,
       impTagInputValue: '',
 
-      //skill tag list
+      // skill tag list
       skillTagList: [],
       skillTagInputVisible: false,
       skillTagInputValue: '',
 
-      //textarea
+      // textarea
       bio: '',
 
       editPassword: {
         oldPassword: '',
         newPassword: '',
-        confirmNewPassword: '',
+        confirmNewPassword: ''
       }
     }
   },
@@ -234,8 +245,14 @@ export default {
         this.$message.error(failResp.message)
       })
     },
-
-    //avatar uploader
+    handleClose (done) {
+      this.$confirm('Are you sure to close？')
+        .then(_ => {
+          done()
+        })
+        .catch(_ => {})
+    },
+    // avatar uploader
     handleAvatarSuccess (res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
     },
@@ -251,7 +268,7 @@ export default {
       return isJPG && isLt2M
     },
 
-    //impression tag list
+    // impression tag list
     handleImpTagClose (tag) {
       this.impressionTagList.splice(this.impressionTagList.indexOf(tag), 1)
     },
@@ -270,7 +287,7 @@ export default {
       this.impTagInputValue = ''
     },
 
-    //skill tag list
+    // skill tag list
     handleSkillTagClose (tag) {
       this.skillTagList.splice(this.skillTagList.indexOf(tag), 1)
     },
@@ -289,14 +306,13 @@ export default {
       this.skillTagInputValue = ''
     },
 
-    //update personal information
+    // update personal information
     handleUpdate () {
       this.$confirm('Confirm to update?', 'Tip', {
         confirmButtonText: 'confirm',
         cancelButtonText: 'cancel',
         type: 'warning'
       }).then(() => {
-
         if (isTeacher()) {
           let acInfoStdUpdateVO = {
             'email': this.newEmail,
@@ -323,7 +339,7 @@ export default {
             'flags': this.impressionTagList,
             'skills': this.skillTagList,
             'email': this.newEmail,
-            'iconUrl': this.newImageUrl,
+            'iconUrl': this.newImageUrl
           }
 
           postStdPersonalInfo(
@@ -350,19 +366,38 @@ export default {
       return isTeacher
     },
     handleUpdatePassword () {
+      // alert(validPassword(this.editPassword.oldPassword))
+      // alert(validPassword(this.editPassword.newPassword))
+      // alert(validPassword(this.editPassword.confirmNewPassword))
       this.$confirm('Confirm to update?', 'Tip', {
         confirmButtonText: 'confirm',
         cancelButtonText: 'cancel',
         type: 'warning'
       }).then(() => {
+        let validOld = validPassword(this.editPassword.oldPassword)
+        let validNew = validPassword(this.editPassword.newPassword)
+        let validConfirm = validPassword(this.editPassword.confirmNewPassword)
+        if (!validOld) {
+          this.$alert('Invalid old password!Please check again!')
+          return false
+        }
+        if (!validNew) {
+          this.$alert('Invalid new password!Please check again!')
+          return false
+        }
+        if (!validConfirm || this.editPassword.newPassword !== this.editPassword.confirmNewPassword) {
+          this.$alert('Invalid repeated password!Please check again!')
+          return false
+        }
         postChangePassword(this.editPassword).then(resp => {
           if (resp.data.code === 200) {
             this.editPassword = {
               oldPassword: '',
               newPassword: '',
-              confirmNewPassword: '',
+              confirmNewPassword: ''
             }
             this.$message.success('Update success')
+            this.changeDialog = false
           } else if (resp.data.code === 400) {
             this.$message.error(resp.data.message)
           }
