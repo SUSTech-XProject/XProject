@@ -131,8 +131,13 @@ name: "AutoForming",
   },
   mounted () {
     this.init()
+
   },
   methods:{
+    //
+
+    //
+
     //initialize
     init(){
       this.initTeams()
@@ -205,7 +210,10 @@ name: "AutoForming",
           let record = stdListRecv[i]
           record['listIdx'] = i
           console.log(record)
-          this.stdList.push(record)
+          if(record.status===null){
+            this.stdList.push(record)
+          }
+
           //todo: remove student already in team
           let teamIndex = record.projInstId;
           this.teamIndexFList.push({text:teamIndex, value:teamIndex})
@@ -330,15 +338,21 @@ name: "AutoForming",
       if(val.length===0){
         this.initStdManage()
       }else{
-        this.stuList = val
+        this.stdList.splice(0,this.stdList.length)
+        for (let i = 0; i <val.length ; i++) {
+          if(val[i].status===null){
+            this.stdList.push(val[i])
+          }
+        }
+
       }
     }
 
   },
   props:{
     visible:{type: Boolean,default:false},
-    teamIn:{type:Array},
-    stuIn:{type:Array}
+    teamIn:{type:Array,default:()=>[]},
+    stuIn:{type:Array,default:()=>[]}
   }
 }
 </script>
