@@ -9,10 +9,10 @@
           <selector :in-list="op_topic" :index.sync="Topic_ind" ></selector>
         </el-col>
         <el-col :span="7">Target Mems:
-          <selector :in-list="op_sta" :index.sync="Status_ind"></selector>
+          <selector :in-list="op_targetMem" :index.sync="TarMem_ind"></selector>
         </el-col>
-        <el-col :span="7">Tags:
-          <multi-sel :in-list="op_tag" :index.sync="Tag_ind"></multi-sel>
+        <el-col :span="7">Status:
+          <selector :in-list="op_status" :index.sync="Status_ind"></selector>
         </el-col>
       </el-row>
     </div>
@@ -53,9 +53,10 @@ export default {
       useRecruit:'',
       dataLoading:false,
       op_topic: [],
-      op_sta:[],
-      op_tag:[],
+      op_targetMem:[],
+      op_status:[],
       Topic_ind: '',
+      TarMem_ind:'',
       Status_ind:'',
       Tag_ind:[],
       teams:[],
@@ -97,8 +98,8 @@ export default {
         console.log(teamList)
         this.teams.splice(0,this.teams.length)
         this.op_topic.splice(0,this.op_topic.length)
-        this.op_sta.splice(0,this.op_sta.length)
-        this.op_tag.splice(0,this.op_tag.length)
+        this.op_targetMem.splice(0,this.op_targetMem.length)
+        this.op_status.splice(0,this.op_status.length)
         for (let i = 0; i < teamList.length; i++) {
           let team = teamList[i]
           if(!this.op_topic.includes(team.topic)){
@@ -108,24 +109,21 @@ export default {
             id:team.projInstId,
             name: team.teamName,
             topic: team.topic,
-            status:team.targetMemNum,
+            tarMem:team.targetMemNum,
             tags: JSON.parse(team.tags),
             intro:team.descriptions,
             color_ind:this.getColorIndex(team.topic),
-            curMem:team.curMemNum
+            curMem:team.curMemNum,
+            status:team.status,
           })
 
 
-          if(!this.op_sta.includes(team.targetMemNum)){
-            this.op_sta.push(team.targetMemNum)
+          if(!this.op_targetMem.includes(team.targetMemNum)){
+            this.op_targetMem.push(team.targetMemNum)
           }
 
-          for (let j = 0; j <JSON.parse(team.tags).length ; j++) {
-            let tag = JSON.parse(team.tags)[j]
-            if(!this.op_tag.includes(tag)){
-              this.op_tag.push(tag)
-            }
-
+          if(!this.op_status.includes(team.status)){
+            this.op_status.push(team.status)
           }
         }
 
@@ -160,21 +158,14 @@ export default {
         const topic = this.op_topic[this.Topic_ind]
         if(topic!==val.topic){return false}
       }
-      if(this.Status_ind!==''){
-        const status = this.op_sta[this.Status_ind]
-        if(status!==val.status){return false}
+      if(this.TarMem_ind!==''){
+        const targetMem = this.op_targetMem[this.TarMem_ind]
+        if(targetMem!==val.tarMem){return false}
       }
 
-      if(this.Tag_ind.length!==0){
-        console.log(this.Tag_ind)
-        console.log(this.op_tag)
-        for (const i in this.Tag_ind) {
-          console.log(this.op_tag[i])
-          if(val.tags.indexOf(this.op_tag[i])!==-1){
-            return true
-          }
-        }
-        return false
+      if(this.Status_ind!==''){
+        const status = this.op_status[this.Status_ind]
+        if(status!==val.status){return false}
       }
       return true
     }

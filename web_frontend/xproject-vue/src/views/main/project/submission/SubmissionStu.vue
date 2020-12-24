@@ -66,7 +66,7 @@
       :visible.sync="submitDrawer"
       :size="submitSize">
 
-      <el-card id="detailCard">
+      <el-card v-if="haveTeam" class="detailCard">
         <div slot="header">
           <span id="detail title">Submission : {{ currentTitle }}</span>
         </div>
@@ -102,6 +102,9 @@
           </div>
         </el-upload>
       </el-card>
+      <el-card v-else class="detailCard" >
+        <div style="margin-top: 20px;margin-bottom: 20px;text-align: center;color: #6d7178">No Team Yet :(</div>
+      </el-card>
     </el-drawer>
   </el-card>
 
@@ -117,6 +120,9 @@ export default {
   components: {},
   data () {
     return {
+      //
+      haveTeam:true,
+      //
       sbmObj: null,
       submissionList: [
         {
@@ -210,14 +216,19 @@ export default {
           this.$message.error(resp.data.message)
           return false
         }
-
-        if (resp.data.data != null) {
+        console.log(resp)
+        if(resp.data.message==="No team yet"){
+          console.log("no team")
+          this.haveTeam=false
+        }else  if (resp.data.data != null) {
+          this.haveTeam=true
           this.haveSbmInst = true
           this.sbmInstStd = resp.data.data.submissionInst
           this.submitter = resp.data.data.submitter
 
           this.sbmInstStd.submitTime = getDatetimeStr(this.sbmInstStd.submitTime)
         } else {
+          this.haveTeam=true
           this.haveSbmInst = false
           this.sbmInstStd = {}
           this.submitter = {}
@@ -272,7 +283,7 @@ export default {
   font-size: 20px;
 }
 
-#add_card, #modify_card, #detailCard {
+#add_card, #modify_card, .detailCard {
   margin-left: 20px;
   margin-right: 20px;
 }
