@@ -108,7 +108,6 @@
           <br>
           Edit School Location:
           <br>
-          (In form of "Province, City")
           <el-input
             type="textarea"
             :autosize="{ minRows: 1, maxRows: 3}"
@@ -214,7 +213,7 @@ export default {
     },
     commitEdit () {
       console.log('send edited data')
-      alert(this.editSchoolName)
+      // alert(this.editSchoolName)
       postEditSchool(
         this.currentSchId,
         this.editSchoolName,
@@ -224,10 +223,12 @@ export default {
       ).then(resp => {
         console.log('get response : ' + resp)
         if (resp.data.code === 200) {
-          this.schoolList[this.currentSchId].schName = this.editSchoolName
-          this.schoolList[this.currentSchId].location = this.editSchoolLocation
+          this.schoolList[this.currentIndex - 1].schName = this.editSchoolName
+          this.schoolList[this.currentIndex - 1].location = this.editSchoolLocation
           this.editSchoolName = ''
           this.editSchoolLocation = ''
+          this.currentIndex = null
+          this.currentSchId = null
           this.$alert('Modify successfully!', 'Tip')
           this.init()
           this.modifyDrawer = false
@@ -300,6 +301,9 @@ export default {
       })
     },
     setTchStatus (index) {
+      // alert(this.schoolList[index - 1].allowTch)
+      // alert(!this.schoolList[index - 1].allowTch)
+      // alert(~this.schoolList[index - 1].allowTch)
       this.$confirm('Are you sure to change status?')
         .then(_ => {
           postEditSchool(
@@ -307,7 +311,7 @@ export default {
             this.schoolList[index - 1].schName,
             this.schoolList[index - 1].location,
             this.schoolList[index - 1].allowStu,
-            !this.schoolList[index - 1].allowTch
+            this.schoolList[index - 1].allowTch
           ).then(resp => {
             if (resp.data.code !== 200) {
               this.init()
@@ -334,7 +338,7 @@ export default {
             this.schoolList[index - 1].schId,
             this.schoolList[index - 1].schName,
             this.schoolList[index - 1].location,
-            !this.schoolList[index - 1].allowStu,
+            this.schoolList[index - 1].allowStu,
             this.schoolList[index - 1].allowTch
           ).then(resp => {
             if (resp.data.code !== 200) {
