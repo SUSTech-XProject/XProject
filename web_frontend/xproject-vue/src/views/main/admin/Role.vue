@@ -12,53 +12,53 @@
       title="Add New Role"
       :visible.sync="addDrawer"
       :size="addSize">
-      <div>
-        <el-card id="add_card">
-          Input New Role Name:
-          <el-input
-            type="textarea"
-            :autosize="{ minRows: 1, maxRows: 3}"
-            placeholder="Please input"
-            v-model="newRoleName">
-          </el-input>
-          <br>
-          <br>
-          Input Predetermined Password:
-          <el-input
-            type="textarea"
-            :autosize="{ minRows: 1, maxRows: 3}"
-            placeholder="Please input"
-            v-model="newPassword">
-          </el-input>
-          <br>
-          <br>
-          Choose role's type:
-          <el-select v-model="roleType" clearable placeholder="Choose Role Type:">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-          <br>
-          <br>
-          Choose role's status:
-          <el-select v-model="roleStatus" clearable placeholder="Choose Role Type:">
-            <el-option
-              v-for="item in statusList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-          <br>
-        </el-card>
-      </div>
-      <br>
-      <el-button @click="commitAdd" type="primary" style="margin-left: 50px;">
-        Add
-      </el-button>
+      <el-card id="add_card">
+        <el-form class="reg-container" label-position="right" :model="registerForm"
+                 label-width="100px" status-icon :rules="rules" ref="registerForm">
+          <el-form-item label="Username" prop="username" style="margin-bottom: 40px">
+            <el-input type="text" v-model="registerForm.username"
+                      prefix-icon="el-icon-user" auto-complete="off"
+                      placeholder="Please input username"></el-input>
+          </el-form-item>
+          <el-form-item label="Password" prop="password" style="margin-bottom: 40px">
+            <el-input type="password" v-model="registerForm.password"
+                      prefix-icon="el-icon-lock" auto-complete="off"
+                      placeholder="Please input password" show-password></el-input>
+          </el-form-item>
+          <el-form-item label="Repeat" prop="passwordRepeat" style="margin-bottom: 40px">
+            <el-input type="password" v-model="registerForm.passwordRepeat"
+                      prefix-icon="el-icon-lock" auto-complete="off"
+                      placeholder="Please input password again" show-password></el-input>
+          </el-form-item>
+
+          <el-form-item label="Role" style="margin-bottom: 40px">
+            <el-radio-group v-model="registerForm.roleType">
+              <el-radio border label="Admin">Administrator</el-radio>
+              <el-radio border label="Teacher">Teacher</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <el-form-item v-if="registerForm.roleType==='Teacher'" label="School" style="margin-bottom: 40px">
+            <el-select v-model="registerForm.schId" placeholder="selecting..." style="width: 80%">
+              <el-option
+
+                v-for="item in schoolList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+                <span style="float: left">{{ item.label }}</span>
+                <span style="float: right; color: #8492a6; font-size: 8px">{{ item.location }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <!--      add school info return school id -->
+
+          <div style="width: 100%; display: flex; align-content: center; justify-content: center;">
+            <el-button class='reg-btm' type="primary" v-on:click="register" ref="reg-btm">Create</el-button>
+          </div>
+        </el-form>
+      </el-card>
+
     </el-drawer>
 
     <el-table
@@ -106,8 +106,9 @@ import Card from '@/components/card/announceList/index'
 import Selector from '@/components/selector/single'
 import Drawer from '@/components/drawer/announcement/index'
 import {getDatetimeStr} from '@/utils/parse-day-time'
-import {getRoleList, postAddRole, postChangeStatus} from '../../../api/role'
-import {postAddSchool} from '../../../api/admin'
+import {getRoleList, postAddRole, postChangeStatus, postRegister} from '../../../api/role'
+import {getSchoolList, postAddSchool} from '../../../api/admin'
+import {validPassword, validUsername} from '@/utils/validate'
 
 export default {
   name: 'Role',
@@ -115,7 +116,71 @@ export default {
     LeftBar, Header, card: Card, sele: Selector, drawer: Drawer
   },
   data () {
+    const validateUsername = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('Please input username'));
+      }
+      setTimeout(() => {
+        if (!validUsername(value)) {
+          return callback(new Error('The username must have at least 8 characters and 24 at most. ' +
+            'It should not start with a number.'));
+        } else {
+          return callback();
+        }
+      }, 1000);
+    };
+
+    const validatePwd = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('Please input password'));
+      }
+      setTimeout(() => {
+        if (!validPassword(value)) {
+          return callback(new Error('The password must have at least 8 characters and 32 at most. ' +
+            'Must contain number and letter.'));
+        } else {
+          return callback();
+        }
+      }, 1000);
+    };
+
+    const validatePwd2 = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('Please input password again'));
+      }
+      setTimeout(() => {
+        if (value !== this.registerForm.password) {
+          return callback(new Error('Two passwords are not matched.'));
+        } else {
+          return callback();
+        }
+      }, 1000);
+    };
+
     return {
+      //
+      schoolList: [],
+
+      registerForm: {
+        username: '',
+        password: '',
+        passwordRepeat: '',
+        roleType: 'Student',
+        schId:''
+      },
+      rules: {
+        username: [
+          { validator: validateUsername, trigger: 'blur' }
+        ],
+        password: [
+          { validator: validatePwd, trigger: 'blur' }
+        ],
+        passwordRepeat: [
+          { validator: validatePwd2, trigger: 'blur'}
+        ]
+      },
+      //
+
       statusSwitch: true,
       addSize: '40%',
       addDrawer: false,
@@ -167,47 +232,47 @@ export default {
     dateTimeFormatter (row, col) {
       return getDatetimeStr(row.registerTime)
     },
-    commitAdd () {
-      console.log('send created data')
-      if (this.roleType === '' || this.roleStatus === '') {
-        this.$alert('Role Type or Status can not be null!', 'Warning')
-        return false
-      }
-      if (this.newRoleName === '') {
-        this.$alert('Role name can not be null', 'Warning')
-        return false
-      }
-      if (this.newPassword === '') {
-        this.$alert('Password can not be null', 'Warning')
-        return false
-      }
-      postAddRole(
-        this.newRoleName,
-        this.newPassword,
-        this.roleStatus,
-        this.roleType
-      ).then(resp => {
-        console.log('get response : ' + resp)
-        if (resp.data.code === 200) {
-          this.newRoleName = ''
-          this.newPassword = ''
-          this.roleStatus = ''
-          this.roleType = ''
-          this.init()
-          this.addDrawer = false
-          this.$alert('Add successfully!', 'Tip')
-        } else if (resp.data.code === 400) {
-          console.log(resp.data.message)
-          this.$alert(resp.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
-        }
-      }).catch(failResp => {
-        this.$alert('Error ' + failResp.message, 'Tips', {
-          confirmButtonText: 'OK'
-        })
-      })
-    },
+    // commitAdd () {
+    //   console.log('send created data')
+    //   if (this.roleType === '' || this.roleStatus === '') {
+    //     this.$alert('Role Type or Status can not be null!', 'Warning')
+    //     return false
+    //   }
+    //   if (this.newRoleName === '') {
+    //     this.$alert('Role name can not be null', 'Warning')
+    //     return false
+    //   }
+    //   if (this.newPassword === '') {
+    //     this.$alert('Password can not be null', 'Warning')
+    //     return false
+    //   }
+    //   postAddRole(
+    //     this.newRoleName,
+    //     this.newPassword,
+    //     this.roleStatus,
+    //     this.roleType
+    //   ).then(resp => {
+    //     console.log('get response : ' + resp)
+    //     if (resp.data.code === 200) {
+    //       this.newRoleName = ''
+    //       this.newPassword = ''
+    //       this.roleStatus = ''
+    //       this.roleType = ''
+    //       this.init()
+    //       this.addDrawer = false
+    //       this.$alert('Add successfully!', 'Tip')
+    //     } else if (resp.data.code === 400) {
+    //       console.log(resp.data.message)
+    //       this.$alert(resp.data.message, 'Tip', {
+    //         confirmButtonText: 'OK'
+    //       })
+    //     }
+    //   }).catch(failResp => {
+    //     this.$alert('Error ' + failResp.message, 'Tips', {
+    //       confirmButtonText: 'OK'
+    //     })
+    //   })
+    // },
     init () {
       this.roleList.splice(0, this.roleList.length) // remove all
 
@@ -236,6 +301,30 @@ export default {
         console.log(this.roleList)
       }).catch(failResp => {
         console.log('fail in getRoleList. message=' + failResp.message)
+      })
+
+      getSchoolList().then(resp=>{
+          if(resp.data.code!=200){
+            this.$message.error(resp.data.code + '\n' + resp.data.message)
+            return false
+          }
+          this.schoolList.splice(0,this.schoolList.length)
+          let schools = resp.data.data
+          console.log(schools)
+          for (let i = 0; i <schools.length ; i++) {
+            let school = schools[i];
+            this.schoolList.push({
+              value:school.schId,
+              label:school.schName,
+              location:school.location,
+            })
+          }
+
+
+        }
+
+      ).catch(failResp=>{
+        console.log('fail in getSchoolList. message=' + failResp.message)
       })
     },
     setStatus (index) {
@@ -266,6 +355,48 @@ export default {
           this.roleList[index - 1].statusSwitch = !this.roleList[index - 1].statusSwitch
         })
       // this.statusSwitch = !this.statusSwitch
+    },
+    register () {
+      const _this = this
+      this.$refs['reg-btm'].loading = true
+      this.$refs['registerForm'].validate((valid) => {
+        if (!valid) {
+          this.$alert('You have not filled in all required fields correctly.', 'Tips', {
+            confirmButtonText: 'OK'
+          })
+          _this.$refs['reg-btm'].loading = false
+          return false
+        }
+
+        console.log('send account data')
+        console.log(this.registerForm)
+        postAddRole(
+          this.newRoleName,
+          this.newPassword,
+          this.roleStatus,
+          this.roleType
+        ).then(resp => {
+          console.log('get response : ' + resp)
+          if (resp.data.code === 200) {
+            this.newRoleName = ''
+            this.newPassword = ''
+            this.roleStatus = ''
+            this.roleType = ''
+            this.init()
+            this.addDrawer = false
+            this.$alert('Add successfully!', 'Tip')
+          } else if (resp.data.code === 400) {
+            console.log(resp.data.message)
+            this.$alert(resp.data.message, 'Tip', {
+              confirmButtonText: 'OK'
+            })
+          }
+        }).catch(failResp => {
+          this.$alert('Error ' + failResp.message, 'Tips', {
+            confirmButtonText: 'OK'
+          })
+        })
+      });
     }
   }
 }
@@ -307,8 +438,8 @@ html,body{
   overflow: scroll;
 }
 #add_card, #modify_card{
-  margin-left: 20px;
-  margin-right: 20px;
+  margin-left: 40px;
+  margin-right: 40px;
 }
 .el-drawer{
   overflow: scroll;
