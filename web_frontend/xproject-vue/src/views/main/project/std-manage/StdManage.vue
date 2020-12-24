@@ -89,6 +89,7 @@
           empty-text="No Data Found"
           :default-sort="{prop: 'index', order: 'increasing'}"
           @filter-change="handleFilterChange"
+          :height="400"
           style="width: 100%">
           <el-table-column type="selection"/>
           <el-table-column label="" type="index" width="50px" sortable/>

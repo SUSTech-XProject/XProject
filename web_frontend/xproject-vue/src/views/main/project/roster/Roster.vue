@@ -105,6 +105,7 @@
       <el-table
         ref="stdTable"
         :data="stdList"
+        :height="416"
         empty-text="No Data Found"
         :default-sort="{prop: 'index', order: 'increasing'}"
         @filter-change="handleFilterChange"
