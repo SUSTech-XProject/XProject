@@ -35,27 +35,56 @@
                type="card" v-model="activeName"
                style="height: 100%; margin-top: 10px">
         <el-tab-pane label="Overview" name="overview">
-          <div style="margin-top: 10px">Recent project</div>
-
-          <el-row>
-            <el-col :span="12" v-for="proj in firstThreeProjList" :key="proj.projName">
-              <el-card class="box-card" style="width: 95%; margin-top: 15px" shadow="never">
-                <div class="title">{{ proj.projName }}</div>
-                <p></p>
-                <div class="text">{{ proj.courseName }} {{ proj.createTime }}</div>
-              </el-card>
-            </el-col>
-          </el-row>
-
-          <div v-if="isStudent()">
-            <div style="margin-top: 40px">Skill List</div>
-            <el-tag v-for="skill in skillList" :key="skill"
-                    effect="plain" class="el-tag">
-              {{ skill }}
-            </el-tag>
+          <div style="margin-top: 10px">
+            Recent project
           </div>
 
-          <div style="margin-top: 40px">Statistic</div>
+          <div v-if="firstThreeProjList.length===0"
+               style="margin-top: 15px;">
+            <div style="margin-top: 10px;">
+              <el-row>
+                <el-col :span="12">
+                  <el-card class="box-card" shadow="never" align="center"
+                           style="width: 95%; margin-top: 15px; min-height: 100px;">
+                    <p></p>
+                    <div style="font-size: 18px; color: #585858;">No data</div>
+                    <p></p>
+                  </el-card>
+                </el-col>
+              </el-row>
+            </div>
+          </div>
+
+          <div v-else>
+            <el-row>
+              <el-col :span="12" v-for="proj in firstThreeProjList" :key="proj.projName">
+                <el-card class="box-card" style="width: 95%; margin-top: 15px" shadow="never">
+                  <div class="title">{{ proj.projName }}</div>
+                  <p></p>
+                  <div class="text">{{ proj.courseName }} {{ proj.createTime }}</div>
+                </el-card>
+              </el-col>
+            </el-row>
+          </div>
+
+          <div v-if="isStudent()">
+            <div style="margin-top: 40px">
+              Skill List
+            </div>
+            <div v-if="skillList.length!==0"
+                 style="margin-top: 20px">
+              <el-tag v-for="skill in skillList" :key="skill"
+                      effect="plain" class="el-tag">
+                {{ skill }}
+              </el-tag>
+            </div>
+            <div v-else
+                 style="margin-top: 20px;">
+              <el-button class="button-new-tag">No tag</el-button>
+            </div>
+          </div>
+
+          <!--          <div style="margin-top: 40px">Statistic</div>-->
         </el-tab-pane>
 
         <el-tab-pane label="History" name="history">
