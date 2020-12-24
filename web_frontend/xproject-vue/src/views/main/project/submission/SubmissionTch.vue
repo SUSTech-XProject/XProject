@@ -320,10 +320,10 @@ export default {
       ],
       Status: [{
         status: 'En',
-        label: 'Enable'
+        label: 'Enabled'
       }, {
         status: 'Dis',
-        label: 'Disable'
+        label: 'Disabled'
       }],
       status: '',
       detailDrawer: false,
@@ -405,7 +405,7 @@ export default {
             modifiedTime: getDatetimeStr(resp.data.data[i].submission.modifiedTime),
             dueTime: dueTime,
             finalTime: finalTime,
-            maxSubmissionTime: resp.data.data[i].submission.maxSubmissionTime,
+            maxSubmissionTime: resp.data.data[i].submission.maxSbm,
             status: resp.data.data[i].submission.status,
             creator: resp.data.data[i].teacher.tchName
           }
@@ -430,8 +430,8 @@ export default {
         this.submissionInstanceList = resp.data.data
 
         for (let i = 0; i < this.submissionInstanceList.length; i++) {
-          this.submissionInstanceList[i].submissionInst.submitTime
-            = getDatetimeStr(this.submissionInstanceList[i].submissionInst.submitTime)
+          this.submissionInstanceList[i].submissionInst.submitTime =
+            getDatetimeStr(this.submissionInstanceList[i].submissionInst.submitTime)
         }
       }).catch(failResp => {
         this.$message.error(failResp.message)
@@ -450,12 +450,15 @@ export default {
       this.modDescription = this.submissionList[index - 1].description
       this.modDueTime = this.submissionList[index - 1].dueTime
       this.modFinalTime = this.submissionList[index - 1].finalTime
-      this.modSubmissionTimes = this.submissionList[index - 1].maxSubmissionTime == null ? 0 : this.submissionList[index - 1].maxSubmissionTime
-      this.modUnlimited = this.submissionList[index - 1].maxSubmissionTime == null
+      this.modSubmissionTimes = this.submissionList[index - 1].maxSubmissionTime
+      alert(index)
+      alert(this.submissionList[index - 1].maxSubmissionTime)
+      this.modUnlimited = this.submissionList[index - 1].maxSubmissionTime === 0
       this.status = this.submissionList[index - 1].status
       this.modResource = this.submissionList[index - 1].resources
     },
     commitAdd () {
+      alert(this.unlimited)
       // alert(this.dueTime <= this.finalTime)
       // alert(getDatetimeStr(new Date()) >= this.dueTime)
       // alert(this.dateFormat(new Date()) <= this.dueTime)
@@ -474,9 +477,16 @@ export default {
           return false
         }
       }
+      if (this.status === '') {
+        this.$alert('Status is not set!')
+        return false
+      }
       console.log('send new submission item')
       let projId = this.$store.state.proj.projId
-      let maxSbmTime = this.unlimited ? null : this.submissionTimes
+      let maxSbmTime = this.unlimited ? 0 : this.submissionTimes
+      // alert(this.unlimited)
+      // alert(this.submissionTimes)
+      // alert('Im here')
       postAddSubmission(
         projId,
         this.newTitle,
@@ -488,9 +498,14 @@ export default {
       ).then(resp => {
         console.log('get response : ' + resp)
         if (resp.data.code === 200) {
-          this.init()
-          this.modifyDrawer = false
+          this.newTitle = ''
+          this.newDescription = ''
+          this.dueTime = ''
+          this.finalTime = ''
+          this.status = ''
+          this.initSubmissionList()
           this.$alert('Add successfully!', 'Tip')
+          this.addDrawer = false
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
           this.$alert(resp.data.message, 'Tip', {
@@ -547,7 +562,7 @@ export default {
           ).then(resp => {
             console.log('get response : ' + resp)
             if (resp.data.code === 200) {
-              this.submissionList.splice(index - 1, 1)
+              this.initSubmissionList()
               this.$alert('Delete successfully!', 'Tip')
             } else if (resp.data.code === 400) {
               // this.announcementlist.splice(index - 1, 1)
@@ -627,7 +642,6 @@ export default {
   outline: 0;
 }
 </style>
-
 
 <!--// for (let i = 0; i < resp.data.data.length; i++) {-->
 <!--//   // eslint-disable-next-line camelcase-->
