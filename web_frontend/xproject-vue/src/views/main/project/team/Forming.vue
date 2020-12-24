@@ -16,8 +16,9 @@
         </el-col>
       </el-row>
     </div>
-
-    <div class="board" v-loading="dataLoading">
+    <div v-if="useRecruit===false" class="no-data">Recruit System is Not Open :(</div>
+    <div v-else-if="teams.length===0" class="no-data">No Teams Here :(</div>
+    <div v-else class="board" v-loading="dataLoading">
       <div v-for="team in teams" class="cardList">
         <teamcard v-bind="team"
                   v-if="isVisible(team)"
@@ -40,6 +41,7 @@ import teamcard from '@/components/card/teamList/index'
 import teamdrawer from '@/views/main/project/team/teamdrawer'
 import double from '@/components/selector/double'
 import {getTeamInfoList} from '@/api/team'
+import {getProjOverview} from '@/api/proj_overview'
 
 export default {
   name: "Forming",
@@ -48,6 +50,7 @@ export default {
   },
   data(){
     return{
+      useRecruit:'',
       dataLoading:false,
       op_topic: [],
       op_sta:[],
@@ -68,6 +71,19 @@ export default {
     initTeams(){
       let id = this.$store.state.proj.projId
       console.log(id)
+      getProjOverview(parseInt(id)).then(resp => {
+        console.log(resp)
+        if (resp.data.code !== 200) {
+          this.$message.error(resp.data.message)
+          return false
+        }
+        let infoDict = resp.data.data
+        let settings = JSON.parse(infoDict.projSettings)
+        this.useRecruit = settings.use_recruit
+      }).catch(failResp => {
+        this.$message.error(failResp.message)
+        console.log(failResp)
+      })
       getTeamInfoList(parseInt(id)).then(resp => {
         if (resp.data.code !== 200) {
           this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
@@ -183,5 +199,12 @@ export default {
   display: flex;
   width: 100%;
   padding-top: 10px;
+}
+.no-data{
+  margin-top: 100px;
+  margin-bottom: 100px;
+  font-size: 20px;
+  text-align: center;
+  color: #6d7178;
 }
 </style>
