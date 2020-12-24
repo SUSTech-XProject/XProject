@@ -345,6 +345,7 @@ export default {
       modSubmissionTimes: 1,
       modUnlimited: false,
       modifyDrawer: false,
+      currentIndex: null,
 
       viewingSbmId: ''
     }
@@ -444,6 +445,7 @@ export default {
       this.initAllSubmissionList(sbmId)
     },
     modifySubmission (index) {
+      this.currentIndex = index
       this.modifyDrawer = true
       this.currentTitle = this.submissionList[index - 1].title
       this.modTitle = this.submissionList[index - 1].title
@@ -523,6 +525,7 @@ export default {
       let projId = this.$store.state.proj.projId
       let maxSbmTime = this.modUnlimited ? null : this.modSubmissionTimes
       postModifySubmission(
+        this.submissionList[this.currentIndex - 1].submId,
         projId,
         this.modTitle,
         this.modDescription,
