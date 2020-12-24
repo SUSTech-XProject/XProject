@@ -18,7 +18,7 @@
       <el-button type="warning" plain icon="el-icon-edit" @click="manageTeam">Manage</el-button>
     </div>
 
-    <el-card style="height: 510px">
+    <el-card style="height: 440px">
       <el-table
         ref="stdTable"
         :data="stdList"
@@ -31,11 +31,12 @@
         <el-table-column label="Student Name" prop="stdName" sortable/>
         <el-table-column label="SID" prop="stdNo" sortable/>
         <el-table-column label="Group Mark" prop="groupMark" sortable/>
-        <el-table-column label="Team Index" prop="projInstId" sortable
+        <el-table-column label="Index" prop="projInstId" sortable
                          :filters="teamIndexFList"
                          :filter-method="teamIndexFMethod"/>
+        <el-table-column label="Name" prop="teamName" sortable/>
         <el-table-column label="Topic" prop="topicStr" sortable/>
-        <el-table-column label="Team Status" prop="status" sortable
+        <el-table-column label="Status" prop="status" sortable
                          :filters="teamStatusFList"
                          :filter-method="teamStatusFMethod"/>
         <el-table-column>
