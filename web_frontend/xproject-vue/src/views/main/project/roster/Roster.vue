@@ -140,20 +140,53 @@
 
     </el-card>
 
+    <el-dialog title="Edit Student Information" :visible.sync="editDialogVisible" width="32%">
+      <el-form :model="form">
+        <el-form-item label="Student Name" :label-width="formLabelWidth">
+          <el-input v-model="form.stdName" autocomplete="off" style="width: 80%"></el-input>
+        </el-form-item>
+        <el-form-item label="SID" :label-width="formLabelWidth">
+          <el-input v-model="form.stdNo" autocomplete="off" style="width: 80%"></el-input>
+        </el-form-item>
+        <el-form-item label="Class" :label-width="formLabelWidth">
+          <el-input v-model="form.stdClass" autocomplete="off" style="width: 80%"></el-input>
+        </el-form-item>
+        <el-form-item label="Email" :label-width="formLabelWidth">
+          <el-input v-model="form.email" autocomplete="off" style="width: 80%"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editDialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="updateStdData">Confirm</el-button>
+      </div>
+    </el-dialog>
+
   </el-card>
 </template>
 
 <script>
 import {getGradeList} from '@/api/grade'
 import {getDatetimeStr} from '@/utils/parse-day-time'
-import {getProjectListBySch, getProjStdList, postImportFromExcel} from '@/api/std_manage'
+import {getProjectListBySch, getProjStdList, postImportFromExcel, postUpdateStudentInfo} from '@/api/std_manage'
 import {postProjStdExcel} from '@/api/resources'
+import {postEventCreation} from '@/api/event'
 
 export default {
   name: 'Roster',
   components: {},
   data () {
     return {
+      //
+      form: {
+        stdName: '',
+        stdNo:'',
+        stdClass:'',
+        email:'',
+        roleId:'',
+      },
+      formLabelWidth: '120px',
+      //
+      editDialogVisible:false,
       createDialogVisible: false,
       importDialogVisible: false,
       deleteDialogVisible: false,
@@ -206,6 +239,38 @@ export default {
     this.initStdManage()
   },
   methods: {
+    //
+    updateStdData(){
+      this.$confirm('Confirm this change?', 'Warning', {
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(() => {
+        console.log(this.form)
+        postUpdateStudentInfo(this.form).then(resp=>{
+          if(resp.data.code===200){
+            this.$message({
+              type: 'success',
+              message: 'Change student info successfully'
+            });
+            this.initStdManage()
+            this.editDialogVisible = false
+          }else {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error('Back-end no response')
+        })
+      }).catch(() => {
+
+        this.$message({
+          type: 'info',
+          message: 'Canceled'
+        });
+      });
+
+    },
+    //
     handleDialogOpen () {
       this.dialogSltList = this.$refs.stdTable.selection
     },
@@ -236,6 +301,8 @@ export default {
     },
     handleEdit (index, row) {
       console.log(index, row)
+      this.form.roleId = parseInt(row.roleId)
+      this.editDialogVisible = true
     },
     classFMethod (value, row, column) {
       return value === row.stdClass

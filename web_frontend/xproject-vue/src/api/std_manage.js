@@ -47,3 +47,7 @@ export function getProjStdList (projId) {
 export function postClearStdTeam (quitProjParamVO) {
   return Vue.prototype.$axios.post('/teacher/clear/std/team', quitProjParamVO)
 }
+export function postUpdateStudentInfo (stdUpdateVO) {
+  return Vue.prototype.$axios.post('/teacher/student/info/update', stdUpdateVO)
+}
+
