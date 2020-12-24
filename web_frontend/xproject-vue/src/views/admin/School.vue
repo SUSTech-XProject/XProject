@@ -43,6 +43,7 @@
 
     <el-table
       :data="schoolList"
+      height="400"
       empty-text="No Data Found"
       :default-sort = "{prop: 'index', order: 'increasing'}"
       style="width: 100%">
