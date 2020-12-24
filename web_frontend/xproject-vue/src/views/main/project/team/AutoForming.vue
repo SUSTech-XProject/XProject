@@ -2,7 +2,7 @@
   <el-drawer title="Auto Forming"
              :before-close="closeManaging"
              :visible.sync="dialogFormVisible"
-             size="70%"
+             size="75%"
              class="autoForming">
     <el-tabs v-model="activeName" style="width: 90%;padding-left: 40px">
       <el-tab-pane label="Teams" name="team">
