@@ -138,7 +138,7 @@ import {
   getSchoolList,
   postAddSchool,
   postEditSchool
-} from '../../api/admin'
+} from '../../../api/admin'
 
 export default {
   name: 'School',
@@ -186,7 +186,7 @@ export default {
         this.newSchoolName,
         this.newSchoolLocation
       ).then(resp => {
-        console.log('get response : ' + resp)
+        console.log('get response : %o', resp)
         if (resp.data.code === 200) {
           this.newSchoolName = ''
           this.newSchoolLocation = ''
