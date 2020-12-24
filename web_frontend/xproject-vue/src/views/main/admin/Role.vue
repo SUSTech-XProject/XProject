@@ -83,7 +83,7 @@
           <span style="margin-left: 0px">{{scope.row.registerTime}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Enabled" prop="enable" sortable>
+      <el-table-column label="Enabled" prop="enable">
         <template slot-scope="scope">
 <!--          <span style="margin-left: 0px">{{scope.row.status}}</span>-->
           <el-switch
@@ -207,18 +207,18 @@ export default {
         }
       ],
       options: [{
-        value: '0',
+        value: 'Teacher',
         label: 'Teacher'
       }, {
-        value: '1',
+        value: 'Admin',
         label: 'Admin'
       }],
       statusList: [
         {
-          value: '0',
+          value: 'Enabled',
           label: 'Enable'
         }, {
-          value: '1',
+          value: 'Disabled',
           label: 'Disable'
         }],
       roleType: '',
