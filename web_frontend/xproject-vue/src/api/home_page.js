@@ -32,5 +32,5 @@ export function postDelStdIntoProj (quitProjParamVO) {
 }
 
 export function getComments(){
-  return Vue.prototype.$axios.get('/student/comments')
+  return Vue.prototype.$axios.get('/all/comments')
 }

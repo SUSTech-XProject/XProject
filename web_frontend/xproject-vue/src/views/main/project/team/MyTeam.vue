@@ -879,9 +879,14 @@ export default {
   background: #ecf5ff;
 }
 
-.ConfirmInvite {
-  /*blue*/
-  background: #ecf5ff;
+.InviteSuccess {
+  /*green*/
+  background: #f0f9eb;
+}
+
+.InviteFail{
+  /*grey*/
+  background: #f4f4f5;
 }
 
 .personalInfoTitle {
