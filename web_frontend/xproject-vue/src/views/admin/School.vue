@@ -15,6 +15,7 @@
       <div>
         <el-card id="add_card">
           Input New School Name:
+          <br>
           <el-input
             type="textarea"
             :autosize="{ minRows: 1, maxRows: 3}"
@@ -25,7 +26,6 @@
           <br>
           Input New School's Location:
           <br>
-          (In form of "Province, City")
           <el-input
             type="textarea"
             :autosize="{ minRows: 1, maxRows: 3}"
@@ -43,7 +43,7 @@
 
     <el-table
       :data="schoolList"
-      height="400"
+      height="600"
       empty-text="No Data Found"
       :default-sort = "{prop: 'index', order: 'increasing'}"
       style="width: 100%">
