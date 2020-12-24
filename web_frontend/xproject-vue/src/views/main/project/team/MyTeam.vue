@@ -786,11 +786,7 @@ export default {
         cancelButtonText: 'cancel',
         type: 'warning'
       }).then(() => {
-        let teamConfirmParamVO = {
-          'force': true,
-          'projInstIdList': [this.projInstId]
-        }
-        postTeamConfirmation(teamConfirmParamVO).then(resp => {
+        postTeamConfirmation(false, [this.projInstId]).then(resp => {
           console.log('get response : ' + resp)
           if (resp.data.code === 200) {
             if (resp.data.data === 0) {
