@@ -33,10 +33,10 @@ export function postAddSubmission (projId, title, description, dueTime, finalTim
   })
 }
 
-export function postModifySubmission (projId, sbm_id, title, description, dueTime, finalTime, maxSubmission, status, resources) {
+export function postModifySubmission (sbmId, projId, title, description, dueTime, finalTime, maxSubmission, status, resources) {
   return Vue.prototype.$axios.post('/teacher/project/sub/modify', {
+    sbmId: sbmId,
     projId: projId,
-    sbm_id: sbm_id,
     title: title,
     description: description,
     dueTime: dueTime,
