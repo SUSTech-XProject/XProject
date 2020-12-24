@@ -23,7 +23,7 @@
               <el-table-column property="date" label="Date" width="120" sortable></el-table-column>
               <el-table-column property="week" label="Week" width="120" sortable></el-table-column>
               <el-table-column property="time" label="Duration" sortable></el-table-column>
-              <el-table-column label="Statue" property="statue" sortable></el-table-column>
+              <el-table-column label="Status" property="statue" sortable></el-table-column>
               <el-table-column property="teamInfo" label="Team">
                 <template slot-scope="scope">
                   <span v-if="scope.row.teamInfo===''" style="color: #8c939d">- -</span>
