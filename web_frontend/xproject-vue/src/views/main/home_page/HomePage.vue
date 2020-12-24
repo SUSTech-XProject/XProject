@@ -77,7 +77,7 @@
                 {{ skill }}
               </el-tag>
             </div>
-            <div v-else style="margin-top: 20px;">
+            <div v-else>
               <el-button class="el-tag" size="small">No tag</el-button>
             </div>
 
@@ -261,6 +261,7 @@ export default {
       })
 
       getComments().then(resp => {
+        console.log(resp.data.data)
         if (resp.data.code !== 200) {
           this.$message.error(resp.data.message)
           return false
@@ -268,6 +269,7 @@ export default {
         if (resp.data.data !== 'null') {
           this.commentList = JSON.parse(resp.data.data)
         }
+        console.log(resp.data.data)
       }).catch(failResp => {
         this.$message.error(failResp.message)
       })
