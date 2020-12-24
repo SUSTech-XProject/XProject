@@ -61,10 +61,10 @@
         <template slot-scope="scope">
           <el-switch
             style="display: block"
-            v-model="scope.row.tchSwitch"
+            v-model="scope.row.allowTch"
             active-color="#13ce66"
             inactive-color="#ff4949"
-            @change="setTchStatus(scope.row.schId)">
+            @change="setTchStatus(scope.row.index)">
           </el-switch>
         </template>
       </el-table-column>
@@ -72,10 +72,10 @@
         <template slot-scope="scope">
           <el-switch
             style="display: block"
-            v-model="scope.row.stuSwitch"
+            v-model="scope.row.allowStu"
             active-color="#13ce66"
             inactive-color="#ff4949"
-            @change="setStuStatus(scope.row.schId)">
+            @change="setStuStatus(scope.row.index)">
           </el-switch>
         </template>
       </el-table-column>
@@ -136,8 +136,6 @@ import {
   getDeleteSchool,
   getSchoolList,
   postAddSchool,
-  postAllowStu,
-  postAllowTch,
   postEditSchool
 } from '../../api/admin'
 
@@ -154,6 +152,7 @@ export default {
       editSchoolName: '',
       editSchoolLocation: '',
       currentSchId: null,
+      currentIndex: null,
       addDrawer: false,
       addSize: '40%',
       schoolList: [
@@ -162,17 +161,15 @@ export default {
           schId: 1,
           schName: 'SUSTech',
           location: 'Guangdong, Shenzhen',
-          allowTch: 'Allow',
-          tchSwitch: true,
-          allowStu: 'Allow',
-          stuSwitch: true
+          allowTch: true,
+          allowStu: true
         }
       ]
     }
   },
-  // mounted () {
-  //   this.init()
-  // },
+  mounted () {
+    this.init()
+  },
   methods: {
     commitAdd (param) {
       console.log('send created data')
@@ -212,13 +209,17 @@ export default {
       this.editSchoolName = this.schoolList[index - 1].schName
       this.editSchoolLocation = this.schoolList[index - 1].location
       this.currentSchId = schId
+      this.currentIndex = index
     },
     commitEdit () {
       console.log('send edited data')
+      alert(this.editSchoolName)
       postEditSchool(
         this.currentSchId,
         this.editSchoolName,
-        this.editSchoolLocation
+        this.editSchoolLocation,
+        this.schoolList[this.currentIndex - 1].allowStu,
+        this.schoolList[this.currentIndex - 1].allowTch
       ).then(resp => {
         console.log('get response : ' + resp)
         if (resp.data.code === 200) {
@@ -286,10 +287,8 @@ export default {
             schId: resp.data.data[i].schId,
             schName: resp.data.data[i].schName,
             location: resp.data.data[i].location,
-            allowTch: resp.data.data[i].allowTch,
-            tchSwitch: resp.data.data[i].allowTch === 'Allow',
-            allowStu: resp.data.data[i].allowStu,
-            stuSwitch: resp.data.data[i].allowStu === 'Allow'
+            allowTch: resp.data.data[i].tchCreate,
+            allowStu: resp.data.data[i].stdCreate
           }
           console.log(newRow)
           this.schoolList.push(newRow)
@@ -299,10 +298,16 @@ export default {
         console.log('fail in getSchoolList. message=' + failResp.message)
       })
     },
-    setTchStatus (schId) {
+    setTchStatus (index) {
       this.$confirm('Are you sure to change status?')
         .then(_ => {
-          postAllowTch(schId).then(resp => {
+          postEditSchool(
+            this.schoolList[index - 1].schId,
+            this.schoolList[index - 1].schName,
+            this.schoolList[index - 1].location,
+            this.schoolList[index - 1].allowStu,
+            !this.schoolList[index - 1].allowTch
+          ).then(resp => {
             if (resp.data.code !== 200) {
               this.init()
               this.$alert('Change successfully!', 'Tip')
@@ -321,10 +326,16 @@ export default {
           this.init()
         })
     },
-    setStuStatus (schId) {
+    setStuStatus (index) {
       this.$confirm('Are you sure to change status?')
         .then(_ => {
-          postAllowStu(schId).then(resp => {
+          postEditSchool(
+            this.schoolList[index - 1].schId,
+            this.schoolList[index - 1].schName,
+            this.schoolList[index - 1].location,
+            !this.schoolList[index - 1].allowStu,
+            this.schoolList[index - 1].allowTch
+          ).then(resp => {
             if (resp.data.code !== 200) {
               this.init()
               this.$alert('Change successfully!', 'Tip')

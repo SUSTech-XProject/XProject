@@ -12,11 +12,13 @@ export function postAddSchool (schName, location) {
   })
 }
 
-export function postEditSchool (schId, schName, location) {
-  return Vue.prototype.$axios.post('/admin/school/add', {
+export function postEditSchool (schId, schName, location, stdCreate, tchCreate) {
+  return Vue.prototype.$axios.post('/admin/school/edit', {
     schId: schId,
     schName: schName,
-    location: location
+    location: location,
+    stdCreate: stdCreate,
+    tchCreate: tchCreate
   })
 }
 
@@ -28,18 +30,18 @@ export function getDeleteSchool (schId) {
   })
 }
 
-export function postAllowTch (roleId) {
-  return Vue.prototype.$axios.post('/admin/school/allow-tch', null, {
-    params: {
-      roleId: roleId
-    }
-  })
-}
-
-export function postAllowStu (roleId) {
-  return Vue.prototype.$axios.post('/admin/school/allow-stu', null, {
-    params: {
-      roleId: roleId
-    }
-  })
-}
+// export function postAllowTch (roleId) {
+//   return Vue.prototype.$axios.post('/admin/school/allow-tch', null, {
+//     params: {
+//       roleId: roleId
+//     }
+//   })
+// }
+//
+// export function postAllowStu (roleId) {
+//   return Vue.prototype.$axios.post('/admin/school/allow-stu', null, {
+//     params: {
+//       roleId: roleId
+//     }
+//   })
+// }
