@@ -80,23 +80,18 @@
                   </span>
                 </div>
 
-                <div v-if="notice.type==='JoinSuccess'|| notice.type==='JoinFail'
-                           || notice.type==='Invite' || notice.type==='ConfirmInvite'"
+                <div v-if="notice.type==='JoinSuccess'|| notice.type==='JoinFail'"
                      style="margin-top: 10px; margin-left: 10px;">
-                  <span v-if="notice.type==='Invite' || notice.type==='ConfirmInvite'"
-                        style="vertical-align:middle; font-size: 13px">
-                    Inviter:
-                  </span>
-                  <span v-else style="vertical-align:middle; font-size: 13px">
+                  <span style="vertical-align:middle; font-size: 13px">
                     Handler:
+                    <span @click="openDrawer(notice.handlerRoleId)">
+                      <el-avatar :src="notice.hdlIconUrl"
+                                 :fit="'fill'"
+                                 style="vertical-align:middle; margin-left: 8px; cursor: pointer">
+                      </el-avatar>
+                    </span>
+                    <span style="vertical-align:middle;">{{ notice.hdlUsername }}</span>
                   </span>
-
-                  <span @click="openDrawer(notice.handlerRoleId)">
-                    <el-avatar :src="notice.hdlIconUrl"
-                               :fit="'fill'"
-                               style="vertical-align:middle; margin-left: 8px; cursor: pointer"></el-avatar>
-                  </span>
-                  <span style="vertical-align:middle;">{{ notice.hdlUsername }}</span>
                 </div>
 
                 <div v-if="notice.type==='Apply'"
@@ -136,7 +131,7 @@
                   </div>
                 </div>
 
-                <div v-else-if="notice.type==='ConfirmInvite'">
+                <div v-else-if="notice.type==='Invite'">
 
                   <div v-if="!notice.decided" style="margin-top: 25px">
                     <el-button @click="handleRejectInvite(notice)">Reject</el-button>
@@ -149,18 +144,18 @@
                   </div>
                 </div>
 
-                <div v-else-if="notice.type==='Quit'">
-                  <el-button @click="handleMessageConfirm(notice)"
-                             v-if="!notice.confirmed"
-                             style="margin-top: 20px;  margin-left: 30px">
-                    I know that
-                  </el-button>
+                <!--                <div v-else-if="notice.type==='Quit'">-->
+                <!--                  <el-button @click="handleMessageConfirm(notice)"-->
+                <!--                             v-if="!notice.confirmed"-->
+                <!--                             style="margin-top: 20px;  margin-left: 30px">-->
+                <!--                    I know that-->
+                <!--                  </el-button>-->
 
-                  <div v-else
-                       style="margin-top: 30px; margin-left: 20px">
-                    Already confirmed
-                  </div>
-                </div>
+                <!--                  <div v-else-->
+                <!--                       style="margin-top: 30px; margin-left: 20px">-->
+                <!--                    Already confirmed-->
+                <!--                  </div>-->
+                <!--                </div>-->
 
                 <!--                <div v-else>-->
                 <!--                  <el-button @click="handleMessageConfirm(notice)"-->
@@ -281,8 +276,7 @@
           </div>
         </el-tab-pane>
 
-        <el-tab-pane label="Mutual evaluation" name="eval" v-if="haveTeam ">
-          && status==='Confirm'
+        <el-tab-pane label="Mutual evaluation" name="eval" v-if="haveTeam && status==='Confirm'">
           <div v-for="(member,index) in teamMemberExceptMe" :key="index"
                style="margin-top: 15px;">
             <el-avatar :fit="'fill'" :src="member.iconUrl"
@@ -599,21 +593,21 @@ export default {
       }).then(() => {
         let applyReplyParamVO = {
           'accepted': false,
-          'message': this.rejectReason,
+          'message': null,
           'msgId': notice.msgId
         }
 
-        // postReplyInvite().then(resp => {
-        //   if (resp.data.code !== 200) {
-        //     this.$message.error(resp.data.message)
-        //     return false
-        //   }
-        //   this.noticeList.splice(0, this.noticeList.length)
-        //   this.init()
-        //   this.$message.success('Reject success')
-        // }).catch(failResp => {
-        //   this.$message.error(failResp.message)
-        // })
+        postReplyInvite(applyReplyParamVO).then(resp => {
+          if (resp.data.code !== 200) {
+            this.$message.error(resp.data.message)
+            return false
+          }
+          this.noticeList.splice(0, this.noticeList.length)
+          this.init()
+          this.$message.success(resp.data.message)
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
+        })
       }).catch(() => {
         this.$message.info('Reject canceled')
       })
@@ -630,17 +624,17 @@ export default {
           'msgId': notice.msgId
         }
 
-        // postReplyInvite().then(resp => {
-        //   if (resp.data.code !== 200) {
-        //     this.$message.error(resp.data.message)
-        //     return false
-        //   }
-        //   this.noticeList.splice(0, this.noticeList.length)
-        //   this.init()
-        //   this.$message.success('Accept success')
-        // }).catch(failResp => {
-        //   this.$message.error(failResp.message)
-        // })
+        postReplyInvite(applyReplyParamVO).then(resp => {
+          if (resp.data.code !== 200) {
+            this.$message.error(resp.data.message)
+            return false
+          }
+          this.noticeList.splice(0, this.noticeList.length)
+          this.init()
+          this.$message.success(resp.data.message)
+        }).catch(failResp => {
+          this.$message.error(failResp.message)
+        })
       }).catch(() => {
         this.$message.info('Accept canceled')
       })
@@ -720,7 +714,6 @@ export default {
       this.ungroupList.splice(index, 1)
     },
     handleUnInvite (index) {
-      console.log(index)
       this.ungroupList.push(this.inviteList[index])
       this.inviteList.splice(index, 1)
     },
@@ -738,7 +731,9 @@ export default {
         postInviteStudents(roleIdList, this.$store.state.proj.projId).then(resp => {
           console.log('get response : ' + resp)
           if (resp.data.code === 200) {
-            this.inviteList = []
+            this.noticeList.splice(0, this.noticeList.length)
+            this.inviteList.splice(0, this.inviteList.length)
+            this.init()
             this.$message.success('Change success')
           } else if (resp.data.code === 400) {
             this.$message.error(resp.data.message)
@@ -884,7 +879,7 @@ export default {
   background: #f0f9eb;
 }
 
-.InviteFail{
+.InviteFail {
   /*grey*/
   background: #f4f4f5;
 }
