@@ -38,11 +38,14 @@
           <template slot-scope="scope">
             <div v-if="scope.row.comments==null&&scope.row.content==null">Not Scored Yet</div>
             <div v-else>
-              <div v-if="scope.row.content==null">
+              <div v-if="scope.row.content==null" >
                 {{scope.row.comments}}
               </div>
+              <div v-else-if="scope.row.type==='Grade'" >
+                {{scope.row.content}}
+              </div>
               <div v-else>
-                <span style="margin-left: 10px">{{ scope.row.content }}</span>
+                <span >{{ parseFloat(scope.row.content).toFixed(2) }}</span>
                 <span v-if="scope.row.baseContent"
                       style="margin-left: 2px">/ {{ scope.row.baseContent }}</span>
               </div>
