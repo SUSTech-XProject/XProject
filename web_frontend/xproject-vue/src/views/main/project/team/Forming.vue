@@ -17,6 +17,7 @@
       </el-row>
     </div>
     <div v-if="useRecruit===false" class="no-data">Recruit System is Not Open :(</div>
+    <div v-else-if="isDued" class="no-data">Recruit System is end :(</div>
     <div v-else-if="teams.length===0" class="no-data">No Teams Here :(</div>
     <div v-else class="board" v-loading="dataLoading">
       <div v-for="team in teams" class="cardList">
@@ -50,6 +51,7 @@ export default {
   },
   data(){
     return{
+      isDued:false,
       useRecruit:'',
       dataLoading:false,
       op_topic: [],
@@ -79,12 +81,29 @@ export default {
           return false
         }
         let infoDict = resp.data.data
+        console.log(infoDict)
         let settings = JSON.parse(infoDict.projSettings)
+        console.log(settings)
+        if(settings.due_time!==undefined){
+          let dueTime = settings.due_time.replace("T"," ").substr(0,19)
+          dueTime = dueTime.replace(/-/g,"/");
+          var date = new Date(dueTime);
+          console.log(date)
+          var now = new Date()
+          console.log(now)
+          if(date.getTime()<now.getTime()){
+            this.isDued = true
+          }
+        }
+
+
         this.useRecruit = settings.use_recruit
       }).catch(failResp => {
         this.$message.error(failResp.message)
         console.log(failResp)
       })
+
+
       getTeamInfoList(parseInt(id)).then(resp => {
         if (resp.data.code !== 200) {
           this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
