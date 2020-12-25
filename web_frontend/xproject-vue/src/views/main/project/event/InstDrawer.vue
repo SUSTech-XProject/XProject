@@ -21,6 +21,8 @@
                    icon="el-icon-remove-outline" @click="removeTeams">Clear</el-button>
         <el-button type="warning" plain
                    icon="el-icon-edit" @click="manageInst">Manage</el-button>
+        <el-button type="primary" plain
+                   icon="el-icon-download" @click="exportEvent">Export</el-button>
 
       </div>
       <el-table
@@ -386,6 +388,9 @@ name: "StuEvents",
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
+    },
+    exportEvent(){
+      window.open('http://localhost:8443/api/teacher/event/export?eaId=' + this.form.eaTaskId)
     }
   },
 

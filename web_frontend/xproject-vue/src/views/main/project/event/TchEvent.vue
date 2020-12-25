@@ -5,14 +5,15 @@
     </div>
     <div style="text-align: right;padding-right: 30px">
       <el-button type="primary" plain
-                 icon="el-icon-circle-plus-outline" @click="openForm">Create</el-button>
+                 icon="el-icon-circle-plus-outline" @click="openForm">Create
+      </el-button>
       <el-button type="danger" plain
-                 icon="el-icon-delete" @click="deleteTask">Delete</el-button>
-
+                 icon="el-icon-delete" @click="deleteTask">Delete
+      </el-button>
     </div>
     <el-card class="base-card">
       <el-table
-        v-loading = "tableLoading"
+        v-loading="tableLoading"
         :data="events"
         ref="singleTable"
         highlight-current-row
@@ -62,18 +63,18 @@
               size="mini"
               type="primary" plain
               icon="el-icon-search"
-              @click="openEvent(scope.row.id)">Detail</el-button>
+              @click="openEvent(scope.row.id)">Detail
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
 
 
-
     <drawer :drawer.sync="drawerCtrl"
             :ID="eventId"
             :role="true"
-            @closeEvent = "closeEvent"></drawer>
+            @closeEvent="closeEvent"></drawer>
 
     <el-dialog title="Create Task" :visible.sync="dialogFormVisible" width="500px">
       <el-form :model="form">
@@ -90,7 +91,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="Description" :label-width="formLabelWidth" style="width: 85%">
-          <el-input v-model="form.desc" type="textarea" :clearable = "true"></el-input>
+          <el-input v-model="form.desc" type="textarea" :clearable="true"></el-input>
         </el-form-item>
         <el-form-item :label-width="formLabelWidth">
           <el-switch
@@ -116,44 +117,43 @@ import InstDrawer from '@/views/main/project/event/InstDrawer'
 import {getEATaskList, postEventDeletion} from '@/api/event'
 import {postEventCreation} from '@/api/event'
 
-
 export default {
-  name: "TchEvent",
-  components:{
-    drawer:InstDrawer,
+  name: 'TchEvent',
+  components: {
+    drawer: InstDrawer,
   },
-  data(){
-    return{
-      events:[
+  data () {
+    return {
+      events: [
         {
-        id:1,
-        creator:'Teacher 1',
-        title:'Midterm presentation',
-        description:'desc1',
-        mode:'?',
-        createdTime:'2020-12-32',
-        modifiedTime:'2021-01-00'
-      },{
-        id:2,
-        creator:'Teacher 2',
-        title:'Final presentation',
-        description:'desc2',
-        mode:'?',
-        createdTime:'2020-12-32',
-        modifiedTime:'2021-01-00'
-      }],
-      drawerCtrl:false,
-      tableLoading:false,
-      eventId:0,
-      currentRow:'',
+          id: 1,
+          creator: 'Teacher 1',
+          title: 'Midterm presentation',
+          description: 'desc1',
+          mode: '?',
+          createdTime: '2020-12-32',
+          modifiedTime: '2021-01-00'
+        }, {
+          id: 2,
+          creator: 'Teacher 2',
+          title: 'Final presentation',
+          description: 'desc2',
+          mode: '?',
+          createdTime: '2020-12-32',
+          modifiedTime: '2021-01-00'
+        }],
+      drawerCtrl: false,
+      tableLoading: false,
+      eventId: 0,
+      currentRow: '',
       //
       dialogFormVisible: false,
       form: {
-        title:'',
-        due:'',
-        desc:'',
-        id:this.$store.state.proj.projId,
-        auto:false,
+        title: '',
+        due: '',
+        desc: '',
+        id: this.$store.state.proj.projId,
+        auto: false,
       },
       formLabelWidth: '120px'
     }
@@ -162,10 +162,10 @@ export default {
   mounted () {
     this.reLoad()
   },
-  methods:{
-    init(){
+  methods: {
+    init () {
       let id = this.$store.state.proj.projId
-      console.log("init tchEvent")
+      console.log('init tchEvent')
       getEATaskList(parseInt(id)).then(resp => {
         if (resp.data.code !== 200) {
           this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
@@ -175,47 +175,46 @@ export default {
         }
         let EAlist = resp.data.data
         console.log(EAlist)
-        this.events.splice(0,this.events.length)
-        for (let i = 0; i <EAlist.length ; i++) {
+        this.events.splice(0, this.events.length)
+        for (let i = 0; i < EAlist.length; i++) {
           let EA = EAlist[i]
           this.events.push({
-            id:EA.eaTask.eaTaskId,
-            creator:EA.creator.tchName ,
+            id: EA.eaTask.eaTaskId,
+            creator: EA.creator.tchName,
             title: EA.eaTask.title,
-            description:EA.eaTask.description ,
+            description: EA.eaTask.description,
             mode: EA.eaTask.stdAdaptable,
-            createdTime: EA.eaTask.createdTime.substr(0,10)+' '+EA.eaTask.createdTime.substr(11,8),
-            modifiedTime: EA.eaTask.dueTime.substr(0,10)+' '+EA.eaTask.dueTime.substr(11,8),
+            createdTime: EA.eaTask.createdTime.substr(0, 10) + ' ' + EA.eaTask.createdTime.substr(11, 8),
+            modifiedTime: EA.eaTask.dueTime.substr(0, 10) + ' ' + EA.eaTask.dueTime.substr(11, 8),
           })
         }
 
-
-      }).catch(failResp=>{
+      }).catch(failResp => {
         console.log('fail in getEAlist. message=' + failResp.message)
       })
     },
-    reLoad(){
+    reLoad () {
       this.tableLoading = true
       this.init()
-      setTimeout(()=>{
+      setTimeout(() => {
         this.tableLoading = false
-      },1000)
+      }, 1000)
     },
-    openEvent(val){
+    openEvent (val) {
       this.drawerCtrl = true
       this.eventId = val
       console.log(val)
     },
-    closeEvent(){
+    closeEvent () {
       this.drawerCtrl = false
     },
-    handleCurrentChange(val) {
-      this.currentRow = val;
+    handleCurrentChange (val) {
+      this.currentRow = val
     },
-    openForm(){
+    openForm () {
       this.dialogFormVisible = true
     },
-    creatingTask(){
+    creatingTask () {
       //console.log(this.form)
       this.$confirm('Submit form?', 'Warning', {
         confirmButtonText: 'Confirm',
@@ -228,7 +227,7 @@ export default {
             this.$message({
               type: 'success',
               message: 'Create task successfully'
-            });
+            })
             this.dialogFormVisible = false
             this.reLoad()
           } else {
@@ -238,31 +237,31 @@ export default {
           this.$message.error('Back-end no response')
         })
       }).catch(() => {
-        console.log("???")
+        console.log('???')
         this.$message({
           type: 'info',
           message: 'Canceled'
-        });
-      });
+        })
+      })
     },
-    deleteTask(){
+    deleteTask () {
       //入参 this.currentRow
-      if(this.currentRow===''){
+      if (this.currentRow === '') {
         this.$message.error('No task selected')
-      }else{
+      } else {
         console.log(this.currentRow)
         this.$confirm('Delete selected task?', 'Warning', {
           confirmButtonText: 'Confirm',
           cancelButtonText: 'Cancel',
           type: 'warning'
-        }).then(()=>{
+        }).then(() => {
           console.log(this.currentRow.id)
-          postEventDeletion(this.currentRow.id).then(resp=>{
+          postEventDeletion(this.currentRow.id).then(resp => {
             if (resp.data.code === 200) {
               this.$message({
                 type: 'success',
                 message: 'Delete successfully'
-              });
+              })
               this.reLoad()
             } else {
               this.$message.error(resp.data.message)
@@ -270,24 +269,25 @@ export default {
           }).catch(failResp => {
             this.$message.error('Back-end no response')
           })
-        }).catch(() =>{
+        }).catch(() => {
           this.$message({
             type: 'info',
             message: 'Canceled'
-          });
+          })
         })
       }
 
-    }
+    },
   }
 
 }
 </script>
 
 <style scoped>
-.base-card{
+.base-card {
   margin: 15px 10px;
 }
+
 #title-text {
   font-size: 20px;
 }
@@ -296,11 +296,13 @@ export default {
 .demo-table-expand {
   font-size: 0;
 }
+
 .demo-table-expand label {
   width: 120px;
   color: #99a9bf;
   padding-right: 20px;
 }
+
 .demo-table-expand .el-form-item {
   margin-right: 0;
   margin-bottom: 0;
