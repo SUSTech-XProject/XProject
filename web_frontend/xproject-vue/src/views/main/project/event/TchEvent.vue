@@ -31,7 +31,7 @@
               <el-form-item label="Create Time">
                 <span>{{ props.row.createdTime }}</span>
               </el-form-item>
-              <el-form-item label="Modify Time">
+              <el-form-item label="Due Time">
                 <span>{{ props.row.modifiedTime }}</span>
               </el-form-item>
               <el-form-item label="Mode">
