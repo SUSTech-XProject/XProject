@@ -167,7 +167,7 @@ export default {
           let infoDict = resp.data.data.student
 
           this.bio = infoDict.bio
-          this.stuName = infoDict.stdName
+          this.stuName = resp.data.data.role.username
           this.school = resp.data.data.school.schName
           this.location = resp.data.data.school.location
           this.email = infoDict.email
