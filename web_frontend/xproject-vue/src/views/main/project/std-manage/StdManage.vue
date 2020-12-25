@@ -337,19 +337,13 @@ export default {
         }
         this.teamIndexFList = this.unique(this.teamIndexFList)
         // this.teamStatusFList = this.unique(this.teamStatusFList)
-        console.log(this.stdList)
+        // console.log(this.stdList)
       }).catch(failResp => {
         console.log('fail in getGradeList. message=' + failResp.message)
       })
     },
-    // handleSizeChange(val) {
-    //   console.log(`每页 ${val} 条`);
-    // },
-    // handleCurrentChange(val) {
-    //   console.log(`当前页: ${val}`);
-    // },
     manageTeam () {
-      console.log(this.stdSelectedList)
+      // console.log(this.stdSelectedList)
       this.stdSelectedList = this.$refs.stdTable.selection
       this.formingVisible = true
       //调用组队表单？
@@ -413,7 +407,7 @@ export default {
       return value === row.stdClass
     },
     handleFilterChange (filters) {
-      console.log('filter value: %o', filters)
+      // console.log('filter value: %o', filters)
     },
     initAddDrawer () {
       this.addDrawerVisible = true
@@ -523,7 +517,7 @@ export default {
 
         this.recordList.splice(0, this.recordList.length)   // remove all
         this.recordList = resp.data.data
-        console.log(this.recordList)
+        // console.log(this.recordList)
       }).catch(failResp => {
         console.log('fail in getGradeList. message=' + failResp.message)
       })
@@ -566,7 +560,7 @@ export default {
                 }
               }
               this.loading = false
-              console.log(this.recordInstList)
+              // console.log(this.recordInstList)
             }).catch(failResp => {
               console.log('fail in getGradeList. message=' + failResp.message)
             })
@@ -613,7 +607,7 @@ export default {
             }
           }
           this.loading = false
-          console.log(this.recordInstList)
+          // console.log(this.recordInstList)
         }).catch(failResp => {
           console.log('fail in getGradeList. message=' + failResp.message)
         })
@@ -628,7 +622,7 @@ export default {
       formData.append('projId', this.$store.state.proj.projId)
 
       postProjStdExcel(formData).then(resp => {
-        console.log(resp)
+        // console.log(resp)
         if (resp.data.code !== 200) {
           this.$message.error(resp.data.message + 'aaa')
           return false
