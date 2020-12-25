@@ -41,7 +41,7 @@
         prop="creator">
       </el-table-column>
       <el-table-column
-        label="time"
+        label="Due time"
         prop="modifiedTime"
         sortable>
       </el-table-column>
