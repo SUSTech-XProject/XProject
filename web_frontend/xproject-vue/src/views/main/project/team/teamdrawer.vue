@@ -334,6 +334,9 @@ export default {
     teamTarMem(val){
       this.form.tarMem = val
     },
+    teamTopic(val){
+      this.form.topic = val
+    },
     //
     // data(val){this.teamData = val}
     id(val){
