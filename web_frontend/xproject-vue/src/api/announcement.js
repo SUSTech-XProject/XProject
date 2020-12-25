@@ -6,8 +6,9 @@ export function getAnnouncementList (projId) {
   })
 }
 
-export function postModifyAnnouncement (annId, title, message) {
+export function postModifyAnnouncement (projId, annId, title, message) {
   return Vue.prototype.$axios.post('/teacher/project/ann/modify', {
+    projId: projId,
     annId: annId,
     title: title,
     message: message,

@@ -4,13 +4,15 @@
       <span id="title-text">Announcement</span>
     </div>
 
-    <el-button @click="add_drawer = true" type="success" style="margin-left: 75%;">
+    <el-button @click="dialogVisible = true" type="success" style="margin-left: 75%;">
       Create
     </el-button>
 
-    <el-drawer
+    <el-dialog
       title="Create new announcement"
-      :visible.sync="add_drawer">
+      :visible.sync="dialogVisible"
+      width="50%"
+      :before-close="handleClose">
       <div>
         <el-card id="add_card">
           Title:
@@ -30,13 +32,17 @@
             v-model="new_message">
           </el-input>
           <br>
+          <br>
+          <el-button @click="commit_add" type="primary" style="margin-left: 35%;">
+            Create
+          </el-button>
         </el-card>
       </div>
-      <br>
-      <el-button @click="commit_add" type="primary" style="margin-left: 50px;">
-        Create
-      </el-button>
-    </el-drawer>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">Cancel</el-button>
+    <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
+  </span>
+    </el-dialog>
 
     <el-table
       :data="announcementlist"
@@ -73,9 +79,11 @@
       </el-table-column>
     </el-table>
 
-    <el-drawer
+    <el-dialog
       title="Details"
-      :visible.sync="modify_drawer">
+      :visible.sync="details"
+      width="50%"
+      :before-close="handleClose">
       <div>
         <el-card id="modify_card">
           Modify title:
@@ -85,7 +93,7 @@
             placeholder="Please input title"
             v-model="mod_title">
           </el-input>
-        <br>
+          <br>
           <br>
           Modify message:
           <el-input
@@ -94,16 +102,19 @@
             placeholder="Please input message"
             v-model="mod_message">
           </el-input>
-        <br>
+          <br>
+          <br>
+          <el-button @click="commit_modify()" type="primary" style="margin-left: 35%;">
+          Update
+        </el-button>
         </el-card>
       </div>
-      <br>
-      <el-button @click="commit_modify()" type="primary" style="margin-left: 50px;">
-        Update
-      </el-button>
-    </el-drawer>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="details = false">Cancel</el-button>
+    <el-button type="primary" @click="details = false">Confirm</el-button>
+  </span>
+    </el-dialog>
   </el-card>
-
 </template>
 
 <script>
@@ -131,6 +142,8 @@ export default{
       new_message: '',
       new_title: '',
       new_name: '',
+      dialogVisible: false,
+      details: false,
       announcementlist: [
         {
           index: 1,
@@ -156,15 +169,26 @@ export default{
     },
     opendrawer (annId, title, message, index) {
       // alert(annId)
+      this.details = true
       this.mod_annId = annId
-      this.modify_drawer = true
+      // this.modify_drawer = true
       this.mod_message = message
       this.mod_title = title
       this.mod_id = index - 1
     },
     commit_modify () {
       console.log('send modified data')
+      if (this.mod_title === '') {
+        this.$alert('Title can not be null', 'Warning')
+        return false
+      }
+      if (this.mod_message === '') {
+        this.$alert('Message can not be null', 'Warning')
+        return false
+      }
+      let projId = this.$store.state.proj.projId
       postModifyAnnouncement(
+        projId,
         this.mod_annId,
         this.mod_title,
         this.mod_message
@@ -175,7 +199,7 @@ export default{
           this.announcementlist[this.mod_id].title = this.mod_title
           this.$alert('Modify successfully!', 'Tip')
           this.init()
-          this.modify_drawer = false
+          this.details = false
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
           this.$alert(resp.data.message, 'Tip', {
@@ -206,7 +230,7 @@ export default{
         console.log('get response : ' + resp)
         if (resp.data.code === 200) {
           this.init()
-          this.add_drawer = false
+          this.dialogVisible = false
           this.new_title = ''
           this.new_message = ''
           this.new_name = ''
@@ -285,6 +309,13 @@ export default{
       }).catch(failResp => {
         console.log('fail in getAnnouncementList. message=' + failResp.message)
       })
+    },
+    handleClose(done) {
+      this.$confirm('Are you sure to close?')
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
     }
   }
 }

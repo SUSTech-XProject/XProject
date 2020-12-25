@@ -4,14 +4,15 @@
       <span id="title-text">School</span>
     </div>
 
-    <el-button @click="addDrawer = true" type="success" style="margin-left: 75%;">
+    <el-button @click="dialogVisible = true" type="success" style="margin-left: 75%;">
       Add
     </el-button>
 
-    <el-drawer
-      title="Add New School"
-      :visible.sync="addDrawer"
-      :size="addSize">
+    <el-dialog
+      title="Add new school"
+      :visible.sync="dialogVisible"
+      width="50%"
+      :before-close="handleClose">
       <div>
         <el-card id="add_card">
           Input New School Name:
@@ -33,13 +34,17 @@
             v-model="newSchoolLocation">
           </el-input>
           <br>
+          <br>
+          <el-button @click="commitAdd" type="primary" style="margin-left: 35%;">
+          Add
+        </el-button>
         </el-card>
       </div>
-      <br>
-      <el-button @click="commitAdd" type="primary" style="margin-left: 50px;">
-        Add
-      </el-button>
-    </el-drawer>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">Cancel</el-button>
+    <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
+  </span>
+    </el-dialog>
 
     <el-table
       :data="schoolList"
@@ -92,9 +97,11 @@
       </el-table-column>
     </el-table>
 
-    <el-drawer
+    <el-dialog
       title="Details"
-      :visible.sync="modifyDrawer">
+      :visible.sync="modifyDialog"
+      width="50%"
+      :before-close="handleClose">
       <div>
         <el-card id="modify_card">
           Edit School Name:
@@ -115,13 +122,17 @@
             v-model="editSchoolLocation">
           </el-input>
           <br>
+          <br>
+          <el-button @click="commitEdit()" type="primary" style="margin-left: 35%;">
+            Edit
+          </el-button>
         </el-card>
       </div>
-      <br>
-      <el-button @click="commitEdit()" type="primary" style="margin-left: 50px;">
-        Edit
-      </el-button>
-    </el-drawer>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="modifyDialog = false">Cancel</el-button>
+    <el-button type="primary" @click="modifyDialog = false">Confirm</el-button>
+  </span>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -148,12 +159,13 @@ export default {
     return {
       newSchoolName: '',
       newSchoolLocation: '',
-      modifyDrawer: false,
+      modifyDialog: false,
       editSchoolName: '',
       editSchoolLocation: '',
       currentSchId: null,
       currentIndex: null,
       addDrawer: false,
+      dialogVisible: false,
       addSize: '40%',
       schoolList: [
         {
@@ -190,7 +202,7 @@ export default {
           this.newSchoolName = ''
           this.newSchoolLocation = ''
           this.init()
-          this.addDrawer = false
+          this.dialogVisible = false
           this.$alert('Add successfully!', 'Tip')
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
@@ -205,7 +217,7 @@ export default {
       })
     },
     edit (index, schId) {
-      this.modifyDrawer = true
+      this.modifyDialog = true
       this.editSchoolName = this.schoolList[index - 1].schName
       this.editSchoolLocation = this.schoolList[index - 1].location
       this.currentSchId = schId
@@ -231,7 +243,7 @@ export default {
           this.currentSchId = null
           this.$alert('Modify successfully!', 'Tip')
           this.init()
-          this.modifyDrawer = false
+          this.modifyDialog = false
         } else if (resp.data.code === 400) {
           console.log(resp.data.message)
           this.$alert(resp.data.message, 'Tip', {
@@ -358,6 +370,13 @@ export default {
         }).catch(_ => {
           this.init()
         })
+    },
+    handleClose(done) {
+      this.$confirm('Are you sure to close?')
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
     }
   }
 }
