@@ -17,7 +17,7 @@
       </el-row>
     </div>
     <div v-if="useRecruit===false" class="no-data">Recruit System is Not Open :(</div>
-    <div v-else-if="isDued" class="no-data">Recruit System is end :(</div>
+    <div v-else-if="isDued" class="no-data">Recruit System has been closed on {{dueTime}}  :(</div>
     <div v-else-if="teams.length===0" class="no-data">No Teams Here :(</div>
     <div v-else class="board" v-loading="dataLoading">
       <div v-for="team in teams" class="cardList">
@@ -52,6 +52,7 @@ export default {
   data(){
     return{
       isDued:false,
+      dueTime:'',
       useRecruit:'',
       dataLoading:false,
       op_topic: [],
@@ -86,6 +87,7 @@ export default {
         console.log(settings)
         if(settings.due_time!=undefined){
           let dueTime = settings.due_time.replace("T"," ").substr(0,19)
+          this.dueTime = dueTime
           dueTime = dueTime.replace(/-/g,"/");
           var date = new Date(dueTime);
           console.log(date)
