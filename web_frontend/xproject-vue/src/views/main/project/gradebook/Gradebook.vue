@@ -36,11 +36,17 @@
         <el-table-column label="Modified time" prop="modifiedTime" sortable :sort-method="gradeSorter"/>
         <el-table-column label="Grade" sortable :sort-method="gradeSorter">
           <template slot-scope="scope">
-            <div v-if="scope.row.content==null">Not Scored Yet</div>
+            <div v-if="scope.row.comments==null&&scope.row.content==null">Not Scored Yet</div>
             <div v-else>
-              <span style="margin-left: 10px">{{ scope.row.content }}</span>
-              <span v-if="scope.row.baseContent"
-                    style="margin-left: 2px">/ {{ scope.row.baseContent }}</span>
+              <div v-if="scope.row.content==null">
+                {{scope.row.comments}}
+              </div>
+              <div v-else>
+                <span style="margin-left: 10px">{{ scope.row.content }}</span>
+                <span v-if="scope.row.baseContent"
+                      style="margin-left: 2px">/ {{ scope.row.baseContent }}</span>
+              </div>
+
             </div>
 
           </template>
