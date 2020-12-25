@@ -416,7 +416,7 @@ name: "StuEvents",
 #base-card{
   margin: 15px 10px;
   /*height: 90%;*/
-  min-height: 95.2%;
+  min-height: 90%;
 }
 .header{
   padding-top: 20px;

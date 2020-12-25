@@ -84,7 +84,7 @@ export default {
         console.log(infoDict)
         let settings = JSON.parse(infoDict.projSettings)
         console.log(settings)
-        if(settings.due_time!==undefined){
+        if(settings.due_time!=undefined){
           let dueTime = settings.due_time.replace("T"," ").substr(0,19)
           dueTime = dueTime.replace(/-/g,"/");
           var date = new Date(dueTime);

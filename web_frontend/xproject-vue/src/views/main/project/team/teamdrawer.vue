@@ -41,14 +41,23 @@
                   <el-col :span="4"><strong>Team Topic:</strong></el-col>
                   <el-col :span="18">{{teamTopic}}</el-col>
                 </el-row>
-                <el-row v-if="teamTags.length!=0" style="margin-bottom: 25px">
-                  <el-col :span="4"><strong>Team Tags:</strong></el-col>
-                  <el-col :span="18">
-                    <span v-for="i in Math.min(teamTags.length,5)" style="margin-right: 0.5rem">
-                      <el-tag :type="tagType[teamTags[i-1].length%4]">{{teamTags[i-1]}}</el-tag>
-                    </span>
-                  </el-col>
+                <el-row style="margin-bottom: 15px">
+                  <el-col :span="4"><strong>Current Mems:</strong></el-col>
+                  <el-col :span="18">{{ teamMembers.length }}</el-col>
                 </el-row>
+                <el-row style="margin-bottom: 15px">
+                  <el-col :span="4"><strong>Target Mems:</strong></el-col>
+                  <el-col :span="18">{{ teamTarMem }}</el-col>
+                </el-row>
+
+<!--                <el-row v-if="teamTags.length!=0" style="margin-bottom: 25px">-->
+<!--                  <el-col :span="4"><strong>Team Tags:</strong></el-col>-->
+<!--                  <el-col :span="18">-->
+<!--                    <span v-for="i in Math.min(teamTags.length,5)" style="margin-right: 0.5rem">-->
+<!--                      <el-tag :type="tagType[teamTags[i-1].length%4]">{{teamTags[i-1]}}</el-tag>-->
+<!--                    </span>-->
+<!--                  </el-col>-->
+<!--                </el-row>-->
                 <el-row style="margin-bottom: 15px">
                   <el-col :span="4"><strong>Introduction:</strong></el-col>
                   <el-col :span="18">{{teamIntro}}</el-col>
@@ -60,7 +69,7 @@
 
             <el-tab-pane label="Members" name="member">
               <div class="tab-box">
-                <div style="font-size: 20px;">
+                <div style="font-size: 20px;margin-bottom: 20px">
                   Status:  {{teamSta}}
                 </div>
                 <div v-for="stu in teamMembers">

@@ -175,7 +175,7 @@
             <div slot="header" class="clearfix">
               <span>Available classmates</span>
             </div>
-
+            <el-scrollbar :native="false" style="height: 400px" tag="ul">
             <el-row>
               <el-col :span="8" v-for="(std, index) in ungroupList" :key="index">
                 <div @click="handleInvite(index)" style="margin-top: 15px;">
@@ -187,7 +187,7 @@
                 </div>
               </el-col>
             </el-row>
-
+            </el-scrollbar>
             <div style="margin-top: 10px"></div>
           </el-card>
 
@@ -852,6 +852,7 @@ export default {
 .base-card {
   margin: 15px 10px;
   min-height: 95.2%;
+
 }
 
 .Quit {
