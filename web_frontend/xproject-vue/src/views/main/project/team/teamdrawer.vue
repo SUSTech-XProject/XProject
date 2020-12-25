@@ -89,6 +89,24 @@
         :id="memID"
         @closeDrawerStu = "closeDrawerStu"
       ></drawer>
+      <el-dialog title="Change Team Info"
+                 :visible.sync="dialogFormVisible" width="42%" :append-to-body="true">
+        <el-form :model="form">
+          <el-form-item label="Team Name" :label-width="formLabelWidth">
+            <el-input v-model="form.name" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="Topic" :label-width="formLabelWidth" prop="topic">
+            <selector :in-list="topicList" :index.sync="topicInd"></selector>
+          </el-form-item>
+          <el-form-item label="Target Member" :label-width="formLabelWidth" style="width: 60%">
+            <el-input v-model="form.tarMem" autocomplete="off"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="changeInfo">Confirm</el-button>
+        </div>
+      </el-dialog>
 
       <footer>
         <div v-if="this.$store.state.role.roleType!=='Teacher'" style="margin-left: 80px">
@@ -100,6 +118,11 @@
           </span>
 
         </div>
+        <div v-else style="margin-left: 80px">
+          <span>
+            <el-button type = "warning" @click="dialogFormVisible=true">Change</el-button>
+          </span>
+        </div>
       </footer>
 
 
@@ -108,14 +131,16 @@
 </template>
 
 <script>
-import {getMyTeamDetail, getTeamDetail} from '@/api/team'
+import {getMyTeamDetail, getProjectTopics, getTeamDetail, postEditedTeamTchInfo, postTeamCreation} from '@/api/team'
 import {postApply} from '@/api/team'
 import stuInfoDrawer from '@/views/main/project/team/stuInfoDrawer'
+import single from '@/components/selector/single'
 
 export default {
   name: "teamdrawer",
   components:{
-    drawer:stuInfoDrawer
+    drawer:stuInfoDrawer,
+    selector:single
   },
   data() {
     return {
@@ -133,11 +158,80 @@ export default {
       isConfirmed:false,
       tagType:['',"success","warning","danger","info"],
       memDrawer:false,
-      memID:1
+      memID:1,
+      ///
+
+      dialogFormVisible: false,
+      form: {
+        name: '',
+        tarMem:'',
+        topic:'',
+
+      },
+      topicList:[],
+      topicInd:'',
+      formLabelWidth: '120px'
+      ///
 
     };
   },
   methods: {
+    init(){
+      let id = this.$store.state.proj.projId
+      this.form.projId = id
+      getProjectTopics(parseInt(id)).then(resp=>{
+        if (resp.data.code !== 200) {
+          this.$alert(resp.data.code + '\n' + resp.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+          return false
+        }
+
+        let topics = resp.data.data
+        console.log(topics)
+        this.topicList.splice(0,this.topicList.length)
+
+        for (let i = 0; i <topics.length ; i++) {
+          this.topicList.push(topics[i].topicName)
+          //队员数绑定？
+        }
+      }).catch(failResp=>{
+        console.log('fail in getProjTitle. message=' + failResp.message)
+      })
+    },
+    changeInfo(){
+      this.form.projInstId = this.teamID
+      console.log(this.form)
+      this.$confirm('Are you sure to modify?', 'Warning', {
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(() => {
+        console.log(this.form)
+        postEditedTeamTchInfo(
+          this.form
+        ).then(resp => {
+          console.log(resp)
+          if (resp.data.code === 200) {
+            this.$message({
+              type: 'success',
+              message: 'Change team successfully'
+            });
+            this.dialogFormVisible=false
+            this.refresh()
+          } else {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error('Back-end no response')
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Canceled'
+        });
+      });
+    },
     refresh(){
       this.$emit('closeDrawer',this.isConfirmed)
       //清除数据？
@@ -225,6 +319,10 @@ export default {
   created () {
     this.teamDrawer = this.drawer
     this.teamID = this.id
+    // this.init()
+  },
+  mounted () {
+    this.init()
   },
   watch:{
     // data(val){this.teamData = val}
@@ -237,6 +335,12 @@ export default {
         this.initTeam(this.teamID)
       }
     },
+    topicInd(val){
+      this.topicInd = val;
+      if(val!==''){
+        this.form.topic = this.topicList[val]
+      }
+    }
 
   },
   props:{

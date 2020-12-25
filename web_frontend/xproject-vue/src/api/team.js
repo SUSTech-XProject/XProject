@@ -142,3 +142,13 @@ export function getTeamExcel (projId) {
     }
   })
 }
+
+export function postEditedTeamTchInfo (form) {
+  return Vue.prototype.$axios.post('/teacher/team/change', {
+    projInstId:form.projInstId,
+    targetMemNum:parseInt(form.tarMem),
+    teamName:form.name,
+    topic:form.topic
+  })
+}
+
