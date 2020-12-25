@@ -6,7 +6,7 @@
     <el-table
       :data="events"
       v-loading="tableLoading"
-      style="width: 100%">
+      style="width: 100%;">
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="demo-table-expand">
@@ -138,6 +138,7 @@ name: "StuEvent",
 <style scoped>
 #base-card{
   margin: 15px 10px;
+  min-height: 95.2%;
 }
 #title-text {
   font-size: 20px;

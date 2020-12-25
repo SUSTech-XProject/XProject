@@ -445,7 +445,8 @@ html,body{
   overflow: scroll;
 }
 #base-card {
-  margin: 15px 10px
+  margin: 15px 10px;
+  min-height: 95.2%;
 }
 #title-text {
   font-size: 20px;

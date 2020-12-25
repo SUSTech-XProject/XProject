@@ -277,6 +277,7 @@ export default {
 
 #base-card {
   margin: 15px 10px;
+  min-height: 95.2%;
 }
 
 #title-text {

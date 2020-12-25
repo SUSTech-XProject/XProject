@@ -11,7 +11,7 @@
                  icon="el-icon-delete" @click="deleteTask">Delete
       </el-button>
     </div>
-    <el-card class="base-card">
+    <el-card class="base-card" style="min-height:455px">
       <el-table
         v-loading="tableLoading"
         :data="events"
@@ -286,6 +286,7 @@ export default {
 <style scoped>
 .base-card {
   margin: 15px 10px;
+  min-height: 95.2%;
 }
 
 #title-text {

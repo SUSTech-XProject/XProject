@@ -84,14 +84,13 @@
         <el-button @click="closeAddDrawer">Cancel</el-button>
       </div>
 
-      <el-card style="margin-top: 20px; margin-left: 1%; margin-right: 1%;">
+      <el-card style="margin-top: 20px; margin-left: 1%; margin-right: 1%; min-height: 89%">
         <el-table
           ref="allStdTable"
           :data="allStdList"
           empty-text="No Data Found"
           :default-sort="{prop: 'index', order: 'increasing'}"
           @filter-change="handleFilterChange"
-          :height="400"
           style="width: 100%">
           <el-table-column type="selection"/>
           <el-table-column label="" type="index" width="50px" sortable/>
@@ -115,32 +114,32 @@
       <div align="right" style="margin-right: 40px;">
         <el-button @click="cancelScoring">Cancel</el-button>
       </div>
+      <el-card style="margin-top: 20px; margin-left: 1%; margin-right: 1%; min-height: 89%">
+        <el-table
+          :data="recordList"
+          empty-text="No Data Found"
+          row-key="record.rcdId"
+          :expand-row-keys="expandRowList"
+          :default-sort="{prop: 'index', order: 'increasing'}"
+          style="width: 100%;"
+          @expand-change="recordExpandChange">
+          <el-table-column type="expand">
+            <template slot-scope="props">
+              <div v-for="inst in recordInstList" :key="inst.stdId" style="margin-bottom: 15px">
+                <el-avatar :fit="'fill'" :src="inst.iconUrl"
+                           style="vertical-align:middle; margin-right: 10px;"
+                ></el-avatar>
+                <span style="vertical-align:middle;">{{ inst.stdNo }}</span>
+                <span style="vertical-align:middle; margin-left: 3px;">{{ inst.stdName }}</span>
 
-      <el-table
-        :data="recordList"
-        empty-text="No Data Found"
-        row-key="record.rcdId"
-        :expand-row-keys="expandRowList"
-        :default-sort="{prop: 'index', order: 'increasing'}"
-        style="width: 100%; margin-top: 20px;"
-        @expand-change="recordExpandChange">
-        <el-table-column type="expand">
-          <template slot-scope="props">
-            <div v-for="inst in recordInstList" :key="inst.stdId" style="margin-bottom: 15px">
-              <el-avatar :fit="'fill'" :src="inst.iconUrl"
-                         style="vertical-align:middle; margin-right: 10px;"
-              ></el-avatar>
-              <span style="vertical-align:middle;">{{ inst.stdNo }}</span>
-              <span style="vertical-align:middle; margin-left: 3px;">{{ inst.stdName }}</span>
-
-              <span v-if="inst.type==='Point'">
+                <span v-if="inst.type==='Point'">
                 <el-input v-model="inst.content"
                           style="width: 100px; margin-left: 20px;">
                 </el-input>
                 / {{ inst.baseContent }}
               </span>
 
-              <span v-else-if="inst.type==='Grade'||inst.type==='PF'">
+                <span v-else-if="inst.type==='Grade'||inst.type==='PF'">
                 <el-select v-model="inst.content" placeholder=""
                            style="width: 60px; margin-left: 20px;">
                  <el-option v-for="grade in gradeSelector" :key="grade.value"
@@ -149,40 +148,41 @@
                 </el-select>
               </span>
 
-              <el-input v-model="inst.comments"
-                        placeholder="Comment here..."
-                        style="width: 250px; margin-left: 20px;">
-              </el-input>
+                <el-input v-model="inst.comments"
+                          placeholder="Comment here..."
+                          style="width: 250px; margin-left: 20px;">
+                </el-input>
 
-              <div style="margin-top: 10px; margin-left: 55px;"
-                   v-if="inst.modifiedTime==null || inst.tchName==null || inst.email==null">
-                Last Modified: no record
+                <div style="margin-top: 10px; margin-left: 55px;"
+                     v-if="inst.modifiedTime==null || inst.tchName==null || inst.email==null">
+                  Last Modified: no record
+                </div>
+                <div style="margin-top: 10px; margin-left: 55px;" v-else>
+                  Last Modified: {{ inst.modifiedTime }}, {{ inst.tchName }}, {{ inst.email }}
+                </div>
+
+                <div v-if="inst.roleId===scoringStdRoleId && recordInstList.length > 1"
+                     style="margin-top: 20px; font-size: 20px; font-weight: bold">
+                  Teammates:
+                </div>
               </div>
-              <div style="margin-top: 10px; margin-left: 55px;" v-else>
-                Last Modified: {{ inst.modifiedTime }}, {{ inst.tchName }}, {{ inst.email }}
+
+              <div align="right" style="margin-right: 40px;">
+                <el-button type="primary"
+                           @click="updateScore(props.row)">Scoring
+                </el-button>
               </div>
+            </template>
+          </el-table-column>
 
-              <div v-if="inst.roleId===scoringStdRoleId && recordInstList.length > 1"
-                   style="margin-top: 20px; font-size: 20px; font-weight: bold">
-                Teammates:
-              </div>
-            </div>
-
-            <div align="right" style="margin-right: 40px;">
-              <el-button type="primary"
-                         @click="updateScore(props.row)">Scoring
-              </el-button>
-            </div>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="" type="index" width="50px"/>
-        <el-table-column label="Name" prop="record.rcdName" sortable/>
-        <el-table-column label="Type" prop="record.type"/>
-        <el-table-column label="Creator" prop="creator.tchName"/>
-        <el-table-column label="Created time" prop="record.createdTime"
-                         :formatter="dateTimeFormatter" sortable/>
-      </el-table>
+          <el-table-column label="" type="index" width="50px"/>
+          <el-table-column label="Name" prop="record.rcdName" sortable/>
+          <el-table-column label="Type" prop="record.type"/>
+          <el-table-column label="Creator" prop="creator.tchName"/>
+          <el-table-column label="Created time" prop="record.createdTime"
+                           :formatter="dateTimeFormatter" sortable/>
+        </el-table>
+      </el-card>
     </el-drawer>
 
     <el-drawer
@@ -630,7 +630,7 @@ export default {
       postProjStdExcel(formData).then(resp => {
         console.log(resp)
         if (resp.data.code !== 200) {
-          this.$message.error(resp.data.message+'aaa')
+          this.$message.error(resp.data.message + 'aaa')
           return false
         }
 

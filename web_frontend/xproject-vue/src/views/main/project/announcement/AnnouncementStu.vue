@@ -281,7 +281,8 @@ html,body{
   content: "";
 }
 #base-card {
-  margin: 15px 10px
+  margin: 15px 10px;
+  min-height: 95.2%;
 }
 #add_card, #modify_card{
   margin-left: 20px;

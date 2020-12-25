@@ -415,8 +415,8 @@ name: "StuEvents",
 <style scoped>
 #base-card{
   margin: 15px 10px;
-  height: 80%;
   /*height: 90%;*/
+  min-height: 95.2%;
 }
 .header{
   padding-top: 20px;
