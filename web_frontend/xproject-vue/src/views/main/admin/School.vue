@@ -11,38 +11,34 @@
     <el-dialog
       title="Add new school"
       :visible.sync="dialogVisible"
-      width="50%"
+      width="35%"
       :before-close="handleClose">
-      <div>
-        <el-card id="add_card">
-          Input New School Name:
-          <br>
+      <el-form>
+        <el-form-item label="School Name" label-width="140px">
           <el-input
-            type="textarea"
-            :autosize="{ minRows: 1, maxRows: 3}"
+            style="width: 80%"
             placeholder="Please input"
             v-model="newSchoolName">
           </el-input>
-          <br>
-          <br>
-          Input New School's Location:
-          <br>
+        </el-form-item>
+        <el-form-item label="School Location" label-width="140px">
           <el-input
-            type="textarea"
-            :autosize="{ minRows: 1, maxRows: 3}"
+            style="width:80%"
             placeholder="Please input"
             v-model="newSchoolLocation">
           </el-input>
-          <br>
-          <br>
-          <el-button @click="commitAdd" type="primary" style="margin-left: 35%;">
-          Add
-        </el-button>
-        </el-card>
-      </div>
+        </el-form-item>
+      </el-form>
+<!--      <div>-->
+<!--        -->
+<!--          <el-button @click="commitAdd" type="primary" style="margin-left: 35%;">-->
+<!--          Add-->
+<!--        </el-button>-->
+<!--       -->
+<!--      </div>-->
       <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">Cancel</el-button>
-    <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
+    <el-button type="primary" @click="commitAdd">Confirm</el-button>
   </span>
     </el-dialog>
 
@@ -100,37 +96,33 @@
     <el-dialog
       title="Details"
       :visible.sync="modifyDialog"
-      width="50%"
+      width="35%"
       :before-close="handleClose">
       <div>
-        <el-card id="modify_card">
-          Edit School Name:
-          <el-input
-            type="textarea"
-            :autosize="{ minRows: 1, maxRows: 3}"
-            placeholder="Please input"
-            v-model="editSchoolName">
-          </el-input>
-          <br>
-          <br>
-          Edit School Location:
-          <br>
-          <el-input
-            type="textarea"
-            :autosize="{ minRows: 1, maxRows: 3}"
-            placeholder="Please input"
-            v-model="editSchoolLocation">
-          </el-input>
-          <br>
-          <br>
-          <el-button @click="commitEdit()" type="primary" style="margin-left: 35%;">
-            Edit
-          </el-button>
-        </el-card>
+        <el-form>
+          <el-form-item label="School Name" label-width="140px">
+            <el-input
+              style="width: 90%"
+              placeholder="Please input"
+              v-model="editSchoolName">
+            </el-input>
+          </el-form-item>
+          <el-form-item label="School Location" label-width="140px">
+            <el-input
+
+              style="width: 90%"
+              placeholder="Please input"
+              v-model="editSchoolLocation">
+            </el-input>
+          </el-form-item>
+
+
+        </el-form>
+
       </div>
       <span slot="footer" class="dialog-footer">
     <el-button @click="modifyDialog = false">Cancel</el-button>
-    <el-button type="primary" @click="modifyDialog = false">Confirm</el-button>
+    <el-button type="primary" @click="commitEdit()">Edit</el-button>
   </span>
     </el-dialog>
   </el-card>

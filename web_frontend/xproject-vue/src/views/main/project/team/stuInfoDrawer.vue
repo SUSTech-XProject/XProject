@@ -117,7 +117,7 @@ export default {
     return {
       //
       stuName: '',
-      size: '80%',
+      size: '90%',
       stuDrawer: '',
       iconUrl: '',
       //
