@@ -14,3 +14,10 @@ export function postAddProj(projectVO){
   return Vue.prototype.$axios.post('/teacher/project/add', projectVO)
 
 }
+
+export function postDeleteProj(projId){
+  return Vue.prototype.$axios.post('/teacher/project/delete', null,{
+    params:{projId:projId}
+  })
+
+}

@@ -39,13 +39,13 @@
             <el-table-column label="Student Name" prop="stdName" sortable/>
             <el-table-column label="SID" prop="stdNo" sortable/>
             <el-table-column label="Group Mark" prop="groupMark" sortable/>
-            <el-table-column label="Team Index" prop="projInstId" sortable
-                             :filters="teamIndexFList"
-                             :filter-method="teamIndexFMethod"/>
-            <el-table-column label="Topic" prop="topicStr" sortable/>
-            <el-table-column label="Team Status" prop="status" sortable
-                             :filters="teamStatusFList"
-                             :filter-method="teamStatusFMethod"/>
+<!--            <el-table-column label="Team Index" prop="projInstId" sortable-->
+<!--                             :filters="teamIndexFList"-->
+<!--                             :filter-method="teamIndexFMethod"/>-->
+<!--            <el-table-column label="Topic" prop="topicStr" sortable/>-->
+<!--            <el-table-column label="Team Status" prop="status" sortable-->
+<!--                             :filters="teamStatusFList"-->
+<!--                             :filter-method="teamStatusFMethod"/>-->
           </el-table>
         </el-card>
       </el-tab-pane>
