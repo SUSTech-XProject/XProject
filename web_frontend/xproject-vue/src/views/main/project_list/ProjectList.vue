@@ -138,7 +138,8 @@
                 <el-button
                   size="mini"
                   type="danger" plain
-                  icon="el-icon-delete">Delete
+                  icon="el-icon-delete"
+                  @click="deleteProj(scope.row.projId, scope.row.projName)">Delete
               </el-button>
               </span>
               <span v-else>
@@ -208,7 +209,7 @@ import Card from '@/components/card/projectList/index'
 import Selector from '@/components/selector/single'
 import {postJoinProj, getProjList, getProjListBySch, postProjQuit} from '@/api/home_page'
 import {isStudent, isTeacher} from '@/utils/role'
-import {postAddProj, postProjectOverview} from '@/api/proj_overview'
+import {postAddProj, postDeleteProj, postProjectOverview} from '@/api/proj_overview'
 
 export default {
   name: 'ProjectList',
@@ -252,6 +253,33 @@ export default {
   methods: {
     //adding
     //join/quit proj
+    deleteProj(id,name){
+      console.log(id, name)
+      this.$confirm('Are you sure to quit ' + name + ' ?', 'Warning', {
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(() => {
+        postDeleteProj(id).then(resp => {
+          if (resp.data.code === 200) {
+            this.$message({
+              type: 'success',
+              message: 'Quit successfully'
+            })
+            this.initProjList()
+          } else {
+            this.$message.error(resp.data.message)
+          }
+        }).catch(failResp => {
+          this.$message.error('Back-end no response')
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Canceled'
+        })
+      })
+    },
     checkInProj (val) {
       console.log(val)
       for (let i = 0; i < this.listArr.length; i++) {
