@@ -303,6 +303,12 @@ export default {
     handleEdit (index, row) {
       console.log(index, row)
       this.form.roleId = parseInt(row.roleId)
+      this.form.stdName = row.stdName
+      this.form.stdNo = row.stdNo
+      this.form.stdClass = row.stdClass
+      this.form.email = row.email
+
+
       this.editDialogVisible = true
     },
     classFMethod (value, row, column) {

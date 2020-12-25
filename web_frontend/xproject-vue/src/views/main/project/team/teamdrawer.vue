@@ -154,6 +154,7 @@ export default {
       teamTags:[],
       teamIntro:'',
       teamURL:'',
+      teamTarMem:'',
       teamMembers:[],
       isConfirmed:false,
       tagType:['',"success","warning","danger","info"],
@@ -301,6 +302,7 @@ export default {
         this.teamSta = this.teamMembers.length+"/"+team.targetMemNum
         this.teamTopic = team.topic
         this.teamURL = team.iconUrl
+        this.teamTarMem = team.targetMemNum
         console.log(this.teamTags)
 
       })
@@ -325,6 +327,14 @@ export default {
     this.init()
   },
   watch:{
+    //
+    teamName(val){
+      this.form.name = val
+    },
+    teamTarMem(val){
+      this.form.tarMem = val
+    },
+    //
     // data(val){this.teamData = val}
     id(val){
       this.teamID = val
