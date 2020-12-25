@@ -327,6 +327,7 @@ export default {
     },
     closeDrawer () {
       this.drawerCtrl = false
+      this.reLoad()
     },
     filterHandler (value, row, column) {
       const property = column['property']
