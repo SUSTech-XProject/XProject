@@ -264,8 +264,9 @@ export default {
           if (resp.data.code === 200) {
             this.$message({
               type: 'success',
-              message: 'Quit successfully'
+              message: 'Delete successfully'
             })
+            this.openJoinDialog()
             this.initProjList()
           } else {
             this.$message.error(resp.data.message)
@@ -303,6 +304,7 @@ export default {
               type: 'success',
               message: 'Quit successfully'
             })
+
             this.initProjList()
           } else {
             this.$message.error(resp.data.message)
