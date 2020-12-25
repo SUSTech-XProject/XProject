@@ -219,11 +219,11 @@ export default {
           this.$message.error(resp.data.message)
           return false
         }
-
-        if (resp.data.data != null) {
-          this.commentList = resp.data.data
+        if (resp.data.data !== '{}') {
+          this.commentList = JSON.parse(resp.data.data).comments
+        } else {
+          this.commentList = null
         }
-        console.log(resp.data.data)
       }).catch(failResp => {
         this.$message.error(failResp.message)
       })
