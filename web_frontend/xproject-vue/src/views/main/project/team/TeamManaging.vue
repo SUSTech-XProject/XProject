@@ -280,7 +280,7 @@ export default {
         }
 
         let teamList = resp.data.data
-        console.log(teamList)
+        // console.log(teamList)
         this.tableData.splice(0, this.tableData.length)
         this.topicFilter.splice(0, this.topicFilter.length)
         for (let i = 0; i < teamList.length; i++) {
@@ -300,7 +300,7 @@ export default {
           })
         }
         this.topicFilter = this.unique(this.topicFilter)
-        console.log(this.topicFilter)
+        // console.log(this.topicFilter)
       }).catch(failResp => {
         console.log('fail in getProjList. message=' + failResp.message)
       })
@@ -321,7 +321,7 @@ export default {
     },
 
     openDrawer (val) {
-      console.log(val)
+      // console.log(val)
       this.drawerId = val
       this.drawerCtrl = true
     },
@@ -348,7 +348,7 @@ export default {
     },
 
     addTeam () {
-      console.log(this.createVisible)
+      // console.log(this.createVisible)
       this.createVisible = true
     },
     closeForm (val) {
@@ -359,7 +359,7 @@ export default {
       }
     },
     manageTeam () {
-      console.log(this.multipleSelection)
+      // console.log(this.multipleSelection)
       this.formingVisible = true
       //调用组队表单？
     },
@@ -383,7 +383,7 @@ export default {
           for (let i = 0; i < this.multipleSelection.length; i++) {
             list.push(parseInt(this.multipleSelection[i].index))
           }
-          console.log(list)
+          // console.log(list)
           postTeamDeletion(list
           ).then(resp => {
             if (resp.data.code === 200) {
@@ -408,7 +408,7 @@ export default {
       }
     },
     confirmTeam () {
-      console.log(this.multipleSelection)
+      // console.log(this.multipleSelection)
       if (this.multipleSelection.length === 0) {
         this.$message.error('No team selected yet')
       } else {
@@ -421,7 +421,7 @@ export default {
           for (let i = 0; i < this.multipleSelection.length; i++) {
             list.push(parseInt(this.multipleSelection[i].index))
           }
-          console.log(list)
+          // console.log(list)
           postTeamConfirmation(
             this.forceConfirm,
             list
@@ -451,7 +451,7 @@ export default {
       }
     },
     cancelTeam () {
-      console.log(this.multipleSelection)
+      // console.log(this.multipleSelection)
       if (this.multipleSelection.length === 0) {
         this.$message.error('No team selected yet')
       } else {
@@ -464,7 +464,7 @@ export default {
           for (let i = 0; i < this.multipleSelection.length; i++) {
             list.push(parseInt(this.multipleSelection[i].index))
           }
-          console.log(list)
+          // console.log(list)
           postTeamCancel(
             list
           ).then(resp => {
@@ -503,7 +503,7 @@ export default {
 
         this.recordList.splice(0, this.recordList.length)   // remove all
         this.recordList = resp.data.data
-        console.log(this.recordList)
+        // console.log(this.recordList)
       }).catch(failResp => {
         console.log('fail in getGradeList. message=' + failResp.message)
       })
@@ -546,7 +546,7 @@ export default {
                 }
               }
               this.loading = false
-              console.log(this.recordInstList)
+              // console.log(this.recordInstList)
             }).catch(failResp => {
               console.log('fail in getGradeList. message=' + failResp.message)
             })
@@ -593,7 +593,7 @@ export default {
             }
           }
           this.loading = false
-          console.log(this.recordInstList)
+          // console.log(this.recordInstList)
         }).catch(failResp => {
           console.log('fail in getGradeList. message=' + failResp.message)
         })
