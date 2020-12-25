@@ -124,31 +124,7 @@ export default {
       haveTeam:true,
       //
       sbmObj: null,
-      submissionList: [
-        {
-          index: 1,
-          submId: 0,
-          title: 'no-back-end test',
-          description: 'test without init from back-end',
-          createdTime: '2020-12-15 15:03',
-          modifiedTime: '2020-12-15 15:03',
-          dueTime: '2020-12-15 15:03',
-          finalTime: '2020-12-15 15:03',
-          maxSubmissionTime: 10,
-          status: 'S'
-        },
-        {
-          index: 2,
-          submId: 0,
-          title: 'no-back-end test2',
-          description: 'test2 without init from back-end',
-          createdTime: '2020-12-15 15:04',
-          modifiedTime: '2020-12-15 15:04',
-          dueTime: '2020-12-15 15:04',
-          finalTime: '2020-12-15 15:04',
-          maxSubmissionTime: null,
-          status: 'E'
-        }],
+      submissionList: [],
       fileList: [],
       status: '',
       submitDrawer: false,

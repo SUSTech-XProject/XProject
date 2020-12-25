@@ -36,9 +36,13 @@
         <el-table-column label="Modified time" prop="modifiedTime" sortable :sort-method="gradeSorter"/>
         <el-table-column label="Grade" sortable :sort-method="gradeSorter">
           <template slot-scope="scope">
-            <span style="margin-left: 10px">{{ scope.row.content }}</span>
-            <span v-if="scope.row.baseContent"
-                  style="margin-left: 2px">/ {{ scope.row.baseContent }}</span>
+            <div v-if="scope.row.content==null">Not Scored Yet</div>
+            <div v-else>
+              <span style="margin-left: 10px">{{ scope.row.content }}</span>
+              <span v-if="scope.row.baseContent"
+                    style="margin-left: 2px">/ {{ scope.row.baseContent }}</span>
+            </div>
+
           </template>
         </el-table-column>
       </el-table>
@@ -230,7 +234,12 @@ export default {
           this.gradeList.splice(0, this.gradeList.length)   // remove all
           for (let i = 0; i < resp.data.data.length; i++) {
             let record = resp.data.data[i]
-            record.modifiedTime = getDatetimeStr(record.modifiedTime)
+            if(record.modifiedTime==null){
+              record.modifiedTime = 'Not Scored Yet'
+            }else{
+              record.modifiedTime = getDatetimeStr(record.modifiedTime)
+            }
+
             record['listIdx'] = i
             this.gradeList.push(record)
           }
