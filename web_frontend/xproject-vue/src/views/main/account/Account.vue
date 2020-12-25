@@ -114,6 +114,19 @@
             </el-input>
           </div>
 
+          <div v-else>
+            <div class="personalInfoTypesetting personalInfoTitle">
+              Job number
+            </div>
+            <el-input v-model="tchNo" style="margin-left: 20px; margin-top: 20px; width: 90%"></el-input>
+
+            <div class="personalInfoTypesetting personalInfoTitle"
+                 style="margin-top: 20px;">
+              Name
+            </div>
+            <el-input v-model="tchName" style="margin-left: 20px; margin-top: 20px; width: 90%"></el-input>
+          </div>
+
           <div class="personalInfoTypesetting" style="margin-bottom: 40px; margin-top: 30px">
             <el-button type="primary" @click="handleUpdate">update</el-button>
           </div>
@@ -190,7 +203,9 @@ export default {
         oldPassword: '',
         newPassword: '',
         confirmNewPassword: ''
-      }
+      },
+      tchNo: '',
+      tchName: '',
     }
   },
   methods: {
@@ -234,6 +249,8 @@ export default {
             this.formInfoList[1].value = infoDict.tchName
             this.formInfoList[2].value = infoDict.email
             this.newEmail = infoDict.email
+            this.tchName = infoDict.tchName
+            this.tchNo = infoDict.tchNo
           }
 
           this.imageUrl = resp.data.data.role.iconUrl
@@ -250,7 +267,8 @@ export default {
         .then(_ => {
           done()
         })
-        .catch(_ => {})
+        .catch(_ => {
+        })
     },
     // avatar uploader
     handleAvatarSuccess (res, file) {
@@ -316,7 +334,9 @@ export default {
         if (isTeacher()) {
           let acInfoStdUpdateVO = {
             'email': this.newEmail,
-            'iconUrl': this.newImageUrl
+            'iconUrl': this.newImageUrl,
+            'tchName': this.tchName,
+            'tchNo': this.tchNo
           }
 
           postTchPersonalInfo(
@@ -361,7 +381,9 @@ export default {
         this.$message.info('Update canceled')
       })
     },
-
+    isStudent () {
+      return isStudent()
+    },
     isTeacher () {
       return isTeacher
     },
