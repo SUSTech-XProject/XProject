@@ -121,36 +121,40 @@ export default {
         this.op_topic.splice(0,this.op_topic.length)
         this.op_targetMem.splice(0,this.op_targetMem.length)
         this.op_status.splice(0,this.op_status.length)
-        for (let i = 0; i < teamList.length; i++) {
-          let team = teamList[i]
-          if(!this.op_topic.includes(team.topic)){
-            this.op_topic.push(team.topic)
-          }
-          this.teams.push({
-            id:team.projInstId,
-            name: team.teamName,
-            topic: team.topic,
-            tarMem:team.targetMemNum,
-            tags: JSON.parse(team.tags),
-            intro:team.descriptions,
-            color_ind:this.getColorIndex(team.topic),
-            curMem:team.curMemNum,
-            status:team.status,
-          })
+        if(!this.isDued){
+          for (let i = 0; i < teamList.length; i++) {
+            let team = teamList[i]
+            if(!this.op_topic.includes(team.topic)){
+              this.op_topic.push(team.topic)
+            }
+            this.teams.push({
+              id:team.projInstId,
+              name: team.teamName,
+              topic: team.topic,
+              tarMem:team.targetMemNum,
+              tags: JSON.parse(team.tags),
+              intro:team.descriptions,
+              color_ind:this.getColorIndex(team.topic),
+              curMem:team.curMemNum,
+              status:team.status,
+            })
 
 
-          if(!this.op_targetMem.includes(team.targetMemNum)){
-            this.op_targetMem.push(team.targetMemNum)
-          }
+            if(!this.op_targetMem.includes(team.targetMemNum)){
+              this.op_targetMem.push(team.targetMemNum)
+            }
 
-          if(!this.op_status.includes(team.status)){
-            this.op_status.push(team.status)
+            if(!this.op_status.includes(team.status)){
+              this.op_status.push(team.status)
+            }
           }
         }
+
 
       }).catch(failResp=>{
         console.log('fail in getProjList. message=' + failResp.message)
       })
+
     },
     getColorIndex(topic){
       for (let i = 0; i <this.op_topic.length ; i++) {
