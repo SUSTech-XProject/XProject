@@ -1,8 +1,8 @@
 <template>
   <el-drawer
-    :destroy-on-close = "true"
-    :size = "size"
-    :with-header = "false"
+    :destroy-on-close="true"
+    :size="size"
+    :with-header="false"
     :visible.sync="stuDrawer"
     :before-close="refresh"
     :append-to-body="true"
@@ -13,7 +13,7 @@
 
       <div style="margin-top: 60px;margin-bottom:15px;font-size: 20px">{{ this.stuName }}</div>
 
-      <div >
+      <div>
         <el-tag v-for="imp in impressionList" :key="imp"
                 class="el-tag" effect="plain">
           {{ imp }}
@@ -76,34 +76,30 @@
                 {{ skill }}
               </el-tag>
             </div>
-            <div v-else style="margin-top: 20px;">
-              <el-button class="button-new-tag" size="small">No tag</el-button>
+            <div v-else>
+              <el-button class="el-tag" size="small">No tag</el-button>
             </div>
 
             <div style="margin-top: 20px">
               Comment List
             </div>
-            <div v-if="commentList.length!==0">
+            <div v-if="commentList != null">
               <el-tag v-for="comments in commentList" :key="comments"
                       effect="plain" class="el-tag">
                 {{ comments }}
               </el-tag>
             </div>
-            <div v-else
-                 style="margin-top: 20px;">
-              <el-button class="button-new-tag" size="small">No comment</el-button>
+            <div v-else>
+              <el-button class="el-tag" size="small">No comment</el-button>
             </div>
           </div>
 
 
-
-<!--          <div style="margin-top: 40px">Statistic</div>-->
+          <!--          <div style="margin-top: 40px">Statistic</div>-->
         </el-tab-pane>
 
       </el-tabs>
     </el-col>
-
-
 
 
   </el-drawer>
@@ -113,16 +109,17 @@
 import {getStuInfo} from '@/api/team'
 import {getStuProj} from '@/api/team'
 import {getComments, getProjList} from '@/api/home_page'
+import {getDatetimeStr} from '@/utils/parse-day-time'
 
 export default {
-  name: "stuInfoDrawer",
-  data(){
-    return{
+  name: 'stuInfoDrawer',
+  data () {
+    return {
       //
-      stuName:'',
-      size:'80%',
-      stuDrawer:'',
-      iconUrl:'',
+      stuName: '',
+      size: '80%',
+      stuDrawer: '',
+      iconUrl: '',
       //
       bio: '',
       school: '',
@@ -151,18 +148,18 @@ export default {
       courseList: [{value: 0, label: 'All'}],
       valueCourse: 0,
 
-      commentList: []
+      commentList: null
     }
   },
-  methods:{
-    refresh(){
-      this.$emit('closeDrawerStu','msg')
-      console.log("stu-closing")
+  methods: {
+    refresh () {
+      this.$emit('closeDrawerStu', 'msg')
+      console.log('stu-closing')
       console.log(this.stuDrawer)
       //清除数据？
 
     },
-    initStu(roleId){
+    initStu (roleId) {
       getStuInfo(roleId).then(resp => {
         console.log(resp)
         if (resp.data.code === 200) {
@@ -194,20 +191,20 @@ export default {
         })
       })
       getStuProj(roleId).then(resp => {
-        if(resp.data.code!==200){
+        if (resp.data.code !== 200) {
           return false
         }
 
         let infoDict = resp.data.data
-        console.log("==========")
+        console.log('==========')
         console.log(infoDict)
 
-        this.firstThreeProjList.splice(0,this.firstThreeProjList.length)
+        this.firstThreeProjList.splice(0, this.firstThreeProjList.length)
         for (let i = 0; i < infoDict.length; ++i) {
           if (i >= 3) break
+          infoDict[i].createTime = getDatetimeStr(infoDict[i].createTime)
           this.firstThreeProjList.push(infoDict[i])
         }
-
 
       }).catch(failResp => {
         this.$alert('Error: ' + failResp.message, 'Tips', {
@@ -232,23 +229,23 @@ export default {
   created () {
     this.stuDrawer = this.drawer
   },
-  watch:{
-    drawer(val){
+  watch: {
+    drawer (val) {
       this.stuDrawer = val
-      console.log("change stuinfo drawer state")
+      console.log('change stuinfo drawer state')
       console.log(this.id)
       // if(this.stuDrawer===true){
       this.initStu(this.id)
       // }
     },
-    id(val){
+    id (val) {
       console.log(val)
       this.initStu(val)
     }
   },
-  props:{
-    drawer:{type:Boolean,default:false},
-    id:{type:Number,default: -1},
+  props: {
+    drawer: {type: Boolean, default: false},
+    id: {type: Number, default: -1},
   }
 }
 </script>
