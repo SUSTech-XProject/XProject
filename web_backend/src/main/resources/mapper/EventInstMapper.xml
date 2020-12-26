@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ooad.xproject.mapper.EventInstMapper" >
+  <resultMap id="BaseResultMap" type="com.ooad.xproject.entity.EventInst" >
+    <id column="event_id" property="eventId" jdbcType="INTEGER" />
+    <result column="date" property="date" jdbcType="DATE" />
+    <result column="start_time" property="startTime" jdbcType="TIME" />
+    <result column="end_time" property="endTime" jdbcType="TIME" />
+    <result column="ea_task_id" property="eaTaskId" jdbcType="INTEGER" />
+    <result column="week" property="week" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="proj_inst_id" property="projInstId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    event_id, date, start_time, end_time, ea_task_id, week, status, proj_inst_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from event_insts
+    where event_id = #{eventId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from event_insts
+    where event_id = #{eventId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ooad.xproject.entity.EventInst"
+          useGeneratedKeys="true" keyProperty="eventId" keyColumn="event_id">
+    insert into event_insts (date, start_time, end_time, 
+      ea_task_id, week, status, 
+      proj_inst_id)
+    values (#{date,jdbcType=DATE}, #{startTime,jdbcType=TIME}, #{endTime,jdbcType=TIME}, 
+      #{eaTaskId,jdbcType=INTEGER}, #{week,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+      #{projInstId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ooad.xproject.entity.EventInst"
+          useGeneratedKeys="true" keyProperty="eventId" keyColumn="event_id">
+    insert into event_insts
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="date != null" >
+        date,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+      <if test="eaTaskId != null" >
+        ea_task_id,
+      </if>
+      <if test="week != null" >
+        week,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="projInstId != null" >
+        proj_inst_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="date != null" >
+        #{date,jdbcType=DATE},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=TIME},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=TIME},
+      </if>
+      <if test="eaTaskId != null" >
+        #{eaTaskId,jdbcType=INTEGER},
+      </if>
+      <if test="week != null" >
+        #{week,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="projInstId != null" >
+        #{projInstId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ooad.xproject.entity.EventInst" >
+    update event_insts
+    <set >
+      <if test="date != null" >
+        date = #{date,jdbcType=DATE},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=TIME},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=TIME},
+      </if>
+      <if test="eaTaskId != null" >
+        ea_task_id = #{eaTaskId,jdbcType=INTEGER},
+      </if>
+      <if test="week != null" >
+        week = #{week,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="projInstId != null" >
+        proj_inst_id = #{projInstId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where event_id = #{eventId,jdbcType=INTEGER}
+        and proj_inst_id is null;
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ooad.xproject.entity.EventInst" >
+    update event_insts
+    set date = #{date,jdbcType=DATE},
+      start_time = #{startTime,jdbcType=TIME},
+      end_time = #{endTime,jdbcType=TIME},
+      ea_task_id = #{eaTaskId,jdbcType=INTEGER},
+      week = #{week,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      proj_inst_id = #{projInstId,jdbcType=INTEGER}
+    where event_id = #{eventId,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByEATaskId" resultType="com.ooad.xproject.entity.EventInst">
+    select *
+    from event_insts as ei
+    where ei.ea_task_id = #{eaTaskId};
+  </select>
+    <select id="countApplyNum" resultType="java.lang.Integer">
+      select count(*)
+      from event_insts
+      where ea_task_id = #{eaTaskId} and proj_inst_id = #{projInstId}
+    </select>
+    <select id="selectInstBOByEATaskId" resultType="com.ooad.xproject.bo.EventInstBO">
+      select ei.date, ei.week, ei.start_time, ei.end_time, ei.status, pi.team_name team
+      from event_insts as ei
+        join project_insts pi on ei.proj_inst_id = pi.proj_inst_id
+      where ei.ea_task_id = #{eaTaskId}
+order by ei.start_time;
+    </select>
+</mapper>

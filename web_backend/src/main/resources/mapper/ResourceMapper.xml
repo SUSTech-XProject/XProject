@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ooad.xproject.mapper.ResourceMapper">
+    <resultMap id="BaseResultMap" type="com.ooad.xproject.entity.Resource">
+        <id column="src_id" property="srcId" jdbcType="INTEGER"/>
+        <result column="proj_id" property="projId" jdbcType="INTEGER"/>
+        <result column="creator_role_id" property="creatorRoleId" jdbcType="INTEGER"/>
+        <result column="created_time" property="createdTime" jdbcType="TIMESTAMP"/>
+        <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
+        <result column="location" property="location" jdbcType="VARCHAR"/>
+        <result column="size" property="size" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        src_id, proj_id, creator_role_id, created_time, file_name, location, size
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from resources
+        where src_id = #{srcId,jdbcType=INTEGER}
+    </select>
+    <select id="selectByProjId" resultType="com.ooad.xproject.entity.Resource">
+        select *
+        from resources
+        where proj_id = #{projId};
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from resources
+        where src_id = #{srcId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.ooad.xproject.entity.Resource"
+            useGeneratedKeys="true" keyColumn="src_id" keyProperty="srcId">
+        insert into resources (proj_id, creator_role_id, created_time,
+                               file_name, location, size)
+        values (#{projId,jdbcType=INTEGER}, #{creatorRoleId,jdbcType=INTEGER}, now(),
+                #{fileName,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}, #{size,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.ooad.xproject.entity.Resource"
+            useGeneratedKeys="true" keyColumn="src_id" keyProperty="srcId">
+        insert into resources
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projId != null">
+                proj_id,
+            </if>
+            <if test="creatorRoleId != null">
+                creator_role_id,
+            </if>
+            <if test="createdTime != null">
+                created_time,
+            </if>
+            <if test="fileName != null">
+                file_name,
+            </if>
+            <if test="location != null">
+                location,
+            </if>
+            <if test="size != null">
+                size,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projId != null">
+                #{projId,jdbcType=INTEGER},
+            </if>
+            <if test="creatorRoleId != null">
+                #{creatorRoleId,jdbcType=INTEGER},
+            </if>
+            <if test="createdTime != null">
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="fileName != null">
+                #{fileName,jdbcType=VARCHAR},
+            </if>
+            <if test="location != null">
+                #{location,jdbcType=VARCHAR},
+            </if>
+            <if test="size != null">
+                #{size,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.ooad.xproject.entity.Resource">
+        update resources
+        <set>
+            <if test="projId != null">
+                proj_id = #{projId,jdbcType=INTEGER},
+            </if>
+            <if test="creatorRoleId != null">
+                creator_role_id = #{creatorRoleId,jdbcType=INTEGER},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="fileName != null">
+                file_name = #{fileName,jdbcType=VARCHAR},
+            </if>
+            <if test="location != null">
+                location = #{location,jdbcType=VARCHAR},
+            </if>
+            <if test="size != null">
+                size = #{size,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where src_id = #{srcId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.ooad.xproject.entity.Resource">
+        update resources
+        set proj_id         = #{projId,jdbcType=INTEGER},
+            creator_role_id = #{creatorRoleId,jdbcType=INTEGER},
+            created_time    = #{createdTime,jdbcType=TIMESTAMP},
+            file_name       = #{fileName,jdbcType=VARCHAR},
+            location        = #{location,jdbcType=VARCHAR},
+            size            = #{size,jdbcType=VARCHAR}
+        where src_id = #{srcId,jdbcType=INTEGER}
+    </update>
+</mapper>

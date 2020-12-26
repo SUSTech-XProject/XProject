@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ooad.xproject.mapper.PermissionMapper">
+  <resultMap id="BaseResultMap" type="com.ooad.xproject.entity.Permission">
+    <id column="pms_id" jdbcType="INTEGER" property="pmsId" />
+    <result column="pms_name" jdbcType="VARCHAR" property="pmsName" />
+    <result column="pms_desc" jdbcType="VARCHAR" property="pmsDesc" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pms_id, pms_name, pms_desc, url
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from permissions
+    where pms_id = #{pmsId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from permissions
+    where pms_id = #{pmsId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ooad.xproject.entity.Permission">
+    <selectKey keyProperty="pmsId" order="AFTER" resultType="java.lang.Integer">
+      Postgres
+    </selectKey>
+    insert into permissions (pms_name, pms_desc, url
+      )
+    values (#{pmsName,jdbcType=VARCHAR}, #{pmsDesc,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ooad.xproject.entity.Permission">
+    <selectKey keyProperty="pmsId" order="AFTER" resultType="java.lang.Integer">
+      Postgres
+    </selectKey>
+    insert into permissions
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pmsName != null">
+        pms_name,
+      </if>
+      <if test="pmsDesc != null">
+        pms_desc,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pmsName != null">
+        #{pmsName,jdbcType=VARCHAR},
+      </if>
+      <if test="pmsDesc != null">
+        #{pmsDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ooad.xproject.entity.Permission">
+    update permissions
+    <set>
+      <if test="pmsName != null">
+        pms_name = #{pmsName,jdbcType=VARCHAR},
+      </if>
+      <if test="pmsDesc != null">
+        pms_desc = #{pmsDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where pms_id = #{pmsId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ooad.xproject.entity.Permission">
+    update permissions
+    set pms_name = #{pmsName,jdbcType=VARCHAR},
+      pms_desc = #{pmsDesc,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR}
+    where pms_id = #{pmsId,jdbcType=INTEGER}
+  </update>
+
+
+    <select id="getAllPmsByUsername" resultType="com.ooad.xproject.entity.Permission">
+      with q as (select role_id from roles where username = #{username})
+      select p.*
+      from q
+             join role_pms_role_rt rprr on q.role_id = rprr.role_id
+             join pms_roles pr on rprr.pms_role_id = pr.pms_role_id
+             join pms_role_pms_rt prpr on pr.pms_role_id = prpr.pms_role_id
+             join permissions p on prpr.pms_id = p.pms_id;
+    </select>
+    <select id="containPmsUrl" resultType="java.lang.Boolean">
+      select count(*) != 0 as exist
+      from (select url
+            from permissions
+            where url = #{requestAPI}) as q
+    </select>
+  <insert id="insertRolePmsRoleRT">
+    insert into role_pms_role_rt (role_id, pms_role_id)
+    values (#{roleId}, #{pmsRoleId})
+  </insert>
+
+</mapper>

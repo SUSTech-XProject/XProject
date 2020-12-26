@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ooad.xproject.mapper.RecordInstMapper">
+  <resultMap id="BaseResultMap" type="com.ooad.xproject.entity.RecordInst">
+    <id column="rcd_inst_id" jdbcType="INTEGER" property="rcdInstId" />
+    <result column="rcd_id" jdbcType="INTEGER" property="rcdId" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="comments" jdbcType="VARCHAR" property="comments" />
+    <result column="modified_role_id" jdbcType="INTEGER" property="modifiedRoleId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    rcd_inst_id, rcd_id, role_id, modified_time, content, comments, modified_role_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from record_insts
+    where rcd_inst_id = #{rcdInstId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from record_insts
+    where rcd_inst_id = #{rcdInstId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ooad.xproject.entity.RecordInst"
+          useGeneratedKeys="true" keyProperty="rcdInstId" keyColumn="rcd_inst_id">
+    insert into record_insts (rcd_id, role_id, modified_time, 
+      content, comments, modified_role_id
+      )
+    values (#{rcdId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, #{modifiedTime,jdbcType=TIMESTAMP}, 
+      #{content,jdbcType=VARCHAR}, #{comments,jdbcType=VARCHAR}, #{modifiedRoleId,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ooad.xproject.entity.RecordInst"
+          useGeneratedKeys="true" keyProperty="rcdInstId" keyColumn="rcd_inst_id">
+    insert into record_insts
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="rcdId != null">
+        rcd_id,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="modifiedTime != null">
+        modified_time,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="comments != null">
+        comments,
+      </if>
+      <if test="modifiedRoleId != null">
+        modified_role_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="rcdId != null">
+        #{rcdId,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="modifiedTime != null">
+        #{modifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="comments != null">
+        #{comments,jdbcType=VARCHAR},
+      </if>
+      <if test="modifiedRoleId != null">
+        #{modifiedRoleId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <insert id="insertRecordInst" parameterType="com.ooad.xproject.entity.RecordInst">
+    insert into record_insts (rcd_id, role_id, modified_time,
+    content, comments, modified_role_id)
+    values (#{rcdId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, now(),
+    #{content,jdbcType=VARCHAR}, #{comments,jdbcType=VARCHAR}, #{modified_role_id,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ooad.xproject.entity.RecordInst">
+    update record_insts
+    <set>
+      <if test="rcdId != null">
+        rcd_id = #{rcdId,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="modifiedTime != null">
+        modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="comments != null">
+        comments = #{comments,jdbcType=VARCHAR},
+      </if>
+      <if test="modifiedRoleId != null">
+        modified_role_id = #{modifiedRoleId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where rcd_inst_id = #{rcdInstId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ooad.xproject.entity.RecordInst">
+    update record_insts
+    set rcd_id = #{rcdId,jdbcType=INTEGER},
+      role_id = #{roleId,jdbcType=INTEGER},
+      modified_time = now(),
+      content = #{content,jdbcType=VARCHAR},
+      comments = #{comments,jdbcType=VARCHAR},
+      modified_role_id = #{modifiedRoleId,jdbcType=INTEGER}
+    where rcd_inst_id = #{rcdInstId,jdbcType=INTEGER}
+  </update>
+  <update id="updateRecordInst" parameterType="com.ooad.xproject.entity.RecordInst">
+      update record_insts
+      set modified_time = now(),
+          content = #{content,jdbcType=VARCHAR},
+          comments = #{comments,jdbcType=VARCHAR},
+        modified_role_id = #{modifiedRoleId,jdbcType=INTEGER}
+      where rcd_inst_id = #{rcdInstId,jdbcType=INTEGER}
+  </update>
+
+
+  <select id="selectByRcdId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from record_insts
+    where rcd_id = #{rcdId,jdbcType=INTEGER}
+  </select>
+    <select id="selectByProjAndStdRoleId" resultType="com.ooad.xproject.dto.RecordInstDTO">
+      select r.rcd_id,
+             ri.rcd_inst_id,
+             rcd_name,
+             r.type,
+             created_time,
+             modified_time,
+             r.derived,
+             ri.content,
+             r.base_content,
+             comments,
+             t1.tch_name,
+             t1.email,
+             t2.tch_name,
+             t2.email
+      from records as r
+             join teachers t1 on r.creator_id = t1.role_id
+             left join record_insts ri on r.rcd_id = ri.rcd_id and ri.role_id = #{stdRoleId}
+             left join teachers t2 on ri.modified_role_id = t2.role_id
+      where proj_id = #{projId}
+      order by rcd_id;
+    </select>
+  <select id="selectByRcdIdAndRoleId" resultType="com.ooad.xproject.entity.RecordInst">
+    select *
+    from record_insts
+    where rcd_id = #{rcdId} and role_id = #{roleId}
+  </select>
+  <sql id="GradeDTO_Column_List">
+    std_id, std.role_id, r.icon_url, std_no, std_name, rcd_inst_id, rcd.type, ri.modified_time,
+    rcd.derived, ri.content, rcd.base_content, ri.comments, tch_name, tch.email
+  </sql>
+  <select id="selectByProjInstIdAndRcdId" resultType="com.ooad.xproject.dto.GradeDTO">
+    select
+      <include refid="GradeDTO_Column_List" />
+    from project_insts as pi
+      join records as rcd on pi.proj_id = rcd.proj_id
+      join proj_inst_student_rt pisr on pi.proj_inst_id = pisr.proj_inst_id
+      join students as std on std.role_id = pisr.std_role_id
+      join roles as r on std.role_id = r.role_id
+      left join record_insts ri on std.role_id = ri.role_id and rcd.rcd_id = ri.rcd_id
+      left join teachers as tch on tch.role_id = ri.modified_role_id
+    where pi.proj_inst_id = #{projInstId} and rcd.rcd_id = #{rcdId};
+  </select>
+  <select id="selectByStdRoleIdAndRcdId" resultType="com.ooad.xproject.dto.GradeDTO">
+    select
+      <include refid="GradeDTO_Column_List"/>
+    from students as std
+           left join record_insts as ri on std.role_id = ri.role_id and ri.rcd_id = #{rcdId}
+           cross join records as rcd
+           join roles as r on std.role_id = r.role_id
+           join teachers as tch on tch.role_id = rcd.creator_id
+    where std.role_id = #{stdRoleId} and rcd.rcd_id = #{rcdId};
+  </select>
+    <select id="selectRIByRcdIdList" resultType="com.ooad.xproject.entity.RecordInst">
+      select *
+      from record_insts as ri
+      where ri.rcd_id in
+      <foreach collection="rcdIdList" item="rcdId"
+               index="index" open="(" close=")" separator=",">
+        #{rcdId}
+      </foreach>
+    </select>
+  <select id="generateRecordInst" resultType="java.lang.Integer">
+    select success_cnt
+    from generate_score(#{projId}, #{rcdId}, #{modifiedRoleId},
+    <foreach collection="rcdIdList" item="rcdId"
+             index="index" open="array[" close="]" separator=",">
+      #{rcdId}
+    </foreach>,
+    <foreach collection="coeList" item="coe"
+             index="index" open="array[" close="]" separator=",">
+      #{coe}
+    </foreach>
+        ) as success_cnt;
+  </select>
+</mapper>

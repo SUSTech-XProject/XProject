@@ -18,7 +18,7 @@
         <div style="width: 100%; margin-top: 20px" align="left" class="handle-overflow">
           {{ description }}
         </div>
-
+k
         <div v-for="member in teamMemberList" :key="member.stdId"
              @click.native:="openDrawer(member.roleId)"
              style="margin-top: 15px;">

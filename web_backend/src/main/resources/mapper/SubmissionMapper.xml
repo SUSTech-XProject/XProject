@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ooad.xproject.mapper.SubmissionMapper">
+  <resultMap id="BaseResultMap" type="com.ooad.xproject.entity.Submission">
+    <id column="sbm_id" jdbcType="INTEGER" property="sbmId" />
+    <result column="proj_id" jdbcType="INTEGER" property="projId" />
+    <result column="creator_id" jdbcType="INTEGER" property="creatorId" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="due_time" jdbcType="TIMESTAMP" property="dueTime" />
+    <result column="final_time" jdbcType="TIMESTAMP" property="finalTime" />
+    <result column="max_sbm" jdbcType="INTEGER" property="maxSbm" />
+    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="resources" jdbcType="VARCHAR" property="resources" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    sbm_id, proj_id, creator_id, title, description, modified_time, created_time, due_time, 
+    final_time, max_sbm, status, resources
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from submissions
+    where sbm_id = #{sbmId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from submissions
+    where sbm_id = #{sbmId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ooad.xproject.entity.Submission"
+          useGeneratedKeys="true" keyColumn="sbm_id" keyProperty="sbmId">
+    insert into submissions (proj_id, creator_id, title, 
+      description, modified_time, created_time, 
+      due_time, final_time, max_sbm, 
+      status, resources)
+    values (#{projId,jdbcType=INTEGER}, #{creatorId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{modifiedTime,jdbcType=TIMESTAMP}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{dueTime,jdbcType=TIMESTAMP}, #{finalTime,jdbcType=TIMESTAMP}, #{maxSbm,jdbcType=INTEGER}, 
+      #{status,jdbcType=CHAR}, #{resources,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ooad.xproject.entity.Submission"
+          useGeneratedKeys="true" keyColumn="sbm_id" keyProperty="sbmId">
+    insert into submissions
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="projId != null">
+        proj_id,
+      </if>
+      <if test="creatorId != null">
+        creator_id,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="modifiedTime != null">
+        modified_time,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="dueTime != null">
+        due_time,
+      </if>
+      <if test="finalTime != null">
+        final_time,
+      </if>
+      <if test="maxSbm != null">
+        max_sbm,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="resources != null">
+        resources,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="projId != null">
+        #{projId,jdbcType=INTEGER},
+      </if>
+      <if test="creatorId != null">
+        #{creatorId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="modifiedTime != null">
+        #{modifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dueTime != null">
+        #{dueTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finalTime != null">
+        #{finalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="maxSbm != null">
+        #{maxSbm,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=CHAR},
+      </if>
+      <if test="resources != null">
+        #{resources,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ooad.xproject.entity.Submission">
+    update submissions
+    <set>
+      <if test="projId != null">
+        proj_id = #{projId,jdbcType=INTEGER},
+      </if>
+      <if test="creatorId != null">
+        creator_id = #{creatorId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="modifiedTime != null">
+        modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dueTime != null">
+        due_time = #{dueTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finalTime != null">
+        final_time = #{finalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="maxSbm != null">
+        max_sbm = #{maxSbm,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=CHAR},
+      </if>
+      <if test="resources != null">
+        resources = #{resources,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where sbm_id = #{sbmId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ooad.xproject.entity.Submission">
+    update submissions
+    set proj_id = #{projId,jdbcType=INTEGER},
+      creator_id = #{creatorId,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      due_time = #{dueTime,jdbcType=TIMESTAMP},
+      final_time = #{finalTime,jdbcType=TIMESTAMP},
+      max_sbm = #{maxSbm,jdbcType=INTEGER},
+      status = #{status,jdbcType=CHAR},
+      resources = #{resources,jdbcType=VARCHAR}
+    where sbm_id = #{sbmId,jdbcType=INTEGER}
+  </update>
+
+
+    <select id="selectByProjId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from submissions
+        where proj_id = #{projId,jdbcType=INTEGER}
+    </select>
+</mapper>

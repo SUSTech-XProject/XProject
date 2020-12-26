@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ooad.xproject.mapper.ProjInstStudentRTMapper" >
+  <resultMap id="BaseResultMap" type="com.ooad.xproject.entity.ProjInstStudentRT" >
+    <id column="proj_inst_rt_id" property="projInstRtId" jdbcType="INTEGER" />
+    <result column="proj_inst_id" property="projInstId" jdbcType="INTEGER" />
+    <result column="std_role_id" property="stdRoleId" jdbcType="INTEGER" />
+    <result column="opt" property="opt" jdbcType="CHAR" />
+    <result column="opt_time" property="optTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    proj_inst_rt_id, proj_inst_id, std_role_id, opt, opt_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from proj_inst_student_rt
+    where proj_inst_rt_id = #{projInstRtId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from proj_inst_student_rt
+    where proj_inst_rt_id = #{projInstRtId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ooad.xproject.entity.ProjInstStudentRT"
+          useGeneratedKeys="true" keyProperty="projInstRtId" keyColumn="proj_inst_rt_id">
+    insert into proj_inst_student_rt (proj_inst_id, std_role_id, opt, 
+      opt_time)
+    values (#{projInstId,jdbcType=INTEGER}, #{stdRoleId,jdbcType=INTEGER}, #{opt,jdbcType=CHAR}, 
+      #{optTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ooad.xproject.entity.ProjInstStudentRT"
+          useGeneratedKeys="true" keyProperty="projInstRtId" keyColumn="proj_inst_rt_id">
+    insert into proj_inst_student_rt
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="projInstId != null" >
+        proj_inst_id,
+      </if>
+      <if test="stdRoleId != null" >
+        std_role_id,
+      </if>
+      <if test="opt != null" >
+        opt,
+      </if>
+      <if test="optTime != null" >
+        opt_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="projInstId != null" >
+        #{projInstId,jdbcType=INTEGER},
+      </if>
+      <if test="stdRoleId != null" >
+        #{stdRoleId,jdbcType=INTEGER},
+      </if>
+      <if test="opt != null" >
+        #{opt,jdbcType=CHAR},
+      </if>
+      <if test="optTime != null" >
+        #{optTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ooad.xproject.entity.ProjInstStudentRT" >
+    update proj_inst_student_rt
+    <set >
+      <if test="projInstId != null" >
+        proj_inst_id = #{projInstId,jdbcType=INTEGER},
+      </if>
+      <if test="stdRoleId != null" >
+        std_role_id = #{stdRoleId,jdbcType=INTEGER},
+      </if>
+      <if test="opt != null" >
+        opt = #{opt,jdbcType=CHAR},
+      </if>
+      <if test="optTime != null" >
+        opt_time = #{optTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where proj_inst_rt_id = #{projInstRtId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ooad.xproject.entity.ProjInstStudentRT" >
+    update proj_inst_student_rt
+    set proj_inst_id = #{projInstId,jdbcType=INTEGER},
+      std_role_id = #{stdRoleId,jdbcType=INTEGER},
+      opt = #{opt,jdbcType=CHAR},
+      opt_time = #{optTime,jdbcType=TIMESTAMP}
+    where proj_inst_rt_id = #{projInstRtId,jdbcType=INTEGER}
+  </update>
+</mapper>

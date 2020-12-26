@@ -1,0 +1,47 @@
+spring:
+  profiles:
+#    active: @profileActive@
+    active: cloud
+#    active: prod
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+  jackson:
+    time-zone: GMT+8
+
+  mail:
+    host: smtp.163.com
+    username: xproject309@163.com
+    password: OFQXAREVALBUVGPB    # auth code
+    protocol: smtp
+    properties.mail.smtp.auth: true
+    properties.mail.smtp.port: 994 #465或者994
+    properties.mail.display.sendmail: XProject
+    properties.mail.display.sendname: XProject
+    properties.mail.smtp.starttls.enable: true
+    properties.mail.smtp.starttls.required: true
+    properties.mail.smtp.ssl.enable: true
+    default-encoding: utf-8
+
+mybatis:
+  type-aliases-package: com.ooad.xproject.dao
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+
+#logging:
+#  level:
+#    com.ooad.xproject.mapper: debug
+
+ooad:
+  file:
+    path:
+      upload-root: "C:\\LocalDocument\\LocalCode\\XProject_backend\\xproject_backend\\business\\submission"
+      download-root: "C:\\LocalDocument\\LocalCode\\XProject_backend\\xproject_backend\business\\download"
+      output-root: "C:\\LocalDocument\\LocalCode\\XProject_backend\\xproject_backend\\business\\output"
+      input-root: "C:\\LocalDocument\\LocalCode\\XProject_backend\\xproject_backend\\business\\input"
+      resource-root: "C:\\LocalDocument\\LocalCode\\XProject_backend\\xproject_backend\\business\\resource"

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ooad.xproject.mapper.EventArrangeTaskMapper">
+  <resultMap id="BaseResultMap" type="com.ooad.xproject.entity.EventArrangeTask">
+    <id column="ea_task_id" jdbcType="INTEGER" property="eaTaskId" />
+    <result column="proj_id" jdbcType="INTEGER" property="projId" />
+    <result column="creator_id" jdbcType="INTEGER" property="creatorId" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="std_adaptable" jdbcType="BIT" property="stdAdaptable" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="due_time" jdbcType="TIMESTAMP" property="dueTime" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ea_task_id, proj_id, creator_id, title, description, std_adaptable, created_time, 
+    due_time, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from event_arrange_tasks
+    where ea_task_id = #{eaTaskId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from event_arrange_tasks
+    where ea_task_id = #{eaTaskId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ooad.xproject.entity.EventArrangeTask"
+          useGeneratedKeys="true" keyProperty="eaTaskId" keyColumn="ea_task_id">
+    insert into event_arrange_tasks (proj_id, creator_id, title, 
+      description, std_adaptable, created_time, 
+      due_time, status)
+    values (#{projId,jdbcType=INTEGER}, #{creatorId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{stdAdaptable,jdbcType=BIT}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{dueTime,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ooad.xproject.entity.EventArrangeTask"
+          useGeneratedKeys="true" keyProperty="eaTaskId" keyColumn="ea_task_id">
+    insert into event_arrange_tasks
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="projId != null">
+        proj_id,
+      </if>
+      <if test="creatorId != null">
+        creator_id,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="stdAdaptable != null">
+        std_adaptable,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="dueTime != null">
+        due_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="projId != null">
+        #{projId,jdbcType=INTEGER},
+      </if>
+      <if test="creatorId != null">
+        #{creatorId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="stdAdaptable != null">
+        #{stdAdaptable,jdbcType=BIT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dueTime != null">
+        #{dueTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ooad.xproject.entity.EventArrangeTask">
+    update event_arrange_tasks
+    <set>
+      <if test="projId != null">
+        proj_id = #{projId,jdbcType=INTEGER},
+      </if>
+      <if test="creatorId != null">
+        creator_id = #{creatorId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="stdAdaptable != null">
+        std_adaptable = #{stdAdaptable,jdbcType=BIT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dueTime != null">
+        due_time = #{dueTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ea_task_id = #{eaTaskId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ooad.xproject.entity.EventArrangeTask">
+    update event_arrange_tasks
+    set proj_id = #{projId,jdbcType=INTEGER},
+      creator_id = #{creatorId,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      std_adaptable = #{stdAdaptable,jdbcType=BIT},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      due_time = #{dueTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=VARCHAR}
+    where ea_task_id = #{eaTaskId,jdbcType=INTEGER}
+  </update>
+
+    <select id="selectByProjId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from event_arrange_tasks
+        where proj_id = #{projId, jdbcType=INTEGER};
+    </select>
+</mapper>

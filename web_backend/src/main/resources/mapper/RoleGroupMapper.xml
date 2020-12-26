@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ooad.xproject.mapper.RoleGroupMapper" >
+  <resultMap id="BaseResultMap" type="com.ooad.xproject.entity.RoleGroup" >
+    <id column="rgp_id" property="rgpId" jdbcType="INTEGER" />
+    <result column="role_id" property="roleId" jdbcType="INTEGER" />
+    <result column="group_name" property="groupName" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    rgp_id, role_id, group_name, description
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from role_groups
+    where rgp_id = #{rgpId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from role_groups
+    where rgp_id = #{rgpId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ooad.xproject.entity.RoleGroup" >
+    <selectKey resultType="java.lang.Integer" keyProperty="rgpId" order="AFTER" >
+      Postgres
+    </selectKey>
+    insert into role_groups (role_id, group_name, description
+      )
+    values (#{roleId,jdbcType=INTEGER}, #{groupName,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ooad.xproject.entity.RoleGroup" >
+    <selectKey resultType="java.lang.Integer" keyProperty="rgpId" order="AFTER" >
+      Postgres
+    </selectKey>
+    insert into role_groups
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="roleId != null" >
+        role_id,
+      </if>
+      <if test="groupName != null" >
+        group_name,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="roleId != null" >
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="groupName != null" >
+        #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ooad.xproject.entity.RoleGroup" >
+    update role_groups
+    <set >
+      <if test="roleId != null" >
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="groupName != null" >
+        group_name = #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where rgp_id = #{rgpId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ooad.xproject.entity.RoleGroup" >
+    update role_groups
+    set role_id = #{roleId,jdbcType=INTEGER},
+      group_name = #{groupName,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR}
+    where rgp_id = #{rgpId,jdbcType=INTEGER}
+  </update>
+</mapper>

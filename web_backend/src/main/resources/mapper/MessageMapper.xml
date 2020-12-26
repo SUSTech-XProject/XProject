@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ooad.xproject.mapper.MessageMapper">
+  <resultMap id="BaseResultMap" type="com.ooad.xproject.entity.Message">
+    <id column="msg_id" jdbcType="INTEGER" property="msgId" />
+    <result column="proj_inst_id" jdbcType="INTEGER" property="projInstId" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="creator_role_id" jdbcType="INTEGER" property="creatorRoleId" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="proj_id" jdbcType="INTEGER" property="projId" />
+    <result column="handler_role_id" jdbcType="INTEGER" property="handlerRoleId" />
+    <result column="confirmed" jdbcType="BIT" property="confirmed" />
+    <result column="decided" jdbcType="BIT" property="decided" />
+    <result column="result" jdbcType="VARCHAR" property="result" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    msg_id, proj_inst_id, type, title, content, creator_role_id, created_time, status, 
+    role_id, proj_id, handler_role_id, confirmed, decided, result
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from messages
+    where msg_id = #{msgId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from messages
+    where msg_id = #{msgId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ooad.xproject.entity.Message"
+          useGeneratedKeys="true" keyColumn="msg_id" keyProperty="msgId">
+    insert into messages (proj_inst_id, type, title, 
+      content, creator_role_id, created_time, 
+      status, role_id, proj_id, 
+      handler_role_id, confirmed, decided, 
+      result)
+    values (#{projInstId,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
+      #{content,jdbcType=VARCHAR}, #{creatorRoleId,jdbcType=INTEGER}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=VARCHAR}, #{roleId,jdbcType=INTEGER}, #{projId,jdbcType=INTEGER}, 
+      #{handlerRoleId,jdbcType=INTEGER}, #{confirmed,jdbcType=BIT}, #{decided,jdbcType=BIT}, 
+      #{result,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ooad.xproject.entity.Message"
+          useGeneratedKeys="true" keyColumn="msg_id" keyProperty="msgId">
+    insert into messages
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="projInstId != null">
+        proj_inst_id,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="creatorRoleId != null">
+        creator_role_id,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="projId != null">
+        proj_id,
+      </if>
+      <if test="handlerRoleId != null">
+        handler_role_id,
+      </if>
+      <if test="confirmed != null">
+        confirmed,
+      </if>
+      <if test="decided != null">
+        decided,
+      </if>
+      <if test="result != null">
+        result,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="projInstId != null">
+        #{projInstId,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="creatorRoleId != null">
+        #{creatorRoleId,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="projId != null">
+        #{projId,jdbcType=INTEGER},
+      </if>
+      <if test="handlerRoleId != null">
+        #{handlerRoleId,jdbcType=INTEGER},
+      </if>
+      <if test="confirmed != null">
+        #{confirmed,jdbcType=BIT},
+      </if>
+      <if test="decided != null">
+        #{decided,jdbcType=BIT},
+      </if>
+      <if test="result != null">
+        #{result,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ooad.xproject.entity.Message">
+    update messages
+    <set>
+      <if test="projInstId != null">
+        proj_inst_id = #{projInstId,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="creatorRoleId != null">
+        creator_role_id = #{creatorRoleId,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="projId != null">
+        proj_id = #{projId,jdbcType=INTEGER},
+      </if>
+      <if test="handlerRoleId != null">
+        handler_role_id = #{handlerRoleId,jdbcType=INTEGER},
+      </if>
+      <if test="confirmed != null">
+        confirmed = #{confirmed,jdbcType=BIT},
+      </if>
+      <if test="decided != null">
+        decided = #{decided,jdbcType=BIT},
+      </if>
+      <if test="result != null">
+        result = #{result,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where msg_id = #{msgId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ooad.xproject.entity.Message">
+    update messages
+    set proj_inst_id = #{projInstId,jdbcType=INTEGER},
+      type = #{type,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      creator_role_id = #{creatorRoleId,jdbcType=INTEGER},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=VARCHAR},
+      role_id = #{roleId,jdbcType=INTEGER},
+      proj_id = #{projId,jdbcType=INTEGER},
+      handler_role_id = #{handlerRoleId,jdbcType=INTEGER},
+      confirmed = #{confirmed,jdbcType=BIT},
+      decided = #{decided,jdbcType=BIT},
+      result = #{result,jdbcType=VARCHAR}
+    where msg_id = #{msgId,jdbcType=INTEGER}
+  </update>
+
+  <sql id="MsgDTO_Column_List">
+    messages.*,
+    c.role_type as crt_role_type,
+    c.username as crt_username,
+    s1.std_name as crt_std_name,
+    c.icon_url as crt_icon_url,
+    h.role_type as hdl_role_type,
+    h.username as hdl_username,
+    s2.std_name as hdl_std_name,
+    h.icon_url as hdl_icon_url
+  </sql>
+  <select id="selectDTOByProject" resultType="com.ooad.xproject.dto.MessageDTO">
+    select
+    <include refid="MsgDTO_Column_List"/>
+    from messages
+      left join roles as c on messages.creator_role_id = c.role_id
+      join students as s1 on c.role_id = s1.role_id
+      left join roles as h on messages.handler_role_id = h.role_id
+      left join students as s2 on h.role_id = s2.role_id
+    where proj_id = #{projId} and messages.role_id = #{roleId}
+  </select>
+  <select id="selectDTOByProjInst" resultType="com.ooad.xproject.dto.MessageDTO">
+    select
+    <include refid="MsgDTO_Column_List"/>
+    from messages
+      left join roles as c on messages.creator_role_id = c.role_id
+      join students as s1 on c.role_id = s1.role_id
+      left join roles as h on messages.handler_role_id = h.role_id
+      left join students as s2 on h.role_id = s2.role_id
+    where proj_inst_id = #{projInstId} and messages.role_id is null
+  </select>
+</mapper>

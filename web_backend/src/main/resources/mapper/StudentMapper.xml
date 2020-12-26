@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ooad.xproject.mapper.StudentMapper">
+  <resultMap id="BaseResultMap" type="com.ooad.xproject.entity.Student">
+    <id column="std_id" jdbcType="INTEGER" property="stdId" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="std_name" jdbcType="VARCHAR" property="stdName" />
+    <result column="std_no" jdbcType="CHAR" property="stdNo" />
+    <result column="std_class" jdbcType="CHAR" property="stdClass" />
+    <result column="flags" jdbcType="VARCHAR" property="flags" />
+    <result column="sch_id" jdbcType="INTEGER" property="schId" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="skills" jdbcType="VARCHAR" property="skills" />
+    <result column="bio" jdbcType="VARCHAR" property="bio" />
+    <result column="payload" jdbcType="VARCHAR" property="payload" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    std_id, role_id, std_name, std_no, std_class, flags, sch_id, email, skills, bio, 
+    payload
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from students
+    where std_id = #{stdId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from students
+    where std_id = #{stdId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ooad.xproject.entity.Student"
+          useGeneratedKeys="true" keyProperty="stdId" keyColumn="std_id">
+    insert into students (role_id, std_name, std_no,
+      std_class, flags, sch_id, 
+      email, skills, bio, 
+      payload)
+    values (#{roleId,jdbcType=INTEGER}, #{stdName,jdbcType=VARCHAR}, #{stdNo,jdbcType=CHAR}, 
+      #{stdClass,jdbcType=CHAR}, #{flags,jdbcType=VARCHAR}, #{schId,jdbcType=INTEGER}, 
+      #{email,jdbcType=VARCHAR}, #{skills,jdbcType=VARCHAR}, #{bio,jdbcType=VARCHAR}, 
+      #{payload,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ooad.xproject.entity.Student"
+          useGeneratedKeys="true" keyProperty="stdId" keyColumn="std_id">
+    insert into students
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="stdName != null">
+        std_name,
+      </if>
+      <if test="stdNo != null">
+        std_no,
+      </if>
+      <if test="stdClass != null">
+        std_class,
+      </if>
+      <if test="flags != null">
+        flags,
+      </if>
+      <if test="schId != null">
+        sch_id,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="skills != null">
+        skills,
+      </if>
+      <if test="bio != null">
+        bio,
+      </if>
+      <if test="payload != null">
+        payload,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="stdName != null">
+        #{stdName,jdbcType=VARCHAR},
+      </if>
+      <if test="stdNo != null">
+        #{stdNo,jdbcType=CHAR},
+      </if>
+      <if test="stdClass != null">
+        #{stdClass,jdbcType=CHAR},
+      </if>
+      <if test="flags != null">
+        #{flags,jdbcType=VARCHAR},
+      </if>
+      <if test="schId != null">
+        #{schId,jdbcType=INTEGER},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="skills != null">
+        #{skills,jdbcType=VARCHAR},
+      </if>
+      <if test="bio != null">
+        #{bio,jdbcType=VARCHAR},
+      </if>
+      <if test="payload != null">
+        #{payload,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ooad.xproject.entity.Student">
+    update students
+    <set>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="stdName != null">
+        std_name = #{stdName,jdbcType=VARCHAR},
+      </if>
+      <if test="stdNo != null">
+        std_no = #{stdNo,jdbcType=CHAR},
+      </if>
+      <if test="stdClass != null">
+        std_class = #{stdClass,jdbcType=CHAR},
+      </if>
+      <if test="flags != null">
+        flags = #{flags,jdbcType=VARCHAR},
+      </if>
+      <if test="schId != null">
+        sch_id = #{schId,jdbcType=INTEGER},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="skills != null">
+        skills = #{skills,jdbcType=VARCHAR},
+      </if>
+      <if test="bio != null">
+        bio = #{bio,jdbcType=VARCHAR},
+      </if>
+      <if test="payload != null">
+        payload = #{payload,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where std_id = #{stdId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ooad.xproject.entity.Student">
+    update students
+    set role_id = #{roleId,jdbcType=INTEGER},
+      std_name = #{stdName,jdbcType=VARCHAR},
+      std_no = #{stdNo,jdbcType=CHAR},
+      std_class = #{stdClass,jdbcType=CHAR},
+      flags = #{flags,jdbcType=VARCHAR},
+      sch_id = #{schId,jdbcType=INTEGER},
+      email = #{email,jdbcType=VARCHAR},
+      skills = #{skills,jdbcType=VARCHAR},
+      bio = #{bio,jdbcType=VARCHAR},
+      payload = #{payload,jdbcType=VARCHAR}
+    where std_id = #{stdId,jdbcType=INTEGER}
+  </update>
+
+    <select id="selectByRoleId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from students
+        where role_id = #{rid,jdbcType=INTEGER}
+    </select>
+    <select id="selectBySgpId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+--         select students.*
+--         from students
+--                  join std_group_student_rt sgsr on students.std_id = sgsr.std_id
+--         where sgp_id = #{sgpId,jdbcType=INTEGER};
+    </select>
+    <select id="selectByTeamId" parameterType="java.lang.Integer" resultType="com.ooad.xproject.entity.Student">
+--         select students.*
+--         from students
+--                  join team_student_rt tsr on students.std_id = tsr.std_id
+--         where team_id = 1;
+    </select>
+    <select id="selectTeamIdByStdId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+--         select team_id
+--         from team_student_rt
+--         where std_id = #{sid,jdbcType=INTEGER}
+    </select>
+  <sql id="StudentDTO_Column_List">
+    std_id, r.role_id, username, std_name, std_no, std_class, std.flags, sch_id, email, r.icon_url
+  </sql>
+  <select id="selectDTOBySelector" resultType="com.ooad.xproject.dto.StudentDTO">
+    select
+    <include refid="StudentDTO_Column_List" />
+    from students as std
+        join roles r on std.role_id = r.role_id
+    <where>
+      <if test="true">
+        std.sch_id = #{schId}
+      </if>
+      <if test="stdClass != null">
+        and std_class = #{stdClass}
+      </if>
+    </where>
+  </select>
+  <sql id="StudentProjDTO_Column_List">
+    std_id, r.role_id, username, std_name, std_no, std_class, std.flags, sch_id, email, r.icon_url, group_mark, pi.proj_inst_id, team_name, topic_str, pi.status
+  </sql>
+  <select id="selectProjStudents" resultType="com.ooad.xproject.dto.StudentProjDTO">
+    with teams as (
+    select std_role_id, pi.*
+    from proj_inst_student_rt as pisr2
+    join project_insts as pi on pisr2.proj_inst_id = pi.proj_inst_id
+    where pi.proj_id = #{projId}
+    )
+    select
+    std_id, r.role_id, username, std_name, std_no, std_class, std.flags, sch_id, email, r.icon_url, group_mark, teams.proj_inst_id, team_name, topic_str, teams.status
+    from students as std
+    join roles r on std.role_id = r.role_id
+    join project_role_rt as prr on std.role_id = prr.role_id and prr.proj_id = #{projId}
+    left join teams on teams.std_role_id = r.role_id;
+
+  </select>
+    <select id="selectByStdNo" resultType="com.ooad.xproject.entity.Student">
+      select *
+      from students
+        where std_no = #{stdNo};
+    </select>
+
+</mapper>

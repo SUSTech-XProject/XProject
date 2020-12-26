@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ooad.xproject.mapper.PmsRoleMapper">
+  <resultMap id="BaseResultMap" type="com.ooad.xproject.entity.PmsRole">
+    <id column="pms_role_id" jdbcType="INTEGER" property="pmsRoleId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="pr_desc" jdbcType="VARCHAR" property="prDesc" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pms_role_id, name, pr_desc
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pms_roles
+    where pms_role_id = #{pmsRoleId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from pms_roles
+    where pms_role_id = #{pmsRoleId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ooad.xproject.entity.PmsRole">
+    <selectKey keyProperty="pmsRoleId" order="AFTER" resultType="java.lang.Integer">
+      Postgres
+    </selectKey>
+    insert into pms_roles (name, pr_desc)
+    values (#{name,jdbcType=VARCHAR}, #{prDesc,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ooad.xproject.entity.PmsRole">
+    <selectKey keyProperty="pmsRoleId" order="AFTER" resultType="java.lang.Integer">
+      Postgres
+    </selectKey>
+    insert into pms_roles
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        name,
+      </if>
+      <if test="prDesc != null">
+        pr_desc,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="prDesc != null">
+        #{prDesc,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ooad.xproject.entity.PmsRole">
+    update pms_roles
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="prDesc != null">
+        pr_desc = #{prDesc,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where pms_role_id = #{pmsRoleId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ooad.xproject.entity.PmsRole">
+    update pms_roles
+    set name = #{name,jdbcType=VARCHAR},
+      pr_desc = #{prDesc,jdbcType=VARCHAR}
+    where pms_role_id = #{pmsRoleId,jdbcType=INTEGER}
+  </update>
+</mapper>

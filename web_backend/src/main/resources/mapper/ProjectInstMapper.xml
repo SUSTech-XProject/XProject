@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ooad.xproject.mapper.ProjectInstMapper">
+  <resultMap id="BaseResultMap" type="com.ooad.xproject.entity.ProjectInst">
+    <id column="proj_inst_id" jdbcType="INTEGER" property="projInstId" />
+    <result column="proj_id" jdbcType="INTEGER" property="projId" />
+    <result column="topic_str" jdbcType="VARCHAR" property="topicStr" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="flags" jdbcType="VARCHAR" property="flags" />
+    <result column="team_name" jdbcType="VARCHAR" property="teamName" />
+    <result column="target_mem_num" jdbcType="INTEGER" property="targetMemNum" />
+    <result column="icon_url" jdbcType="VARCHAR" property="iconUrl" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    proj_inst_id, proj_id, topic_str, description, status, flags, team_name, target_mem_num, 
+    icon_url
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from project_insts
+    where proj_inst_id = #{projInstId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from project_insts
+    where proj_inst_id = #{projInstId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ooad.xproject.entity.ProjectInst"
+          useGeneratedKeys="true" keyProperty="projInstId" keyColumn="proj_inst_id">
+    insert into project_insts (proj_id, topic_str, description, 
+      status, flags, team_name, 
+      target_mem_num, icon_url)
+    values (#{projId,jdbcType=INTEGER}, #{topicStr,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{flags,jdbcType=VARCHAR}, #{teamName,jdbcType=VARCHAR}, 
+      #{targetMemNum,jdbcType=INTEGER}, #{iconUrl,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ooad.xproject.entity.ProjectInst"
+          useGeneratedKeys="true" keyProperty="projInstId" keyColumn="proj_inst_id">
+    insert into project_insts
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="projId != null">
+        proj_id,
+      </if>
+      <if test="topicStr != null">
+        topic_str,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="flags != null">
+        flags,
+      </if>
+      <if test="teamName != null">
+        team_name,
+      </if>
+      <if test="targetMemNum != null">
+        target_mem_num,
+      </if>
+      <if test="iconUrl != null">
+        icon_url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="projId != null">
+        #{projId,jdbcType=INTEGER},
+      </if>
+      <if test="topicStr != null">
+        #{topicStr,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="flags != null">
+        #{flags,jdbcType=VARCHAR},
+      </if>
+      <if test="teamName != null">
+        #{teamName,jdbcType=VARCHAR},
+      </if>
+      <if test="targetMemNum != null">
+        #{targetMemNum,jdbcType=INTEGER},
+      </if>
+      <if test="iconUrl != null">
+        #{iconUrl,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ooad.xproject.entity.ProjectInst">
+    update project_insts
+    <set>
+      <if test="projId != null">
+        proj_id = #{projId,jdbcType=INTEGER},
+      </if>
+      <if test="topicStr != null">
+        topic_str = #{topicStr,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="flags != null">
+        flags = #{flags,jdbcType=VARCHAR},
+      </if>
+      <if test="teamName != null">
+        team_name = #{teamName,jdbcType=VARCHAR},
+      </if>
+      <if test="targetMemNum != null">
+        target_mem_num = #{targetMemNum,jdbcType=INTEGER},
+      </if>
+      <if test="iconUrl != null">
+        icon_url = #{iconUrl,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where proj_inst_id = #{projInstId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ooad.xproject.entity.ProjectInst">
+    update project_insts
+    set proj_id = #{projId,jdbcType=INTEGER},
+      topic_str = #{topicStr,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      flags = #{flags,jdbcType=VARCHAR},
+      team_name = #{teamName,jdbcType=VARCHAR},
+      target_mem_num = #{targetMemNum,jdbcType=INTEGER},
+      icon_url = #{iconUrl,jdbcType=VARCHAR}
+    where proj_inst_id = #{projInstId,jdbcType=INTEGER}
+  </update>
+
+
+  <select id="selectByProjId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from project_insts
+    where proj_id = #{projId,jdbcType=INTEGER}
+  </select>
+
+  <sql id="StudentDTO_Column_List">
+    std_id, r.role_id, username, std_name, std_no, std_class, std.flags, sch_id, email, r.icon_url
+  </sql>
+  <select id="selectStudentByProjInstId" resultType="com.ooad.xproject.dto.StudentDTO">
+    select
+    <include refid="StudentDTO_Column_List" />
+    from project_insts as pi
+    join proj_inst_student_rt pisr on pi.proj_inst_id = pisr.proj_inst_id
+    join roles r on pisr.std_role_id = r.role_id
+    join students as std on pisr.std_role_id = std.role_id
+    where pi.proj_inst_id = #{projInstId};
+  </select>
+  <select id="selectPIByProjIdAndStdRoleId" resultType="com.ooad.xproject.entity.ProjectInst">
+    select pi.*
+    from project_insts as pi
+           join proj_inst_student_rt pisr on pi.proj_inst_id = pisr.proj_inst_id
+    where proj_id = #{projId} and std_role_id = #{stdRoleId};
+  </select>
+  <insert id="insertProjInstStdRT">
+    insert into proj_inst_student_rt (proj_inst_id, std_role_id, opt)
+    values (#{projInstId}, #{stdRoleId}, #{opt});
+  </insert>
+  <delete id="deleteProjInstStdRT">
+    delete from proj_inst_student_rt
+    where std_role_id = #{stdRoleId} and  proj_inst_id = #{projInstId}
+  </delete>
+  <sql id="StudentProjDTO_Column_List">
+    std_id, r.role_id, username, std_name, std_no, std_class, std.flags, sch_id, email, r.icon_url, group_mark, pi.proj_inst_id, team_name, topic_str, pi.status
+  </sql>
+  <select id="selectStdProjDTOByProjInstId" resultType="com.ooad.xproject.dto.StudentProjDTO">
+    select
+      <include refid="StudentProjDTO_Column_List"/>
+    from project_insts as pi
+      join proj_inst_student_rt pisr on pi.proj_inst_id = pisr.proj_inst_id
+      join roles r on pisr.std_role_id = r.role_id
+      join students as std on r.role_id = std.role_id
+      join project_role_rt prr on r.role_id = prr.role_id and prr.proj_id = pi.proj_id
+    where pi.proj_inst_id = #{projInstId};
+  </select>
+    <select id="selectTeamByProjId" resultType="com.ooad.xproject.bo.TeamBO">
+      select p.proj_name, pi.status, pi.topic_str topic, pi.team_name, s.std_no, s.std_name
+      from project_insts pi
+             join projects p on pi.proj_id = p.proj_id
+             left join proj_inst_student_rt pisr on pi.proj_inst_id = pisr.proj_inst_id
+             left join students s on pisr.std_role_id = s.role_id
+      where p.proj_id = #{projId}
+      order by (pi.status, topic_str, team_name);
+    </select>
+</mapper>
